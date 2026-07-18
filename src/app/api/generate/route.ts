@@ -842,6 +842,25 @@ ${oatActitudesFormatted}
       );
     }
 
+    // Valida SOLO los 4 campos que Paso 4 genera (respuesta parcial de Claude).
+    // validateStep4 original se conserva para validar el objeto completo post-merge.
+    function validateStep4Partial(json: any): boolean {
+      return (
+        json &&
+        typeof json.nlp_technique === 'string' &&
+        json.nlp_technique.trim() !== '' &&
+        typeof json.rubric === 'string' &&
+        json.rubric.trim() !== '' &&
+        json.reading_level_eval &&
+        typeof json.reading_level_eval === 'object' &&
+        typeof json.reading_level_eval.estimated_level === 'string' &&
+        json.reading_level_eval.estimated_level.trim() !== '' &&
+        typeof json.reading_level_eval.warning_alert === 'string' &&
+        json.reading_level_eval.warning_alert.trim() !== '' &&
+        typeof json.curricular_summary === 'string' &&
+        json.curricular_summary.trim() !== ''
+      );
+    }
     // Helper para realizar llamadas con reintentos automáticos
     // Helper to perform calls with stream delta tracking and parsing
     async function callClaudeWithRetryStream(
@@ -1091,14 +1110,10 @@ ${enrichmentBlock}`;
 Tu tarea es completar la planificación agregando las frases de anclaje, la rúbrica de evaluación, la evaluación de nivel de lectura y el resumen curricular compacto.
 INSTRUCCIÓN DE LONGITUD CRÍTICA: Sé extremadamente breve y conciso en los campos nuevos para asegurar que el JSON quepa en el límite de tokens y no se corte. La rúbrica debe ser sumamente compacta (criterios cortos en la tabla de heteroevaluación). El resumen curricular debe ser de un máximo de 2 líneas.
 Debes responder ÚNICAMENTE con un objeto JSON válido, sin texto introductorio, sin explicaciones ni etiquetas markdown de código.
-Asegúrate de copiar exactamente todos los campos de los pasos anteriores sin modificarlos, y añadir las claves requeridas.
 Asegúrate de que todas las comillas dobles dentro de los valores de las cadenas JSON estén correctamente escapadas como \\" y que TODOS los saltos de línea dentro de los valores estén escapados como \\n. Queda estrictamente PROHIBIDO incluir saltos de línea físicos/reales (retornos de carro reales) dentro de los strings del JSON.
 
 El JSON resultante debe tener exactamente esta estructura:
 {
-  "backward_design": { ... },
-  "dua_adaptations": { ... },
-  "rti_supports": { ... },
   "nlp_technique": "Tres frases de anclaje/reactivación...",
   "rubric": "Evaluación diferenciada...",
   "reading_level_eval": {
@@ -1445,15 +1460,40 @@ Cierre: Compartir fragmentos en parejas y ticket de salida ${writingTechnique.to
           sendEvent('step_complete', { step: 'Paso 3: Apoyos por Nivel', json: step3Json });
 
           // Paso 4: Cierre y Rúbrica
-          const userPrompt4 = `Tomando como base la planificación del paso anterior, añade los campos "nlp_technique", "rubric", "reading_level_eval", y "curricular_summary". Asegúrate de mantener intactos todos los campos existentes de "backward_design", "dua_adaptations" y "rti_supports".\n\nPLANIFICACIÓN ANTERIOR:\n${JSON.stringify(step3Json, null, 2)}`;
-          const finalJson = await callClaudeWithRetryStream(
+          // Paso 4 — Nuevo contrato: Claude genera SOLO los 4 campos nuevos.
+          // texto_sesion y backward_design se envían como contexto mínimo.
+          // dua_adaptations y rti_supports los aporta step3Json en el merge (no se envían a Claude).
+          const step4Input = {
+            texto_sesion: step3Json.texto_sesion,
+            backward_design: step3Json.backward_design,
+          };
+          const userPrompt4 = `Basándote en la planificación anterior, genera ÚNICAMENTE los cuatro campos nuevos: "nlp_technique", "rubric", "reading_level_eval" y "curricular_summary". Responde SOLO con un objeto JSON que contenga exactamente esas 4 claves, sin incluir ningún otro campo.\n\nPLANIFICACIÓN BASE:\n${JSON.stringify(step4Input, null, 2)}`;
+          const step4Json = await callClaudeWithRetryStream(
             systemPrompt4,
             userPrompt4,
-            validateStep4,
+            validateStep4Partial,
             'Paso 4: Cierre y Rúbrica',
             '',
             sendEvent
           );
+          // Selección explícita: solo los 4 campos autorizados de Claude.
+          // Cualquier campo extra que Claude pudiera generar queda excluido.
+          const step4Fields = {
+            nlp_technique: step4Json.nlp_technique,
+            rubric: step4Json.rubric,
+            reading_level_eval: step4Json.reading_level_eval,
+            curricular_summary: step4Json.curricular_summary,
+          };
+          // Fusión: step3Json aporta backward_design, dua_adaptations, rti_supports.
+          // step4Fields aporta únicamente los 4 campos autorizados. Nada más entra.
+          const finalJson = {
+            ...step3Json,
+            ...step4Fields,
+          };
+          // Validación post-merge: encadena validateStep3 → validateStep2 → validateStep1 + 4 nuevos.
+          if (!validateStep4(finalJson)) {
+            throw new Error('Validación post-fusión falló: finalJson no cumple validateStep4.');
+          }
           finalJson.texto_sesion = step0Json;
           finalJson.gamification = "";
           finalJson.writing_technique = writingTechnique;
