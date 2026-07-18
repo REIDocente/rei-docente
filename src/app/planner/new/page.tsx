@@ -1448,7 +1448,7 @@ export default function NewPlannerPage() {
       formData.append('oa_texto', oasTextos);
       formData.append('oa_eje', 'Lectura'); // Main default axis
       
-      const allIndicators = suggestedOAs.flatMap(o => o.indicadores_evaluacion.map(i => i.texto));
+      const allIndicators = suggestedOAs.flatMap(o => (o.indicadores_evaluacion || []).map(i => i.texto));
       formData.append('indicadores_json', JSON.stringify(allIndicators));
       formData.append('learningObjective', `${oasCodigos} — ${suggestedOAs.map(o => o.texto).join(' | ')}`);
 
