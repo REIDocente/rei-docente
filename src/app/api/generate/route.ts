@@ -4,7 +4,7 @@ import mammoth from 'mammoth';
 import { createClient } from '@supabase/supabase-js';
 import { checkTrialLimit, incrementCounter } from '@/lib/trialGuard';
 
-export const maxDuration = 60;
+export const maxDuration = 300;
 
 
 // pdf-parse doesn't have official types
