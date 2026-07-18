@@ -854,7 +854,7 @@ ${oatActitudesFormatted}
       forceFailFirstAttempt = false
     ): Promise<any> {
       let attempt = 0;
-      const maxAttempts = 3;
+      const maxAttempts = 2;
       let lastError = '';
       let simulatedFailure = forceFailFirstAttempt;
 
