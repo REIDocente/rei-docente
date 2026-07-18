@@ -22,7 +22,6 @@ export interface UserProfile {
   juegos_generated: number;
   lecturas_generated: number;
   guias_generated: number;
-  guides_generated: number;
   rei_play_count: number;
   rei_lecturas_count: number;
   experiencias_rei_count: number;
@@ -87,7 +86,6 @@ function getMockProfile(): UserProfile {
     juegos_generated: 0,
     lecturas_generated: 0,
     guias_generated: 0,
-    guides_generated: 0,
     rei_play_count: 0,
     rei_lecturas_count: 0,
     experiencias_rei_count: 0,
