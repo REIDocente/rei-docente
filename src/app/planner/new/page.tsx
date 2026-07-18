@@ -1268,7 +1268,7 @@ export default function NewPlannerPage() {
         });
         if (res.ok) {
           const data = await res.json();
-          if (data.mapa?.unidades) {
+          if (data?.mapa?.unidades) {
             const unitNum = parseInt(unit.replace(/\D/g, ''), 10) || 1;
             const uData = data.mapa.unidades.find((u: any) => u.numero === unitNum);
             if (uData && uData.sesiones) {
