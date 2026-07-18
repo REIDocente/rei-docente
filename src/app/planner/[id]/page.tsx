@@ -1021,7 +1021,7 @@ export default function PlanningDetailPage({ params }: { params: Promise<{ id: s
       alert('Esta planificación no tiene texto de sesión. Genera primero el Kit completo.');
       return;
     }
-    const grade = planning?.grade || planning?.curso || '2° Medio';
+    const grade = planning?.grade || '2° Medio';
     const prompt = `Tengo el siguiente texto educativo para estudiantes de ${grade}:
 
 ---
