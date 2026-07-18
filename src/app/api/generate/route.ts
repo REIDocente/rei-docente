@@ -883,7 +883,7 @@ ${oatActitudesFormatted}
           } else {
             const stream = await anthropic.messages.stream({
               model: model as any,
-              max_tokens: 8000,
+              max_tokens: 6000,
               system: [
                 {
                   type: 'text',
