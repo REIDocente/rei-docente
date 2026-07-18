@@ -1270,7 +1270,7 @@ export default function NewPlannerPage() {
           const data = await res.json();
           if (data?.mapa?.unidades) {
             const unitNum = parseInt(unit.replace(/\D/g, ''), 10) || 1;
-            const uData = data.mapa.unidades.find((u: any) => u.numero === unitNum);
+            const uData = data?.mapa?.unidades?.find((u: any) => u.numero === unitNum);
             if (uData && uData.sesiones) {
               setCatalogThemes(uData.sesiones.map((s: any) => ({
                 titulo: s.titulo,
