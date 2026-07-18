@@ -1502,7 +1502,7 @@ export default function NewPlannerPage() {
       const controller = new AbortController();
       const abortTimeoutId = setTimeout(() => {
         controller.abort();
-      }, 90000); // 90 seconds timeout
+      }, 240000); // 240 seconds timeout
 
       const response = await fetch('/api/generate', {
         method: 'POST',
