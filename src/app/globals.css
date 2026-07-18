@@ -1,8 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --rei-purple:        #6A1BFA;
+  --rei-purple-light:  #8B5CF6;
+  --rei-purple-hover:  #5A0EE8;
+  --rei-green:         #00A878;
+  --rei-coral:         #FF8A65;
+  --rei-yellow:        #FFC857;
+  --rei-blue:          #60A5FA;
+  --rei-bg:            #FCFCFE;
+  --rei-bg-alt:        #F8F7FD;
+  --rei-card:          #FFFFFF;
+  --rei-border:        #E7EAF3;
+  --rei-text:          #1F2937;
+  --rei-muted:         #64748B;
+  --background: var(--rei-bg);
+  --foreground: var(--rei-text);
 }
 
 @theme inline {
@@ -10,17 +23,65 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-rei-purple: var(--rei-purple);
+  --color-rei-purple-light: var(--rei-purple-light);
+  --color-rei-purple-hover: var(--rei-purple-hover);
+  --color-rei-green: var(--rei-green);
+  --color-rei-coral: var(--rei-coral);
+  --color-rei-yellow: var(--rei-yellow);
+  --color-rei-blue: var(--rei-blue);
+  --color-rei-bg: var(--rei-bg);
+  --color-rei-bg-alt: var(--rei-bg-alt);
+  --color-rei-card: var(--rei-card);
+  --color-rei-border: var(--rei-border);
+  --color-rei-text: var(--rei-text);
+  --color-rei-muted: var(--rei-muted);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background-color: var(--rei-bg);
+  color: var(--rei-text);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+@utility btn-primary {
+  background: linear-gradient(135deg, #6A1BFA, #8B5CF6);
+  color: white;
+  transition: all 0.2s ease;
+  &:hover {
+    background: linear-gradient(135deg, #5A0EE8, #6A1BFA);
+  }
+}
+
+@utility btn-secondary {
+  background: white;
+  border: 1.5px solid #6A1BFA;
+  color: #6A1BFA;
+  transition: all 0.2s ease;
+  &:hover {
+    background: #FCFCFE;
+  }
+}
+
+@utility badge-ia {
+  background: #EDE7F6;
+  color: #6A1BFA;
+}
+
+@utility badge-warning {
+  background: #FFF8E7;
+  border: 1px solid #FFD166;
+  color: #9A6700;
+}
+
+@utility badge-error {
+  background: #FFF1F2;
+  border: 1px solid #FFB4C1;
+  color: #B42318;
+}
+
+@utility badge-success {
+  background: #E6F7F2;
+  border: 1px solid #00A878;
+  color: #007A58;
 }
