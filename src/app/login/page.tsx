@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import {
   LogIn, UserPlus, User, KeyRound, Sparkles, Mail, Lock,
-  AlertCircle, CheckCircle, Sparkle, ArrowRight, ShieldCheck,
+  AlertCircle, CheckCircle, ArrowRight, ShieldCheck,
   Heart, X, Calendar, Users, Clock, Star, GraduationCap
 } from 'lucide-react';
 
@@ -106,7 +106,7 @@ export default function LoginPage() {
       <header className="sticky top-0 z-30 w-full px-6 py-4 flex items-center justify-between" style={{ backgroundColor: 'rgba(243,240,255,0.9)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(106,27,250,0.1)' }}>
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg" style={{ background: 'linear-gradient(135deg, #6A1BFA, #8B5CF6)' }}>
-            <Sparkle className="w-5 h-5 text-white" />
+            <Sparkles className="w-5 h-5 text-white" />
           </div>
           <div>
             <div className="text-base font-black tracking-tight text-slate-900 leading-none">REI DOCENTE</div>
@@ -280,7 +280,7 @@ export default function LoginPage() {
             </button>
             <div className="text-center mb-6">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl mb-3" style={{ background: 'linear-gradient(135deg, #6A1BFA, #8B5CF6)' }}>
-                <Sparkle className="w-6 h-6 text-white" />
+                <Sparkles className="w-6 h-6 text-white" />
               </div>
               <h2 className="text-2xl font-black text-slate-800">REI DOCENTE</h2>
               <p className="text-xs text-slate-400 font-semibold mt-1">Recursos Educativos Inteligentes</p>
