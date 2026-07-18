@@ -660,6 +660,7 @@ export default function PlanningDetailPage({ params }: { params: Promise<{ id: s
   const [planning, setPlanning] = useState<Planning | null>(null);
   const [loading, setLoading] = useState(true);
   const [exportingWord, setExportingWord] = useState(false);
+  const [copiedImagePrompt, setCopiedImagePrompt] = useState(false);
   const [exportingPdf, setExportingPdf] = useState(false);
 
   // Prompt Generator States
@@ -1014,6 +1015,43 @@ export default function PlanningDetailPage({ params }: { params: Promise<{ id: s
   }, [loading, planning, docxLib, jspdfLib]);
 
   // WORD EXPORT (.docx)
+  const copyImagePrompt = async () => {
+    const ts = planning?.content?.texto_sesion;
+    if (!ts || !ts.cuerpo) {
+      alert('Esta planificación no tiene texto de sesión. Genera primero el Kit completo.');
+      return;
+    }
+    const grade = planning?.grade || planning?.curso || '2° Medio';
+    const prompt = `Tengo el siguiente texto educativo para estudiantes de ${grade}:
+
+---
+Tipo: ${ts.tipo || 'Texto'}
+Título: ${ts.titulo || 'Sin título'}
+Autor: ${ts.autor || 'Anónimo'}
+
+${ts.cuerpo}
+---
+
+Por favor, indica en qué partes del texto sería útil agregar una imagen y describe exactamente qué debe mostrar cada imagen para que sea relevante y atractiva para los estudiantes. No cambies el texto original. Solo señala los lugares insertando [IMAGEN: descripción detallada de la imagen] en el punto exacto donde debe ir cada imagen, describiendo el contenido con suficiente detalle para generarla con una IA de imágenes.`;
+
+    try {
+      await navigator.clipboard.writeText(prompt);
+      setCopiedImagePrompt(true);
+      setTimeout(() => setCopiedImagePrompt(false), 3000);
+      window.open('https://chat.openai.com/', '_blank');
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = prompt;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      setCopiedImagePrompt(true);
+      setTimeout(() => setCopiedImagePrompt(false), 3000);
+      window.open('https://chat.openai.com/', '_blank');
+    }
+  };
+
   const exportToWord = async () => {
     if (!planning || !docxLib) return;
     setExportingWord(true);
