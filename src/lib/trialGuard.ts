@@ -7,7 +7,13 @@ import { SupabaseClient } from '@supabase/supabase-js';
 export type CounterColumn =
   | 'planifications_generated'
   | 'evaluations_generated'
-  | 'guias_generated'
+  | 'guides_generated'
+  | 'presentations_generated'
+  | 'images_generated'
+  | 'gamified_activities_generated'
+  | 'visual_resources_generated'
+  | 'juegos_generated'
+  | 'lecturas_generated'
   | 'rei_play_count'
   | 'rei_lecturas_count'
   | 'experiencias_rei_count';
@@ -28,6 +34,7 @@ export interface UserProfile {
   juegos_generated: number;
   lecturas_generated: number;
   guias_generated: number;
+  guides_generated: number;
   rei_play_count: number;
   rei_lecturas_count: number;
   experiencias_rei_count: number;
@@ -44,21 +51,33 @@ const TRIAL_DAYS = 7;
 
 // Límites plan piloto (20 docentes)
 export const TRIAL_LIMITS: Record<CounterColumn, number> = {
-  planifications_generated: 3,
-  evaluations_generated:    3,
-  guias_generated:          2,
-  rei_play_count:           2,
-  rei_lecturas_count:       1,
-  experiencias_rei_count:   1,
+  planifications_generated:      3,
+  evaluations_generated:         3,
+  guides_generated:              2,
+  presentations_generated:       999999,
+  images_generated:              999999,
+  gamified_activities_generated: 999999,
+  visual_resources_generated:    999999,
+  juegos_generated:              999999,
+  lecturas_generated:            999999,
+  rei_play_count:                2,
+  rei_lecturas_count:            1,
+  experiencias_rei_count:        1,
 };
 
 export const ACTIVE_LIMITS: Record<CounterColumn, number> = {
-  planifications_generated: 24,
-  evaluations_generated:    12,
-  guias_generated:          12,
-  rei_play_count:           999999,
-  rei_lecturas_count:       999999,
-  experiencias_rei_count:   999999,
+  planifications_generated:      24,
+  evaluations_generated:         12,
+  guides_generated:              12,
+  presentations_generated:       999999,
+  images_generated:              999999,
+  gamified_activities_generated: 999999,
+  visual_resources_generated:    999999,
+  juegos_generated:              999999,
+  lecturas_generated:            999999,
+  rei_play_count:                999999,
+  rei_lecturas_count:            999999,
+  experiencias_rei_count:        999999,
 };
 
 function getMockProfile(): UserProfile {
@@ -79,6 +98,7 @@ function getMockProfile(): UserProfile {
     juegos_generated: 0,
     lecturas_generated: 0,
     guias_generated: 0,
+    guides_generated: 0,
     rei_play_count: 0,
     rei_lecturas_count: 0,
     experiencias_rei_count: 0,
