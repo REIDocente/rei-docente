@@ -160,7 +160,7 @@ export async function checkTrialLimit(
     const trialStart = profile.trial_started_at ? new Date(profile.trial_started_at) : new Date();
     const trialEnd = new Date(trialStart.getTime() + TRIAL_DAYS * 24 * 60 * 60 * 1000);
     if (new Date() > trialEnd) return { blocked: true, reason: 'trial_expired', profile };
-    const currentCount = (profile as Record<string, unknown>)[column] as number ?? 0;
+    const currentCount = (profile as unknown as Record<string, unknown>)[column] as number ?? 0;
     if (currentCount >= (TRIAL_LIMITS[column] ?? 999999)) return { blocked: true, reason: 'limit_reached', profile };
     return { blocked: false, profile };
   }
@@ -176,7 +176,7 @@ export async function checkTrialLimit(
     const cycleIndex = Math.max(0, Math.floor(diffMs / cycleMs));
     const currentCycleStart = new Date(activeStart.getTime() + cycleIndex * cycleMs);
     const currentCycleEnd = new Date(currentCycleStart.getTime() + cycleMs);
-    const currentCount = (profile as Record<string, unknown>)[column] as number ?? 0;
+    const currentCount = (profile as unknown as Record<string, unknown>)[column] as number ?? 0;
     const limit = ACTIVE_LIMITS[column] ?? 999999;
     if (currentCount >= limit) {
       return { blocked: true, reason: 'limit_reached', profile, renewalDate: currentCycleEnd.toISOString() };
@@ -191,7 +191,7 @@ export async function checkTrialLimit(
   const renewalDate = trialEnd.toISOString();
   if (new Date() > trialEnd) return { blocked: true, reason: 'trial_expired', profile, renewalDate };
 
-  const currentCount: number = (profile as Record<string, unknown>)[column] as number ?? 0;
+  const currentCount: number = (profile as unknown as Record<string, unknown>)[column] as number ?? 0;
   if (currentCount >= (TRIAL_LIMITS[column] ?? 999999)) return { blocked: true, reason: 'limit_reached', profile, renewalDate };
 
   return { blocked: false, profile, renewalDate };
@@ -204,7 +204,7 @@ export async function incrementCounter(
 ): Promise<void> {
   if (process.env.NODE_ENV === 'development' && userId === 'a06a2e45-d28c-4f7f-8d96-e2a27b87fcf9') {
     const profile = getMockProfile();
-    (profile as Record<string, unknown>)[column] = ((profile as Record<string, unknown>)[column] as number ?? 0) + 1;
+    (profile as unknown as Record<string, unknown>)[column] = ((profile as unknown as Record<string, unknown>)[column] as number ?? 0) + 1;
     saveMockProfile(profile);
     return;
   }
@@ -216,7 +216,7 @@ export async function incrementCounter(
       .eq('id', userId)
       .single();
     if (profileData) {
-      const current: number = (profileData as Record<string, unknown>)[column] as number ?? 0;
+      const current: number = (profileData as unknown as Record<string, unknown>)[column] as number ?? 0;
       await supabase
         .from('user_profiles')
         .update({ [column]: current + 1, updated_at: new Date().toISOString() })
