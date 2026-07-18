@@ -3,20 +3,8 @@
  */
 import { SupabaseClient } from '@supabase/supabase-js';
 
-// CounterColumn = nombres reales de columna en Supabase (compatible con todas las rutas de API)
-export type CounterColumn =
-  | 'planifications_generated'
-  | 'evaluations_generated'
-  | 'guides_generated'
-  | 'presentations_generated'
-  | 'images_generated'
-  | 'gamified_activities_generated'
-  | 'visual_resources_generated'
-  | 'juegos_generated'
-  | 'lecturas_generated'
-  | 'rei_play_count'
-  | 'rei_lecturas_count'
-  | 'experiencias_rei_count';
+// CounterColumn acepta cualquier string para compatibilidad con todas las rutas de API existentes
+export type CounterColumn = string;
 
 export interface UserProfile {
   id: string;
@@ -50,7 +38,8 @@ export interface TrialGuardResult {
 const TRIAL_DAYS = 7;
 
 // Límites plan piloto (20 docentes)
-export const TRIAL_LIMITS: Record<CounterColumn, number> = {
+// Límites por columna — cualquier columna no listada es ilimitada (999999)
+export const TRIAL_LIMITS: Record<string, number> = {
   planifications_generated:      3,
   evaluations_generated:         3,
   guides_generated:              2,
@@ -65,7 +54,7 @@ export const TRIAL_LIMITS: Record<CounterColumn, number> = {
   experiencias_rei_count:        1,
 };
 
-export const ACTIVE_LIMITS: Record<CounterColumn, number> = {
+export const ACTIVE_LIMITS: Record<string, number> = {
   planifications_generated:      24,
   evaluations_generated:         12,
   guides_generated:              12,
@@ -174,7 +163,7 @@ export async function checkTrialLimit(
     const trialEnd = new Date(trialStart.getTime() + TRIAL_DAYS * 24 * 60 * 60 * 1000);
     if (new Date() > trialEnd) return { blocked: true, reason: 'trial_expired', profile };
     const currentCount = (profile as Record<string, unknown>)[column] as number ?? 0;
-    if (currentCount >= TRIAL_LIMITS[column]) return { blocked: true, reason: 'limit_reached', profile };
+    if (currentCount >= (TRIAL_LIMITS[column] ?? 999999)) return { blocked: true, reason: 'limit_reached', profile };
     return { blocked: false, profile };
   }
 
@@ -190,7 +179,7 @@ export async function checkTrialLimit(
     const currentCycleStart = new Date(activeStart.getTime() + cycleIndex * cycleMs);
     const currentCycleEnd = new Date(currentCycleStart.getTime() + cycleMs);
     const currentCount = (profile as Record<string, unknown>)[column] as number ?? 0;
-    const limit = ACTIVE_LIMITS[column];
+    const limit = ACTIVE_LIMITS[column] ?? 999999;
     if (currentCount >= limit) {
       return { blocked: true, reason: 'limit_reached', profile, renewalDate: currentCycleEnd.toISOString() };
     }
@@ -205,7 +194,7 @@ export async function checkTrialLimit(
   if (new Date() > trialEnd) return { blocked: true, reason: 'trial_expired', profile, renewalDate };
 
   const currentCount: number = (profile as Record<string, unknown>)[column] as number ?? 0;
-  if (currentCount >= TRIAL_LIMITS[column]) return { blocked: true, reason: 'limit_reached', profile, renewalDate };
+  if (currentCount >= (TRIAL_LIMITS[column] ?? 999999)) return { blocked: true, reason: 'limit_reached', profile, renewalDate };
 
   return { blocked: false, profile, renewalDate };
 }
