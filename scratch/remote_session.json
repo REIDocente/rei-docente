@@ -1,0 +1,48 @@
+{
+  "access_token": "eyJhbGciOiJFUzI1NiIsImtpZCI6IjFjNGJhZmI2LTM5MzgtNDk1Zi04MGZmLTlmNGNiNGE2Y2E5ZSIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3N2dmpkdWh0Zndnbm54bG9oY2ptLnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiI2MTE0NTczNC02MjI3LTQ4NzUtYWM0NC0yODlhNDM2YjZlMjAiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzgyOTc4NTM0LCJpYXQiOjE3ODI5NzQ5MzQsImVtYWlsIjoidmFsaWVudGVwYWxvakBnbWFpbC5jb20iLCJwaG9uZSI6IiIsImFwcF9tZXRhZGF0YSI6eyJwcm92aWRlciI6ImVtYWlsIiwicHJvdmlkZXJzIjpbImVtYWlsIl19LCJ1c2VyX21ldGFkYXRhIjp7ImVtYWlsX3ZlcmlmaWVkIjp0cnVlfSwicm9sZSI6ImF1dGhlbnRpY2F0ZWQiLCJhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiOiJwYXNzd29yZCIsInRpbWVzdGFtcCI6MTc4Mjk3NDkzNH1dLCJzZXNzaW9uX2lkIjoiNzlkMWRhNzQtOTcxMS00NjA2LTg2YTgtNmYzZDUwZGVhZDI2IiwiaXNfYW5vbnltb3VzIjpmYWxzZX0.-dM41F8fjpHk_UKHuT4JNyK20M7lXrbkkLhjL6omZavtjrbPYY3sC7pU3i-IQccKgemdypKFuc8bgjtx4XtN5A",
+  "token_type": "bearer",
+  "expires_in": 3600,
+  "expires_at": 1782978534,
+  "refresh_token": "7geu3ryouga2",
+  "user": {
+    "id": "61145734-6227-4875-ac44-289a436b6e20",
+    "aud": "authenticated",
+    "role": "authenticated",
+    "email": "valientepaloj@gmail.com",
+    "email_confirmed_at": "2026-06-21T20:51:55.23389Z",
+    "phone": "",
+    "confirmed_at": "2026-06-21T20:51:55.23389Z",
+    "last_sign_in_at": "2026-07-02T06:48:54.866610953Z",
+    "app_metadata": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    },
+    "user_metadata": {
+      "email_verified": true
+    },
+    "identities": [
+      {
+        "identity_id": "ce79e377-dac9-4c45-b96c-e40148352251",
+        "id": "61145734-6227-4875-ac44-289a436b6e20",
+        "user_id": "61145734-6227-4875-ac44-289a436b6e20",
+        "identity_data": {
+          "email": "valientepaloj@gmail.com",
+          "email_verified": false,
+          "phone_verified": false,
+          "sub": "61145734-6227-4875-ac44-289a436b6e20"
+        },
+        "provider": "email",
+        "last_sign_in_at": "2026-06-21T20:51:55.230881Z",
+        "created_at": "2026-06-21T20:51:55.230942Z",
+        "updated_at": "2026-06-21T20:51:55.230942Z",
+        "email": "valientepaloj@gmail.com"
+      }
+    ],
+    "created_at": "2026-06-21T20:51:55.20493Z",
+    "updated_at": "2026-07-02T06:48:54.889415Z",
+    "is_anonymous": false
+  },
+  "weak_password": null
+}

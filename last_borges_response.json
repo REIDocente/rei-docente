@@ -1,0 +1,2892 @@
+{
+  "id": "mock-ev-1783373964500",
+  "nivel": "2° Medio",
+  "eje": "Lectura",
+  "oa_codes": [
+    "OA 8"
+  ],
+  "tipos": [
+    "prueba",
+    "tabla_especificaciones",
+    "rubrica"
+  ],
+  "titulo": "Ensayo SIMCE de Comprensión Lectora: 2° Medio",
+  "contenido_json": {
+    "textos_lectura": [
+      {
+        "titulo": "La lectura literaria: una necesidad urgente en la era digital",
+        "tipo": "Argumentativo",
+        "contenido": "En un mundo donde las pantallas dominan cada rincón de nuestra vida cotidiana, la lectura literaria ha sido desplazada a un segundo plano. Sin embargo, lejos de ser un lujo o una actividad prescindible, leer literatura constituye una necesidad fundamental para el desarrollo humano integral. Quienes sostienen que la lectura puede ser reemplazada por videos o podcasts ignoran algo esencial: la literatura nos entrega un tipo de experiencia cognitiva y emocional que ningún otro medio puede ofrecer.\n\nEn primer lugar, la lectura literaria desarrolla la empatía de manera profunda y sostenida. Cuando nos sumergimos en una novela, habitamos la mente de personajes distintos a nosotros: comprendemos sus miedos, sus contradicciones, sus alegrías. Estudios realizados por la Universidad de Toronto han demostrado que quienes leen ficción de manera regular presentan mayores niveles de comprensión emocional y tolerancia hacia la diferencia. Esto no ocurre con la misma intensidad en los formatos audiovisuales, pues la imagen ya nos entrega el personaje construido; en cambio, la palabra escrita nos obliga a construirlo internamente.\n\nEn segundo lugar, la literatura nos conecta con tradiciones culturales e históricas que moldean nuestra identidad. Leer a Gabriela Mistral, a Pablo Neruda o a Isabel Allende no es solo un ejercicio estético: es dialogar con voces que han dado forma a la experiencia latinoamericana. Esta conexión intertextual enriquece nuestra comprensión del presente, pues nos permite reconocer en los textos contemporáneos los ecos de lecturas anteriores.\n\nSin embargo, el argumento más poderoso es el de la autonomía intelectual. La lectura literaria exige un lector activo que interprete, cuestione y elabore significados propios. A diferencia del consumo pasivo de contenidos digitales, leer literatura entrena la capacidad crítica: nos enseña a no aceptar el primer sentido que se nos ofrece, sino a indagar más profundamente. En una era donde la desinformación prolifera, esta habilidad resulta vital.\n\nEs verdad que la tecnología ha abierto nuevas formas de narración y que los géneros digitales tienen su propio valor. Pero reconocer ese valor no implica abandonar la literatura. Por el contrario, una sociedad lectora será siempre más reflexiva, más libre y más justa. Fomentar la lectura literaria desde la escuela no es un capricho pedagógico, sino una inversión en ciudadanos capaces de pensar por sí mismos.\n\n(Conteo de palabras: 352 palabras)"
+      },
+      {
+        "titulo": "Historia y evolución del canon literario occidental",
+        "tipo": "Expositivo",
+        "contenido": "El concepto de canon literario hace referencia al conjunto de obras consideradas fundamentales dentro de una tradición cultural. Esta selección no es neutral ni definitiva: ha sido construida históricamente por instituciones académicas, editoriales y críticos literarios que han privilegiado ciertos textos sobre otros. Comprender cómo se forma y transforma el canon permite entender mejor la literatura como fenómeno social y cultural.\n\nEl origen del canon occidental se remonta a la Antigüedad clásica. Filósofos griegos como Aristóteles ya establecían jerarquías entre las obras de su tiempo, distinguiendo géneros como la tragedia y la épica según criterios de valor estético y moral. Posteriormente, durante el Renacimiento, humanistas europeos recuperaron textos grecolatinos y los erigieron como modelos insuperables de escritura y pensamiento. Esta mirada retrospectiva consolidó una lista de «clásicos» que influiría profundamente en la educación occidental durante siglos.\n\nDurante el siglo XIX, el auge del nacionalismo impulsó la formación de cánones literarios nacionales. Los estados modernos necesitaban narrativas identitarias, y la literatura fue convocada para construirlas. En Latinoamérica, el proceso independentista motivó la búsqueda de una literatura propia que expresara la singularidad del continente. Autores como Andrés Bello en Chile o José Martí en Cuba fueron incluidos en estos cánones emergentes como voces fundacionales.\n\nA lo largo del siglo XX, el canon fue sometido a una revisión crítica profunda. Movimientos feministas, postcoloniales y multiculturales cuestionaron la exclusión sistemática de escritoras, autores indígenas y voces periféricas. Teóricos como Harold Bloom defendieron la vigencia del canon tradicional argumentando que su valor estético trasciende las ideologías; mientras que críticos como Edward Said y Gayatri Spivak evidenciaron los mecanismos de poder que determinan qué voces son incluidas y cuáles quedan silenciadas.\n\nHoy, el canon literario es un campo en permanente disputa. Las plataformas digitales han democratizado el acceso a textos de diversas culturas y épocas, desafiando la autoridad de las instituciones académicas tradicionales. Sin embargo, el debate sobre qué leer y por qué sigue siendo vigente y necesario, pues implica preguntarse qué valores queremos transmitir a las nuevas generaciones.\n\n(Conteo de palabras: 348 palabras)"
+      }
+    ],
+    "preguntas": [
+      {
+        "numero": 1,
+        "enunciado": "¿Cuál es la tesis central del texto 1?",
+        "tipo": "seleccion_multiple",
+        "texto_asociado": "texto_1",
+        "alternativas": {
+          "A": "La tecnología digital ha reemplazado completamente a la literatura en la sociedad actual.",
+          "B": "La lectura literaria es una necesidad fundamental para el desarrollo humano integral.",
+          "C": "Los videos y podcasts ofrecen experiencias cognitivas superiores a las de los libros.",
+          "D": "La empatía es la única habilidad que se desarrolla mediante la lectura de novelas."
+        },
+        "clave": "B",
+        "habilidad": "Comprender",
+        "indicador": "Identifica la tesis principal de un texto argumentativo.",
+        "contenido": "Comprensión de la tesis del texto argumentativo"
+      },
+      {
+        "numero": 2,
+        "enunciado": "Según el texto 1, ¿qué diferencia fundamental existe entre leer ficción y ver una obra audiovisual en cuanto a la construcción del personaje?",
+        "tipo": "seleccion_multiple",
+        "texto_asociado": "texto_1",
+        "alternativas": {
+          "A": "La imagen permite una comprensión más profunda que la palabra escrita en todos los casos.",
+          "B": "En el texto escrito, el lector debe construir internamente al personaje a partir de palabras.",
+          "C": "El formato audiovisual exige mayor esfuerzo cognitivo que la lectura literaria convencional.",
+          "D": "En la ficción literaria, el autor construye al personaje sin involucrar al lector en ese proceso."
+        },
+        "clave": "B",
+        "habilidad": "Comprender",
+        "indicador": "Comprende información explícita presentada en un texto argumentativo.",
+        "contenido": "Información explícita sobre construcción de personajes"
+      },
+      {
+        "numero": 3,
+        "enunciado": "El autor del texto 1 menciona a Gabriela Mistral, Pablo Neruda e Isabel Allende principalmente para:",
+        "tipo": "seleccion_multiple",
+        "texto_asociado": "texto_1",
+        "alternativas": {
+          "A": "Demostrar que Chile posee una tradición literaria superior a la de otros países de América.",
+          "B": "Ilustrar cómo la lectura conecta con tradiciones culturales que moldean la identidad.",
+          "C": "Comparar el estilo narrativo de autores latinoamericanos del siglo XX entre sí.",
+          "D": "Cuestionar la vigencia de autores clásicos frente a los escritores contemporáneos actuales."
+        },
+        "clave": "B",
+        "habilidad": "Analizar",
+        "indicador": "Analiza la función argumentativa de ejemplos y referencias en un texto.",
+        "contenido": "Función de los ejemplos en el texto argumentativo"
+      },
+      {
+        "numero": 4,
+        "enunciado": "¿Qué relación establece el texto 1 entre la lectura literaria y la autonomía intelectual?",
+        "tipo": "seleccion_multiple",
+        "texto_asociado": "texto_1",
+        "alternativas": {
+          "A": "La lectura genera dependencia del conocimiento experto y reduce el pensamiento autónomo.",
+          "B": "La autonomía intelectual se desarrolla exclusivamente a través de la lectura de ensayos filosóficos.",
+          "C": "Leer literatura entrena la capacidad crítica al exigir interpretación activa y elaboración de sentido.",
+          "D": "La autonomía intelectual es una consecuencia directa del consumo frecuente de medios digitales."
+        },
+        "clave": "C",
+        "habilidad": "Analizar",
+        "indicador": "Relaciona conceptos presentes en el desarrollo argumentativo del texto.",
+        "contenido": "Relación entre lectura y autonomía intelectual"
+      },
+      {
+        "numero": 5,
+        "enunciado": "La frase «una sociedad lectora será siempre más reflexiva, más libre y más justa» es un recurso que el autor utiliza para:",
+        "tipo": "seleccion_multiple",
+        "texto_asociado": "texto_1",
+        "alternativas": {
+          "A": "Refutar los argumentos presentados anteriormente en el texto con una conclusión irónica.",
+          "B": "Cerrar el texto con una proyección valorativa que refuerza la tesis central del escrito.",
+          "C": "Introducir un nuevo argumento sobre la relación entre política y literatura en el mundo.",
+          "D": "Citar textualmente datos estadísticos obtenidos de un estudio sobre hábitos de lectura."
+        },
+        "clave": "B",
+        "habilidad": "Analizar",
+        "indicador": "Analiza el uso de recursos retóricos en el cierre de un texto argumentativo.",
+        "contenido": "Recursos retóricos y función del cierre argumentativo"
+      },
+      {
+        "numero": 6,
+        "enunciado": "¿Cuál de los siguientes enunciados refleja una concesión argumentativa presente en el texto 1?",
+        "tipo": "seleccion_multiple",
+        "texto_asociado": "texto_1",
+        "alternativas": [
+          {
+            "A": "«la lectura literaria desarrolla la empatía de modo profundo y sostenido»"
+          },
+          {
+            "B": "«leer literatura entrena la capacidad crítica: nos enseña a cuestionar el primer sentido»"
+          },
+          {
+            "C": "«la tecnología abrió nuevas formas de narración y los géneros digitales tienen su valor»"
+          },
+          {
+            "D": "«una inversión en ciudadanos que son capaces de pensar por sí mismos»"
+          }
+        ],
+        "clave": "C",
+        "habilidad": "Analizar",
+        "indicador": "Identifica estrategias de concesión en la estructura argumentativa de un texto.",
+        "contenido": "Identificación de concesiones argumentativas"
+      },
+      {
+        "numero": 7,
+        "enunciado": "Según el texto 1, ¿por qué fomentar la lectura literaria desde la escuela no es «un capricho pedagógico»?",
+        "tipo": "seleccion_multiple",
+        "texto_asociado": "texto_1",
+        "alternativas": {
+          "A": "Porque la lectura mejora las calificaciones de los estudiantes en todas las asignaturas.",
+          "B": "Porque permite a los docentes cumplir con los contenidos mínimos exigidos por el currículo.",
+          "C": "Porque es una inversión en ciudadanos capaces de pensar de manera crítica e independiente.",
+          "D": "Porque contribuye a que los estudiantes memoricen más obras del patrimonio cultural nacional."
+        },
+        "clave": "C",
+        "habilidad": "Comprender",
+        "indicador": "Comprende el propósito comunicativo de un enunciado argumentativo específico.",
+        "contenido": "Propósito comunicativo en el texto argumentativo"
+      },
+      {
+        "numero": 8,
+        "enunciado": "El texto 1 menciona un estudio de la Universidad de Toronto. ¿Cuál es la función de esta referencia en el argumento?",
+        "tipo": "seleccion_multiple",
+        "texto_asociado": "texto_1",
+        "alternativas": {
+          "A": "Cuestionar la validez de las investigaciones sobre lectura realizadas en Latinoamérica.",
+          "B": "Otorgar respaldo empírico a la afirmación sobre la empatía y la lectura de ficción.",
+          "C": "Demostrar que solo las universidades extranjeras investigan sobre hábitos lectores.",
+          "D": "Introducir una perspectiva contraria a la tesis central del texto argumentativo."
+        },
+        "clave": "B",
+        "habilidad": "Evaluar",
+        "indicador": "Evalúa la pertinencia y función de las fuentes citadas en un texto argumentativo.",
+        "contenido": "Uso de fuentes y respaldo argumentativo"
+      },
+      {
+        "numero": 9,
+        "enunciado": "¿Cuál es el propósito comunicativo principal del texto 1?",
+        "tipo": "seleccion_multiple",
+        "texto_asociado": "texto_1",
+        "alternativas": {
+          "A": "Describir con neutralidad los diferentes usos que tienen los textos literarios en la actualidad.",
+          "B": "Narrar experiencias personales del autor en torno a su hábito de lectura literaria cotidiana.",
+          "C": "Convencer al lector de que la lectura literaria es necesaria e irreemplazable en la era digital.",
+          "D": "Comparar distintos géneros literarios para determinar cuál resulta más adecuado leer en clase."
+        },
+        "clave": "C",
+        "habilidad": "Evaluar",
+        "indicador": "Evalúa el propósito comunicativo global de un texto argumentativo.",
+        "contenido": "Propósito comunicativo del texto argumentativo"
+      },
+      {
+        "numero": 10,
+        "enunciado": "¿Cuál de las siguientes opciones describe mejor la estructura organizativa del texto 1?",
+        "tipo": "seleccion_multiple",
+        "texto_asociado": "texto_1",
+        "alternativas": {
+          "A": "Presentación de un problema, narración de hechos históricos y propuesta de solución técnica.",
+          "B": "Tesis inicial, desarrollo con argumentos y evidencias, concesión y reafirmación de la tesis.",
+          "C": "Introducción neutral, descripción de datos estadísticos y conclusión con pregunta retórica.",
+          "D": "Definición del tema, comparación de posturas opuestas y declaración de imparcialidad final."
+        },
+        "clave": "B",
+        "habilidad": "Analizar",
+        "indicador": "Analiza la estructura organizativa de un texto argumentativo.",
+        "contenido": "Estructura del texto argumentativo"
+      },
+      {
+        "numero": 11,
+        "enunciado": "Según el texto 2, ¿qué es el canon literario?",
+        "tipo": "seleccion_multiple",
+        "texto_asociado": "texto_2",
+        "alternativas": {
+          "A": "Un conjunto de reglas gramaticales establecidas por los académicos de la lengua española.",
+          "B": "La lista de autores latinoamericanos reconocidos como fundadores de la literatura nacional.",
+          "C": "El conjunto de obras consideradas fundamentales dentro de una tradición cultural determinada.",
+          "D": "Un criterio exclusivamente estético para clasificar novelas según su calidad literaria objetiva."
+        },
+        "clave": "C",
+        "habilidad": "Comprender",
+        "indicador": "Comprende el significado de conceptos clave definidos en un texto expositivo.",
+        "contenido": "Comprensión de conceptos en el texto expositivo"
+      },
+      {
+        "numero": 12,
+        "enunciado": "De acuerdo con el texto 2, ¿qué papel cumplieron los humanistas del Renacimiento en la formación del canon occidental?",
+        "tipo": "seleccion_multiple",
+        "texto_asociado": "texto_2",
+        "alternativas": {
+          "A": "Rechazaron los modelos grecolatinos y propusieron una literatura basada en textos medievales.",
+          "B": "Recuperaron textos grecolatinos y los erigieron como modelos insuperables de escritura.",
+          "C": "Establecieron por primera vez la distinción entre géneros literarios como la épica y la tragedia.",
+          "D": "Introdujeron cánones nacionales que reflejaban las identidades de los estados europeos modernos."
+        },
+        "clave": "B",
+        "habilidad": "Comprender",
+        "indicador": "Identifica información explícita en un texto expositivo de tipo histórico.",
+        "contenido": "Información explícita sobre el Renacimiento y el canon"
+      },
+      {
+        "numero": 13,
+        "enunciado": "Según el texto 2, ¿qué motivó la formación de cánones literarios nacionales durante el siglo XIX?",
+        "tipo": "seleccion_multiple",
+        "texto_asociado": "texto_2",
+        "alternativas": {
+          "A": "El surgimiento de editoriales privadas que competían por el mercado del libro en Europa.",
+          "B": "La necesidad de los estados modernos de construir narrativas identitarias nacionales.",
+          "C": "El auge del Romanticismo, que impulsó la valoración de las tradiciones populares orales.",
+          "D": "La influencia de la Iglesia católica en la definición del patrimonio literario de cada nación."
+        },
+        "clave": "B",
+        "habilidad": "Comprender",
+        "indicador": "Identifica causas y motivaciones explicadas en un texto expositivo.",
+        "contenido": "Causas de la formación del canon literario nacional"
+      },
+      {
+        "numero": 14,
+        "enunciado": "¿Qué postura sostuvo Harold Bloom respecto del canon literario, según el texto 2?",
+        "tipo": "seleccion_multiple",
+        "texto_asociado": "texto_2",
+        "alternativas": {
+          "A": "Que el canon debía ser completamente renovado para incluir voces de escritoras y autores periféricos.",
+          "B": "Que el canon tradicional tenía valor estético que trasciende las ideologías de cada época.",
+          "C": "Que el canon occidental era producto exclusivo del imperialismo cultural europeo del siglo XIX.",
+          "D": "Que los cánones nacionales latinoamericanos debían ser integrados al canon occidental clásico."
+        },
+        "clave": "B",
+        "habilidad": "Comprender",
+        "indicador": "Identifica y distingue posturas de distintos autores mencionados en un texto expositivo.",
+        "contenido": "Identificación de posturas sobre el canon literario"
+      },
+      {
+        "numero": 15,
+        "enunciado": "La mención de Andrés Bello y José Martí en el texto 2 cumple la función de:",
+        "tipo": "seleccion_multiple",
+        "texto_asociado": "texto_2",
+        "alternativas": {
+          "A": "Comparar la calidad literaria de ambos autores con la de los escritores europeos de su época.",
+          "B": "Ilustrar con ejemplos concretos la formación de cánones literarios nacionales en Latinoamérica.",
+          "C": "Demostrar que el canon latinoamericano es superior al canon occidental heredado de Europa.",
+          "D": "Cuestionar la vigencia de los autores clásicos en los programas educativos del siglo XXI."
+        },
+        "clave": "B",
+        "habilidad": "Analizar",
+        "indicador": "Analiza la función de los ejemplos dentro de la organización de un texto expositivo.",
+        "contenido": "Función de los ejemplos en el texto expositivo"
+      },
+      {
+        "numero": 16,
+        "enunciado": "¿Qué crítica formularon los movimientos feministas y postcoloniales al canon literario, según el texto 2?",
+        "tipo": "seleccion_multiple",
+        "texto_asociado": "texto_2",
+        "alternativas": {
+          "A": "Que el canon favorecía en exceso a escritores de países en desarrollo frente a los occidentales.",
+          "B": "Que el canon excluía sistemáticamente a escritoras, autores indígenas y voces periféricas.",
+          "C": "Que el canon privilegiaba géneros menores como el cuento por sobre la novela y la poesía.",
+          "D": "Que el canon ignoraba las obras de autores contemporáneos en favor de textos muy antiguos."
+        },
+        "clave": "B",
+        "habilidad": "Comprender",
+        "indicador": "Comprende argumentos críticos presentados en un texto expositivo.",
+        "contenido": "Críticas al canon literario en el texto expositivo"
+      },
+      {
+        "numero": 17,
+        "enunciado": "Según el texto 2, ¿cuál es el estado actual del canon literario en el siglo XXI?",
+        "tipo": "seleccion_multiple",
+        "texto_asociado": "texto_2",
+        "alternativas": {
+          "A": "Ha sido definitivamente abolido gracias al acceso irrestricto que ofrecen las plataformas digitales.",
+          "B": "Permanece igual que en el siglo XIX, pues las instituciones académicas siguen ejerciendo control.",
+          "C": "Es un campo en disputa, donde lo digital desafía la autoridad académica sin resolver el debate.",
+          "D": "Ha sido redefinido exclusivamente a partir de criterios de diversidad cultural e inclusión social."
+        },
+        "clave": "C",
+        "habilidad": "Comprender",
+        "indicador": "Comprende la situación actual de un fenómeno descrito en un texto expositivo.",
+        "contenido": "Estado actual del canon literario según el texto"
+      },
+      {
+        "numero": 18,
+        "enunciado": "¿Qué significa la afirmación del texto 2 de que la construcción del canon «no es neutral ni definitiva»?",
+        "tipo": "seleccion_multiple",
+        "texto_asociado": "texto_2",
+        "alternativas": [
+          {
+            "A": "Que el canon literario cambia solo por razones estéticas y no por influencias externas."
+          },
+          {
+            "B": "Que las obras del canon son seleccionadas al azar por los editores de cada época."
+          },
+          {
+            "C": "Que la selección canónica responde a intereses de poder y puede modificarse con el tiempo."
+          },
+          {
+            "D": "Que el valor literario de las obras es subjetivo y no admite ninguna evaluación objetiva."
+          }
+        ],
+        "clave": "C",
+        "habilidad": "Analizar",
+        "indicador": "Interpreta el sentido de afirmaciones clave en un texto expositivo.",
+        "contenido": "Interpretación de afirmaciones sobre el canon literario"
+      },
+      {
+        "numero": 19,
+        "enunciado": "El texto 2 organiza su información principalmente a través de:",
+        "tipo": "seleccion_multiple",
+        "texto_asociado": "texto_2",
+        "alternativas": {
+          "A": "Una secuencia de comparaciones entre autores de distintos períodos y géneros literarios.",
+          "B": "Un orden cronológico que narra la evolución histórica del concepto de canon literario.",
+          "C": "Una serie de anécdotas personales del autor sobre su experiencia con el canon literario.",
+          "D": "Una estructura de problema-solución que termina con una propuesta pedagógica concreta."
+        },
+        "clave": "B",
+        "habilidad": "Analizar",
+        "indicador": "Analiza el modo de organización textual de un texto expositivo.",
+        "contenido": "Organización textual del texto expositivo"
+      },
+      {
+        "numero": 20,
+        "enunciado": "¿Cuál es el propósito comunicativo del texto 2?",
+        "tipo": "seleccion_multiple",
+        "texto_asociado": "texto_2",
+        "alternativas": {
+          "A": "Persuadir al lector de que abandone el canon occidental y adopte lecturas diversas e inclusivas.",
+          "B": "Narrar la historia de vida de autores latinoamericanos que fueron excluidos del canon clásico.",
+          "C": "Informar sobre el origen, desarrollo y estado actual del canon literario como fenómeno cultural.",
+          "D": "Demostrar que el canon literario griego es el único modelo válido para la educación actual."
+        },
+        "clave": "C",
+        "habilidad": "Evaluar",
+        "indicador": "Evalúa el propósito comunicativo de un texto expositivo.",
+        "contenido": "Propósito comunicativo del texto expositivo"
+      },
+      {
+        "numero": 21,
+        "enunciado": "¿En qué aspecto el texto 1 y el texto 2 presentan una visión complementaria sobre la literatura?",
+        "tipo": "seleccion_multiple",
+        "texto_asociado": "ambos",
+        "alternativas": {
+          "A": "Ambos sostienen que la era digital ha vuelto irrelevantes las discusiones sobre literatura.",
+          "B": "Ambos reconocen que la literatura tiene un papel significativo en la formación de identidad cultural.",
+          "C": "Ambos argumentan que el canon literario debe ser abolido para dar paso a nuevas narrativas.",
+          "D": "Ambos proponen que la lectura de textos clásicos es suficiente para la educación del siglo XXI."
+        },
+        "clave": "B",
+        "habilidad": "Analizar",
+        "indicador": "Establece relaciones de complementariedad entre dos textos de distinto tipo.",
+        "contenido": "Relación intertextual entre texto argumentativo y expositivo"
+      },
+      {
+        "numero": 22,
+        "enunciado": "¿Cómo se relaciona la idea de «autonomía intelectual» del texto 1 con el debate sobre el canon expuesto en el texto 2?",
+        "tipo": "seleccion_multiple",
+        "texto_asociado": "ambos",
+        "alternativas": [
+          {
+            "A": "El texto 2 muestra que el canon fue diseñado para inhibir el pensamiento autónomo del lector."
+          },
+          {
+            "B": "Quienes cuestionaron el canon ejercieron la autonomía intelectual al desafiar selecciones impuestas."
+          },
+          {
+            "C": "El texto 1 rechaza el canon porque lo considera un obstáculo para la lectura completamente libre."
+          },
+          {
+            "D": "El texto 2 propone reemplazar el canon por listas elaboradas con criterios de autonomía crítica."
+          }
+        ],
+        "clave": "B",
+        "habilidad": "Evaluar",
+        "indicador": "Relaciona conceptos de distintos textos para formular una interpretación integradora.",
+        "contenido": "Relación intertextual entre conceptos clave de ambos textos"
+      },
+      {
+        "numero": 23,
+        "enunciado": "El texto 1 afirma que la literatura conecta con «ecos de lecturas anteriores». ¿Con qué concepto del texto 2 se relaciona directamente esta idea?",
+        "tipo": "seleccion_multiple",
+        "texto_asociado": "ambos",
+        "alternativas": {
+          "A": "Con la noción de que las plataformas digitales democratizan el acceso a la lectura literaria.",
+          "B": "Con el concepto de canon como conjunto de obras que articulan una tradición cultural continua.",
+          "C": "Con la postura de Harold Bloom sobre el valor estético que trasciende ideologías de cada época.",
+          "D": "Con la crítica postcolonial que denuncia la exclusión de voces periféricas del canon canónico."
+        },
+        "clave": "B",
+        "habilidad": "Evaluar",
+        "indicador": "Formula interpretaciones que articulan ideas de dos textos distintos.",
+        "contenido": "Intertextualidad y articulación de conceptos entre textos"
+      },
+      {
+        "numero": 24,
+        "enunciado": "Considerando ambos textos, ¿cuál de las siguientes interpretaciones es más coherente con sus contenidos?",
+        "tipo": "seleccion_multiple",
+        "texto_asociado": "ambos",
+        "alternativas": [
+          {
+            "A": "La literatura es un fenómeno estético que no cumple ninguna función social ni política concreta."
+          },
+          {
+            "B": "El valor literario está determinado solo por quienes ejercen poder en las instituciones culturales."
+          },
+          {
+            "C": "La literatura es a la vez una práctica formativa individual y un campo de disputa cultural colectiva."
+          },
+          {
+            "D": "La literatura perderá relevancia cuando la tecnología digital esté completamente extendida y afianzada."
+          }
+        ],
+        "clave": "C",
+        "habilidad": "Evaluar",
+        "indicador": "Formula una interpretación global coherente a partir de dos textos complementarios.",
+        "contenido": "Interpretación global integradora de ambos textos"
+      },
+      {
+        "numero": 25,
+        "enunciado": "¿Cuál es una diferencia fundamental entre el modo en que el texto 1 y el texto 2 abordan la relación entre literatura y sociedad?",
+        "tipo": "seleccion_multiple",
+        "texto_asociado": "ambos",
+        "alternativas": {
+          "A": "El texto 1 describe hechos históricos, mientras que el texto 2 defiende una postura personal.",
+          "B": "El texto 1 argumenta a favor de la lectura literaria, mientras el texto 2 describe su historia cultural.",
+          "C": "El texto 1 se centra en el canon literario occidental, mientras el texto 2 analiza el impacto digital.",
+          "D": "El texto 1 presenta datos estadísticos, mientras el texto 2 ofrece solo ejemplos sin evidencias."
+        },
+        "clave": "B",
+        "habilidad": "Analizar",
+        "indicador": "Distingue modos de organización y propósito discursivo entre textos de distinto tipo.",
+        "contenido": "Diferencias entre texto argumentativo y expositivo"
+      },
+      {
+        "numero": 26,
+        "enunciado": "Tomando como base el texto 1, formula una interpretación del argumento sobre la empatía y la lectura literaria. Responde utilizando la técnica RICE (Respuesta, Información, Cita o evidencia, Evaluación).",
+        "tipo": "desarrollo",
+        "texto_asociado": "texto_1",
+        "habilidad": "Evaluar",
+        "indicador": "Formula una interpretación fundamentada sobre un argumento específico de un texto argumentativo, utilizando evidencias textuales.",
+        "contenido": "Interpretación argumentada sobre empatía y lectura literaria",
+        "respuesta_esperada": "RICE: R: El autor argumenta que la lectura literaria desarrolla la empatía de manera más profunda que los formatos audiovisuales. I: Esto se debe a que, al leer ficción, el lector debe construir mentalmente al personaje a partir de las palabras del texto, lo que implica un proceso cognitivo activo de comprensión emocional. C: El texto señala que «estudios realizados por la Universidad de Toronto han demostrado que quienes leen ficción de manera regular presentan mayores niveles de comprensión emocional», y que en los formatos audiovisuales «la imagen ya nos entrega el personaje construido». E: Esta distinción es pertinente porque muestra que la empatía desarrollada por la lectura no es un efecto pasivo, sino el resultado de un proceso activo de reconstrucción imaginativa, lo que la hace cualitativamente diferente a la experiencia audiovisual. Esto fortalece la tesis del texto, pues justifica la necesidad de la lectura literaria como práctica insustituible para el desarrollo humano."
+      },
+      {
+        "numero": 27,
+        "enunciado": "A partir del texto 2, explica cómo el contexto histórico del siglo XIX influyó en la construcción de los cánones literarios nacionales en Latinoamérica. Responde utilizando la técnica RICE.",
+        "tipo": "desarrollo",
+        "texto_asociado": "texto_2",
+        "habilidad": "Analizar",
+        "indicador": "Analiza la influencia del contexto histórico en la producción y recepción de textos literarios.",
+        "contenido": "Contexto histórico y formación del canon literario latinoamericano",
+        "respuesta_esperada": "RICE: R: El contexto del siglo XIX, marcado por el auge del nacionalismo y los procesos de independencia, determinó directamente la formación de cánones literarios nacionales en Latinoamérica. I: Los nuevos estados independientes necesitaban narrativas que cohesionaran a sus ciudadanos y expresaran una identidad propia, distinta de la herencia colonial europea. Para ello, convocaron a la literatura como herramienta de construcción identitaria. C: El texto afirma que «el proceso independentista motivó la búsqueda de una literatura propia que expresara la singularidad del continente», y menciona a «Andrés Bello en Chile o José Martí en Cuba» como voces incluidas en estos cánones emergentes. E: Esta información permite interpretar que el canon literario no surge de decisiones puramente estéticas, sino de necesidades políticas e históricas concretas. El ejemplo latinoamericano demuestra que lo que se considera «literatura fundamental» está condicionado por el momento histórico y los intereses de quienes definen la identidad nacional."
+      },
+      {
+        "numero": 28,
+        "enunciado": "Considerando ambos textos, formula una interpretación sobre la relación entre el poder institucional y la definición de qué literatura merece ser leída. Responde utilizando la técnica RICE.",
+        "tipo": "desarrollo",
+        "texto_asociado": "ambos",
+        "habilidad": "Evaluar",
+        "indicador": "Formula una interpretación integradora que relacione los contextos de producción y recepción de textos literarios con sus condiciones culturales e institucionales.",
+        "contenido": "Relación entre poder institucional y valoración literaria",
+        "respuesta_esperada": "RICE: R: Tanto el texto 1 como el texto 2 permiten interpretar que las instituciones —académicas, educativas y editoriales— ejercen un poder determinante sobre qué literatura es considerada valiosa y, por tanto, digna de ser leída. I: El texto 2 explica que el canon ha sido construido históricamente por actores con poder cultural, excluyendo sistemáticamente a escritoras y autores periféricos. Por su parte, el texto 1 sugiere que la escuela tiene la responsabilidad de fomentar la lectura, lo que implica decisiones sobre qué textos se seleccionan para ese fomento. C: El texto 2 señala que la selección canónica «no es neutral ni definitiva» y que evidenció «los mecanismos de poder que determinan qué voces son incluidas y cuáles quedan silenciadas». El texto 1, a su vez, afirma que «fomentar la lectura literaria desde la escuela no es un capricho pedagógico». E: Estas ideas se complementan para revelar una tensión: si bien se defiende la lectura como práctica liberadora, la selección de qué se lee siempre involucra decisiones de poder. Interpretar críticamente la literatura implica también cuestionar qué textos nos han sido entregados y por qué razones."
+      },
+      {
+        "numero": 29,
+        "enunciado": "¿En qué medida el argumento del texto 1 sobre la lectura y el pensamiento crítico resulta coherente con la descripción que hace el texto 2 sobre la revisión crítica del canon en el siglo XX? Responde utilizando la técnica RICE.",
+        "tipo": "desarrollo",
+        "texto_asociado": "ambos",
+        "habilidad": "Evaluar",
+        "indicador": "Evalúa la coherencia entre la interpretación de un texto y su relación con otro texto del mismo contexto temático.",
+        "contenido": "Coherencia entre pensamiento crítico y revisión del canon literario",
+        "respuesta_esperada": "RICE: R: Existe una coherencia profunda entre el argumento del texto 1 sobre el pensamiento crítico y la descripción del texto 2 sobre la revisión del canon en el siglo XX, pues ambos apuntan al mismo fenómeno: la necesidad de interrogar los significados establecidos. I: El texto 1 sostiene que la lectura entrena la capacidad de «no aceptar el primer sentido que se nos ofrece». El texto 2 describe cómo movimientos feministas y postcoloniales cuestionaron qué voces habían sido sistemáticamente excluidas del canon, aplicando precisamente ese tipo de pensamiento crítico a la tradición literaria. C: El texto 1 afirma que leer «nos enseña a no aceptar el primer sentido que se nos ofrece, sino a indagar más profundamente». El texto 2 explica que críticos como Edward Said y Gayatri Spivak «evidenciaron los mecanismos de poder que determinan qué voces son incluidas y cuáles quedan silenciadas». E: Esta relación confirma que el pensamiento crítico promovido por la lectura literaria no es solo una habilidad individual, sino también una práctica colectiva con consecuencias culturales. Los movimientos que revisaron el canon en el siglo XX son un ejemplo histórico de lo que ocurre cuando los lectores ejercen la autonomía intelectual que defiende el texto 1."
+      },
+      {
+        "numero": 30,
+        "enunciado": "A partir de tu lectura de ambos textos y considerando tu propio contexto como lector/a en el sistema escolar chileno, ¿qué importancia tiene conocer el debate sobre el canon literario para desarrollar una lectura crítica e interpretativa? Responde utilizando la técnica RICE.",
+        "tipo": "desarrollo",
+        "texto_asociado": "ambos",
+        "habilidad": "Evaluar",
+        "indicador": "Formula una interpretación personal fundamentada que considera el contexto de recepción del lector y su relación con los textos leídos.",
+        "contenido": "Interpretación personal sobre canon, lectura crítica y contexto de recepción",
+        "respuesta_esperada": "RICE: R: Conocer el debate sobre el canon literario es fundamental para desarrollar una lectura verdaderamente crítica e interpretativa, porque nos permite entender que los textos que leemos no han sido elegidos de manera neutral, sino que responden a decisiones históricas y culturales. I: Como lectores en el sistema escolar chileno, los textos que nos propone la escuela forman parte de un canon implícito. Saber que ese canon ha sido cuestionado y transformado a lo largo del tiempo nos habilita para leer con mayor conciencia: no solo comprendiendo lo que un texto dice, sino preguntándonos qué voces están presentes y cuáles ausentes. C: El texto 2 señala que el debate sobre el canon implica «preguntarse qué valores queremos transmitir a las nuevas generaciones». El texto 1 afirma que la lectura literaria forma «ciudadanos capaces de pensar por sí mismos». E: Desde mi posición como estudiante, ambas ideas me invitan a no asumir que la lista de lecturas escolares representa la totalidad de la literatura valiosa. Una lectura interpretativa de calidad requiere tanto comprender los textos en profundidad como reflexionar sobre el contexto en que fueron seleccionados para ser leídos, asumiendo una postura activa y crítica ante la tradición literaria que se nos transmite."
+      }
+    ],
+    "texto_1": "En un mundo donde las pantallas dominan cada rincón de nuestra vida cotidiana, la lectura literaria ha sido desplazada a un segundo plano. Sin embargo, lejos de ser un lujo o una actividad prescindible, leer literatura constituye una necesidad fundamental para el desarrollo humano integral. Quienes sostienen que la lectura puede ser reemplazada por videos o podcasts ignoran algo esencial: la literatura nos entrega un tipo de experiencia cognitiva y emocional que ningún otro medio puede ofrecer.\n\nEn primer lugar, la lectura literaria desarrolla la empatía de manera profunda y sostenida. Cuando nos sumergimos en una novela, habitamos la mente de personajes distintos a nosotros: comprendemos sus miedos, sus contradicciones, sus alegrías. Estudios realizados por la Universidad de Toronto han demostrado que quienes leen ficción de manera regular presentan mayores niveles de comprensión emocional y tolerancia hacia la diferencia. Esto no ocurre con la misma intensidad en los formatos audiovisuales, pues la imagen ya nos entrega el personaje construido; en cambio, la palabra escrita nos obliga a construirlo internamente.\n\nEn segundo lugar, la literatura nos conecta con tradiciones culturales e históricas que moldean nuestra identidad. Leer a Gabriela Mistral, a Pablo Neruda o a Isabel Allende no es solo un ejercicio estético: es dialogar con voces que han dado forma a la experiencia latinoamericana. Esta conexión intertextual enriquece nuestra comprensión del presente, pues nos permite reconocer en los textos contemporáneos los ecos de lecturas anteriores.\n\nSin embargo, el argumento más poderoso es el de la autonomía intelectual. La lectura literaria exige un lector activo que interprete, cuestione y elabore significados propios. A diferencia del consumo pasivo de contenidos digitales, leer literatura entrena la capacidad crítica: nos enseña a no aceptar el primer sentido que se nos ofrece, sino a indagar más profundamente. En una era donde la desinformación prolifera, esta habilidad resulta vital.\n\nEs verdad que la tecnología ha abierto nuevas formas de narración y que los géneros digitales tienen su propio valor. Pero reconocer ese valor no implica abandonar la literatura. Por el contrario, una sociedad lectora será siempre más reflexiva, más libre y más justa. Fomentar la lectura literaria desde la escuela no es un capricho pedagógico, sino una inversión en ciudadanos capaces de pensar por sí mismos.\n\n(Conteo de palabras: 352 palabras)",
+    "texto_2": "El concepto de canon literario hace referencia al conjunto de obras consideradas fundamentales dentro de una tradición cultural. Esta selección no es neutral ni definitiva: ha sido construida históricamente por instituciones académicas, editoriales y críticos literarios que han privilegiado ciertos textos sobre otros. Comprender cómo se forma y transforma el canon permite entender mejor la literatura como fenómeno social y cultural.\n\nEl origen del canon occidental se remonta a la Antigüedad clásica. Filósofos griegos como Aristóteles ya establecían jerarquías entre las obras de su tiempo, distinguiendo géneros como la tragedia y la épica según criterios de valor estético y moral. Posteriormente, durante el Renacimiento, humanistas europeos recuperaron textos grecolatinos y los erigieron como modelos insuperables de escritura y pensamiento. Esta mirada retrospectiva consolidó una lista de «clásicos» que influiría profundamente en la educación occidental durante siglos.\n\nDurante el siglo XIX, el auge del nacionalismo impulsó la formación de cánones literarios nacionales. Los estados modernos necesitaban narrativas identitarias, y la literatura fue convocada para construirlas. En Latinoamérica, el proceso independentista motivó la búsqueda de una literatura propia que expresara la singularidad del continente. Autores como Andrés Bello en Chile o José Martí en Cuba fueron incluidos en estos cánones emergentes como voces fundacionales.\n\nA lo largo del siglo XX, el canon fue sometido a una revisión crítica profunda. Movimientos feministas, postcoloniales y multiculturales cuestionaron la exclusión sistemática de escritoras, autores indígenas y voces periféricas. Teóricos como Harold Bloom defendieron la vigencia del canon tradicional argumentando que su valor estético trasciende las ideologías; mientras que críticos como Edward Said y Gayatri Spivak evidenciaron los mecanismos de poder que determinan qué voces son incluidas y cuáles quedan silenciadas.\n\nHoy, el canon literario es un campo en permanente disputa. Las plataformas digitales han democratizado el acceso a textos de diversas culturas y épocas, desafiando la autoridad de las instituciones académicas tradicionales. Sin embargo, el debate sobre qué leer y por qué sigue siendo vigente y necesario, pues implica preguntarse qué valores queremos transmitir a las nuevas generaciones.\n\n(Conteo de palabras: 348 palabras)",
+    "preguntas_alternativas": [
+      {
+        "numero": 1,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Comprender",
+        "dificultad_rti": "N2",
+        "tipo": "seleccion_multiple",
+        "enunciado": "¿Cuál es la tesis central del texto 1?",
+        "alternativas": [
+          {
+            "letra": "A",
+            "texto": "La tecnología digital ha reemplazado completamente a la literatura en la sociedad actual.",
+            "correcta": false
+          },
+          {
+            "letra": "B",
+            "texto": "La lectura literaria es una necesidad fundamental para el desarrollo humano integral.",
+            "correcta": true
+          },
+          {
+            "letra": "C",
+            "texto": "Los videos y podcasts ofrecen experiencias cognitivas superiores a las de los libros.",
+            "correcta": false
+          },
+          {
+            "letra": "D",
+            "texto": "La empatía es la única habilidad que se desarrolla mediante la lectura de novelas.",
+            "correcta": false
+          }
+        ],
+        "indicador": "Identifica la tesis principal de un texto argumentativo.",
+        "contenido": "Comprensión de la tesis del texto argumentativo",
+        "texto_asociado": "texto_1"
+      },
+      {
+        "numero": 2,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Comprender",
+        "dificultad_rti": "N2",
+        "tipo": "seleccion_multiple",
+        "enunciado": "Según el texto 1, ¿qué diferencia fundamental existe entre leer ficción y ver una obra audiovisual en cuanto a la construcción del personaje?",
+        "alternativas": [
+          {
+            "letra": "A",
+            "texto": "La imagen permite una comprensión más profunda que la palabra escrita en todos los casos.",
+            "correcta": false
+          },
+          {
+            "letra": "B",
+            "texto": "En el texto escrito, el lector debe construir internamente al personaje a partir de palabras.",
+            "correcta": true
+          },
+          {
+            "letra": "C",
+            "texto": "El formato audiovisual exige mayor esfuerzo cognitivo que la lectura literaria convencional.",
+            "correcta": false
+          },
+          {
+            "letra": "D",
+            "texto": "En la ficción literaria, el autor construye al personaje sin involucrar al lector en ese proceso.",
+            "correcta": false
+          }
+        ],
+        "indicador": "Comprende información explícita presentada en un texto argumentativo.",
+        "contenido": "Información explícita sobre construcción de personajes",
+        "texto_asociado": "texto_1"
+      },
+      {
+        "numero": 3,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Comprender",
+        "dificultad_rti": "N2",
+        "tipo": "seleccion_multiple",
+        "enunciado": "El autor del texto 1 menciona a Gabriela Mistral, Pablo Neruda e Isabel Allende principalmente para:",
+        "alternativas": [
+          {
+            "letra": "A",
+            "texto": "Demostrar que Chile posee una tradición literaria superior a la de otros países de América.",
+            "correcta": false
+          },
+          {
+            "letra": "B",
+            "texto": "Ilustrar cómo la lectura conecta con tradiciones culturales que moldean la identidad.",
+            "correcta": true
+          },
+          {
+            "letra": "C",
+            "texto": "Comparar el estilo narrativo de autores latinoamericanos del siglo XX entre sí.",
+            "correcta": false
+          },
+          {
+            "letra": "D",
+            "texto": "Cuestionar la vigencia de autores clásicos frente a los escritores contemporáneos actuales.",
+            "correcta": false
+          }
+        ],
+        "indicador": "Analiza la función argumentativa de ejemplos y referencias en un texto.",
+        "contenido": "Función de los ejemplos en el texto argumentativo",
+        "texto_asociado": "texto_1"
+      },
+      {
+        "numero": 4,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Comprender",
+        "dificultad_rti": "N2",
+        "tipo": "seleccion_multiple",
+        "enunciado": "¿Qué relación establece el texto 1 entre la lectura literaria y la autonomía intelectual?",
+        "alternativas": [
+          {
+            "letra": "A",
+            "texto": "La lectura genera dependencia del conocimiento experto y reduce el pensamiento autónomo.",
+            "correcta": false
+          },
+          {
+            "letra": "B",
+            "texto": "La autonomía intelectual se desarrolla exclusivamente a través de la lectura de ensayos filosóficos.",
+            "correcta": false
+          },
+          {
+            "letra": "C",
+            "texto": "Leer literatura entrena la capacidad crítica al exigir interpretación activa y elaboración de sentido.",
+            "correcta": true
+          },
+          {
+            "letra": "D",
+            "texto": "La autonomía intelectual es una consecuencia directa del consumo frecuente de medios digitales.",
+            "correcta": false
+          }
+        ],
+        "indicador": "Relaciona conceptos presentes en el desarrollo argumentativo del texto.",
+        "contenido": "Relación entre lectura y autonomía intelectual",
+        "texto_asociado": "texto_1"
+      },
+      {
+        "numero": 5,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Comprender",
+        "dificultad_rti": "N2",
+        "tipo": "seleccion_multiple",
+        "enunciado": "La frase «una sociedad lectora será siempre más reflexiva, más libre y más justa» es un recurso que el autor utiliza para:",
+        "alternativas": [
+          {
+            "letra": "A",
+            "texto": "Refutar los argumentos presentados anteriormente en el texto con una conclusión irónica.",
+            "correcta": false
+          },
+          {
+            "letra": "B",
+            "texto": "Cerrar el texto con una proyección valorativa que refuerza la tesis central del escrito.",
+            "correcta": true
+          },
+          {
+            "letra": "C",
+            "texto": "Introducir un nuevo argumento sobre la relación entre política y literatura en el mundo.",
+            "correcta": false
+          },
+          {
+            "letra": "D",
+            "texto": "Citar textualmente datos estadísticos obtenidos de un estudio sobre hábitos de lectura.",
+            "correcta": false
+          }
+        ],
+        "indicador": "Analiza el uso de recursos retóricos en el cierre de un texto argumentativo.",
+        "contenido": "Recursos retóricos y función del cierre argumentativo",
+        "texto_asociado": "texto_1"
+      },
+      {
+        "numero": 6,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Comprender",
+        "dificultad_rti": "N2",
+        "tipo": "seleccion_multiple",
+        "enunciado": "¿Cuál de los siguientes enunciados refleja una concesión argumentativa presente en el texto 1?",
+        "alternativas": [
+          {
+            "letra": "A",
+            "texto": "",
+            "correcta": false
+          },
+          {
+            "letra": "B",
+            "texto": "",
+            "correcta": false
+          },
+          {
+            "letra": "C",
+            "texto": "",
+            "correcta": true
+          },
+          {
+            "letra": "D",
+            "texto": "",
+            "correcta": false
+          }
+        ],
+        "indicador": "Identifica estrategias de concesión en la estructura argumentativa de un texto.",
+        "contenido": "Identificación de concesiones argumentativas",
+        "texto_asociado": "texto_1"
+      },
+      {
+        "numero": 7,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Comprender",
+        "dificultad_rti": "N2",
+        "tipo": "seleccion_multiple",
+        "enunciado": "Según el texto 1, ¿por qué fomentar la lectura literaria desde la escuela no es «un capricho pedagógico»?",
+        "alternativas": [
+          {
+            "letra": "A",
+            "texto": "Porque la lectura mejora las calificaciones de los estudiantes en todas las asignaturas.",
+            "correcta": false
+          },
+          {
+            "letra": "B",
+            "texto": "Porque permite a los docentes cumplir con los contenidos mínimos exigidos por el currículo.",
+            "correcta": false
+          },
+          {
+            "letra": "C",
+            "texto": "Porque es una inversión en ciudadanos capaces de pensar de manera crítica e independiente.",
+            "correcta": true
+          },
+          {
+            "letra": "D",
+            "texto": "Porque contribuye a que los estudiantes memoricen más obras del patrimonio cultural nacional.",
+            "correcta": false
+          }
+        ],
+        "indicador": "Comprende el propósito comunicativo de un enunciado argumentativo específico.",
+        "contenido": "Propósito comunicativo en el texto argumentativo",
+        "texto_asociado": "texto_1"
+      },
+      {
+        "numero": 8,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Comprender",
+        "dificultad_rti": "N2",
+        "tipo": "seleccion_multiple",
+        "enunciado": "El texto 1 menciona un estudio de la Universidad de Toronto. ¿Cuál es la función de esta referencia en el argumento?",
+        "alternativas": [
+          {
+            "letra": "A",
+            "texto": "Cuestionar la validez de las investigaciones sobre lectura realizadas en Latinoamérica.",
+            "correcta": false
+          },
+          {
+            "letra": "B",
+            "texto": "Otorgar respaldo empírico a la afirmación sobre la empatía y la lectura de ficción.",
+            "correcta": true
+          },
+          {
+            "letra": "C",
+            "texto": "Demostrar que solo las universidades extranjeras investigan sobre hábitos lectores.",
+            "correcta": false
+          },
+          {
+            "letra": "D",
+            "texto": "Introducir una perspectiva contraria a la tesis central del texto argumentativo.",
+            "correcta": false
+          }
+        ],
+        "indicador": "Evalúa la pertinencia y función de las fuentes citadas en un texto argumentativo.",
+        "contenido": "Uso de fuentes y respaldo argumentativo",
+        "texto_asociado": "texto_1"
+      },
+      {
+        "numero": 9,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Comprender",
+        "dificultad_rti": "N2",
+        "tipo": "seleccion_multiple",
+        "enunciado": "¿Cuál es el propósito comunicativo principal del texto 1?",
+        "alternativas": [
+          {
+            "letra": "A",
+            "texto": "Describir con neutralidad los diferentes usos que tienen los textos literarios en la actualidad.",
+            "correcta": false
+          },
+          {
+            "letra": "B",
+            "texto": "Narrar experiencias personales del autor en torno a su hábito de lectura literaria cotidiana.",
+            "correcta": false
+          },
+          {
+            "letra": "C",
+            "texto": "Convencer al lector de que la lectura literaria es necesaria e irreemplazable en la era digital.",
+            "correcta": true
+          },
+          {
+            "letra": "D",
+            "texto": "Comparar distintos géneros literarios para determinar cuál resulta más adecuado leer en clase.",
+            "correcta": false
+          }
+        ],
+        "indicador": "Evalúa el propósito comunicativo global de un texto argumentativo.",
+        "contenido": "Propósito comunicativo del texto argumentativo",
+        "texto_asociado": "texto_1"
+      },
+      {
+        "numero": 10,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Comprender",
+        "dificultad_rti": "N2",
+        "tipo": "seleccion_multiple",
+        "enunciado": "¿Cuál de las siguientes opciones describe mejor la estructura organizativa del texto 1?",
+        "alternativas": [
+          {
+            "letra": "A",
+            "texto": "Presentación de un problema, narración de hechos históricos y propuesta de solución técnica.",
+            "correcta": false
+          },
+          {
+            "letra": "B",
+            "texto": "Tesis inicial, desarrollo con argumentos y evidencias, concesión y reafirmación de la tesis.",
+            "correcta": true
+          },
+          {
+            "letra": "C",
+            "texto": "Introducción neutral, descripción de datos estadísticos y conclusión con pregunta retórica.",
+            "correcta": false
+          },
+          {
+            "letra": "D",
+            "texto": "Definición del tema, comparación de posturas opuestas y declaración de imparcialidad final.",
+            "correcta": false
+          }
+        ],
+        "indicador": "Analiza la estructura organizativa de un texto argumentativo.",
+        "contenido": "Estructura del texto argumentativo",
+        "texto_asociado": "texto_1"
+      },
+      {
+        "numero": 11,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Comprender",
+        "dificultad_rti": "N2",
+        "tipo": "seleccion_multiple",
+        "enunciado": "Según el texto 2, ¿qué es el canon literario?",
+        "alternativas": [
+          {
+            "letra": "A",
+            "texto": "Un conjunto de reglas gramaticales establecidas por los académicos de la lengua española.",
+            "correcta": false
+          },
+          {
+            "letra": "B",
+            "texto": "La lista de autores latinoamericanos reconocidos como fundadores de la literatura nacional.",
+            "correcta": false
+          },
+          {
+            "letra": "C",
+            "texto": "El conjunto de obras consideradas fundamentales dentro de una tradición cultural determinada.",
+            "correcta": true
+          },
+          {
+            "letra": "D",
+            "texto": "Un criterio exclusivamente estético para clasificar novelas según su calidad literaria objetiva.",
+            "correcta": false
+          }
+        ],
+        "indicador": "Comprende el significado de conceptos clave definidos en un texto expositivo.",
+        "contenido": "Comprensión de conceptos en el texto expositivo",
+        "texto_asociado": "texto_2"
+      },
+      {
+        "numero": 12,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Comprender",
+        "dificultad_rti": "N2",
+        "tipo": "seleccion_multiple",
+        "enunciado": "De acuerdo con el texto 2, ¿qué papel cumplieron los humanistas del Renacimiento en la formación del canon occidental?",
+        "alternativas": [
+          {
+            "letra": "A",
+            "texto": "Rechazaron los modelos grecolatinos y propusieron una literatura basada en textos medievales.",
+            "correcta": false
+          },
+          {
+            "letra": "B",
+            "texto": "Recuperaron textos grecolatinos y los erigieron como modelos insuperables de escritura.",
+            "correcta": true
+          },
+          {
+            "letra": "C",
+            "texto": "Establecieron por primera vez la distinción entre géneros literarios como la épica y la tragedia.",
+            "correcta": false
+          },
+          {
+            "letra": "D",
+            "texto": "Introdujeron cánones nacionales que reflejaban las identidades de los estados europeos modernos.",
+            "correcta": false
+          }
+        ],
+        "indicador": "Identifica información explícita en un texto expositivo de tipo histórico.",
+        "contenido": "Información explícita sobre el Renacimiento y el canon",
+        "texto_asociado": "texto_2"
+      },
+      {
+        "numero": 13,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Comprender",
+        "dificultad_rti": "N2",
+        "tipo": "seleccion_multiple",
+        "enunciado": "Según el texto 2, ¿qué motivó la formación de cánones literarios nacionales durante el siglo XIX?",
+        "alternativas": [
+          {
+            "letra": "A",
+            "texto": "El surgimiento de editoriales privadas que competían por el mercado del libro en Europa.",
+            "correcta": false
+          },
+          {
+            "letra": "B",
+            "texto": "La necesidad de los estados modernos de construir narrativas identitarias nacionales.",
+            "correcta": true
+          },
+          {
+            "letra": "C",
+            "texto": "El auge del Romanticismo, que impulsó la valoración de las tradiciones populares orales.",
+            "correcta": false
+          },
+          {
+            "letra": "D",
+            "texto": "La influencia de la Iglesia católica en la definición del patrimonio literario de cada nación.",
+            "correcta": false
+          }
+        ],
+        "indicador": "Identifica causas y motivaciones explicadas en un texto expositivo.",
+        "contenido": "Causas de la formación del canon literario nacional",
+        "texto_asociado": "texto_2"
+      },
+      {
+        "numero": 14,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Comprender",
+        "dificultad_rti": "N2",
+        "tipo": "seleccion_multiple",
+        "enunciado": "¿Qué postura sostuvo Harold Bloom respecto del canon literario, según el texto 2?",
+        "alternativas": [
+          {
+            "letra": "A",
+            "texto": "Que el canon debía ser completamente renovado para incluir voces de escritoras y autores periféricos.",
+            "correcta": false
+          },
+          {
+            "letra": "B",
+            "texto": "Que el canon tradicional tenía valor estético que trasciende las ideologías de cada época.",
+            "correcta": true
+          },
+          {
+            "letra": "C",
+            "texto": "Que el canon occidental era producto exclusivo del imperialismo cultural europeo del siglo XIX.",
+            "correcta": false
+          },
+          {
+            "letra": "D",
+            "texto": "Que los cánones nacionales latinoamericanos debían ser integrados al canon occidental clásico.",
+            "correcta": false
+          }
+        ],
+        "indicador": "Identifica y distingue posturas de distintos autores mencionados en un texto expositivo.",
+        "contenido": "Identificación de posturas sobre el canon literario",
+        "texto_asociado": "texto_2"
+      },
+      {
+        "numero": 15,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Comprender",
+        "dificultad_rti": "N2",
+        "tipo": "seleccion_multiple",
+        "enunciado": "La mención de Andrés Bello y José Martí en el texto 2 cumple la función de:",
+        "alternativas": [
+          {
+            "letra": "A",
+            "texto": "Comparar la calidad literaria de ambos autores con la de los escritores europeos de su época.",
+            "correcta": false
+          },
+          {
+            "letra": "B",
+            "texto": "Ilustrar con ejemplos concretos la formación de cánones literarios nacionales en Latinoamérica.",
+            "correcta": true
+          },
+          {
+            "letra": "C",
+            "texto": "Demostrar que el canon latinoamericano es superior al canon occidental heredado de Europa.",
+            "correcta": false
+          },
+          {
+            "letra": "D",
+            "texto": "Cuestionar la vigencia de los autores clásicos en los programas educativos del siglo XXI.",
+            "correcta": false
+          }
+        ],
+        "indicador": "Analiza la función de los ejemplos dentro de la organización de un texto expositivo.",
+        "contenido": "Función de los ejemplos en el texto expositivo",
+        "texto_asociado": "texto_2"
+      },
+      {
+        "numero": 16,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Comprender",
+        "dificultad_rti": "N2",
+        "tipo": "seleccion_multiple",
+        "enunciado": "¿Qué crítica formularon los movimientos feministas y postcoloniales al canon literario, según el texto 2?",
+        "alternativas": [
+          {
+            "letra": "A",
+            "texto": "Que el canon favorecía en exceso a escritores de países en desarrollo frente a los occidentales.",
+            "correcta": false
+          },
+          {
+            "letra": "B",
+            "texto": "Que el canon excluía sistemáticamente a escritoras, autores indígenas y voces periféricas.",
+            "correcta": true
+          },
+          {
+            "letra": "C",
+            "texto": "Que el canon privilegiaba géneros menores como el cuento por sobre la novela y la poesía.",
+            "correcta": false
+          },
+          {
+            "letra": "D",
+            "texto": "Que el canon ignoraba las obras de autores contemporáneos en favor de textos muy antiguos.",
+            "correcta": false
+          }
+        ],
+        "indicador": "Comprende argumentos críticos presentados en un texto expositivo.",
+        "contenido": "Críticas al canon literario en el texto expositivo",
+        "texto_asociado": "texto_2"
+      },
+      {
+        "numero": 17,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Comprender",
+        "dificultad_rti": "N2",
+        "tipo": "seleccion_multiple",
+        "enunciado": "Según el texto 2, ¿cuál es el estado actual del canon literario en el siglo XXI?",
+        "alternativas": [
+          {
+            "letra": "A",
+            "texto": "Ha sido definitivamente abolido gracias al acceso irrestricto que ofrecen las plataformas digitales.",
+            "correcta": false
+          },
+          {
+            "letra": "B",
+            "texto": "Permanece igual que en el siglo XIX, pues las instituciones académicas siguen ejerciendo control.",
+            "correcta": false
+          },
+          {
+            "letra": "C",
+            "texto": "Es un campo en disputa, donde lo digital desafía la autoridad académica sin resolver el debate.",
+            "correcta": true
+          },
+          {
+            "letra": "D",
+            "texto": "Ha sido redefinido exclusivamente a partir de criterios de diversidad cultural e inclusión social.",
+            "correcta": false
+          }
+        ],
+        "indicador": "Comprende la situación actual de un fenómeno descrito en un texto expositivo.",
+        "contenido": "Estado actual del canon literario según el texto",
+        "texto_asociado": "texto_2"
+      },
+      {
+        "numero": 18,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Comprender",
+        "dificultad_rti": "N2",
+        "tipo": "seleccion_multiple",
+        "enunciado": "¿Qué significa la afirmación del texto 2 de que la construcción del canon «no es neutral ni definitiva»?",
+        "alternativas": [
+          {
+            "letra": "A",
+            "texto": "",
+            "correcta": false
+          },
+          {
+            "letra": "B",
+            "texto": "",
+            "correcta": false
+          },
+          {
+            "letra": "C",
+            "texto": "",
+            "correcta": true
+          },
+          {
+            "letra": "D",
+            "texto": "",
+            "correcta": false
+          }
+        ],
+        "indicador": "Interpreta el sentido de afirmaciones clave en un texto expositivo.",
+        "contenido": "Interpretación de afirmaciones sobre el canon literario",
+        "texto_asociado": "texto_2"
+      },
+      {
+        "numero": 19,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Comprender",
+        "dificultad_rti": "N2",
+        "tipo": "seleccion_multiple",
+        "enunciado": "El texto 2 organiza su información principalmente a través de:",
+        "alternativas": [
+          {
+            "letra": "A",
+            "texto": "Una secuencia de comparaciones entre autores de distintos períodos y géneros literarios.",
+            "correcta": false
+          },
+          {
+            "letra": "B",
+            "texto": "Un orden cronológico que narra la evolución histórica del concepto de canon literario.",
+            "correcta": true
+          },
+          {
+            "letra": "C",
+            "texto": "Una serie de anécdotas personales del autor sobre su experiencia con el canon literario.",
+            "correcta": false
+          },
+          {
+            "letra": "D",
+            "texto": "Una estructura de problema-solución que termina con una propuesta pedagógica concreta.",
+            "correcta": false
+          }
+        ],
+        "indicador": "Analiza el modo de organización textual de un texto expositivo.",
+        "contenido": "Organización textual del texto expositivo",
+        "texto_asociado": "texto_2"
+      },
+      {
+        "numero": 20,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Comprender",
+        "dificultad_rti": "N2",
+        "tipo": "seleccion_multiple",
+        "enunciado": "¿Cuál es el propósito comunicativo del texto 2?",
+        "alternativas": [
+          {
+            "letra": "A",
+            "texto": "Persuadir al lector de que abandone el canon occidental y adopte lecturas diversas e inclusivas.",
+            "correcta": false
+          },
+          {
+            "letra": "B",
+            "texto": "Narrar la historia de vida de autores latinoamericanos que fueron excluidos del canon clásico.",
+            "correcta": false
+          },
+          {
+            "letra": "C",
+            "texto": "Informar sobre el origen, desarrollo y estado actual del canon literario como fenómeno cultural.",
+            "correcta": true
+          },
+          {
+            "letra": "D",
+            "texto": "Demostrar que el canon literario griego es el único modelo válido para la educación actual.",
+            "correcta": false
+          }
+        ],
+        "indicador": "Evalúa el propósito comunicativo de un texto expositivo.",
+        "contenido": "Propósito comunicativo del texto expositivo",
+        "texto_asociado": "texto_2"
+      },
+      {
+        "numero": 21,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Comprender",
+        "dificultad_rti": "N2",
+        "tipo": "seleccion_multiple",
+        "enunciado": "¿En qué aspecto el texto 1 y el texto 2 presentan una visión complementaria sobre la literatura?",
+        "alternativas": [
+          {
+            "letra": "A",
+            "texto": "Ambos sostienen que la era digital ha vuelto irrelevantes las discusiones sobre literatura.",
+            "correcta": false
+          },
+          {
+            "letra": "B",
+            "texto": "Ambos reconocen que la literatura tiene un papel significativo en la formación de identidad cultural.",
+            "correcta": true
+          },
+          {
+            "letra": "C",
+            "texto": "Ambos argumentan que el canon literario debe ser abolido para dar paso a nuevas narrativas.",
+            "correcta": false
+          },
+          {
+            "letra": "D",
+            "texto": "Ambos proponen que la lectura de textos clásicos es suficiente para la educación del siglo XXI.",
+            "correcta": false
+          }
+        ],
+        "indicador": "Establece relaciones de complementariedad entre dos textos de distinto tipo.",
+        "contenido": "Relación intertextual entre texto argumentativo y expositivo",
+        "texto_asociado": "ambos"
+      },
+      {
+        "numero": 22,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Comprender",
+        "dificultad_rti": "N2",
+        "tipo": "seleccion_multiple",
+        "enunciado": "¿Cómo se relaciona la idea de «autonomía intelectual» del texto 1 con el debate sobre el canon expuesto en el texto 2?",
+        "alternativas": [
+          {
+            "letra": "A",
+            "texto": "",
+            "correcta": false
+          },
+          {
+            "letra": "B",
+            "texto": "",
+            "correcta": true
+          },
+          {
+            "letra": "C",
+            "texto": "",
+            "correcta": false
+          },
+          {
+            "letra": "D",
+            "texto": "",
+            "correcta": false
+          }
+        ],
+        "indicador": "Relaciona conceptos de distintos textos para formular una interpretación integradora.",
+        "contenido": "Relación intertextual entre conceptos clave de ambos textos",
+        "texto_asociado": "ambos"
+      },
+      {
+        "numero": 23,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Comprender",
+        "dificultad_rti": "N2",
+        "tipo": "seleccion_multiple",
+        "enunciado": "El texto 1 afirma que la literatura conecta con «ecos de lecturas anteriores». ¿Con qué concepto del texto 2 se relaciona directamente esta idea?",
+        "alternativas": [
+          {
+            "letra": "A",
+            "texto": "Con la noción de que las plataformas digitales democratizan el acceso a la lectura literaria.",
+            "correcta": false
+          },
+          {
+            "letra": "B",
+            "texto": "Con el concepto de canon como conjunto de obras que articulan una tradición cultural continua.",
+            "correcta": true
+          },
+          {
+            "letra": "C",
+            "texto": "Con la postura de Harold Bloom sobre el valor estético que trasciende ideologías de cada época.",
+            "correcta": false
+          },
+          {
+            "letra": "D",
+            "texto": "Con la crítica postcolonial que denuncia la exclusión de voces periféricas del canon canónico.",
+            "correcta": false
+          }
+        ],
+        "indicador": "Formula interpretaciones que articulan ideas de dos textos distintos.",
+        "contenido": "Intertextualidad y articulación de conceptos entre textos",
+        "texto_asociado": "ambos"
+      },
+      {
+        "numero": 24,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Comprender",
+        "dificultad_rti": "N2",
+        "tipo": "seleccion_multiple",
+        "enunciado": "Considerando ambos textos, ¿cuál de las siguientes interpretaciones es más coherente con sus contenidos?",
+        "alternativas": [
+          {
+            "letra": "A",
+            "texto": "",
+            "correcta": false
+          },
+          {
+            "letra": "B",
+            "texto": "",
+            "correcta": false
+          },
+          {
+            "letra": "C",
+            "texto": "",
+            "correcta": true
+          },
+          {
+            "letra": "D",
+            "texto": "",
+            "correcta": false
+          }
+        ],
+        "indicador": "Formula una interpretación global coherente a partir de dos textos complementarios.",
+        "contenido": "Interpretación global integradora de ambos textos",
+        "texto_asociado": "ambos"
+      },
+      {
+        "numero": 25,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Comprender",
+        "dificultad_rti": "N2",
+        "tipo": "seleccion_multiple",
+        "enunciado": "¿Cuál es una diferencia fundamental entre el modo en que el texto 1 y el texto 2 abordan la relación entre literatura y sociedad?",
+        "alternativas": [
+          {
+            "letra": "A",
+            "texto": "El texto 1 describe hechos históricos, mientras que el texto 2 defiende una postura personal.",
+            "correcta": false
+          },
+          {
+            "letra": "B",
+            "texto": "El texto 1 argumenta a favor de la lectura literaria, mientras el texto 2 describe su historia cultural.",
+            "correcta": true
+          },
+          {
+            "letra": "C",
+            "texto": "El texto 1 se centra en el canon literario occidental, mientras el texto 2 analiza el impacto digital.",
+            "correcta": false
+          },
+          {
+            "letra": "D",
+            "texto": "El texto 1 presenta datos estadísticos, mientras el texto 2 ofrece solo ejemplos sin evidencias.",
+            "correcta": false
+          }
+        ],
+        "indicador": "Distingue modos de organización y propósito discursivo entre textos de distinto tipo.",
+        "contenido": "Diferencias entre texto argumentativo y expositivo",
+        "texto_asociado": "ambos"
+      }
+    ],
+    "preguntas_desarrollo": [
+      {
+        "numero": 26,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Analizar",
+        "dificultad_rti": "N2",
+        "tipo": "consigna_abierta",
+        "enunciado": "Tomando como base el texto 1, formula una interpretación del argumento sobre la empatía y la lectura literaria. Responde utilizando la técnica RICE (Respuesta, Información, Cita o evidencia, Evaluación).",
+        "respuesta_esperada": "RICE: R: El autor argumenta que la lectura literaria desarrolla la empatía de manera más profunda que los formatos audiovisuales. I: Esto se debe a que, al leer ficción, el lector debe construir mentalmente al personaje a partir de las palabras del texto, lo que implica un proceso cognitivo activo de comprensión emocional. C: El texto señala que «estudios realizados por la Universidad de Toronto han demostrado que quienes leen ficción de manera regular presentan mayores niveles de comprensión emocional», y que en los formatos audiovisuales «la imagen ya nos entrega el personaje construido». E: Esta distinción es pertinente porque muestra que la empatía desarrollada por la lectura no es un efecto pasivo, sino el resultado de un proceso activo de reconstrucción imaginativa, lo que la hace cualitativamente diferente a la experiencia audiovisual. Esto fortalece la tesis del texto, pues justifica la necesidad de la lectura literaria como práctica insustituible para el desarrollo humano.",
+        "criterios_correccion": [],
+        "indicador": "Formula una interpretación fundamentada sobre un argumento específico de un texto argumentativo, utilizando evidencias textuales.",
+        "contenido": "Interpretación argumentada sobre empatía y lectura literaria",
+        "texto_asociado": "texto_1"
+      },
+      {
+        "numero": 27,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Analizar",
+        "dificultad_rti": "N2",
+        "tipo": "consigna_abierta",
+        "enunciado": "A partir del texto 2, explica cómo el contexto histórico del siglo XIX influyó en la construcción de los cánones literarios nacionales en Latinoamérica. Responde utilizando la técnica RICE.",
+        "respuesta_esperada": "RICE: R: El contexto del siglo XIX, marcado por el auge del nacionalismo y los procesos de independencia, determinó directamente la formación de cánones literarios nacionales en Latinoamérica. I: Los nuevos estados independientes necesitaban narrativas que cohesionaran a sus ciudadanos y expresaran una identidad propia, distinta de la herencia colonial europea. Para ello, convocaron a la literatura como herramienta de construcción identitaria. C: El texto afirma que «el proceso independentista motivó la búsqueda de una literatura propia que expresara la singularidad del continente», y menciona a «Andrés Bello en Chile o José Martí en Cuba» como voces incluidas en estos cánones emergentes. E: Esta información permite interpretar que el canon literario no surge de decisiones puramente estéticas, sino de necesidades políticas e históricas concretas. El ejemplo latinoamericano demuestra que lo que se considera «literatura fundamental» está condicionado por el momento histórico y los intereses de quienes definen la identidad nacional.",
+        "criterios_correccion": [],
+        "indicador": "Analiza la influencia del contexto histórico en la producción y recepción de textos literarios.",
+        "contenido": "Contexto histórico y formación del canon literario latinoamericano",
+        "texto_asociado": "texto_2"
+      },
+      {
+        "numero": 28,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Analizar",
+        "dificultad_rti": "N2",
+        "tipo": "consigna_abierta",
+        "enunciado": "Considerando ambos textos, formula una interpretación sobre la relación entre el poder institucional y la definición de qué literatura merece ser leída. Responde utilizando la técnica RICE.",
+        "respuesta_esperada": "RICE: R: Tanto el texto 1 como el texto 2 permiten interpretar que las instituciones —académicas, educativas y editoriales— ejercen un poder determinante sobre qué literatura es considerada valiosa y, por tanto, digna de ser leída. I: El texto 2 explica que el canon ha sido construido históricamente por actores con poder cultural, excluyendo sistemáticamente a escritoras y autores periféricos. Por su parte, el texto 1 sugiere que la escuela tiene la responsabilidad de fomentar la lectura, lo que implica decisiones sobre qué textos se seleccionan para ese fomento. C: El texto 2 señala que la selección canónica «no es neutral ni definitiva» y que evidenció «los mecanismos de poder que determinan qué voces son incluidas y cuáles quedan silenciadas». El texto 1, a su vez, afirma que «fomentar la lectura literaria desde la escuela no es un capricho pedagógico». E: Estas ideas se complementan para revelar una tensión: si bien se defiende la lectura como práctica liberadora, la selección de qué se lee siempre involucra decisiones de poder. Interpretar críticamente la literatura implica también cuestionar qué textos nos han sido entregados y por qué razones.",
+        "criterios_correccion": [],
+        "indicador": "Formula una interpretación integradora que relacione los contextos de producción y recepción de textos literarios con sus condiciones culturales e institucionales.",
+        "contenido": "Relación entre poder institucional y valoración literaria",
+        "texto_asociado": "ambos"
+      },
+      {
+        "numero": 29,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Analizar",
+        "dificultad_rti": "N2",
+        "tipo": "consigna_abierta",
+        "enunciado": "¿En qué medida el argumento del texto 1 sobre la lectura y el pensamiento crítico resulta coherente con la descripción que hace el texto 2 sobre la revisión crítica del canon en el siglo XX? Responde utilizando la técnica RICE.",
+        "respuesta_esperada": "RICE: R: Existe una coherencia profunda entre el argumento del texto 1 sobre el pensamiento crítico y la descripción del texto 2 sobre la revisión del canon en el siglo XX, pues ambos apuntan al mismo fenómeno: la necesidad de interrogar los significados establecidos. I: El texto 1 sostiene que la lectura entrena la capacidad de «no aceptar el primer sentido que se nos ofrece». El texto 2 describe cómo movimientos feministas y postcoloniales cuestionaron qué voces habían sido sistemáticamente excluidas del canon, aplicando precisamente ese tipo de pensamiento crítico a la tradición literaria. C: El texto 1 afirma que leer «nos enseña a no aceptar el primer sentido que se nos ofrece, sino a indagar más profundamente». El texto 2 explica que críticos como Edward Said y Gayatri Spivak «evidenciaron los mecanismos de poder que determinan qué voces son incluidas y cuáles quedan silenciadas». E: Esta relación confirma que el pensamiento crítico promovido por la lectura literaria no es solo una habilidad individual, sino también una práctica colectiva con consecuencias culturales. Los movimientos que revisaron el canon en el siglo XX son un ejemplo histórico de lo que ocurre cuando los lectores ejercen la autonomía intelectual que defiende el texto 1.",
+        "criterios_correccion": [],
+        "indicador": "Evalúa la coherencia entre la interpretación de un texto y su relación con otro texto del mismo contexto temático.",
+        "contenido": "Coherencia entre pensamiento crítico y revisión del canon literario",
+        "texto_asociado": "ambos"
+      },
+      {
+        "numero": 30,
+        "oa": "OA 8",
+        "nivel_cognitivo": "Analizar",
+        "dificultad_rti": "N2",
+        "tipo": "consigna_abierta",
+        "enunciado": "A partir de tu lectura de ambos textos y considerando tu propio contexto como lector/a en el sistema escolar chileno, ¿qué importancia tiene conocer el debate sobre el canon literario para desarrollar una lectura crítica e interpretativa? Responde utilizando la técnica RICE.",
+        "respuesta_esperada": "RICE: R: Conocer el debate sobre el canon literario es fundamental para desarrollar una lectura verdaderamente crítica e interpretativa, porque nos permite entender que los textos que leemos no han sido elegidos de manera neutral, sino que responden a decisiones históricas y culturales. I: Como lectores en el sistema escolar chileno, los textos que nos propone la escuela forman parte de un canon implícito. Saber que ese canon ha sido cuestionado y transformado a lo largo del tiempo nos habilita para leer con mayor conciencia: no solo comprendiendo lo que un texto dice, sino preguntándonos qué voces están presentes y cuáles ausentes. C: El texto 2 señala que el debate sobre el canon implica «preguntarse qué valores queremos transmitir a las nuevas generaciones». El texto 1 afirma que la lectura literaria forma «ciudadanos capaces de pensar por sí mismos». E: Desde mi posición como estudiante, ambas ideas me invitan a no asumir que la lista de lecturas escolares representa la totalidad de la literatura valiosa. Una lectura interpretativa de calidad requiere tanto comprender los textos en profundidad como reflexionar sobre el contexto en que fueron seleccionados para ser leídos, asumiendo una postura activa y crítica ante la tradición literaria que se nos transmite.",
+        "criterios_correccion": [],
+        "indicador": "Formula una interpretación personal fundamentada que considera el contexto de recepción del lector y su relación con los textos leídos.",
+        "contenido": "Interpretación personal sobre canon, lectura crítica y contexto de recepción",
+        "texto_asociado": "ambos"
+      }
+    ],
+    "titulo": "Ensayo SIMCE de Comprensión Lectora: 2° Medio",
+    "nivel": "2° Medio",
+    "asignatura": "Lenguaje y Comunicación",
+    "eje": "Lectura",
+    "tipo_evaluacion": "simce",
+    "oa_codes": [
+      "OA 8"
+    ],
+    "duracion_min": 90,
+    "dificultad": "mixto",
+    "instrucciones_generales": "Lee atentamente las lecturas y responde las preguntas asociadas.",
+    "prueba": {
+      "secciones": [
+        {
+          "nombre": "Sección I: Selección múltiple",
+          "instruccion": "Lee atentamente cada pregunta y marca la opción correcta.",
+          "preguntas": [
+            {
+              "numero": 1,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Comprender",
+              "dificultad_rti": "N2",
+              "tipo": "seleccion_multiple",
+              "enunciado": "¿Cuál es la tesis central del texto 1?",
+              "alternativas": [
+                {
+                  "letra": "A",
+                  "texto": "La tecnología digital ha reemplazado completamente a la literatura en la sociedad actual.",
+                  "correcta": false
+                },
+                {
+                  "letra": "B",
+                  "texto": "La lectura literaria es una necesidad fundamental para el desarrollo humano integral.",
+                  "correcta": true
+                },
+                {
+                  "letra": "C",
+                  "texto": "Los videos y podcasts ofrecen experiencias cognitivas superiores a las de los libros.",
+                  "correcta": false
+                },
+                {
+                  "letra": "D",
+                  "texto": "La empatía es la única habilidad que se desarrolla mediante la lectura de novelas.",
+                  "correcta": false
+                }
+              ],
+              "indicador": "Identifica la tesis principal de un texto argumentativo.",
+              "contenido": "Comprensión de la tesis del texto argumentativo",
+              "texto_asociado": "texto_1"
+            },
+            {
+              "numero": 2,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Comprender",
+              "dificultad_rti": "N2",
+              "tipo": "seleccion_multiple",
+              "enunciado": "Según el texto 1, ¿qué diferencia fundamental existe entre leer ficción y ver una obra audiovisual en cuanto a la construcción del personaje?",
+              "alternativas": [
+                {
+                  "letra": "A",
+                  "texto": "La imagen permite una comprensión más profunda que la palabra escrita en todos los casos.",
+                  "correcta": false
+                },
+                {
+                  "letra": "B",
+                  "texto": "En el texto escrito, el lector debe construir internamente al personaje a partir de palabras.",
+                  "correcta": true
+                },
+                {
+                  "letra": "C",
+                  "texto": "El formato audiovisual exige mayor esfuerzo cognitivo que la lectura literaria convencional.",
+                  "correcta": false
+                },
+                {
+                  "letra": "D",
+                  "texto": "En la ficción literaria, el autor construye al personaje sin involucrar al lector en ese proceso.",
+                  "correcta": false
+                }
+              ],
+              "indicador": "Comprende información explícita presentada en un texto argumentativo.",
+              "contenido": "Información explícita sobre construcción de personajes",
+              "texto_asociado": "texto_1"
+            },
+            {
+              "numero": 3,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Comprender",
+              "dificultad_rti": "N2",
+              "tipo": "seleccion_multiple",
+              "enunciado": "El autor del texto 1 menciona a Gabriela Mistral, Pablo Neruda e Isabel Allende principalmente para:",
+              "alternativas": [
+                {
+                  "letra": "A",
+                  "texto": "Demostrar que Chile posee una tradición literaria superior a la de otros países de América.",
+                  "correcta": false
+                },
+                {
+                  "letra": "B",
+                  "texto": "Ilustrar cómo la lectura conecta con tradiciones culturales que moldean la identidad.",
+                  "correcta": true
+                },
+                {
+                  "letra": "C",
+                  "texto": "Comparar el estilo narrativo de autores latinoamericanos del siglo XX entre sí.",
+                  "correcta": false
+                },
+                {
+                  "letra": "D",
+                  "texto": "Cuestionar la vigencia de autores clásicos frente a los escritores contemporáneos actuales.",
+                  "correcta": false
+                }
+              ],
+              "indicador": "Analiza la función argumentativa de ejemplos y referencias en un texto.",
+              "contenido": "Función de los ejemplos en el texto argumentativo",
+              "texto_asociado": "texto_1"
+            },
+            {
+              "numero": 4,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Comprender",
+              "dificultad_rti": "N2",
+              "tipo": "seleccion_multiple",
+              "enunciado": "¿Qué relación establece el texto 1 entre la lectura literaria y la autonomía intelectual?",
+              "alternativas": [
+                {
+                  "letra": "A",
+                  "texto": "La lectura genera dependencia del conocimiento experto y reduce el pensamiento autónomo.",
+                  "correcta": false
+                },
+                {
+                  "letra": "B",
+                  "texto": "La autonomía intelectual se desarrolla exclusivamente a través de la lectura de ensayos filosóficos.",
+                  "correcta": false
+                },
+                {
+                  "letra": "C",
+                  "texto": "Leer literatura entrena la capacidad crítica al exigir interpretación activa y elaboración de sentido.",
+                  "correcta": true
+                },
+                {
+                  "letra": "D",
+                  "texto": "La autonomía intelectual es una consecuencia directa del consumo frecuente de medios digitales.",
+                  "correcta": false
+                }
+              ],
+              "indicador": "Relaciona conceptos presentes en el desarrollo argumentativo del texto.",
+              "contenido": "Relación entre lectura y autonomía intelectual",
+              "texto_asociado": "texto_1"
+            },
+            {
+              "numero": 5,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Comprender",
+              "dificultad_rti": "N2",
+              "tipo": "seleccion_multiple",
+              "enunciado": "La frase «una sociedad lectora será siempre más reflexiva, más libre y más justa» es un recurso que el autor utiliza para:",
+              "alternativas": [
+                {
+                  "letra": "A",
+                  "texto": "Refutar los argumentos presentados anteriormente en el texto con una conclusión irónica.",
+                  "correcta": false
+                },
+                {
+                  "letra": "B",
+                  "texto": "Cerrar el texto con una proyección valorativa que refuerza la tesis central del escrito.",
+                  "correcta": true
+                },
+                {
+                  "letra": "C",
+                  "texto": "Introducir un nuevo argumento sobre la relación entre política y literatura en el mundo.",
+                  "correcta": false
+                },
+                {
+                  "letra": "D",
+                  "texto": "Citar textualmente datos estadísticos obtenidos de un estudio sobre hábitos de lectura.",
+                  "correcta": false
+                }
+              ],
+              "indicador": "Analiza el uso de recursos retóricos en el cierre de un texto argumentativo.",
+              "contenido": "Recursos retóricos y función del cierre argumentativo",
+              "texto_asociado": "texto_1"
+            },
+            {
+              "numero": 6,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Comprender",
+              "dificultad_rti": "N2",
+              "tipo": "seleccion_multiple",
+              "enunciado": "¿Cuál de los siguientes enunciados refleja una concesión argumentativa presente en el texto 1?",
+              "alternativas": [
+                {
+                  "letra": "A",
+                  "texto": "",
+                  "correcta": false
+                },
+                {
+                  "letra": "B",
+                  "texto": "",
+                  "correcta": false
+                },
+                {
+                  "letra": "C",
+                  "texto": "",
+                  "correcta": true
+                },
+                {
+                  "letra": "D",
+                  "texto": "",
+                  "correcta": false
+                }
+              ],
+              "indicador": "Identifica estrategias de concesión en la estructura argumentativa de un texto.",
+              "contenido": "Identificación de concesiones argumentativas",
+              "texto_asociado": "texto_1"
+            },
+            {
+              "numero": 7,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Comprender",
+              "dificultad_rti": "N2",
+              "tipo": "seleccion_multiple",
+              "enunciado": "Según el texto 1, ¿por qué fomentar la lectura literaria desde la escuela no es «un capricho pedagógico»?",
+              "alternativas": [
+                {
+                  "letra": "A",
+                  "texto": "Porque la lectura mejora las calificaciones de los estudiantes en todas las asignaturas.",
+                  "correcta": false
+                },
+                {
+                  "letra": "B",
+                  "texto": "Porque permite a los docentes cumplir con los contenidos mínimos exigidos por el currículo.",
+                  "correcta": false
+                },
+                {
+                  "letra": "C",
+                  "texto": "Porque es una inversión en ciudadanos capaces de pensar de manera crítica e independiente.",
+                  "correcta": true
+                },
+                {
+                  "letra": "D",
+                  "texto": "Porque contribuye a que los estudiantes memoricen más obras del patrimonio cultural nacional.",
+                  "correcta": false
+                }
+              ],
+              "indicador": "Comprende el propósito comunicativo de un enunciado argumentativo específico.",
+              "contenido": "Propósito comunicativo en el texto argumentativo",
+              "texto_asociado": "texto_1"
+            },
+            {
+              "numero": 8,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Comprender",
+              "dificultad_rti": "N2",
+              "tipo": "seleccion_multiple",
+              "enunciado": "El texto 1 menciona un estudio de la Universidad de Toronto. ¿Cuál es la función de esta referencia en el argumento?",
+              "alternativas": [
+                {
+                  "letra": "A",
+                  "texto": "Cuestionar la validez de las investigaciones sobre lectura realizadas en Latinoamérica.",
+                  "correcta": false
+                },
+                {
+                  "letra": "B",
+                  "texto": "Otorgar respaldo empírico a la afirmación sobre la empatía y la lectura de ficción.",
+                  "correcta": true
+                },
+                {
+                  "letra": "C",
+                  "texto": "Demostrar que solo las universidades extranjeras investigan sobre hábitos lectores.",
+                  "correcta": false
+                },
+                {
+                  "letra": "D",
+                  "texto": "Introducir una perspectiva contraria a la tesis central del texto argumentativo.",
+                  "correcta": false
+                }
+              ],
+              "indicador": "Evalúa la pertinencia y función de las fuentes citadas en un texto argumentativo.",
+              "contenido": "Uso de fuentes y respaldo argumentativo",
+              "texto_asociado": "texto_1"
+            },
+            {
+              "numero": 9,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Comprender",
+              "dificultad_rti": "N2",
+              "tipo": "seleccion_multiple",
+              "enunciado": "¿Cuál es el propósito comunicativo principal del texto 1?",
+              "alternativas": [
+                {
+                  "letra": "A",
+                  "texto": "Describir con neutralidad los diferentes usos que tienen los textos literarios en la actualidad.",
+                  "correcta": false
+                },
+                {
+                  "letra": "B",
+                  "texto": "Narrar experiencias personales del autor en torno a su hábito de lectura literaria cotidiana.",
+                  "correcta": false
+                },
+                {
+                  "letra": "C",
+                  "texto": "Convencer al lector de que la lectura literaria es necesaria e irreemplazable en la era digital.",
+                  "correcta": true
+                },
+                {
+                  "letra": "D",
+                  "texto": "Comparar distintos géneros literarios para determinar cuál resulta más adecuado leer en clase.",
+                  "correcta": false
+                }
+              ],
+              "indicador": "Evalúa el propósito comunicativo global de un texto argumentativo.",
+              "contenido": "Propósito comunicativo del texto argumentativo",
+              "texto_asociado": "texto_1"
+            },
+            {
+              "numero": 10,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Comprender",
+              "dificultad_rti": "N2",
+              "tipo": "seleccion_multiple",
+              "enunciado": "¿Cuál de las siguientes opciones describe mejor la estructura organizativa del texto 1?",
+              "alternativas": [
+                {
+                  "letra": "A",
+                  "texto": "Presentación de un problema, narración de hechos históricos y propuesta de solución técnica.",
+                  "correcta": false
+                },
+                {
+                  "letra": "B",
+                  "texto": "Tesis inicial, desarrollo con argumentos y evidencias, concesión y reafirmación de la tesis.",
+                  "correcta": true
+                },
+                {
+                  "letra": "C",
+                  "texto": "Introducción neutral, descripción de datos estadísticos y conclusión con pregunta retórica.",
+                  "correcta": false
+                },
+                {
+                  "letra": "D",
+                  "texto": "Definición del tema, comparación de posturas opuestas y declaración de imparcialidad final.",
+                  "correcta": false
+                }
+              ],
+              "indicador": "Analiza la estructura organizativa de un texto argumentativo.",
+              "contenido": "Estructura del texto argumentativo",
+              "texto_asociado": "texto_1"
+            },
+            {
+              "numero": 11,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Comprender",
+              "dificultad_rti": "N2",
+              "tipo": "seleccion_multiple",
+              "enunciado": "Según el texto 2, ¿qué es el canon literario?",
+              "alternativas": [
+                {
+                  "letra": "A",
+                  "texto": "Un conjunto de reglas gramaticales establecidas por los académicos de la lengua española.",
+                  "correcta": false
+                },
+                {
+                  "letra": "B",
+                  "texto": "La lista de autores latinoamericanos reconocidos como fundadores de la literatura nacional.",
+                  "correcta": false
+                },
+                {
+                  "letra": "C",
+                  "texto": "El conjunto de obras consideradas fundamentales dentro de una tradición cultural determinada.",
+                  "correcta": true
+                },
+                {
+                  "letra": "D",
+                  "texto": "Un criterio exclusivamente estético para clasificar novelas según su calidad literaria objetiva.",
+                  "correcta": false
+                }
+              ],
+              "indicador": "Comprende el significado de conceptos clave definidos en un texto expositivo.",
+              "contenido": "Comprensión de conceptos en el texto expositivo",
+              "texto_asociado": "texto_2"
+            },
+            {
+              "numero": 12,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Comprender",
+              "dificultad_rti": "N2",
+              "tipo": "seleccion_multiple",
+              "enunciado": "De acuerdo con el texto 2, ¿qué papel cumplieron los humanistas del Renacimiento en la formación del canon occidental?",
+              "alternativas": [
+                {
+                  "letra": "A",
+                  "texto": "Rechazaron los modelos grecolatinos y propusieron una literatura basada en textos medievales.",
+                  "correcta": false
+                },
+                {
+                  "letra": "B",
+                  "texto": "Recuperaron textos grecolatinos y los erigieron como modelos insuperables de escritura.",
+                  "correcta": true
+                },
+                {
+                  "letra": "C",
+                  "texto": "Establecieron por primera vez la distinción entre géneros literarios como la épica y la tragedia.",
+                  "correcta": false
+                },
+                {
+                  "letra": "D",
+                  "texto": "Introdujeron cánones nacionales que reflejaban las identidades de los estados europeos modernos.",
+                  "correcta": false
+                }
+              ],
+              "indicador": "Identifica información explícita en un texto expositivo de tipo histórico.",
+              "contenido": "Información explícita sobre el Renacimiento y el canon",
+              "texto_asociado": "texto_2"
+            },
+            {
+              "numero": 13,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Comprender",
+              "dificultad_rti": "N2",
+              "tipo": "seleccion_multiple",
+              "enunciado": "Según el texto 2, ¿qué motivó la formación de cánones literarios nacionales durante el siglo XIX?",
+              "alternativas": [
+                {
+                  "letra": "A",
+                  "texto": "El surgimiento de editoriales privadas que competían por el mercado del libro en Europa.",
+                  "correcta": false
+                },
+                {
+                  "letra": "B",
+                  "texto": "La necesidad de los estados modernos de construir narrativas identitarias nacionales.",
+                  "correcta": true
+                },
+                {
+                  "letra": "C",
+                  "texto": "El auge del Romanticismo, que impulsó la valoración de las tradiciones populares orales.",
+                  "correcta": false
+                },
+                {
+                  "letra": "D",
+                  "texto": "La influencia de la Iglesia católica en la definición del patrimonio literario de cada nación.",
+                  "correcta": false
+                }
+              ],
+              "indicador": "Identifica causas y motivaciones explicadas en un texto expositivo.",
+              "contenido": "Causas de la formación del canon literario nacional",
+              "texto_asociado": "texto_2"
+            },
+            {
+              "numero": 14,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Comprender",
+              "dificultad_rti": "N2",
+              "tipo": "seleccion_multiple",
+              "enunciado": "¿Qué postura sostuvo Harold Bloom respecto del canon literario, según el texto 2?",
+              "alternativas": [
+                {
+                  "letra": "A",
+                  "texto": "Que el canon debía ser completamente renovado para incluir voces de escritoras y autores periféricos.",
+                  "correcta": false
+                },
+                {
+                  "letra": "B",
+                  "texto": "Que el canon tradicional tenía valor estético que trasciende las ideologías de cada época.",
+                  "correcta": true
+                },
+                {
+                  "letra": "C",
+                  "texto": "Que el canon occidental era producto exclusivo del imperialismo cultural europeo del siglo XIX.",
+                  "correcta": false
+                },
+                {
+                  "letra": "D",
+                  "texto": "Que los cánones nacionales latinoamericanos debían ser integrados al canon occidental clásico.",
+                  "correcta": false
+                }
+              ],
+              "indicador": "Identifica y distingue posturas de distintos autores mencionados en un texto expositivo.",
+              "contenido": "Identificación de posturas sobre el canon literario",
+              "texto_asociado": "texto_2"
+            },
+            {
+              "numero": 15,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Comprender",
+              "dificultad_rti": "N2",
+              "tipo": "seleccion_multiple",
+              "enunciado": "La mención de Andrés Bello y José Martí en el texto 2 cumple la función de:",
+              "alternativas": [
+                {
+                  "letra": "A",
+                  "texto": "Comparar la calidad literaria de ambos autores con la de los escritores europeos de su época.",
+                  "correcta": false
+                },
+                {
+                  "letra": "B",
+                  "texto": "Ilustrar con ejemplos concretos la formación de cánones literarios nacionales en Latinoamérica.",
+                  "correcta": true
+                },
+                {
+                  "letra": "C",
+                  "texto": "Demostrar que el canon latinoamericano es superior al canon occidental heredado de Europa.",
+                  "correcta": false
+                },
+                {
+                  "letra": "D",
+                  "texto": "Cuestionar la vigencia de los autores clásicos en los programas educativos del siglo XXI.",
+                  "correcta": false
+                }
+              ],
+              "indicador": "Analiza la función de los ejemplos dentro de la organización de un texto expositivo.",
+              "contenido": "Función de los ejemplos en el texto expositivo",
+              "texto_asociado": "texto_2"
+            },
+            {
+              "numero": 16,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Comprender",
+              "dificultad_rti": "N2",
+              "tipo": "seleccion_multiple",
+              "enunciado": "¿Qué crítica formularon los movimientos feministas y postcoloniales al canon literario, según el texto 2?",
+              "alternativas": [
+                {
+                  "letra": "A",
+                  "texto": "Que el canon favorecía en exceso a escritores de países en desarrollo frente a los occidentales.",
+                  "correcta": false
+                },
+                {
+                  "letra": "B",
+                  "texto": "Que el canon excluía sistemáticamente a escritoras, autores indígenas y voces periféricas.",
+                  "correcta": true
+                },
+                {
+                  "letra": "C",
+                  "texto": "Que el canon privilegiaba géneros menores como el cuento por sobre la novela y la poesía.",
+                  "correcta": false
+                },
+                {
+                  "letra": "D",
+                  "texto": "Que el canon ignoraba las obras de autores contemporáneos en favor de textos muy antiguos.",
+                  "correcta": false
+                }
+              ],
+              "indicador": "Comprende argumentos críticos presentados en un texto expositivo.",
+              "contenido": "Críticas al canon literario en el texto expositivo",
+              "texto_asociado": "texto_2"
+            },
+            {
+              "numero": 17,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Comprender",
+              "dificultad_rti": "N2",
+              "tipo": "seleccion_multiple",
+              "enunciado": "Según el texto 2, ¿cuál es el estado actual del canon literario en el siglo XXI?",
+              "alternativas": [
+                {
+                  "letra": "A",
+                  "texto": "Ha sido definitivamente abolido gracias al acceso irrestricto que ofrecen las plataformas digitales.",
+                  "correcta": false
+                },
+                {
+                  "letra": "B",
+                  "texto": "Permanece igual que en el siglo XIX, pues las instituciones académicas siguen ejerciendo control.",
+                  "correcta": false
+                },
+                {
+                  "letra": "C",
+                  "texto": "Es un campo en disputa, donde lo digital desafía la autoridad académica sin resolver el debate.",
+                  "correcta": true
+                },
+                {
+                  "letra": "D",
+                  "texto": "Ha sido redefinido exclusivamente a partir de criterios de diversidad cultural e inclusión social.",
+                  "correcta": false
+                }
+              ],
+              "indicador": "Comprende la situación actual de un fenómeno descrito en un texto expositivo.",
+              "contenido": "Estado actual del canon literario según el texto",
+              "texto_asociado": "texto_2"
+            },
+            {
+              "numero": 18,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Comprender",
+              "dificultad_rti": "N2",
+              "tipo": "seleccion_multiple",
+              "enunciado": "¿Qué significa la afirmación del texto 2 de que la construcción del canon «no es neutral ni definitiva»?",
+              "alternativas": [
+                {
+                  "letra": "A",
+                  "texto": "",
+                  "correcta": false
+                },
+                {
+                  "letra": "B",
+                  "texto": "",
+                  "correcta": false
+                },
+                {
+                  "letra": "C",
+                  "texto": "",
+                  "correcta": true
+                },
+                {
+                  "letra": "D",
+                  "texto": "",
+                  "correcta": false
+                }
+              ],
+              "indicador": "Interpreta el sentido de afirmaciones clave en un texto expositivo.",
+              "contenido": "Interpretación de afirmaciones sobre el canon literario",
+              "texto_asociado": "texto_2"
+            },
+            {
+              "numero": 19,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Comprender",
+              "dificultad_rti": "N2",
+              "tipo": "seleccion_multiple",
+              "enunciado": "El texto 2 organiza su información principalmente a través de:",
+              "alternativas": [
+                {
+                  "letra": "A",
+                  "texto": "Una secuencia de comparaciones entre autores de distintos períodos y géneros literarios.",
+                  "correcta": false
+                },
+                {
+                  "letra": "B",
+                  "texto": "Un orden cronológico que narra la evolución histórica del concepto de canon literario.",
+                  "correcta": true
+                },
+                {
+                  "letra": "C",
+                  "texto": "Una serie de anécdotas personales del autor sobre su experiencia con el canon literario.",
+                  "correcta": false
+                },
+                {
+                  "letra": "D",
+                  "texto": "Una estructura de problema-solución que termina con una propuesta pedagógica concreta.",
+                  "correcta": false
+                }
+              ],
+              "indicador": "Analiza el modo de organización textual de un texto expositivo.",
+              "contenido": "Organización textual del texto expositivo",
+              "texto_asociado": "texto_2"
+            },
+            {
+              "numero": 20,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Comprender",
+              "dificultad_rti": "N2",
+              "tipo": "seleccion_multiple",
+              "enunciado": "¿Cuál es el propósito comunicativo del texto 2?",
+              "alternativas": [
+                {
+                  "letra": "A",
+                  "texto": "Persuadir al lector de que abandone el canon occidental y adopte lecturas diversas e inclusivas.",
+                  "correcta": false
+                },
+                {
+                  "letra": "B",
+                  "texto": "Narrar la historia de vida de autores latinoamericanos que fueron excluidos del canon clásico.",
+                  "correcta": false
+                },
+                {
+                  "letra": "C",
+                  "texto": "Informar sobre el origen, desarrollo y estado actual del canon literario como fenómeno cultural.",
+                  "correcta": true
+                },
+                {
+                  "letra": "D",
+                  "texto": "Demostrar que el canon literario griego es el único modelo válido para la educación actual.",
+                  "correcta": false
+                }
+              ],
+              "indicador": "Evalúa el propósito comunicativo de un texto expositivo.",
+              "contenido": "Propósito comunicativo del texto expositivo",
+              "texto_asociado": "texto_2"
+            },
+            {
+              "numero": 21,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Comprender",
+              "dificultad_rti": "N2",
+              "tipo": "seleccion_multiple",
+              "enunciado": "¿En qué aspecto el texto 1 y el texto 2 presentan una visión complementaria sobre la literatura?",
+              "alternativas": [
+                {
+                  "letra": "A",
+                  "texto": "Ambos sostienen que la era digital ha vuelto irrelevantes las discusiones sobre literatura.",
+                  "correcta": false
+                },
+                {
+                  "letra": "B",
+                  "texto": "Ambos reconocen que la literatura tiene un papel significativo en la formación de identidad cultural.",
+                  "correcta": true
+                },
+                {
+                  "letra": "C",
+                  "texto": "Ambos argumentan que el canon literario debe ser abolido para dar paso a nuevas narrativas.",
+                  "correcta": false
+                },
+                {
+                  "letra": "D",
+                  "texto": "Ambos proponen que la lectura de textos clásicos es suficiente para la educación del siglo XXI.",
+                  "correcta": false
+                }
+              ],
+              "indicador": "Establece relaciones de complementariedad entre dos textos de distinto tipo.",
+              "contenido": "Relación intertextual entre texto argumentativo y expositivo",
+              "texto_asociado": "ambos"
+            },
+            {
+              "numero": 22,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Comprender",
+              "dificultad_rti": "N2",
+              "tipo": "seleccion_multiple",
+              "enunciado": "¿Cómo se relaciona la idea de «autonomía intelectual» del texto 1 con el debate sobre el canon expuesto en el texto 2?",
+              "alternativas": [
+                {
+                  "letra": "A",
+                  "texto": "",
+                  "correcta": false
+                },
+                {
+                  "letra": "B",
+                  "texto": "",
+                  "correcta": true
+                },
+                {
+                  "letra": "C",
+                  "texto": "",
+                  "correcta": false
+                },
+                {
+                  "letra": "D",
+                  "texto": "",
+                  "correcta": false
+                }
+              ],
+              "indicador": "Relaciona conceptos de distintos textos para formular una interpretación integradora.",
+              "contenido": "Relación intertextual entre conceptos clave de ambos textos",
+              "texto_asociado": "ambos"
+            },
+            {
+              "numero": 23,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Comprender",
+              "dificultad_rti": "N2",
+              "tipo": "seleccion_multiple",
+              "enunciado": "El texto 1 afirma que la literatura conecta con «ecos de lecturas anteriores». ¿Con qué concepto del texto 2 se relaciona directamente esta idea?",
+              "alternativas": [
+                {
+                  "letra": "A",
+                  "texto": "Con la noción de que las plataformas digitales democratizan el acceso a la lectura literaria.",
+                  "correcta": false
+                },
+                {
+                  "letra": "B",
+                  "texto": "Con el concepto de canon como conjunto de obras que articulan una tradición cultural continua.",
+                  "correcta": true
+                },
+                {
+                  "letra": "C",
+                  "texto": "Con la postura de Harold Bloom sobre el valor estético que trasciende ideologías de cada época.",
+                  "correcta": false
+                },
+                {
+                  "letra": "D",
+                  "texto": "Con la crítica postcolonial que denuncia la exclusión de voces periféricas del canon canónico.",
+                  "correcta": false
+                }
+              ],
+              "indicador": "Formula interpretaciones que articulan ideas de dos textos distintos.",
+              "contenido": "Intertextualidad y articulación de conceptos entre textos",
+              "texto_asociado": "ambos"
+            },
+            {
+              "numero": 24,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Comprender",
+              "dificultad_rti": "N2",
+              "tipo": "seleccion_multiple",
+              "enunciado": "Considerando ambos textos, ¿cuál de las siguientes interpretaciones es más coherente con sus contenidos?",
+              "alternativas": [
+                {
+                  "letra": "A",
+                  "texto": "",
+                  "correcta": false
+                },
+                {
+                  "letra": "B",
+                  "texto": "",
+                  "correcta": false
+                },
+                {
+                  "letra": "C",
+                  "texto": "",
+                  "correcta": true
+                },
+                {
+                  "letra": "D",
+                  "texto": "",
+                  "correcta": false
+                }
+              ],
+              "indicador": "Formula una interpretación global coherente a partir de dos textos complementarios.",
+              "contenido": "Interpretación global integradora de ambos textos",
+              "texto_asociado": "ambos"
+            },
+            {
+              "numero": 25,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Comprender",
+              "dificultad_rti": "N2",
+              "tipo": "seleccion_multiple",
+              "enunciado": "¿Cuál es una diferencia fundamental entre el modo en que el texto 1 y el texto 2 abordan la relación entre literatura y sociedad?",
+              "alternativas": [
+                {
+                  "letra": "A",
+                  "texto": "El texto 1 describe hechos históricos, mientras que el texto 2 defiende una postura personal.",
+                  "correcta": false
+                },
+                {
+                  "letra": "B",
+                  "texto": "El texto 1 argumenta a favor de la lectura literaria, mientras el texto 2 describe su historia cultural.",
+                  "correcta": true
+                },
+                {
+                  "letra": "C",
+                  "texto": "El texto 1 se centra en el canon literario occidental, mientras el texto 2 analiza el impacto digital.",
+                  "correcta": false
+                },
+                {
+                  "letra": "D",
+                  "texto": "El texto 1 presenta datos estadísticos, mientras el texto 2 ofrece solo ejemplos sin evidencias.",
+                  "correcta": false
+                }
+              ],
+              "indicador": "Distingue modos de organización y propósito discursivo entre textos de distinto tipo.",
+              "contenido": "Diferencias entre texto argumentativo y expositivo",
+              "texto_asociado": "ambos"
+            }
+          ]
+        },
+        {
+          "nombre": "Sección II: Preguntas de desarrollo",
+          "instruccion": "Responde las siguientes preguntas justificando tu respuesta.",
+          "preguntas": [
+            {
+              "numero": 26,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Analizar",
+              "dificultad_rti": "N2",
+              "tipo": "consigna_abierta",
+              "enunciado": "Tomando como base el texto 1, formula una interpretación del argumento sobre la empatía y la lectura literaria. Responde utilizando la técnica RICE (Respuesta, Información, Cita o evidencia, Evaluación).",
+              "respuesta_esperada": "RICE: R: El autor argumenta que la lectura literaria desarrolla la empatía de manera más profunda que los formatos audiovisuales. I: Esto se debe a que, al leer ficción, el lector debe construir mentalmente al personaje a partir de las palabras del texto, lo que implica un proceso cognitivo activo de comprensión emocional. C: El texto señala que «estudios realizados por la Universidad de Toronto han demostrado que quienes leen ficción de manera regular presentan mayores niveles de comprensión emocional», y que en los formatos audiovisuales «la imagen ya nos entrega el personaje construido». E: Esta distinción es pertinente porque muestra que la empatía desarrollada por la lectura no es un efecto pasivo, sino el resultado de un proceso activo de reconstrucción imaginativa, lo que la hace cualitativamente diferente a la experiencia audiovisual. Esto fortalece la tesis del texto, pues justifica la necesidad de la lectura literaria como práctica insustituible para el desarrollo humano.",
+              "criterios_correccion": [],
+              "indicador": "Formula una interpretación fundamentada sobre un argumento específico de un texto argumentativo, utilizando evidencias textuales.",
+              "contenido": "Interpretación argumentada sobre empatía y lectura literaria",
+              "texto_asociado": "texto_1"
+            },
+            {
+              "numero": 27,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Analizar",
+              "dificultad_rti": "N2",
+              "tipo": "consigna_abierta",
+              "enunciado": "A partir del texto 2, explica cómo el contexto histórico del siglo XIX influyó en la construcción de los cánones literarios nacionales en Latinoamérica. Responde utilizando la técnica RICE.",
+              "respuesta_esperada": "RICE: R: El contexto del siglo XIX, marcado por el auge del nacionalismo y los procesos de independencia, determinó directamente la formación de cánones literarios nacionales en Latinoamérica. I: Los nuevos estados independientes necesitaban narrativas que cohesionaran a sus ciudadanos y expresaran una identidad propia, distinta de la herencia colonial europea. Para ello, convocaron a la literatura como herramienta de construcción identitaria. C: El texto afirma que «el proceso independentista motivó la búsqueda de una literatura propia que expresara la singularidad del continente», y menciona a «Andrés Bello en Chile o José Martí en Cuba» como voces incluidas en estos cánones emergentes. E: Esta información permite interpretar que el canon literario no surge de decisiones puramente estéticas, sino de necesidades políticas e históricas concretas. El ejemplo latinoamericano demuestra que lo que se considera «literatura fundamental» está condicionado por el momento histórico y los intereses de quienes definen la identidad nacional.",
+              "criterios_correccion": [],
+              "indicador": "Analiza la influencia del contexto histórico en la producción y recepción de textos literarios.",
+              "contenido": "Contexto histórico y formación del canon literario latinoamericano",
+              "texto_asociado": "texto_2"
+            },
+            {
+              "numero": 28,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Analizar",
+              "dificultad_rti": "N2",
+              "tipo": "consigna_abierta",
+              "enunciado": "Considerando ambos textos, formula una interpretación sobre la relación entre el poder institucional y la definición de qué literatura merece ser leída. Responde utilizando la técnica RICE.",
+              "respuesta_esperada": "RICE: R: Tanto el texto 1 como el texto 2 permiten interpretar que las instituciones —académicas, educativas y editoriales— ejercen un poder determinante sobre qué literatura es considerada valiosa y, por tanto, digna de ser leída. I: El texto 2 explica que el canon ha sido construido históricamente por actores con poder cultural, excluyendo sistemáticamente a escritoras y autores periféricos. Por su parte, el texto 1 sugiere que la escuela tiene la responsabilidad de fomentar la lectura, lo que implica decisiones sobre qué textos se seleccionan para ese fomento. C: El texto 2 señala que la selección canónica «no es neutral ni definitiva» y que evidenció «los mecanismos de poder que determinan qué voces son incluidas y cuáles quedan silenciadas». El texto 1, a su vez, afirma que «fomentar la lectura literaria desde la escuela no es un capricho pedagógico». E: Estas ideas se complementan para revelar una tensión: si bien se defiende la lectura como práctica liberadora, la selección de qué se lee siempre involucra decisiones de poder. Interpretar críticamente la literatura implica también cuestionar qué textos nos han sido entregados y por qué razones.",
+              "criterios_correccion": [],
+              "indicador": "Formula una interpretación integradora que relacione los contextos de producción y recepción de textos literarios con sus condiciones culturales e institucionales.",
+              "contenido": "Relación entre poder institucional y valoración literaria",
+              "texto_asociado": "ambos"
+            },
+            {
+              "numero": 29,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Analizar",
+              "dificultad_rti": "N2",
+              "tipo": "consigna_abierta",
+              "enunciado": "¿En qué medida el argumento del texto 1 sobre la lectura y el pensamiento crítico resulta coherente con la descripción que hace el texto 2 sobre la revisión crítica del canon en el siglo XX? Responde utilizando la técnica RICE.",
+              "respuesta_esperada": "RICE: R: Existe una coherencia profunda entre el argumento del texto 1 sobre el pensamiento crítico y la descripción del texto 2 sobre la revisión del canon en el siglo XX, pues ambos apuntan al mismo fenómeno: la necesidad de interrogar los significados establecidos. I: El texto 1 sostiene que la lectura entrena la capacidad de «no aceptar el primer sentido que se nos ofrece». El texto 2 describe cómo movimientos feministas y postcoloniales cuestionaron qué voces habían sido sistemáticamente excluidas del canon, aplicando precisamente ese tipo de pensamiento crítico a la tradición literaria. C: El texto 1 afirma que leer «nos enseña a no aceptar el primer sentido que se nos ofrece, sino a indagar más profundamente». El texto 2 explica que críticos como Edward Said y Gayatri Spivak «evidenciaron los mecanismos de poder que determinan qué voces son incluidas y cuáles quedan silenciadas». E: Esta relación confirma que el pensamiento crítico promovido por la lectura literaria no es solo una habilidad individual, sino también una práctica colectiva con consecuencias culturales. Los movimientos que revisaron el canon en el siglo XX son un ejemplo histórico de lo que ocurre cuando los lectores ejercen la autonomía intelectual que defiende el texto 1.",
+              "criterios_correccion": [],
+              "indicador": "Evalúa la coherencia entre la interpretación de un texto y su relación con otro texto del mismo contexto temático.",
+              "contenido": "Coherencia entre pensamiento crítico y revisión del canon literario",
+              "texto_asociado": "ambos"
+            },
+            {
+              "numero": 30,
+              "oa": "OA 8",
+              "nivel_cognitivo": "Analizar",
+              "dificultad_rti": "N2",
+              "tipo": "consigna_abierta",
+              "enunciado": "A partir de tu lectura de ambos textos y considerando tu propio contexto como lector/a en el sistema escolar chileno, ¿qué importancia tiene conocer el debate sobre el canon literario para desarrollar una lectura crítica e interpretativa? Responde utilizando la técnica RICE.",
+              "respuesta_esperada": "RICE: R: Conocer el debate sobre el canon literario es fundamental para desarrollar una lectura verdaderamente crítica e interpretativa, porque nos permite entender que los textos que leemos no han sido elegidos de manera neutral, sino que responden a decisiones históricas y culturales. I: Como lectores en el sistema escolar chileno, los textos que nos propone la escuela forman parte de un canon implícito. Saber que ese canon ha sido cuestionado y transformado a lo largo del tiempo nos habilita para leer con mayor conciencia: no solo comprendiendo lo que un texto dice, sino preguntándonos qué voces están presentes y cuáles ausentes. C: El texto 2 señala que el debate sobre el canon implica «preguntarse qué valores queremos transmitir a las nuevas generaciones». El texto 1 afirma que la lectura literaria forma «ciudadanos capaces de pensar por sí mismos». E: Desde mi posición como estudiante, ambas ideas me invitan a no asumir que la lista de lecturas escolares representa la totalidad de la literatura valiosa. Una lectura interpretativa de calidad requiere tanto comprender los textos en profundidad como reflexionar sobre el contexto en que fueron seleccionados para ser leídos, asumiendo una postura activa y crítica ante la tradición literaria que se nos transmite.",
+              "criterios_correccion": [],
+              "indicador": "Formula una interpretación personal fundamentada que considera el contexto de recepción del lector y su relación con los textos leídos.",
+              "contenido": "Interpretación personal sobre canon, lectura crítica y contexto de recepción",
+              "texto_asociado": "ambos"
+            }
+          ]
+        }
+      ]
+    },
+    "tabla_especificaciones": {
+      "oa_evaluado": "OA 8",
+      "filas": [
+        {
+          "habilidad": "Comprender",
+          "indicador": "Identifica la tesis principal de un texto argumentativo.",
+          "contenido": "Comprensión de la tesis del texto argumentativo",
+          "tipo_item": "Selección múltiple",
+          "n_pregunta": "1",
+          "clave": "B",
+          "ptos": 2,
+          "ponderacion_pct": 3
+        },
+        {
+          "habilidad": "Comprender",
+          "indicador": "Comprende información explícita presentada en un texto argumentativo.",
+          "contenido": "Información explícita sobre construcción de personajes",
+          "tipo_item": "Selección múltiple",
+          "n_pregunta": "2",
+          "clave": "B",
+          "ptos": 2,
+          "ponderacion_pct": 3
+        },
+        {
+          "habilidad": "Comprender",
+          "indicador": "Analiza la función argumentativa de ejemplos y referencias en un texto.",
+          "contenido": "Función de los ejemplos en el texto argumentativo",
+          "tipo_item": "Selección múltiple",
+          "n_pregunta": "3",
+          "clave": "B",
+          "ptos": 2,
+          "ponderacion_pct": 3
+        },
+        {
+          "habilidad": "Comprender",
+          "indicador": "Relaciona conceptos presentes en el desarrollo argumentativo del texto.",
+          "contenido": "Relación entre lectura y autonomía intelectual",
+          "tipo_item": "Selección múltiple",
+          "n_pregunta": "4",
+          "clave": "C",
+          "ptos": 2,
+          "ponderacion_pct": 3
+        },
+        {
+          "habilidad": "Comprender",
+          "indicador": "Analiza el uso de recursos retóricos en el cierre de un texto argumentativo.",
+          "contenido": "Recursos retóricos y función del cierre argumentativo",
+          "tipo_item": "Selección múltiple",
+          "n_pregunta": "5",
+          "clave": "B",
+          "ptos": 2,
+          "ponderacion_pct": 3
+        },
+        {
+          "habilidad": "Comprender",
+          "indicador": "Identifica estrategias de concesión en la estructura argumentativa de un texto.",
+          "contenido": "Identificación de concesiones argumentativas",
+          "tipo_item": "Selección múltiple",
+          "n_pregunta": "6",
+          "clave": "C",
+          "ptos": 2,
+          "ponderacion_pct": 3
+        },
+        {
+          "habilidad": "Comprender",
+          "indicador": "Comprende el propósito comunicativo de un enunciado argumentativo específico.",
+          "contenido": "Propósito comunicativo en el texto argumentativo",
+          "tipo_item": "Selección múltiple",
+          "n_pregunta": "7",
+          "clave": "C",
+          "ptos": 2,
+          "ponderacion_pct": 3
+        },
+        {
+          "habilidad": "Comprender",
+          "indicador": "Evalúa la pertinencia y función de las fuentes citadas en un texto argumentativo.",
+          "contenido": "Uso de fuentes y respaldo argumentativo",
+          "tipo_item": "Selección múltiple",
+          "n_pregunta": "8",
+          "clave": "B",
+          "ptos": 2,
+          "ponderacion_pct": 3
+        },
+        {
+          "habilidad": "Comprender",
+          "indicador": "Evalúa el propósito comunicativo global de un texto argumentativo.",
+          "contenido": "Propósito comunicativo del texto argumentativo",
+          "tipo_item": "Selección múltiple",
+          "n_pregunta": "9",
+          "clave": "C",
+          "ptos": 2,
+          "ponderacion_pct": 3
+        },
+        {
+          "habilidad": "Comprender",
+          "indicador": "Analiza la estructura organizativa de un texto argumentativo.",
+          "contenido": "Estructura del texto argumentativo",
+          "tipo_item": "Selección múltiple",
+          "n_pregunta": "10",
+          "clave": "B",
+          "ptos": 2,
+          "ponderacion_pct": 3
+        },
+        {
+          "habilidad": "Comprender",
+          "indicador": "Comprende el significado de conceptos clave definidos en un texto expositivo.",
+          "contenido": "Comprensión de conceptos en el texto expositivo",
+          "tipo_item": "Selección múltiple",
+          "n_pregunta": "11",
+          "clave": "C",
+          "ptos": 2,
+          "ponderacion_pct": 3
+        },
+        {
+          "habilidad": "Comprender",
+          "indicador": "Identifica información explícita en un texto expositivo de tipo histórico.",
+          "contenido": "Información explícita sobre el Renacimiento y el canon",
+          "tipo_item": "Selección múltiple",
+          "n_pregunta": "12",
+          "clave": "B",
+          "ptos": 2,
+          "ponderacion_pct": 3
+        },
+        {
+          "habilidad": "Comprender",
+          "indicador": "Identifica causas y motivaciones explicadas en un texto expositivo.",
+          "contenido": "Causas de la formación del canon literario nacional",
+          "tipo_item": "Selección múltiple",
+          "n_pregunta": "13",
+          "clave": "B",
+          "ptos": 2,
+          "ponderacion_pct": 3
+        },
+        {
+          "habilidad": "Comprender",
+          "indicador": "Identifica y distingue posturas de distintos autores mencionados en un texto expositivo.",
+          "contenido": "Identificación de posturas sobre el canon literario",
+          "tipo_item": "Selección múltiple",
+          "n_pregunta": "14",
+          "clave": "B",
+          "ptos": 2,
+          "ponderacion_pct": 3
+        },
+        {
+          "habilidad": "Comprender",
+          "indicador": "Analiza la función de los ejemplos dentro de la organización de un texto expositivo.",
+          "contenido": "Función de los ejemplos en el texto expositivo",
+          "tipo_item": "Selección múltiple",
+          "n_pregunta": "15",
+          "clave": "B",
+          "ptos": 2,
+          "ponderacion_pct": 3
+        },
+        {
+          "habilidad": "Comprender",
+          "indicador": "Comprende argumentos críticos presentados en un texto expositivo.",
+          "contenido": "Críticas al canon literario en el texto expositivo",
+          "tipo_item": "Selección múltiple",
+          "n_pregunta": "16",
+          "clave": "B",
+          "ptos": 2,
+          "ponderacion_pct": 3
+        },
+        {
+          "habilidad": "Comprender",
+          "indicador": "Comprende la situación actual de un fenómeno descrito en un texto expositivo.",
+          "contenido": "Estado actual del canon literario según el texto",
+          "tipo_item": "Selección múltiple",
+          "n_pregunta": "17",
+          "clave": "C",
+          "ptos": 2,
+          "ponderacion_pct": 3
+        },
+        {
+          "habilidad": "Comprender",
+          "indicador": "Interpreta el sentido de afirmaciones clave en un texto expositivo.",
+          "contenido": "Interpretación de afirmaciones sobre el canon literario",
+          "tipo_item": "Selección múltiple",
+          "n_pregunta": "18",
+          "clave": "C",
+          "ptos": 2,
+          "ponderacion_pct": 3
+        },
+        {
+          "habilidad": "Comprender",
+          "indicador": "Analiza el modo de organización textual de un texto expositivo.",
+          "contenido": "Organización textual del texto expositivo",
+          "tipo_item": "Selección múltiple",
+          "n_pregunta": "19",
+          "clave": "B",
+          "ptos": 2,
+          "ponderacion_pct": 3
+        },
+        {
+          "habilidad": "Comprender",
+          "indicador": "Evalúa el propósito comunicativo de un texto expositivo.",
+          "contenido": "Propósito comunicativo del texto expositivo",
+          "tipo_item": "Selección múltiple",
+          "n_pregunta": "20",
+          "clave": "C",
+          "ptos": 2,
+          "ponderacion_pct": 3
+        },
+        {
+          "habilidad": "Comprender",
+          "indicador": "Establece relaciones de complementariedad entre dos textos de distinto tipo.",
+          "contenido": "Relación intertextual entre texto argumentativo y expositivo",
+          "tipo_item": "Selección múltiple",
+          "n_pregunta": "21",
+          "clave": "B",
+          "ptos": 2,
+          "ponderacion_pct": 3
+        },
+        {
+          "habilidad": "Comprender",
+          "indicador": "Relaciona conceptos de distintos textos para formular una interpretación integradora.",
+          "contenido": "Relación intertextual entre conceptos clave de ambos textos",
+          "tipo_item": "Selección múltiple",
+          "n_pregunta": "22",
+          "clave": "B",
+          "ptos": 2,
+          "ponderacion_pct": 3
+        },
+        {
+          "habilidad": "Comprender",
+          "indicador": "Formula interpretaciones que articulan ideas de dos textos distintos.",
+          "contenido": "Intertextualidad y articulación de conceptos entre textos",
+          "tipo_item": "Selección múltiple",
+          "n_pregunta": "23",
+          "clave": "B",
+          "ptos": 2,
+          "ponderacion_pct": 3
+        },
+        {
+          "habilidad": "Comprender",
+          "indicador": "Formula una interpretación global coherente a partir de dos textos complementarios.",
+          "contenido": "Interpretación global integradora de ambos textos",
+          "tipo_item": "Selección múltiple",
+          "n_pregunta": "24",
+          "clave": "C",
+          "ptos": 2,
+          "ponderacion_pct": 3
+        },
+        {
+          "habilidad": "Comprender",
+          "indicador": "Distingue modos de organización y propósito discursivo entre textos de distinto tipo.",
+          "contenido": "Diferencias entre texto argumentativo y expositivo",
+          "tipo_item": "Selección múltiple",
+          "n_pregunta": "25",
+          "clave": "B",
+          "ptos": 2,
+          "ponderacion_pct": 3
+        },
+        {
+          "habilidad": "Analizar",
+          "indicador": "Formula una interpretación fundamentada sobre un argumento específico de un texto argumentativo, utilizando evidencias textuales.",
+          "contenido": "Interpretación argumentada sobre empatía y lectura literaria",
+          "tipo_item": "Desarrollo",
+          "n_pregunta": "26",
+          "clave": "Rúbrica",
+          "ptos": 4,
+          "ponderacion_pct": 6
+        },
+        {
+          "habilidad": "Analizar",
+          "indicador": "Analiza la influencia del contexto histórico en la producción y recepción de textos literarios.",
+          "contenido": "Contexto histórico y formación del canon literario latinoamericano",
+          "tipo_item": "Desarrollo",
+          "n_pregunta": "27",
+          "clave": "Rúbrica",
+          "ptos": 4,
+          "ponderacion_pct": 6
+        },
+        {
+          "habilidad": "Analizar",
+          "indicador": "Formula una interpretación integradora que relacione los contextos de producción y recepción de textos literarios con sus condiciones culturales e institucionales.",
+          "contenido": "Relación entre poder institucional y valoración literaria",
+          "tipo_item": "Desarrollo",
+          "n_pregunta": "28",
+          "clave": "Rúbrica",
+          "ptos": 4,
+          "ponderacion_pct": 6
+        },
+        {
+          "habilidad": "Analizar",
+          "indicador": "Evalúa la coherencia entre la interpretación de un texto y su relación con otro texto del mismo contexto temático.",
+          "contenido": "Coherencia entre pensamiento crítico y revisión del canon literario",
+          "tipo_item": "Desarrollo",
+          "n_pregunta": "29",
+          "clave": "Rúbrica",
+          "ptos": 4,
+          "ponderacion_pct": 6
+        },
+        {
+          "habilidad": "Analizar",
+          "indicador": "Formula una interpretación personal fundamentada que considera el contexto de recepción del lector y su relación con los textos leídos.",
+          "contenido": "Interpretación personal sobre canon, lectura crítica y contexto de recepción",
+          "tipo_item": "Desarrollo",
+          "n_pregunta": "30",
+          "clave": "Rúbrica",
+          "ptos": 4,
+          "ponderacion_pct": 6
+        }
+      ]
+    },
+    "respuestas_esperadas": [
+      {
+        "pregunta": 1,
+        "tipo": "seleccion_multiple",
+        "clave": "B",
+        "explicacion": "Justificación basada en el indicador de evaluación: Identifica la tesis principal de un texto argumentativo."
+      },
+      {
+        "pregunta": 2,
+        "tipo": "seleccion_multiple",
+        "clave": "B",
+        "explicacion": "Justificación basada en el indicador de evaluación: Comprende información explícita presentada en un texto argumentativo."
+      },
+      {
+        "pregunta": 3,
+        "tipo": "seleccion_multiple",
+        "clave": "B",
+        "explicacion": "Justificación basada en el indicador de evaluación: Analiza la función argumentativa de ejemplos y referencias en un texto."
+      },
+      {
+        "pregunta": 4,
+        "tipo": "seleccion_multiple",
+        "clave": "C",
+        "explicacion": "Justificación basada en el indicador de evaluación: Relaciona conceptos presentes en el desarrollo argumentativo del texto."
+      },
+      {
+        "pregunta": 5,
+        "tipo": "seleccion_multiple",
+        "clave": "B",
+        "explicacion": "Justificación basada en el indicador de evaluación: Analiza el uso de recursos retóricos en el cierre de un texto argumentativo."
+      },
+      {
+        "pregunta": 6,
+        "tipo": "seleccion_multiple",
+        "clave": "C",
+        "explicacion": "Justificación basada en el indicador de evaluación: Identifica estrategias de concesión en la estructura argumentativa de un texto."
+      },
+      {
+        "pregunta": 7,
+        "tipo": "seleccion_multiple",
+        "clave": "C",
+        "explicacion": "Justificación basada en el indicador de evaluación: Comprende el propósito comunicativo de un enunciado argumentativo específico."
+      },
+      {
+        "pregunta": 8,
+        "tipo": "seleccion_multiple",
+        "clave": "B",
+        "explicacion": "Justificación basada en el indicador de evaluación: Evalúa la pertinencia y función de las fuentes citadas en un texto argumentativo."
+      },
+      {
+        "pregunta": 9,
+        "tipo": "seleccion_multiple",
+        "clave": "C",
+        "explicacion": "Justificación basada en el indicador de evaluación: Evalúa el propósito comunicativo global de un texto argumentativo."
+      },
+      {
+        "pregunta": 10,
+        "tipo": "seleccion_multiple",
+        "clave": "B",
+        "explicacion": "Justificación basada en el indicador de evaluación: Analiza la estructura organizativa de un texto argumentativo."
+      },
+      {
+        "pregunta": 11,
+        "tipo": "seleccion_multiple",
+        "clave": "C",
+        "explicacion": "Justificación basada en el indicador de evaluación: Comprende el significado de conceptos clave definidos en un texto expositivo."
+      },
+      {
+        "pregunta": 12,
+        "tipo": "seleccion_multiple",
+        "clave": "B",
+        "explicacion": "Justificación basada en el indicador de evaluación: Identifica información explícita en un texto expositivo de tipo histórico."
+      },
+      {
+        "pregunta": 13,
+        "tipo": "seleccion_multiple",
+        "clave": "B",
+        "explicacion": "Justificación basada en el indicador de evaluación: Identifica causas y motivaciones explicadas en un texto expositivo."
+      },
+      {
+        "pregunta": 14,
+        "tipo": "seleccion_multiple",
+        "clave": "B",
+        "explicacion": "Justificación basada en el indicador de evaluación: Identifica y distingue posturas de distintos autores mencionados en un texto expositivo."
+      },
+      {
+        "pregunta": 15,
+        "tipo": "seleccion_multiple",
+        "clave": "B",
+        "explicacion": "Justificación basada en el indicador de evaluación: Analiza la función de los ejemplos dentro de la organización de un texto expositivo."
+      },
+      {
+        "pregunta": 16,
+        "tipo": "seleccion_multiple",
+        "clave": "B",
+        "explicacion": "Justificación basada en el indicador de evaluación: Comprende argumentos críticos presentados en un texto expositivo."
+      },
+      {
+        "pregunta": 17,
+        "tipo": "seleccion_multiple",
+        "clave": "C",
+        "explicacion": "Justificación basada en el indicador de evaluación: Comprende la situación actual de un fenómeno descrito en un texto expositivo."
+      },
+      {
+        "pregunta": 18,
+        "tipo": "seleccion_multiple",
+        "clave": "C",
+        "explicacion": "Justificación basada en el indicador de evaluación: Interpreta el sentido de afirmaciones clave en un texto expositivo."
+      },
+      {
+        "pregunta": 19,
+        "tipo": "seleccion_multiple",
+        "clave": "B",
+        "explicacion": "Justificación basada en el indicador de evaluación: Analiza el modo de organización textual de un texto expositivo."
+      },
+      {
+        "pregunta": 20,
+        "tipo": "seleccion_multiple",
+        "clave": "C",
+        "explicacion": "Justificación basada en el indicador de evaluación: Evalúa el propósito comunicativo de un texto expositivo."
+      },
+      {
+        "pregunta": 21,
+        "tipo": "seleccion_multiple",
+        "clave": "B",
+        "explicacion": "Justificación basada en el indicador de evaluación: Establece relaciones de complementariedad entre dos textos de distinto tipo."
+      },
+      {
+        "pregunta": 22,
+        "tipo": "seleccion_multiple",
+        "clave": "B",
+        "explicacion": "Justificación basada en el indicador de evaluación: Relaciona conceptos de distintos textos para formular una interpretación integradora."
+      },
+      {
+        "pregunta": 23,
+        "tipo": "seleccion_multiple",
+        "clave": "B",
+        "explicacion": "Justificación basada en el indicador de evaluación: Formula interpretaciones que articulan ideas de dos textos distintos."
+      },
+      {
+        "pregunta": 24,
+        "tipo": "seleccion_multiple",
+        "clave": "C",
+        "explicacion": "Justificación basada en el indicador de evaluación: Formula una interpretación global coherente a partir de dos textos complementarios."
+      },
+      {
+        "pregunta": 25,
+        "tipo": "seleccion_multiple",
+        "clave": "B",
+        "explicacion": "Justificación basada en el indicador de evaluación: Distingue modos de organización y propósito discursivo entre textos de distinto tipo."
+      },
+      {
+        "pregunta": 26,
+        "tipo": "consigna_abierta",
+        "respuesta_esperada": "RICE: R: El autor argumenta que la lectura literaria desarrolla la empatía de manera más profunda que los formatos audiovisuales. I: Esto se debe a que, al leer ficción, el lector debe construir mentalmente al personaje a partir de las palabras del texto, lo que implica un proceso cognitivo activo de comprensión emocional. C: El texto señala que «estudios realizados por la Universidad de Toronto han demostrado que quienes leen ficción de manera regular presentan mayores niveles de comprensión emocional», y que en los formatos audiovisuales «la imagen ya nos entrega el personaje construido». E: Esta distinción es pertinente porque muestra que la empatía desarrollada por la lectura no es un efecto pasivo, sino el resultado de un proceso activo de reconstrucción imaginativa, lo que la hace cualitativamente diferente a la experiencia audiovisual. Esto fortalece la tesis del texto, pues justifica la necesidad de la lectura literaria como práctica insustituible para el desarrollo humano.",
+        "criterios_correccion": [
+          "Repetir (R): Enuncia o reformula la pregunta con sus propias palabras al inicio.",
+          "Incluir (I): Declara con claridad su postura o respuesta directa a la interrogante.",
+          "Citar (C): Incorpora una cita textual relevante y directa de la lectura.",
+          "Explicar (E): Detalla la conexión entre la cita incorporada y su postura."
+        ]
+      },
+      {
+        "pregunta": 27,
+        "tipo": "consigna_abierta",
+        "respuesta_esperada": "RICE: R: El contexto del siglo XIX, marcado por el auge del nacionalismo y los procesos de independencia, determinó directamente la formación de cánones literarios nacionales en Latinoamérica. I: Los nuevos estados independientes necesitaban narrativas que cohesionaran a sus ciudadanos y expresaran una identidad propia, distinta de la herencia colonial europea. Para ello, convocaron a la literatura como herramienta de construcción identitaria. C: El texto afirma que «el proceso independentista motivó la búsqueda de una literatura propia que expresara la singularidad del continente», y menciona a «Andrés Bello en Chile o José Martí en Cuba» como voces incluidas en estos cánones emergentes. E: Esta información permite interpretar que el canon literario no surge de decisiones puramente estéticas, sino de necesidades políticas e históricas concretas. El ejemplo latinoamericano demuestra que lo que se considera «literatura fundamental» está condicionado por el momento histórico y los intereses de quienes definen la identidad nacional.",
+        "criterios_correccion": [
+          "Repetir (R): Enuncia o reformula la pregunta con sus propias palabras al inicio.",
+          "Incluir (I): Declara con claridad su postura o respuesta directa a la interrogante.",
+          "Citar (C): Incorpora una cita textual relevante y directa de la lectura.",
+          "Explicar (E): Detalla la conexión entre la cita incorporada y su postura."
+        ]
+      },
+      {
+        "pregunta": 28,
+        "tipo": "consigna_abierta",
+        "respuesta_esperada": "RICE: R: Tanto el texto 1 como el texto 2 permiten interpretar que las instituciones —académicas, educativas y editoriales— ejercen un poder determinante sobre qué literatura es considerada valiosa y, por tanto, digna de ser leída. I: El texto 2 explica que el canon ha sido construido históricamente por actores con poder cultural, excluyendo sistemáticamente a escritoras y autores periféricos. Por su parte, el texto 1 sugiere que la escuela tiene la responsabilidad de fomentar la lectura, lo que implica decisiones sobre qué textos se seleccionan para ese fomento. C: El texto 2 señala que la selección canónica «no es neutral ni definitiva» y que evidenció «los mecanismos de poder que determinan qué voces son incluidas y cuáles quedan silenciadas». El texto 1, a su vez, afirma que «fomentar la lectura literaria desde la escuela no es un capricho pedagógico». E: Estas ideas se complementan para revelar una tensión: si bien se defiende la lectura como práctica liberadora, la selección de qué se lee siempre involucra decisiones de poder. Interpretar críticamente la literatura implica también cuestionar qué textos nos han sido entregados y por qué razones.",
+        "criterios_correccion": [
+          "Repetir (R): Enuncia o reformula la pregunta con sus propias palabras al inicio.",
+          "Incluir (I): Declara con claridad su postura o respuesta directa a la interrogante.",
+          "Citar (C): Incorpora una cita textual relevante y directa de la lectura.",
+          "Explicar (E): Detalla la conexión entre la cita incorporada y su postura."
+        ]
+      },
+      {
+        "pregunta": 29,
+        "tipo": "consigna_abierta",
+        "respuesta_esperada": "RICE: R: Existe una coherencia profunda entre el argumento del texto 1 sobre el pensamiento crítico y la descripción del texto 2 sobre la revisión del canon en el siglo XX, pues ambos apuntan al mismo fenómeno: la necesidad de interrogar los significados establecidos. I: El texto 1 sostiene que la lectura entrena la capacidad de «no aceptar el primer sentido que se nos ofrece». El texto 2 describe cómo movimientos feministas y postcoloniales cuestionaron qué voces habían sido sistemáticamente excluidas del canon, aplicando precisamente ese tipo de pensamiento crítico a la tradición literaria. C: El texto 1 afirma que leer «nos enseña a no aceptar el primer sentido que se nos ofrece, sino a indagar más profundamente». El texto 2 explica que críticos como Edward Said y Gayatri Spivak «evidenciaron los mecanismos de poder que determinan qué voces son incluidas y cuáles quedan silenciadas». E: Esta relación confirma que el pensamiento crítico promovido por la lectura literaria no es solo una habilidad individual, sino también una práctica colectiva con consecuencias culturales. Los movimientos que revisaron el canon en el siglo XX son un ejemplo histórico de lo que ocurre cuando los lectores ejercen la autonomía intelectual que defiende el texto 1.",
+        "criterios_correccion": [
+          "Repetir (R): Enuncia o reformula la pregunta con sus propias palabras al inicio.",
+          "Incluir (I): Declara con claridad su postura o respuesta directa a la interrogante.",
+          "Citar (C): Incorpora una cita textual relevante y directa de la lectura.",
+          "Explicar (E): Detalla la conexión entre la cita incorporada y su postura."
+        ]
+      },
+      {
+        "pregunta": 30,
+        "tipo": "consigna_abierta",
+        "respuesta_esperada": "RICE: R: Conocer el debate sobre el canon literario es fundamental para desarrollar una lectura verdaderamente crítica e interpretativa, porque nos permite entender que los textos que leemos no han sido elegidos de manera neutral, sino que responden a decisiones históricas y culturales. I: Como lectores en el sistema escolar chileno, los textos que nos propone la escuela forman parte de un canon implícito. Saber que ese canon ha sido cuestionado y transformado a lo largo del tiempo nos habilita para leer con mayor conciencia: no solo comprendiendo lo que un texto dice, sino preguntándonos qué voces están presentes y cuáles ausentes. C: El texto 2 señala que el debate sobre el canon implica «preguntarse qué valores queremos transmitir a las nuevas generaciones». El texto 1 afirma que la lectura literaria forma «ciudadanos capaces de pensar por sí mismos». E: Desde mi posición como estudiante, ambas ideas me invitan a no asumir que la lista de lecturas escolares representa la totalidad de la literatura valiosa. Una lectura interpretativa de calidad requiere tanto comprender los textos en profundidad como reflexionar sobre el contexto en que fueron seleccionados para ser leídos, asumiendo una postura activa y crítica ante la tradición literaria que se nos transmite.",
+        "criterios_correccion": [
+          "Repetir (R): Enuncia o reformula la pregunta con sus propias palabras al inicio.",
+          "Incluir (I): Declara con claridad su postura o respuesta directa a la interrogante.",
+          "Citar (C): Incorpora una cita textual relevante y directa de la lectura.",
+          "Explicar (E): Detalla la conexión entre la cita incorporada y su postura."
+        ]
+      }
+    ],
+    "pauta_correccion": {
+      "puntaje_total": 70,
+      "exigencia": "60%",
+      "puntaje_aprobacion": 42
+    },
+    "rubrica": {
+      "titulo": "RÚBRICA ANALÍTICA DESCRIPTIVA",
+      "tipo_instrumento": "analitica_descriptiva",
+      "instruccion": "Use los descriptores detallados para evaluar el nivel de logro del estudiante.",
+      "criterios": [
+        {
+          "nombre": "Pregunta 26 (Análisis)",
+          "oa": "OA 8",
+          "excelente": "Responde con total claridad y precisión al indicador: Formula una interpretación fundamentada sobre un argumento específico de un texto argumentativo, utilizando evidencias textuales.. Aplica de forma excelente la técnica de respuesta.",
+          "bueno": "Responde de forma satisfactoria al indicador: Formula una interpretación fundamentada sobre un argumento específico de un texto argumentativo, utilizando evidencias textuales.. Aplica de forma aceptable la técnica.",
+          "suficiente": "Responde de forma parcial o con imprecisiones al indicador: Formula una interpretación fundamentada sobre un argumento específico de un texto argumentativo, utilizando evidencias textuales..",
+          "insuficiente": "No responde, o la respuesta no tiene relación con el indicador: Formula una interpretación fundamentada sobre un argumento específico de un texto argumentativo, utilizando evidencias textuales.."
+        },
+        {
+          "nombre": "Pregunta 27 (Análisis)",
+          "oa": "OA 8",
+          "excelente": "Responde con total claridad y precisión al indicador: Analiza la influencia del contexto histórico en la producción y recepción de textos literarios.. Aplica de forma excelente la técnica de respuesta.",
+          "bueno": "Responde de forma satisfactoria al indicador: Analiza la influencia del contexto histórico en la producción y recepción de textos literarios.. Aplica de forma aceptable la técnica.",
+          "suficiente": "Responde de forma parcial o con imprecisiones al indicador: Analiza la influencia del contexto histórico en la producción y recepción de textos literarios..",
+          "insuficiente": "No responde, o la respuesta no tiene relación con el indicador: Analiza la influencia del contexto histórico en la producción y recepción de textos literarios.."
+        },
+        {
+          "nombre": "Pregunta 28 (Análisis)",
+          "oa": "OA 8",
+          "excelente": "Responde con total claridad y precisión al indicador: Formula una interpretación integradora que relacione los contextos de producción y recepción de textos literarios con sus condiciones culturales e institucionales.. Aplica de forma excelente la técnica de respuesta.",
+          "bueno": "Responde de forma satisfactoria al indicador: Formula una interpretación integradora que relacione los contextos de producción y recepción de textos literarios con sus condiciones culturales e institucionales.. Aplica de forma aceptable la técnica.",
+          "suficiente": "Responde de forma parcial o con imprecisiones al indicador: Formula una interpretación integradora que relacione los contextos de producción y recepción de textos literarios con sus condiciones culturales e institucionales..",
+          "insuficiente": "No responde, o la respuesta no tiene relación con el indicador: Formula una interpretación integradora que relacione los contextos de producción y recepción de textos literarios con sus condiciones culturales e institucionales.."
+        },
+        {
+          "nombre": "Pregunta 29 (Análisis)",
+          "oa": "OA 8",
+          "excelente": "Responde con total claridad y precisión al indicador: Evalúa la coherencia entre la interpretación de un texto y su relación con otro texto del mismo contexto temático.. Aplica de forma excelente la técnica de respuesta.",
+          "bueno": "Responde de forma satisfactoria al indicador: Evalúa la coherencia entre la interpretación de un texto y su relación con otro texto del mismo contexto temático.. Aplica de forma aceptable la técnica.",
+          "suficiente": "Responde de forma parcial o con imprecisiones al indicador: Evalúa la coherencia entre la interpretación de un texto y su relación con otro texto del mismo contexto temático..",
+          "insuficiente": "No responde, o la respuesta no tiene relación con el indicador: Evalúa la coherencia entre la interpretación de un texto y su relación con otro texto del mismo contexto temático.."
+        },
+        {
+          "nombre": "Pregunta 30 (Análisis)",
+          "oa": "OA 8",
+          "excelente": "Responde con total claridad y precisión al indicador: Formula una interpretación personal fundamentada que considera el contexto de recepción del lector y su relación con los textos leídos.. Aplica de forma excelente la técnica de respuesta.",
+          "bueno": "Responde de forma satisfactoria al indicador: Formula una interpretación personal fundamentada que considera el contexto de recepción del lector y su relación con los textos leídos.. Aplica de forma aceptable la técnica.",
+          "suficiente": "Responde de forma parcial o con imprecisiones al indicador: Formula una interpretación personal fundamentada que considera el contexto de recepción del lector y su relación con los textos leídos..",
+          "insuficiente": "No responde, o la respuesta no tiene relación con el indicador: Formula una interpretación personal fundamentada que considera el contexto de recepción del lector y su relación con los textos leídos.."
+        }
+      ]
+    },
+    "establecimiento": "",
+    "docente": ""
+  },
+  "created_at": "2026-07-06T21:39:24.500Z"
+}

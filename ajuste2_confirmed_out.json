@@ -1,0 +1,20 @@
+{
+  "backward_design": {
+    "objective": "Taller práctico de estadística descriptiva y recolección de datos en el aula.",
+    "assessment_evidence": "Producto: Tabla de frecuencia y gráfico de barras construidos en parejas a partir de una encuesta rápida de 3 preguntas realizada en el aula. Criterios de evaluación: (1) recopilación completa de datos, (2) cálculo correcto de frecuencias absolutas, (3) representación gráfica proporcional.",
+    "activities_sequence": "**SESIÓN 1 · Matemáticas / Estadística · 6° Básico · 90 min**\n\n| Campo | Detalle |\n| :--- | :--- |\n| **Curso** | 6° Básico |\n| **Fecha** | Por definir |\n| **Duración** | 90 min |\n| **Tipo / OA** | Estadística / Análisis de Datos |\n| **Objetivo** | Recolectar datos y construir tablas de frecuencia y gráficos de barras |\n| **Gamificación** | Rally Estadístico: acumulación de puntos por encuestas completas |\n| **Evaluación** | Gráfico de barras construido + Rúbrica de 3 niveles |\n\n---\n\n### (a) Inicio — 15 min\nEl docente inicia planteando una pregunta: \"¿Cómo sabemos cuál es el color favorito del curso sin adivinar?\" Introduce el concepto de encuesta, variable y frecuencia. Anuncia el propósito: realizar una encuesta real en el aula y graficar los resultados.\n\n---\n\n### (b) Desarrollo — 60 min\n- **Modelado (20 min):** El docente realiza una encuesta de prueba (ej. mascotas en casa), completa una tabla de frecuencia en la pizarra y dibuja un gráfico de barras modelando la escala del eje Y.\n- **Práctica guiada (15 min):** El curso define colectivamente las 3 preguntas de la encuesta final y diseña la estructura de la tabla de recolección.\n- **Práctica autónoma (25 min):** Los estudiantes en parejas encuestan a 5 compañeros, tabulan los datos y construyen su gráfico de barras en papel cuadriculado.\n\n---\n\n### (c) Cierre — 15 min\nTicket de salida: Cada pareja expone su gráfico. Autoevaluación rápida del trabajo colaborativo."
+  },
+  "dua_adaptations": "**Adaptaciones de accesibilidad**\n\n**1. Representación:** Plantillas prediseñadas de gráficos con ejes pre-marcados para estudiantes que lo requieran.\n**2. Expresión:** Se permite representar el gráfico usando bloques físicos u hojas de cálculo digitales.\n**3. Compromiso:** Trabajo en parejas elegidas libremente para reducir la ansiedad social.",
+  "rti_supports": {
+    "general": "**Guía estándar:** Construcción de tabla de frecuencias de 3 variables y gráfico de barras a escala libre.",
+    "targeted": "**Guía con apoyos:** Tabla con frecuencias ya iniciadas y gráfico con marcas de escala en el eje Y.",
+    "intensive": "**Guía básica:** Encuesta de 1 sola pregunta (2 opciones) con gráfico de barras simplificado de 5 unidades."
+  },
+  "gamification": "**Rally Estadístico:** Los estudiantes ganan puntos de experiencia ('puntos de datos') al completar cada fase de recolección y tabulación.",
+  "nlp_technique": "**(1) Apertura:** «Hoy vamos a descubrir las estadísticas reales de nuestro curso.»\n**(2) Reactivación:** «Sus tablas están casi listas, es hora de llevar los datos al gráfico.»\n**(3) Cierre:** «Hoy convirtieron opiniones sueltas en datos duros y gráficos legibles.»",
+  "rubric": "**Rúbrica de evaluación**\n\n| Criterio | Logrado | Medianamente Logrado | Por Lograr | Adaptación nivel 2 | Adaptación nivel 3 |\n| :--- | :--- | :--- | :--- | :--- | :--- |\n| **Recolección** | Datos completos de 5 encuestados. | Datos incompletos o imprecisos. | Sin datos de recolección. | Encuesta a 3 compañeros. | Completa encuesta simple con docente. |",
+  "reading_level_eval": {
+    "estimated_level": "Nivel de lectura de 5° a 6° Básico. El vocabulario utilizado (frecuencia, encuesta, gráfico) es directo y de uso escolar común, sin requerir la mediación compleja de textos poéticos del Siglo de Oro.",
+    "warning_alert": "⚠️ [Advertencia Curricular]: Este ajuste fue aplicado a solicitud del docente a pesar de afectar la cobertura del OA 8 porque el docente confirmó la aplicación forzada del taller práctico de matemáticas."
+  }
+}

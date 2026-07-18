@@ -1,0 +1,346 @@
+{
+  "id": "mock-ev-1782257180702",
+  "nivel": "2° Medio",
+  "eje": "Lectura",
+  "oa_codes": [
+    "OA 2"
+  ],
+  "tipos": [
+    "evaluacion",
+    "tabla",
+    "pauta",
+    "respuestas",
+    "instrumento"
+  ],
+  "titulo": "Evaluación de Lenguaje: 2° Medio",
+  "created_at": "2026-06-23T23:26:20.702Z",
+  "contenido_json": {
+    "titulo": "Evaluación de Lenguaje: 2° Medio",
+    "nivel": "2° Medio",
+    "asignatura": "Lenguaje y Comunicación",
+    "eje": "Lectura",
+    "oa_codes": [
+      "OA 2"
+    ],
+    "duracion_min": 90,
+    "dificultad": "mixto",
+    "instrucciones_generales": "Lee atentamente cada pregunta antes de responder. Esta evaluación consta de 5 ítems: preguntas de selección múltiple, una pregunta de desarrollo y un instrumento de autoevaluación. En las preguntas de selección múltiple, encierra en un círculo la letra de la alternativa correcta. En la pregunta de desarrollo, fundamenta tu respuesta citando o parafraseando el texto. Tienes 90 minutos para completar la evaluación. Escribe con letra legible y cuida la ortografía.",
+    "evaluacion": {
+      "texto_base": {
+        "titulo": "El tiempo libre",
+        "autor": "Mario Benedetti",
+        "fragmento": "Cuando uno tiene el tiempo libre, lo primero que hace es asustarse. Porque el tiempo libre es como un espejo: te muestra lo que eres cuando nadie te está mirando, cuando no hay jefe ni horario ni obligación que te defina. Y muchos no soportan esa imagen. Por eso llenan el tiempo libre de ruido, de pantallas, de actividades sin sentido. No porque disfruten verdaderamente de ellas, sino porque el silencio los enfrenta con preguntas incómodas: ¿quién soy yo cuando no produzco nada? ¿Qué me gusta de verdad? ¿Para qué estoy aquí? La sociedad moderna ha convertido la productividad en una virtud moral. Ser 'ocupado' es sinónimo de ser valioso. El que descansa, el que simplemente existe sin rendir cuentas, parece sospechoso. Y así, paradójicamente, hemos llegado a un punto en que el descanso se ha vuelto un lujo y el aburrimiento, un pecado. Sin embargo, es en el aburrimiento donde nace la creatividad, donde el pensamiento vaga sin destino y, de pronto, encuentra algo que vale la pena. El tiempo libre, bien aprovechado, no es ausencia de actividad: es presencia plena de uno mismo."
+      },
+      "items": [
+        {
+          "numero": 1,
+          "tipo": "seleccion_multiple",
+          "nivel_dificultad": "N1_basico",
+          "oa": "OA 2",
+          "habilidad_cognitiva": "Comprender",
+          "enunciado": "Según el fragmento, ¿cuál es la actitud que describe el autor ante el tiempo libre?",
+          "alternativas": {
+            "A": "Las personas disfrutan el tiempo libre porque les permite descansar plenamente sin interrupciones.",
+            "B": "Las personas se asustan del tiempo libre porque las enfrenta con preguntas sobre su propia identidad.",
+            "C": "Las personas aprovechan el tiempo libre para reflexionar sobre sus metas personales y laborales.",
+            "D": "Las personas ocupan el tiempo libre en actividades creativas que les generan satisfacción genuina."
+          },
+          "respuesta_correcta": "B",
+          "justificacion": "El texto señala explícitamente: 'lo primero que hace es asustarse' y vincula ese miedo a la confrontación con preguntas sobre la propia identidad."
+        },
+        {
+          "numero": 2,
+          "tipo": "seleccion_multiple",
+          "nivel_dificultad": "N1_basico",
+          "oa": "OA 2",
+          "habilidad_cognitiva": "Remembrar",
+          "enunciado": "De acuerdo con el texto, ¿qué ha convertido la sociedad moderna en una virtud moral?",
+          "alternativas": {
+            "A": "La capacidad de disfrutar el descanso sin sentir culpa alguna.",
+            "B": "La habilidad de reflexionar en silencio sobre la propia existencia.",
+            "C": "La productividad como medida del valor de una persona.",
+            "D": "La creatividad como resultado del pensamiento libre y espontáneo."
+          },
+          "respuesta_correcta": "C",
+          "justificacion": "El fragmento afirma: 'La sociedad moderna ha convertido la productividad en una virtud moral', relacionando el ser 'ocupado' con ser valioso."
+        },
+        {
+          "numero": 3,
+          "tipo": "seleccion_multiple",
+          "nivel_dificultad": "N2_intermedio",
+          "oa": "OA 2",
+          "habilidad_cognitiva": "Analizar",
+          "enunciado": "¿Qué recurso argumentativo utiliza el autor cuando afirma que 'el descanso se ha vuelto un lujo y el aburrimiento, un pecado'?",
+          "alternativas": {
+            "A": "Una comparación que equipara el descanso con actividades reservadas para pocas personas privilegiadas.",
+            "B": "Una paradoja que muestra cómo valores positivos han adquirido una connotación negativa en la sociedad.",
+            "C": "Un ejemplo concreto que ilustra cómo las personas evitan el descanso en su vida cotidiana.",
+            "D": "Una definición que explica el significado del tiempo libre desde una perspectiva histórica y cultural."
+          },
+          "respuesta_correcta": "B",
+          "justificacion": "El autor construye una paradoja: el descanso (algo naturalmente positivo) se vuelve 'lujo' (inaccesible) y el aburrimiento (estado neutral o creativo) se vuelve 'pecado' (moralmente malo), invirtiendo valoraciones esperadas."
+        },
+        {
+          "numero": 4,
+          "tipo": "seleccion_multiple",
+          "nivel_dificultad": "N2_intermedio",
+          "oa": "OA 2",
+          "habilidad_cognitiva": "Aplicar",
+          "enunciado": "Una estudiante lee el texto y concluye: 'El autor critica que vivamos pendientes de parecer productivos en lugar de conocernos a nosotros mismos.' ¿Qué evidencia del texto sustenta mejor esta interpretación?",
+          "alternativas": {
+            "A": "La afirmación de que el tiempo libre bien aprovechado es presencia plena de uno mismo.",
+            "B": "La mención de que el pensamiento vaga sin destino y de pronto encuentra algo valioso.",
+            "C": "La descripción de que las personas llenan el tiempo libre de ruido y pantallas para evitar el silencio.",
+            "D": "La referencia a que el que simplemente existe sin rendir cuentas parece sospechoso ante la sociedad."
+          },
+          "respuesta_correcta": "D",
+          "justificacion": "La frase 'el que simplemente existe sin rendir cuentas, parece sospechoso' evidencia directamente la crítica social a quienes no priorizan la productividad sobre el autoconocimiento."
+        },
+        {
+          "numero": 5,
+          "tipo": "desarrollo",
+          "nivel_dificultad": "N3_avanzado",
+          "oa": "OA 2",
+          "habilidad_cognitiva": "Evaluar",
+          "enunciado": "A partir del fragmento de Benedetti, propone una interpretación personal sobre el tema central del texto. ¿En qué medida crees que la sociedad actual impide el autoconocimiento? Expresa tu postura y fundaméntala con al menos dos evidencias textuales (citas o paráfrasis) y un argumento propio.",
+          "criterios_evaluacion": [
+            "Formula una postura clara y coherente sobre el tema del texto.",
+            "Utiliza al menos dos evidencias textuales pertinentes (citas o paráfrasis correctamente incorporadas).",
+            "Desarrolla al menos un argumento propio que amplíe o problematice la interpretación.",
+            "Mantiene cohesión y coherencia en la redacción de la respuesta."
+          ],
+          "extension_sugerida": "Entre 150 y 200 palabras"
+        }
+      ]
+    },
+    "tabla_especificaciones": {
+      "descripcion": "Tabla que organiza la cobertura curricular y cognitiva de la evaluación.",
+      "columnas": [
+        "OA",
+        "Habilidad cognitiva",
+        "N° pregunta",
+        "Ponderación (%)",
+        "Tipo de ítem",
+        "Nivel de dificultad"
+      ],
+      "filas": [
+        {
+          "oa": "OA 2",
+          "habilidad_cognitiva": "Comprender",
+          "n_pregunta": 1,
+          "ponderacion_porcentaje": 10,
+          "tipo_item": "Selección múltiple",
+          "nivel_dificultad": "N1_basico"
+        },
+        {
+          "oa": "OA 2",
+          "habilidad_cognitiva": "Remembrar",
+          "n_pregunta": 2,
+          "ponderacion_porcentaje": 10,
+          "tipo_item": "Selección múltiple",
+          "nivel_dificultad": "N1_basico"
+        },
+        {
+          "oa": "OA 2",
+          "habilidad_cognitiva": "Analizar",
+          "n_pregunta": 3,
+          "ponderacion_porcentaje": 15,
+          "tipo_item": "Selección múltiple",
+          "nivel_dificultad": "N2_intermedio"
+        },
+        {
+          "oa": "OA 2",
+          "habilidad_cognitiva": "Aplicar",
+          "n_pregunta": 4,
+          "ponderacion_porcentaje": 15,
+          "tipo_item": "Selección múltiple",
+          "nivel_dificultad": "N2_intermedio"
+        },
+        {
+          "oa": "OA 2",
+          "habilidad_cognitiva": "Evaluar",
+          "n_pregunta": 5,
+          "ponderacion_porcentaje": 50,
+          "tipo_item": "Desarrollo",
+          "nivel_dificultad": "N3_avanzado"
+        }
+      ],
+      "total_ponderacion": 100
+    },
+    "pauta": {
+      "descripcion": "Pauta de corrección con criterios de logro para cada ítem.",
+      "puntaje_total": 20,
+      "escala_conversion": {
+        "nota_minima": 1,
+        "nota_maxima": 7,
+        "puntaje_aprobacion": 12,
+        "formula": "Nota = (Puntaje obtenido × 6 / Puntaje total) + 1"
+      },
+      "items_seleccion_multiple": {
+        "valor_por_pregunta": 2,
+        "total_puntos": 8,
+        "instruccion_correccion": "Cada alternativa correcta equivale a 2 puntos. No se descuenta por respuesta incorrecta."
+      },
+      "item_desarrollo": {
+        "numero": 5,
+        "valor_total": 12,
+        "rubrica": {
+          "oa_actitudinal_vinculado": "OA Actitudinal: Demostrar disposición a reflexionar críticamente sobre los textos leídos, reconociendo la relevancia de los temas tratados para la vida personal y social.",
+          "niveles": [
+            {
+              "nivel": "Logrado",
+              "puntaje": 12,
+              "descriptor": "Formula una postura personal clara y fundamentada. Incorpora dos o más evidencias textuales pertinentes (citas o paráfrasis bien integradas). Desarrolla un argumento propio coherente que amplía o problematiza la interpretación del texto. La redacción es cohesiva, coherente y respeta normas básicas de escritura."
+            },
+            {
+              "nivel": "Logrado Parcial",
+              "puntaje": 9,
+              "descriptor": "Formula una postura reconocible, aunque no siempre explícita. Incorpora una o dos evidencias textuales, con integración parcialmente adecuada. Desarrolla un argumento propio que apoya la postura, aunque con desarrollo superficial. La redacción presenta algunas inconsistencias menores que no afectan la comprensión general."
+            },
+            {
+              "nivel": "En Desarrollo",
+              "puntaje": 5,
+              "descriptor": "La postura es difusa o poco clara. Incluye una evidencia textual que puede estar descontextualizada o mal parafrasada. El argumento propio es mínimo o se limita a repetir ideas del texto sin elaboración personal. La redacción presenta dificultades de cohesión que dificultan parcialmente la comprensión."
+            },
+            {
+              "nivel": "No Logrado",
+              "puntaje": 0,
+              "descriptor": "No formula una postura identificable. No incorpora evidencias textuales o las menciona de forma incorrecta. Ausencia de argumento propio. La redacción es incoherente o no responde al enunciado solicitado."
+            }
+          ]
+        }
+      }
+    },
+    "respuestas": {
+      "clave_seleccion_multiple": [
+        {
+          "pregunta": 1,
+          "respuesta_correcta": "B",
+          "justificacion": "El texto señala explícitamente que 'lo primero que hace es asustarse' y asocia ese miedo a la confrontación con preguntas sobre identidad personal: '¿quién soy yo cuando no produzco nada?'"
+        },
+        {
+          "pregunta": 2,
+          "respuesta_correcta": "C",
+          "justificacion": "La productividad como virtud moral está declarada literalmente: 'La sociedad moderna ha convertido la productividad en una virtud moral. Ser ocupado es sinónimo de ser valioso.'"
+        },
+        {
+          "pregunta": 3,
+          "respuesta_correcta": "B",
+          "justificacion": "El recurso es una paradoja: el autor invierte la valoración esperada de 'descanso' y 'aburrimiento', asignándoles connotaciones negativas ('lujo' inaccesible y 'pecado') que contrastan con su valor natural positivo."
+        },
+        {
+          "pregunta": 4,
+          "respuesta_correcta": "D",
+          "justificacion": "La evidencia más directa de la crítica a la productividad como obstáculo del autoconocimiento es: 'el que simplemente existe sin rendir cuentas, parece sospechoso', que muestra cómo la sociedad sanciona a quien no prioriza el rendimiento."
+        }
+      ],
+      "respuesta_modelo_desarrollo": {
+        "pregunta": 5,
+        "postura_ejemplo": "El texto de Benedetti plantea que vivimos en una sociedad que nos impide conocernos a nosotros mismos al valorar el rendimiento por sobre la reflexión personal. Comparto esta interpretación, pues el autor señala que las personas llenan el tiempo libre de 'ruido, de pantallas, de actividades sin sentido' no por disfrute genuino, sino para evitar el silencio y las preguntas incómodas sobre su identidad. Esta huida del autoconocimiento es reforzada por una cultura que considera al que 'simplemente existe sin rendir cuentas' como sospechoso. En mi opinión, las redes sociales son el mejor ejemplo contemporáneo de este fenómeno: nos ofrecen entretenimiento constante que nos impide detenernos a reflexionar sobre quiénes somos realmente. Sin espacios de silencio, como argumenta Benedetti, la creatividad y el pensamiento propio se atrofian. Por ello, recuperar el tiempo libre como un espacio de presencia personal es un acto casi contracultural hoy en día.",
+        "nota": "Este es un modelo orientador. Se aceptan otras interpretaciones siempre que estén fundamentadas en el texto y desarrolladas con argumento propio coherente."
+      }
+    },
+    "instrumento": {
+      "tipo": "Autoevaluación y Coevaluación",
+      "oa_actitudinal": "OA Actitudinal: Demostrar disposición a reflexionar críticamente sobre los textos leídos, reconociendo la relevancia de los temas tratados para la vida personal y social (2° Medio, Lenguaje y Comunicación).",
+      "autoevaluacion": {
+        "descripcion": "El estudiante reflexiona sobre su propio proceso de comprensión e interpretación del texto.",
+        "instruccion": "Responde con honestidad las siguientes preguntas sobre tu desempeño en esta evaluación. No hay respuestas correctas o incorrectas; el objetivo es que reflexiones sobre tu proceso.",
+        "escala": [
+          "Siempre",
+          "La mayoría de las veces",
+          "A veces",
+          "Casi nunca"
+        ],
+        "criterios": [
+          {
+            "numero": 1,
+            "criterio": "Leí el texto completo con atención antes de responder las preguntas.",
+            "opciones": [
+              "Siempre",
+              "La mayoría de las veces",
+              "A veces",
+              "Casi nunca"
+            ]
+          },
+          {
+            "numero": 2,
+            "criterio": "Fui capaz de identificar la postura del autor y distinguirla de la mía propia.",
+            "opciones": [
+              "Siempre",
+              "La mayoría de las veces",
+              "A veces",
+              "Casi nunca"
+            ]
+          },
+          {
+            "numero": 3,
+            "criterio": "Utilicé evidencias del texto para fundamentar mis respuestas en lugar de solo opinar.",
+            "opciones": [
+              "Siempre",
+              "La mayoría de las veces",
+              "A veces",
+              "Casi nunca"
+            ]
+          },
+          {
+            "numero": 4,
+            "criterio": "Me esforcé por construir una interpretación propia y no limitarme a parafrasear el texto.",
+            "opciones": [
+              "Siempre",
+              "La mayoría de las veces",
+              "A veces",
+              "Casi nunca"
+            ]
+          }
+        ],
+        "pregunta_reflexiva": "¿Qué aspecto de tu proceso lector o argumentativo te gustaría mejorar para la próxima evaluación? Escribe 2 a 3 oraciones."
+      },
+      "coevaluacion": {
+        "descripcion": "Un par evalúa la respuesta de desarrollo (ítem 5) de otro estudiante utilizando los siguientes criterios.",
+        "instruccion": "Lee con atención la respuesta de tu compañero/a en el ítem 5 y marca con una X la opción que mejor describe su desempeño en cada criterio. Al finalizar, escribe un comentario constructivo.",
+        "nombre_evaluador": "Nombre de quien evalúa: _______________________",
+        "nombre_evaluado": "Nombre de quien es evaluado: _______________________",
+        "criterios": [
+          {
+            "numero": 1,
+            "criterio": "Mi compañero/a expresó una postura personal clara sobre el tema del texto.",
+            "oa_actitudinal_vinculado": "Reflexión crítica personal",
+            "niveles": {
+              "Logrado": "La postura es clara, explícita y fácil de identificar desde el inicio.",
+              "Logrado Parcial": "La postura se puede inferir, aunque no está formulada con total claridad.",
+              "En Desarrollo": "La postura es confusa o se mezcla con la idea del autor sin diferenciarse.",
+              "No Logrado": "No es posible identificar una postura personal en la respuesta."
+            }
+          },
+          {
+            "numero": 2,
+            "criterio": "Mi compañero/a utilizó evidencias del texto para respaldar su interpretación.",
+            "oa_actitudinal_vinculado": "Fundamentación en evidencias textuales",
+            "niveles": {
+              "Logrado": "Incorpora dos o más citas o paráfrasis relevantes y bien integradas al argumento.",
+              "Logrado Parcial": "Incorpora una evidencia textual que apoya parcialmente la postura presentada.",
+              "En Desarrollo": "Menciona el texto de manera vaga, sin citar ni parafrasear de forma identificable.",
+              "No Logrado": "No incluye ninguna evidencia del texto en su respuesta argumentativa."
+            }
+          },
+          {
+            "numero": 3,
+            "criterio": "Mi compañero/a aportó un argumento propio que enriqueció la interpretación del texto.",
+            "oa_actitudinal_vinculado": "Pensamiento crítico y aporte personal",
+            "niveles": {
+              "Logrado": "Desarrolla un argumento propio relevante que amplía o cuestiona las ideas del texto.",
+              "Logrado Parcial": "Incluye una idea propia, aunque con desarrollo breve o poco elaborado.",
+              "En Desarrollo": "La idea propia se limita a repetir lo dicho en el texto con otras palabras.",
+              "No Logrado": "No incorpora ningún argumento propio en su interpretación del texto."
+            }
+          }
+        ],
+        "comentario_constructivo": {
+          "instruccion": "Escribe un comentario de 2 a 3 oraciones: señala algo que tu compañero/a hizo bien y algo que podría mejorar.",
+          "espacio": "_______________________________________________________________"
+        }
+      }
+    }
+  }
+}

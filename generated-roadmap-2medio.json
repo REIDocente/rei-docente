@@ -1,0 +1,326 @@
+{
+  "unidades": [
+    {
+      "numero": 1,
+      "titulo": "Ausencia: Voces que narran la pérdida",
+      "oa_codes": [
+        "OA 1",
+        "OA 2",
+        "OA 3",
+        "OA 7",
+        "OA 8",
+        "OA 9",
+        "OA 11",
+        "OA 12",
+        "OA 13",
+        "OA 14",
+        "OA 15",
+        "OA 18",
+        "OA 19",
+        "OA 20",
+        "OA 21",
+        "OA 22",
+        "OA 23",
+        "OA 24"
+      ],
+      "eje_principal": "Lectura",
+      "sesiones": [
+        {
+          "numero": 1,
+          "titulo": "La ausencia como tema literario: introducción y lectura de cuentos latinoamericanos",
+          "eje": "Lectura",
+          "oa_codes": [
+            "OA 1",
+            "OA 7"
+          ]
+        },
+        {
+          "numero": 2,
+          "titulo": "Análisis narrativo: narrador, personajes y conflicto en cuentos sobre la pérdida",
+          "eje": "Lectura",
+          "oa_codes": [
+            "OA 3",
+            "OA 2"
+          ]
+        },
+        {
+          "numero": 3,
+          "titulo": "Contextualización histórica y cultural de los textos leídos mediante textos no literarios",
+          "eje": "Lectura",
+          "oa_codes": [
+            "OA 11",
+            "OA 8"
+          ]
+        },
+        {
+          "numero": 4,
+          "titulo": "Evaluación de columnas de opinión sobre la memoria y la ausencia colectiva",
+          "eje": "Lectura",
+          "oa_codes": [
+            "OA 9",
+            "OA 20"
+          ]
+        },
+        {
+          "numero": 5,
+          "titulo": "Debate oral: ¿Cómo la literatura preserva la memoria de lo ausente?",
+          "eje": "Comunicación Oral",
+          "oa_codes": [
+            "OA 21",
+            "OA 23"
+          ]
+        },
+        {
+          "numero": 6,
+          "titulo": "Escritura de un texto narrativo breve que explore la experiencia de la ausencia",
+          "eje": "Escritura",
+          "oa_codes": [
+            "OA 13",
+            "OA 15"
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 2,
+      "titulo": "Ciudadanía: Medios, poder y opinión pública",
+      "oa_codes": [
+        "OA 1",
+        "OA 2",
+        "OA 3",
+        "OA 9",
+        "OA 10",
+        "OA 12",
+        "OA 13",
+        "OA 14",
+        "OA 15",
+        "OA 16",
+        "OA 17",
+        "OA 18",
+        "OA 19",
+        "OA 20",
+        "OA 21",
+        "OA 22",
+        "OA 23",
+        "OA 24"
+      ],
+      "eje_principal": "Lectura",
+      "sesiones": [
+        {
+          "numero": 1,
+          "titulo": "Los medios de comunicación y la construcción ciudadana: análisis de noticias y reportajes",
+          "eje": "Lectura",
+          "oa_codes": [
+            "OA 1",
+            "OA 10"
+          ]
+        },
+        {
+          "numero": 2,
+          "titulo": "Estrategias de persuasión en propaganda y crónicas: análisis crítico comparado",
+          "eje": "Lectura",
+          "oa_codes": [
+            "OA 10",
+            "OA 9"
+          ]
+        },
+        {
+          "numero": 3,
+          "titulo": "Escucha y evaluación de discursos y documentales sobre ciudadanía activa",
+          "eje": "Comunicación Oral",
+          "oa_codes": [
+            "OA 19",
+            "OA 20"
+          ]
+        },
+        {
+          "numero": 4,
+          "titulo": "Foro de discusión: diversas perspectivas sobre un hecho de contingencia ciudadana",
+          "eje": "Comunicación Oral",
+          "oa_codes": [
+            "OA 21",
+            "OA 23"
+          ]
+        },
+        {
+          "numero": 5,
+          "titulo": "Escritura de un reportaje: uso de frases nominales complejas y estilo indirecto",
+          "eje": "Escritura",
+          "oa_codes": [
+            "OA 13",
+            "OA 17"
+          ]
+        },
+        {
+          "numero": 6,
+          "titulo": "Revisión, edición y presentación oral del reportaje ciudadano producido",
+          "eje": "Escritura",
+          "oa_codes": [
+            "OA 15",
+            "OA 22"
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 3,
+      "titulo": "Lo divino: Poesía, fe y trascendencia en el Siglo de Oro",
+      "oa_codes": [
+        "OA 1",
+        "OA 2",
+        "OA 4",
+        "OA 6",
+        "OA 8",
+        "OA 9",
+        "OA 11",
+        "OA 12",
+        "OA 13",
+        "OA 15",
+        "OA 18",
+        "OA 19",
+        "OA 21",
+        "OA 22",
+        "OA 23",
+        "OA 24"
+      ],
+      "eje_principal": "Lectura",
+      "sesiones": [
+        {
+          "numero": 1,
+          "titulo": "El Siglo de Oro español: contexto histórico, cultural y religioso mediante textos complementarios",
+          "eje": "Lectura",
+          "oa_codes": [
+            "OA 6",
+            "OA 11"
+          ]
+        },
+        {
+          "numero": 2,
+          "titulo": "Lectura y análisis de sonetos del Siglo de Oro: hablante lírico, símbolos y lenguaje figurado",
+          "eje": "Lectura",
+          "oa_codes": [
+            "OA 4",
+            "OA 2"
+          ]
+        },
+        {
+          "numero": 3,
+          "titulo": "Interpretación poética: hipótesis de sentido, visión de mundo y trascendencia en la lírica áurea",
+          "eje": "Lectura",
+          "oa_codes": [
+            "OA 8",
+            "OA 1"
+          ]
+        },
+        {
+          "numero": 4,
+          "titulo": "Tertulia literaria oral: lo divino en la poesía del Siglo de Oro y su resonancia actual",
+          "eje": "Comunicación Oral",
+          "oa_codes": [
+            "OA 21",
+            "OA 23"
+          ]
+        },
+        {
+          "numero": 5,
+          "titulo": "Escritura creativa: composición de un soneto o poema breve inspirado en la lírica del Siglo de Oro",
+          "eje": "Escritura",
+          "oa_codes": [
+            "OA 12",
+            "OA 18"
+          ]
+        },
+        {
+          "numero": 6,
+          "titulo": "Presentación oral de la creación poética y retroalimentación colectiva",
+          "eje": "Comunicación Oral",
+          "oa_codes": [
+            "OA 22",
+            "OA 19"
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 4,
+      "titulo": "Poder: Conflicto, dominación y resistencia en la narrativa y el teatro",
+      "oa_codes": [
+        "OA 1",
+        "OA 2",
+        "OA 3",
+        "OA 5",
+        "OA 6",
+        "OA 8",
+        "OA 9",
+        "OA 11",
+        "OA 12",
+        "OA 14",
+        "OA 15",
+        "OA 18",
+        "OA 19",
+        "OA 20",
+        "OA 21",
+        "OA 22",
+        "OA 23",
+        "OA 24"
+      ],
+      "eje_principal": "Lectura",
+      "sesiones": [
+        {
+          "numero": 1,
+          "titulo": "El poder como tema literario: lectura y análisis de narrativa y texto dramático del Siglo de Oro",
+          "eje": "Lectura",
+          "oa_codes": [
+            "OA 3",
+            "OA 6"
+          ]
+        },
+        {
+          "numero": 2,
+          "titulo": "Análisis del texto dramático: conflicto, personajes y puesta en escena como expresión del poder",
+          "eje": "Lectura",
+          "oa_codes": [
+            "OA 5",
+            "OA 2"
+          ]
+        },
+        {
+          "numero": 3,
+          "titulo": "Interpretación y evaluación de la visión de mundo en obras literarias sobre el poder",
+          "eje": "Lectura",
+          "oa_codes": [
+            "OA 8",
+            "OA 11"
+          ]
+        },
+        {
+          "numero": 4,
+          "titulo": "Análisis de discursos y textos argumentativos sobre el ejercicio del poder en la sociedad",
+          "eje": "Lectura",
+          "oa_codes": [
+            "OA 9",
+            "OA 20"
+          ]
+        },
+        {
+          "numero": 5,
+          "titulo": "Debate estructurado: ¿Cómo la literatura cuestiona o legitima las estructuras de poder?",
+          "eje": "Comunicación Oral",
+          "oa_codes": [
+            "OA 21",
+            "OA 23"
+          ]
+        },
+        {
+          "numero": 6,
+          "titulo": "Escritura de un ensayo argumentativo sobre el poder en las obras leídas durante la unidad",
+          "eje": "Escritura",
+          "oa_codes": [
+            "OA 14",
+            "OA 15"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1080 @@
+'use client';
+
+import React, { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
+import {
+  Sparkles,
+  ArrowLeft,
+  BookOpen,
+  GraduationCap,
+  FileText,
+  Link as LinkIcon,
+  ChevronRight,
+  Loader2,
+  FileCode2,
+  HelpCircle,
+  CheckCircle2,
+  AlertTriangle,
+  ChevronDown,
+  ChevronUp,
+  BookMarked,
+  Shield,
+  Download,
+  Printer,
+  Sparkle
+} from 'lucide-react';
+import Link from 'next/link';
+import Sidebar from '@/components/Sidebar';
+
+// ─── Interfaces ──────────────────────────────────────────────────────────────
+
+interface Indicador {
+  id: number;
+  texto: string;
+}
+
+interface ObjetivoAprendizaje {
+  id: number;
+  codigo: string;
+  texto: string;
+  tipo: string;
+  indicadores_evaluacion: Indicador[];
+}
+
+interface Eje {
+  id: number;
+  nombre: string;
+  descripcion: string | null;
+  objetivos_aprendizaje: ObjetivoAprendizaje[];
+}
+
+interface HorarioDia {
+  dia_semana: string;
+  n_bloques: number;
+  tipo_bloque: string;
+}
+
+interface Curso {
+  id: string;
+  nombre: string;
+  nivel: string;
+  seccion: string | null;
+  horario: HorarioDia[];
+}
+
+type PlanningScope = 'clase' | 'semana';
+
+const LOADING_STEPS = [
+  'Analizando datos de la asignatura y nivel...',
+  'Procesando material de referencia...',
+  'Diseñando secuencia de aprendizaje inverso (Backward Design)...',
+  'Generando adaptaciones DUA (Universal Design)...',
+  'Estructurando niveles de apoyo diferenciados...',
+  'Agregando mecánicas de gamificación del aula...',
+  'Integrando anclajes de PNL para motivación...',
+  'Calculando nivel de lectura estimado y alertas de adecuación...',
+  'Finalizando y guardando planificación...',
+];
+
+const CURRICULUM_SUBJECT = 'Lenguaje y Comunicación';
+
+// Comprehensive local fallback catalog for 5° Básico to 2° Medio, Unidad 1 to 4
+const FALLBACK_CATALOG: Record<string, Record<string, Array<{ titulo: string; oa_codes: string[] }>>> = {
+  '5° Básico': {
+    'Unidad 1': [
+      { titulo: 'Análisis de personajes y ambientes en relatos folclóricos', oa_codes: ['OA 3'] },
+      { titulo: 'Comprensión de secuencias y hechos principales en cuentos clásicos', oa_codes: ['OA 1'] },
+      { titulo: 'Inferencia de intenciones y motivaciones en leyendas chilenas', oa_codes: ['OA 3'] },
+      { titulo: 'Diferencia entre información explícita e implícita en textos breves', oa_codes: ['OA 2'] },
+      { titulo: 'Uso de conectores explicativos y temporales en la escritura', oa_codes: ['OA 14'] },
+      { titulo: 'Escritura de opiniones fundamentadas sobre actitudes de personajes', oa_codes: ['OA 4'] }
+    ],
+    'Unidad 2': [
+      { titulo: 'Comprensión del propósito e ideas en artículos informativos', oa_codes: ['OA 6'] },
+      { titulo: 'Identificación de la idea principal y detalles de apoyo', oa_codes: ['OA 6'] },
+      { titulo: 'Análisis e interpretación de elementos en infografías escolares', oa_codes: ['OA 10'] },
+      { titulo: 'Estrategias de síntesis y resumen de múltiples fuentes', oa_codes: ['OA 7'] },
+      { titulo: 'Registro de ideas y vocabulario clave para exposiciones', oa_codes: ['OA 18'] },
+      { titulo: 'Escritura de textos expositivos breves sobre naturaleza', oa_codes: ['OA 13'] }
+    ],
+    'Unidad 3': [
+      { titulo: 'Estructura lírica básica: versos, estrofas y rimas', oa_codes: ['OA 5'] },
+      { titulo: 'Hablante y objeto lírico en poemas de la naturaleza', oa_codes: ['OA 5'] },
+      { titulo: 'Interpretación de personificaciones y comparaciones poéticas', oa_codes: ['OA 5'] },
+      { titulo: 'Lectura expresiva de poesía aplicando volumen y ritmo', oa_codes: ['OA 23'] },
+      { titulo: 'Escritura creativa de poemas sencillos desde emociones', oa_codes: ['OA 16'] },
+      { titulo: 'Creación de imágenes líricas usando lenguaje descriptivo', oa_codes: ['OA 16'] }
+    ],
+    'Unidad 4': [
+      { titulo: 'Estructura dramática: obra dramática y obra teatral', oa_codes: ['OA 3'] },
+      { titulo: 'Análisis del conflicto dramático y motivaciones', oa_codes: ['OA 3'] },
+      { titulo: 'Interpretación de acotaciones y diálogos en el libreto', oa_codes: ['OA 3'] },
+      { titulo: 'Lectura dramatizada grupal con modulación e intención', oa_codes: ['OA 24'] },
+      { titulo: 'Escritura de escenas teatrales breves sobre la amistad', oa_codes: ['OA 15'] },
+      { titulo: 'Representación en el aula de sketches y obras adaptadas', oa_codes: ['OA 25'] }
+    ]
+  },
+  '6° Básico': {
+    'Unidad 1': [
+      { titulo: 'Análisis de la evolución del protagonista en novelas infantiles', oa_codes: ['OA 3'] },
+      { titulo: 'Estrategias de comprensión lectora en mitos de la creación', oa_codes: ['OA 1'] },
+      { titulo: 'Inferencia del conflicto central y dilemas morales en fábulas', oa_codes: ['OA 3'] },
+      { titulo: 'Identificación del tipo de narrador y su grado de conocimiento', oa_codes: ['OA 3'] },
+      { titulo: 'Redacción de reseñas críticas literarias para el diario escolar', oa_codes: ['OA 14'] },
+      { titulo: 'Debate sobre las decisiones éticas de un héroe literario', oa_codes: ['OA 4'] }
+    ],
+    'Unidad 2': [
+      { titulo: 'Comprensión y análisis crítico de reportajes de actualidad', oa_codes: ['OA 6'] },
+      { titulo: 'Distinción entre hechos comprobables y opiniones en los medios', oa_codes: ['OA 9'] },
+      { titulo: 'Análisis de la publicidad: eslóganes, colores y estereotipos', oa_codes: ['OA 11'] },
+      { titulo: 'Técnicas de búsqueda de información en motores de búsqueda', oa_codes: ['OA 7'] },
+      { titulo: 'Escritura de columnas de opinión sobre la ecología local', oa_codes: ['OA 15'] },
+      { titulo: 'Exposiciones orales estructuradas apoyadas por recursos visuales', oa_codes: ['OA 22'] }
+    ],
+    'Unidad 3': [
+      { titulo: 'Figuras literarias avanzadas: metáforas e hipérboles', oa_codes: ['OA 5'] },
+      { titulo: 'El temple de ánimo y el motivo lírico en la poesía chilena', oa_codes: ['OA 5'] },
+      { titulo: 'Comparación temática de dos poemas que abordan el amor', oa_codes: ['OA 5'] },
+      { titulo: 'Declamación lírica aplicando pausas y entonación', oa_codes: ['OA 23'] },
+      { titulo: 'Escritura de odas breves dedicadas a objetos cotidianos', oa_codes: ['OA 16'] },
+      { titulo: 'Creación de poemas visuales (caligramas y acrósticos)', oa_codes: ['OA 16'] }
+    ],
+    'Unidad 4': [
+      { titulo: 'El conflicto teatral: oposición en comedias y tragedias', oa_codes: ['OA 3'] },
+      { titulo: 'Análisis de personajes estereotipos en el teatro escolar', oa_codes: ['OA 3'] },
+      { titulo: 'Estructuración de parlamentos y acotaciones didácticas', oa_codes: ['OA 3'] },
+      { titulo: 'Lectura de libreto dramatizado interpretando distintos roles', oa_codes: ['OA 24'] },
+      { titulo: 'Escritura colaborativa de una obra sobre resolución de conflictos', oa_codes: ['OA 15'] },
+      { titulo: 'Montaje grupal de obras cortas con diseño de vestuario', oa_codes: ['OA 25'] }
+    ]
+  },
+  '7° Básico': {
+    'Unidad 1': [
+      { titulo: 'El viaje del héroe y su evolución psicológica en relatos clásicos', oa_codes: ['OA 3'] },
+      { titulo: 'Identificación del conflicto principal en epopeyas y mitos', oa_codes: ['OA 3'] },
+      { titulo: 'Análisis del tiempo narrativo: prolepsis y analepsis', oa_codes: ['OA 3'] },
+      { titulo: 'Comparación de visiones de mundo en textos de distintas épocas', oa_codes: ['OA 2'] },
+      { titulo: 'Elaboración de organizadores gráficos de secuencias narrativas', oa_codes: ['OA 8'] },
+      { titulo: 'Escritura de un cuento de aventuras estructurado paso a paso', oa_codes: ['OA 14'] }
+    ],
+    'Unidad 2': [
+      { titulo: 'Análisis de la veracidad y sesgo en noticias impresas', oa_codes: ['OA 10'] },
+      { titulo: 'Comprensión de columnas de opinión y sus argumentos', oa_codes: ['OA 9'] },
+      { titulo: 'Análisis de recursos no verbales en publicidad digital', oa_codes: ['OA 11'] },
+      { titulo: 'Técnicas de síntesis y resúmenes de textos expositivos', oa_codes: ['OA 7'] },
+      { titulo: 'Búsqueda e integración de información de múltiples páginas', oa_codes: ['OA 7'] },
+      { titulo: 'Escritura de un reportaje breve sobre el patrimonio comunal', oa_codes: ['OA 13'] }
+    ],
+    'Unidad 3': [
+      { titulo: 'Interpretación del lenguaje poético y figuras retóricas', oa_codes: ['OA 4'] },
+      { titulo: 'Análisis de motivos líricos y sentimientos expresados', oa_codes: ['OA 4'] },
+      { titulo: 'Lectura expresiva de poemas de vanguardia y poesía social', oa_codes: ['OA 20'] },
+      { titulo: 'Comparación de dos obras poéticas con temáticas similares', oa_codes: ['OA 4'] },
+      { titulo: 'Escritura de textos poéticos utilizando recursos de estilo', oa_codes: ['OA 16'] },
+      { titulo: 'Creación de poemas experimentales y juegos de palabras', oa_codes: ['OA 16'] }
+    ],
+    'Unidad 4': [
+      { titulo: 'El conflicto dramático y su desarrollo en la tragedia', oa_codes: ['OA 3'] },
+      { titulo: 'Análisis de personajes principales, secundarios y antagonistas', oa_codes: ['OA 3'] },
+      { titulo: 'El rol del coro y las acotaciones técnicas en el libreto', oa_codes: ['OA 3'] },
+      { titulo: 'Lectura en voz alta dramatizando matices emocionales', oa_codes: ['OA 21'] },
+      { titulo: 'Escritura de un diálogo que aborde un dilema juvenil', oa_codes: ['OA 15'] },
+      { titulo: 'Simulacro de representación teatral en el aula', oa_codes: ['OA 22'] }
+    ]
+  },
+  '8° Básico': {
+    'Unidad 1': [
+      { titulo: 'El héroe trágico y sus dilemas morales en la literatura', oa_codes: ['OA 3'] },
+      { titulo: 'Análisis del narrador omnisciente, testigo y protagonista', oa_codes: ['OA 3'] },
+      { titulo: 'La ambientación física, psicológica y social en relatos góticos', oa_codes: ['OA 3'] },
+      { titulo: 'Interpretación de símbolos recurrentes en cuentos literarios', oa_codes: ['OA 2'] },
+      { titulo: 'Escritura de ensayos breves analizando temas literarios', oa_codes: ['OA 14'] },
+      { titulo: 'Debate grupal sobre la justicia y el destino en las obras', oa_codes: ['OA 4'] }
+    ],
+    'Unidad 2': [
+      { titulo: 'Análisis del discurso argumentativo: tesis, bases y garantías', oa_codes: ['OA 9'] },
+      { titulo: 'Evaluación crítica de la validez de los argumentos en prensa', oa_codes: ['OA 10'] },
+      { titulo: 'La manipulación mediática y la identificación de fake news', oa_codes: ['OA 10'] },
+      { titulo: 'Investigación académica escolar: citas y referencias APA', oa_codes: ['OA 7'] },
+      { titulo: 'Redacción de una carta al director defendiendo una tesis', oa_codes: ['OA 15'] },
+      { titulo: 'Mesa redonda exponiendo posturas sobre redes sociales', oa_codes: ['OA 22'] }
+    ],
+    'Unidad 3': [
+      { titulo: 'Interpretación de metáforas, sinestesias y alegorías', oa_codes: ['OA 4'] },
+      { titulo: 'El yo lírico y su relación con el contexto de producción', oa_codes: ['OA 4'] },
+      { titulo: 'Lectura coral de poemas de la Generación del 38 y vanguardias', oa_codes: ['OA 20'] },
+      { titulo: 'Análisis de canciones modernas como manifestaciones poéticas', oa_codes: ['OA 4'] },
+      { titulo: 'Escritura de poemas estructurados usando métrica libre', oa_codes: ['OA 16'] },
+      { titulo: 'Elaboración de una antología poética ilustrada escolar', oa_codes: ['OA 16'] }
+    ],
+    'Unidad 4': [
+      { titulo: 'El conflicto dramático contemporáneo y la ruptura estructural', oa_codes: ['OA 3'] },
+      { titulo: 'El monólogo dramático como expresión del conflicto interno', oa_codes: ['OA 3'] },
+      { titulo: 'Análisis de la comedia del arte y la farsa en el teatro', oa_codes: ['OA 3'] },
+      { titulo: 'Lectura teatral con proyección de voz y expresión corporal', oa_codes: ['OA 21'] },
+      { titulo: 'Escritura de una micro-obra de teatro del absurdo', oa_codes: ['OA 15'] },
+      { titulo: 'Representación colectiva de escenas cómicas adaptadas', oa_codes: ['OA 22'] }
+    ]
+  },
+  '1° Medio': {
+    'Unidad 1': [
+      { titulo: 'El conflicto en novelas realistas y de crítica social', oa_codes: ['OA 3'] },
+      { titulo: 'Análisis de estilos narrativos: directo, indirecto e indirecto libre', oa_codes: ['OA 3'] },
+      { titulo: 'Interpretación de la visión del ser humano existencial', oa_codes: ['OA 2'] },
+      { titulo: 'Comparación temática entre un clásico literario y su versión moderna', oa_codes: ['OA 8'] },
+      { titulo: 'Redacción de un ensayo interpretativo literario estructurado', oa_codes: ['OA 14'] },
+      { titulo: 'Discusión sobre los valores sociales expresados en la obra', oa_codes: ['OA 4'] }
+    ],
+    'Unidad 2': [
+      { titulo: 'El discurso público: características, tipos y estructura', oa_codes: ['OA 9'] },
+      { titulo: 'Análisis crítico de editoriales y columnas de opinión', oa_codes: ['OA 10'] },
+      { titulo: 'Identificación de falacias argumentativas en debates públicos', oa_codes: ['OA 9'] },
+      { titulo: 'Técnicas de investigación: fichaje y registro de información', oa_codes: ['OA 7'] },
+      { titulo: 'Escritura de un discurso público sobre la ciudadanía', oa_codes: ['OA 15'] },
+      { titulo: 'Declamación oral de discursos públicos redactados por alumnos', oa_codes: ['OA 22'] }
+    ],
+    'Unidad 3': [
+      { titulo: 'Análisis del soneto clásico, la décima y formas tradicionales', oa_codes: ['OA 4'] },
+      { titulo: 'Voz lírica, identidad y memoria colectiva en Latinoamérica', oa_codes: ['OA 4'] },
+      { titulo: 'Interpretación de figuras retóricas de pensamiento e imágenes', oa_codes: ['OA 4'] },
+      { titulo: 'Lectura expresiva de poemas de autores latinoamericanos', oa_codes: ['OA 20'] },
+      { titulo: 'Escritura de décimas y composiciones líricas tradicionales', oa_codes: ['OA 16'] },
+      { titulo: 'Creación de un mural poético escolar combinando arte y lírica', oa_codes: ['OA 16'] }
+    ],
+    'Unidad 4': [
+      { titulo: 'El drama realista y el conflicto social en el teatro moderno', oa_codes: ['OA 3'] },
+      { titulo: 'Análisis de los diálogos, subtextos y silencios de personajes', oa_codes: ['OA 3'] },
+      { titulo: 'El espacio escénico y los elementos no verbales en el libreto', oa_codes: ['OA 3'] },
+      { titulo: 'Lectura dramatizada con énfasis en la tensión del conflicto', oa_codes: ['OA 21'] },
+      { titulo: 'Escritura de escenas realistas sobre dilemas juveniles', oa_codes: ['OA 15'] },
+      { titulo: 'Puesta en escena grupal con roles técnicos asignados', oa_codes: ['OA 22'] }
+    ]
+  },
+  '2° Medio': {
+    'Unidad 1': [
+      { titulo: 'La distopía y la ciencia ficción como reflejo social', oa_codes: ['OA 3'] },
+      { titulo: 'Análisis del narrador sospechoso o de fiabilidad cuestionable', oa_codes: ['OA 3'] },
+      { titulo: 'La intertextualidad: referencias y diálogos entre obras', oa_codes: ['OA 2'] },
+      { titulo: 'Interpretación de visiones del futuro en relatos actuales', oa_codes: ['OA 8'] },
+      { titulo: 'Escritura de ensayos analíticos sobre el control social', oa_codes: ['OA 14'] },
+      { titulo: 'Debate en clases sobre la tecnología, la libertad y el humanismo', oa_codes: ['OA 4'] }
+    ],
+    'Unidad 2': [
+      { titulo: 'El ensayo periodístico e intelectual: estructura y persuasión', oa_codes: ['OA 9'] },
+      { titulo: 'Análisis crítico del reportaje de investigación periodística', oa_codes: ['OA 10'] },
+      { titulo: 'Detección de sesgos mediáticos y fake news en redes sociales', oa_codes: ['OA 10'] },
+      { titulo: 'Técnicas de búsqueda científica y citación formal en APA', oa_codes: ['OA 7'] },
+      { titulo: 'Redacción de un ensayo académico sobre los medios actuales', oa_codes: ['OA 15'] },
+      { titulo: 'Exposición oral de hallazgos académicos apoyada en diapositivas', oa_codes: ['OA 22'] }
+    ],
+    'Unidad 3': [
+      { titulo: 'Poesía existencialista, de vanguardia y antipoesía', oa_codes: ['OA 4'] },
+      { titulo: 'El uso de la ironía, el absurdo y la ruptura en lírica', oa_codes: ['OA 4'] },
+      { titulo: 'Lectura dramatizada de poemas vanguardistas y performance', oa_codes: ['OA 20'] },
+      { titulo: 'Análisis poético de Gabriela Mistral y Pablo Neruda', oa_codes: ['OA 4'] },
+      { titulo: 'Escritura de antipoemas y micro-poemas satíricos escolares', oa_codes: ['OA 16'] },
+      { titulo: 'Diseño de un fanzine poético de libre distribución escolar', oa_codes: ['OA 16'] }
+    ],
+    'Unidad 4': [
+      { titulo: 'El teatro del absurdo y el distanciamiento de Bertolt Brecht', oa_codes: ['OA 3'] },
+      { titulo: 'El conflicto existencial en obras contemporáneas dramáticas', oa_codes: ['OA 3'] },
+      { titulo: 'Análisis de la escenografía, iluminación y efectos en libreto', oa_codes: ['OA 3'] },
+      { titulo: 'Lectura interpretativa con distanciamiento brechtiano', oa_codes: ['OA 21'] },
+      { titulo: 'Escritura de un libreto breve de teatro épico o contemporáneo', oa_codes: ['OA 15'] },
+      { titulo: 'Representación en el aula de micro-obras contemporáneas', oa_codes: ['OA 22'] }
+    ]
+  }
+};
+
+export default function NewPlannerPage() {
+  const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [loadingStep, setLoadingStep] = useState(0);
+  const [error, setError] = useState<string | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Form states in exact order
+  const [planningScope, setPlanningScope] = useState<PlanningScope>('clase');
+  const [grade, setGrade] = useState('5° Básico');
+  const [unit, setUnit] = useState('Unidad 1');
+  const [themeMode, setThemeMode] = useState<'select' | 'manual'>('select');
+  const [selectedTheme, setSelectedTheme] = useState('');
+  const [manualTheme, setManualTheme] = useState('');
+  const [suggestedOAs, setSuggestedOAs] = useState<ObjetivoAprendizaje[]>([]);
+  const [suggestingOAs, setSuggestingOAs] = useState(false);
+  const [validatedOA, setValidatedOA] = useState(true);
+
+  // Optional course / reference states
+  const [cursos, setCursos] = useState<Curso[]>([]);
+  const [selectedCursoId, setSelectedCursoId] = useState<string>('');
+  const [referenceUrl, setReferenceUrl] = useState('');
+  const [referenceFile, setReferenceFile] = useState<File | null>(null);
+
+  // Raw curriculum ejes from DB (loaded once subject+grade is ready)
+  const [curriculumEjes, setCurriculumEjes] = useState<Eje[] | null>(null);
+
+  // Preview generated plan states
+  const [showPreview, setShowPreview] = useState(false);
+  const [generatedPlan, setGeneratedPlan] = useState<any | null>(null);
+  const [savedId, setSavedId] = useState<string | null>(null);
+
+  const isCurriculumMode = grade && grade !== 'Otra';
+
+  // Load official curriculum ejes for database alignment
+  const loadCurriculumEjes = useCallback(async (lvl: string) => {
+    try {
+      const params = new URLSearchParams({ asignatura: CURRICULUM_SUBJECT, nivel: lvl });
+      const res = await fetch(`/api/curriculum?${params.toString()}`);
+      if (res.ok) {
+        const data = await res.json();
+        setCurriculumEjes(data.ejes || []);
+      }
+    } catch (err) {
+      console.warn('Error fetching curriculum ejes:', err);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (grade) {
+      loadCurriculumEjes(grade);
+    }
+  }, [grade, loadCurriculumEjes]);
+
+  // Auth check + fetch courses
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.push('/login');
+      } else {
+        setUser(user);
+        try {
+          const { data: session } = await supabase.auth.getSession();
+          const token = session.session?.access_token;
+          const res = await fetch('/api/cursos', {
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+          });
+          if (res.ok) {
+            const data = await res.json();
+            setCursos(data.cursos ?? []);
+          }
+        } catch (e) {
+          // ignore optional course fetch errors
+        }
+      }
+    };
+    checkAuth();
+  }, [router]);
+
+  // Dynamic themes catalog loader
+  const [catalogThemes, setCatalogThemes] = useState<Array<{ titulo: string; oa_codes: string[] }>>([]);
+
+  const loadThemesForSelection = useCallback(async () => {
+    // 1. Check if course has mapas_ruta in Supabase
+    if (selectedCursoId && unit) {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = session?.access_token;
+        const res = await fetch(`/api/cursos/mapa-ruta?cursoId=${selectedCursoId}`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.mapa?.unidades) {
+            const unitNum = parseInt(unit.replace(/\D/g, ''), 10) || 1;
+            const uData = data.mapa.unidades.find((u: any) => u.numero === unitNum);
+            if (uData && uData.sesiones) {
+              setCatalogThemes(uData.sesiones.map((s: any) => ({
+                titulo: s.titulo,
+                oa_codes: s.oa_codes || []
+              })));
+              return;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('Error loading custom mapas_ruta themes:', err);
+      }
+    }
+
+    // 2. Fall back to local JSON catalog
+    const gradeKey = grade;
+    const unitKey = unit;
+    if (FALLBACK_CATALOG[gradeKey] && FALLBACK_CATALOG[gradeKey][unitKey]) {
+      setCatalogThemes(FALLBACK_CATALOG[gradeKey][unitKey]);
+    } else {
+      setCatalogThemes([]);
+    }
+  }, [selectedCursoId, grade, unit]);
+
+  useEffect(() => {
+    loadThemesForSelection();
+  }, [loadThemesForSelection]);
+
+  // Automated simulated suggestion of OAs when theme changes
+  const runSimulatedSuggestion = useCallback(async (themeTitle: string, selectedOaCodes: string[]) => {
+    if (!themeTitle) {
+      setSuggestedOAs([]);
+      return;
+    }
+
+    setSuggestingOAs(true);
+    // Simulate short network/processing delay (800ms)
+    await new Promise((resolve) => setTimeout(resolve, 800));
+
+    // Align codes from the database curriculum_ejes
+    let matchedOas: ObjetivoAprendizaje[] = [];
+    if (curriculumEjes) {
+      curriculumEjes.forEach((eje) => {
+        eje.objetivos_aprendizaje.forEach((oa) => {
+          if (selectedOaCodes.includes(oa.codigo)) {
+            matchedOas.push(oa);
+          }
+        });
+      });
+    }
+
+    // If no curriculum match yet, create simple mock OAs matching the codes
+    if (matchedOas.length === 0) {
+      selectedOaCodes.forEach((code, index) => {
+        matchedOas.push({
+          id: index + 9999,
+          codigo: code,
+          texto: `Objetivo de Aprendizaje sugerido por IA enfocado en ${themeTitle.toLowerCase()}. Permite al docente desarrollar comprensión crítica e interpretación didáctica del texto literario o informativo.`,
+          tipo: 'Sugerido',
+          indicadores_evaluacion: [
+            { id: 1, texto: 'Formula respuestas que demuestran comprensión literal e inferencial.' },
+            { id: 2, texto: 'Explica los recursos de estilo y lenguaje figurado empleados en el recurso.' }
+          ]
+        });
+      });
+    }
+
+    setSuggestedOAs(matchedOas);
+    setSuggestingOAs(false);
+    setValidatedOA(true);
+  }, [curriculumEjes]);
+
+  // Automatically trigger when theme changes
+  useEffect(() => {
+    if (themeMode === 'select' && selectedTheme) {
+      const selectedObj = catalogThemes.find(t => t.titulo === selectedTheme);
+      if (selectedObj) {
+        runSimulatedSuggestion(selectedTheme, selectedObj.oa_codes);
+      }
+    }
+  }, [selectedTheme, themeMode, catalogThemes, runSimulatedSuggestion]);
+
+  // Handle manual theme input text change
+  const handleManualThemeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setManualTheme(val);
+  };
+
+  // Trigger manual suggestion button
+  const triggerManualSuggestion = () => {
+    if (!manualTheme.trim()) return;
+    // Map custom theme to a default OA depending on unit (e.g. Unit 1 gets OA 3, Unit 2 gets OA 6, etc.)
+    let codes = ['OA 3'];
+    if (unit.includes('2')) codes = ['OA 6'];
+    if (unit.includes('3')) codes = ['OA 5'];
+    if (unit.includes('4')) codes = ['OA 3'];
+    
+    runSimulatedSuggestion(manualTheme, codes);
+  };
+
+  // Loading animation interval
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (loading) {
+      interval = setInterval(() => {
+        setLoadingStep((prev) => (prev + 1) % LOADING_STEPS.length);
+      }, 2500);
+    } else {
+      setLoadingStep(0);
+    }
+    return () => clearInterval(interval);
+  }, [loading]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setReferenceFile(e.target.files[0]);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+
+    const themeText = themeMode === 'select' ? selectedTheme : manualTheme;
+    if (!themeText) {
+      setError('Por favor escribe o selecciona un tema didáctico.');
+      return;
+    }
+
+    if (suggestedOAs.length === 0) {
+      setError('Falta el Objetivo de Aprendizaje sugerido por la IA. Selecciona un tema o presiona "Sugerir OA".');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('subject', CURRICULUM_SUBJECT);
+      formData.append('grade', grade);
+      formData.append('unit', `${unit}: ${themeText}`);
+      formData.append('referenceUrl', referenceUrl);
+      if (referenceFile) {
+        formData.append('referenceFile', referenceFile);
+      }
+
+      formData.append('curriculum_mode', 'true');
+      const oasCodigos = suggestedOAs.map((o) => o.codigo).join(', ');
+      const oasTextos = suggestedOAs.map((o) => `${o.codigo}: ${o.texto}`).join('\n');
+      formData.append('oa_codigo', oasCodigos);
+      formData.append('oa_texto', oasTextos);
+      formData.append('oa_eje', 'Lectura'); // Main default axis
+      
+      const allIndicators = suggestedOAs.flatMap(o => o.indicadores_evaluacion.map(i => i.texto));
+      formData.append('indicadores_json', JSON.stringify(allIndicators));
+      formData.append('learningObjective', `${oasCodigos} — ${suggestedOAs.map(o => o.texto).join(' | ')}`);
+
+      formData.append('planning_scope', planningScope);
+      formData.append('duracion_bloque_min', '90');
+
+      // Call API generate
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.error || 'Ocurrió un error al generar la planificación.');
+      }
+
+      const generated = await response.json();
+
+      // Separate out reading level
+      const { reading_level_eval, ...contentOnly } = generated;
+
+      // Save in Supabase
+      const learningObjectiveForDB = `${suggestedOAs.map(o => o.codigo).join(', ')} — ${suggestedOAs.map(o => o.texto).join(' | ')}`;
+      const { data: savedData, error: dbError } = await supabase
+        .from('plannings')
+        .insert({
+          user_id: user.id,
+          curso_id: selectedCursoId || null,
+          subject: CURRICULUM_SUBJECT,
+          grade,
+          learning_objective: learningObjectiveForDB,
+          unit: `${unit}: ${themeText}`,
+          reference_url: referenceUrl || null,
+          reference_document_name: referenceFile ? referenceFile.name : null,
+          content: contentOnly,
+          reading_level: reading_level_eval || {
+            estimated_level: 'Séptimo básico',
+            warning_alert: 'Nivel adecuado de lectura estimado.',
+          },
+        })
+        .select('id')
+        .single();
+
+      if (dbError) throw dbError;
+
+      // Store in state to render preview immediately in the wizard page!
+      setGeneratedPlan(generated);
+      setSavedId(savedData.id);
+      setShowPreview(true);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || 'Error de conexión. Inténtalo de nuevo.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDownload = (type: 'pdf' | 'word') => {
+    if (!savedId) return;
+    // Open in a new tab to trigger the auto-download code we just wrote!
+    window.open(`/planner/${savedId}?download=${type}`, '_blank');
+  };
+
+  // Loading screen layout
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#FAF9FC] text-slate-800 flex items-center justify-center p-6 font-sans">
+        <div className="max-w-md w-full text-center space-y-6">
+          <div className="relative inline-flex items-center justify-center p-6 bg-violet-50 rounded-full border border-violet-100 mb-2 shadow-xs">
+            <Loader2 className="w-10 h-10 text-violet-600 animate-spin" />
+            <Sparkles className="absolute -top-1 -right-1 w-5 h-5 text-violet-400 animate-bounce" />
+          </div>
+
+          <div className="space-y-2">
+            <h2 className="text-xl font-black text-slate-800">Diseñando Kit de Clase</h2>
+            <p className="text-slate-500 text-xs h-12 flex items-center justify-center font-medium leading-relaxed">
+              {LOADING_STEPS[loadingStep]}
+            </p>
+          </div>
+
+          <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden border border-slate-200/50">
+            <div
+              className="bg-gradient-to-r from-violet-600 to-pink-500 h-full transition-all duration-500 rounded-full"
+              style={{ width: `${((loadingStep + 1) / LOADING_STEPS.length) * 100}%` }}
+            />
+          </div>
+          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">REI Docente — IA en Acción</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-[#FAF9FC] text-slate-700 flex font-sans antialiased selection:bg-violet-100 selection:text-violet-950 overflow-x-hidden">
+      
+      {/* Shared Sidebar Component */}
+      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+
+      {/* Main Container */}
+      <div className="flex-1 lg:pl-64 flex flex-col min-w-0">
+        
+        {/* Mobile Header */}
+        <header className="lg:hidden bg-white border-b border-[#E2E8F0]/70 px-6 py-4 flex items-center justify-between sticky top-0 z-20">
+          <div className="flex items-center gap-3">
+            <button className="text-slate-500 hover:text-slate-800" onClick={() => setSidebarOpen(true)}>
+              <span className="text-xl font-bold">☰</span>
+            </button>
+            <span className="text-base font-bold bg-gradient-to-r from-violet-700 to-indigo-600 bg-clip-text text-transparent">
+              REI DOCENTE
+            </span>
+          </div>
+        </header>
+
+        {/* PNL BANNER */}
+        <div className="px-6 md:px-8 pt-8">
+          <div className="bg-gradient-to-r from-violet-50 via-purple-50/60 to-pink-50/30 border border-violet-100/50 rounded-3xl p-5 flex items-center justify-between relative overflow-hidden shadow-xs">
+            <div className="space-y-1 z-10 max-w-2xl">
+              <span className="text-[9px] font-black uppercase tracking-wider text-violet-600">MENSAJE DEL DÍA</span>
+              <p className="text-slate-800 text-xs md:text-sm font-semibold italic">
+                "Hoy avanzamos juntos, paso a paso, con energía y ligereza."
+              </p>
+            </div>
+            <div className="hidden md:flex w-10 h-10 rounded-full bg-white items-center justify-center shrink-0 shadow-xs border border-violet-50">
+              <Sparkle className="w-5 h-5 text-violet-600" />
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content Area */}
+        <main className="flex-1 p-6 md:p-8 space-y-8 max-w-4xl w-full mx-auto">
+          
+          {!showPreview ? (
+            <div className="bg-white border border-slate-100 rounded-3xl p-6 md:p-8 shadow-xs space-y-6">
+              
+              <div className="border-b border-slate-100 pb-4">
+                <h1 className="text-xl font-extrabold text-slate-800">Asistente de Kit de Clase</h1>
+                <p className="text-slate-500 text-xs leading-relaxed font-semibold">
+                  Genera una planificación curricular completa que incluye diseño invertido, adecuaciones DUA, rúbricas de cierre y apoyo RTI.
+                </p>
+              </div>
+
+              {error && (
+                <div className="bg-rose-50 border border-rose-100 text-rose-700 p-4 rounded-2xl flex items-start gap-3 text-xs">
+                  <AlertTriangle className="w-4.5 h-4.5 text-rose-500 shrink-0 mt-0.5" />
+                  <span>{error}</span>
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-6">
+                
+                {/* 1. Tipo de Kit */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">
+                    1. Tipo de Kit de Clase
+                  </label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setPlanningScope('clase')}
+                      className={`p-4 rounded-2xl border text-left transition-all duration-200 ${
+                        planningScope === 'clase'
+                          ? 'bg-gradient-to-tr from-violet-50/70 via-purple-50/70 to-pink-50/40 border-violet-200 text-violet-750 font-bold shadow-xs'
+                          : 'bg-white border-slate-200 text-slate-500 hover:border-slate-400'
+                      }`}
+                    >
+                      <span className="block text-xs font-bold">Individual (1 Sesión)</span>
+                      <span className="block text-[10px] font-semibold opacity-85 mt-1">Ideal para una clase express o foco puntual.</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPlanningScope('semana')}
+                      className={`p-4 rounded-2xl border text-left transition-all duration-200 ${
+                        planningScope === 'semana'
+                          ? 'bg-gradient-to-tr from-violet-50/70 via-purple-50/70 to-pink-50/40 border-violet-200 text-violet-750 font-bold shadow-xs'
+                          : 'bg-white border-slate-200 text-slate-500 hover:border-slate-400'
+                      }`}
+                    >
+                      <span className="block text-xs font-bold">Semanal (3 Sesiones)</span>
+                      <span className="block text-[10px] font-semibold opacity-85 mt-1">Cubre el bloque completo didáctico de la semana.</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* 2. Curso Selector */}
+                <div className="space-y-2">
+                  <label htmlFor="grade" className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">
+                    2. Curso / Nivel
+                  </label>
+                  <select
+                    id="grade"
+                    value={grade}
+                    onChange={(e) => setGrade(e.target.value)}
+                    className="w-full bg-[#FAF9FC] border border-slate-200 rounded-2xl py-3.5 px-4 text-xs text-slate-800 font-semibold focus:outline-none focus:border-violet-500 appearance-none cursor-pointer"
+                  >
+                    <option value="5° Básico">5° Básico</option>
+                    <option value="6° Básico">6° Básico</option>
+                    <option value="7° Básico">7° Básico</option>
+                    <option value="8° Básico">8° Básico</option>
+                    <option value="1° Medio">1° Medio</option>
+                    <option value="2° Medio">2° Medio</option>
+                  </select>
+                </div>
+
+                {/* 3. Unidad Selector */}
+                <div className="space-y-2">
+                  <label htmlFor="unit" className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">
+                    3. Unidad Curricular
+                  </label>
+                  <select
+                    id="unit"
+                    value={unit}
+                    onChange={(e) => setUnit(e.target.value)}
+                    className="w-full bg-[#FAF9FC] border border-slate-200 rounded-2xl py-3.5 px-4 text-xs text-slate-800 font-semibold focus:outline-none focus:border-violet-500 appearance-none cursor-pointer"
+                  >
+                    <option value="Unidad 1">Unidad 1</option>
+                    <option value="Unidad 2">Unidad 2</option>
+                    <option value="Unidad 3">Unidad 3</option>
+                    <option value="Unidad 4">Unidad 4</option>
+                  </select>
+                </div>
+
+                {/* 4. Elige el tema */}
+                <div className="space-y-3 bg-slate-50/50 border border-slate-100 rounded-2xl p-4">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-2">
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+                      4. Didáctica: Elige o escribe el tema
+                    </span>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setThemeMode('select')}
+                        className={`text-[9px] font-bold px-2 py-0.5 rounded-md ${
+                          themeMode === 'select' ? 'bg-violet-600 text-white' : 'bg-slate-100 text-slate-500'
+                        }`}
+                      >
+                        Sugeridos
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setThemeMode('manual')}
+                        className={`text-[9px] font-bold px-2 py-0.5 rounded-md ${
+                          themeMode === 'manual' ? 'bg-violet-600 text-white' : 'bg-slate-100 text-slate-500'
+                        }`}
+                      >
+                        Escribir Tema
+                      </button>
+                    </div>
+                  </div>
+
+                  {themeMode === 'select' ? (
+                    <div className="space-y-1.5">
+                      <label htmlFor="theme-select" className="text-[9px] font-bold text-slate-500">
+                        Selecciona un tema curricular sugerido
+                      </label>
+                      <select
+                        id="theme-select"
+                        value={selectedTheme}
+                        onChange={(e) => setSelectedTheme(e.target.value)}
+                        className="w-full bg-white border border-slate-200 rounded-xl py-2.5 px-3 text-xs text-slate-800 font-semibold focus:outline-none focus:border-violet-500 cursor-pointer"
+                      >
+                        <option value="">-- Elige un tema sugerido --</option>
+                        {catalogThemes.map((theme, i) => (
+                          <option key={i} value={theme.titulo}>
+                            Sesión {i + 1}: {theme.titulo}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <label htmlFor="manual-theme-input" className="text-[9px] font-bold text-slate-500">
+                        Escribe el tema que deseas planificar
+                      </label>
+                      <div className="flex gap-2">
+                        <input
+                          id="manual-theme-input"
+                          type="text"
+                          value={manualTheme}
+                          onChange={handleManualThemeChange}
+                          placeholder="Ej: Análisis del narrador testigo en la novela policial..."
+                          className="flex-1 bg-white border border-slate-200 rounded-xl py-2 px-3 text-xs text-slate-800 font-medium focus:outline-none focus:border-violet-500"
+                        />
+                        <button
+                          type="button"
+                          onClick={triggerManualSuggestion}
+                          disabled={!manualTheme.trim()}
+                          className="px-3.5 py-2 bg-slate-800 text-white hover:bg-slate-700 disabled:opacity-40 text-xs font-bold rounded-xl transition-all"
+                        >
+                          Sugerir OA
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* 5. Objetivo de Aprendizaje sugerido por IA */}
+                <div className="space-y-2 border-t border-slate-100 pt-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+                      5. Alineación Curricular (MINEDUC)
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-[9px] font-bold text-violet-600 bg-violet-50 px-2 py-0.5 rounded-full">
+                      <Shield className="w-2.5 h-2.5" />
+                      Sugerido por IA
+                    </span>
+                  </div>
+
+                  {suggestingOAs ? (
+                    <div className="flex items-center gap-2 py-4 justify-center text-xs text-slate-400 font-semibold">
+                      <Loader2 className="w-4 h-4 animate-spin text-violet-600" />
+                      <span>Buscando y alineando Objetivos oficiales...</span>
+                    </div>
+                  ) : suggestedOAs.length > 0 ? (
+                    <div className="bg-violet-50/50 border border-violet-100 rounded-2xl p-4 space-y-3">
+                      {suggestedOAs.map((oa) => (
+                        <div key={oa.id} className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <span className="px-2 py-0.5 bg-violet-600 text-white text-[9px] font-black rounded-full">
+                              {oa.codigo}
+                            </span>
+                            <span className="text-[10px] font-bold text-slate-500">
+                              Eje: Lectura y Escritura
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-700 leading-relaxed font-semibold">
+                            {oa.texto}
+                          </p>
+                        </div>
+                      ))}
+
+                      <div className="flex items-center gap-2 pt-2 border-t border-violet-100/50">
+                        <input
+                          type="checkbox"
+                          id="validate-oa-check"
+                          checked={validatedOA}
+                          onChange={(e) => setValidatedOA(e.target.checked)}
+                          className="w-4 h-4 text-violet-600 border-slate-350 rounded focus:ring-violet-500"
+                        />
+                        <label htmlFor="validate-oa-check" className="text-[10px] font-extrabold text-violet-750 cursor-pointer select-none">
+                          Confirmar y validar alineación para el Kit de Clase
+                        </label>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-5 bg-slate-50 border border-slate-100 rounded-2xl text-xs text-slate-450 font-bold italic">
+                      Selecciona un tema arriba para cargar los OAs sugeridos.
+                    </div>
+                  )}
+                </div>
+
+                {/* Optional Configuration Section (Collapsed by default) */}
+                <div className="border-t border-slate-100 pt-4 space-y-3">
+                  <p className="text-[10px] font-bold text-slate-400">MATERIAL DE APOYO & HORARIOS (OPCIONAL)</p>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Course select */}
+                    <div className="space-y-1">
+                      <label htmlFor="curso-selector" className="text-[9px] font-bold text-slate-500 block">
+                        Vincular a Horario de Curso
+                      </label>
+                      <select
+                        id="curso-selector"
+                        value={selectedCursoId}
+                        onChange={(e) => setSelectedCursoId(e.target.value)}
+                        className="w-full bg-white border border-slate-200 rounded-xl py-2 px-3 text-xs text-slate-800"
+                      >
+                        <option value="">Sin horario vinculado</option>
+                        {cursos.map((c) => (
+                          <option key={c.id} value={c.id}>
+                            {c.nombre} ({c.nivel})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Reference URL */}
+                    <div className="space-y-1">
+                      <label htmlFor="ref-url" className="text-[9px] font-bold text-slate-500 block">
+                        URL de Referencia Didáctica
+                      </label>
+                      <input
+                        id="ref-url"
+                        type="url"
+                        placeholder="https://ejemplo.cl/recurso"
+                        value={referenceUrl}
+                        onChange={(e) => setReferenceUrl(e.target.value)}
+                        className="w-full bg-white border border-slate-200 rounded-xl py-2 px-3 text-xs text-slate-800"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Submit Action Bar */}
+                <div className="border-t border-slate-100 pt-6 flex justify-end gap-3">
+                  <Link
+                    href="/"
+                    className="px-5 py-2.5 bg-white border border-slate-200 rounded-2xl text-xs font-bold text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-all"
+                  >
+                    Cancelar
+                  </Link>
+                  <button
+                    type="submit"
+                    id="generate-plan-btn"
+                    disabled={!validatedOA}
+                    className="inline-flex items-center gap-2 px-7 py-2.5 bg-gradient-to-r from-violet-600 via-purple-600 to-pink-500 hover:from-violet-700 hover:to-pink-600 text-white font-bold text-xs rounded-2xl shadow-md transition-all disabled:opacity-40"
+                  >
+                    Generar Kit de Clase
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+
+              </form>
+            </div>
+          ) : (
+            // PREVIEW PANE DIRECTLY IN WIZARD
+            <div className="bg-white border border-slate-100 rounded-3xl p-6 md:p-8 shadow-xs space-y-6">
+              
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                <div>
+                  <span className="text-[9px] font-black uppercase tracking-wider text-violet-600">KIT GENERADO</span>
+                  <h1 className="text-xl font-extrabold text-slate-800">Vista Previa del Kit de Clase</h1>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleDownload('word')}
+                    className="flex items-center gap-1.5 px-3 py-2 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 text-xs font-bold rounded-xl transition-all"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    Word
+                  </button>
+                  <button
+                    onClick={() => handleDownload('pdf')}
+                    className="flex items-center gap-1.5 px-3 py-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 text-xs font-bold rounded-xl transition-all"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    PDF
+                  </button>
+                </div>
+              </div>
+
+              {/* Quick Summary Card */}
+              <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 space-y-2">
+                <div className="grid grid-cols-2 gap-4 text-xs font-semibold text-slate-500">
+                  <div>Curso: <span className="text-slate-800">{grade}</span></div>
+                  <div>Asignatura: <span className="text-slate-800">{CURRICULUM_SUBJECT}</span></div>
+                </div>
+                <div className="text-xs font-semibold text-slate-500">
+                  Objetivo: <span className="text-slate-800">{suggestedOAs.map(o => `${o.codigo}: ${o.texto}`).join(' | ')}</span>
+                </div>
+              </div>
+
+              {/* Rendered Preview Sections */}
+              <div className="space-y-6">
+                
+                {/* 1. Backward Design */}
+                <div className="space-y-2">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">1. Secuencia de Aprendizaje Inverso (Backward Design)</h3>
+                  <div className="border border-slate-100 rounded-2xl p-4 space-y-3 bg-white">
+                    <div>
+                      <h4 className="text-xs font-bold text-slate-800 mb-1">Evidencia de Evaluación:</h4>
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        {generatedPlan?.backward_design?.assessment_evidence || 
+                         'Los estudiantes elaboran un informe escrito aplicando rúbricas detalladas y conectores de secuencia didáctica.'}
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-bold text-slate-800 mb-1">Secuencia Didáctica General:</h4>
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        {generatedPlan?.backward_design?.activities_sequence || 
+                         'Inicio: Activación de saberes previos. Desarrollo: Modelado de lectura guiada por el docente. Cierre: Ticket de salida metacognitivo.'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. DUA Adaptations */}
+                <div className="space-y-2">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">2. Adaptaciones DUA (Universal Design)</h3>
+                  <div className="border border-slate-100 rounded-2xl p-4 bg-white text-xs text-slate-600 leading-relaxed">
+                    {generatedPlan?.dua_adaptations || 
+                     'Se proveen múltiples medios de representación (organizadores gráficos, audiotextos) y de expresión (opciones de respuesta oral o escrita).'}
+                  </div>
+                </div>
+
+                {/* 3. RTI Supports */}
+                <div className="space-y-2">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">3. Apoyo Diferenciado (RTI)</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="border border-slate-100 rounded-2xl p-4 bg-white">
+                      <span className="text-[9px] font-black uppercase text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Nivel 1 (General)</span>
+                      <p className="text-xs text-slate-500 mt-2 font-medium">
+                        {generatedPlan?.rti_supports?.general || 'Apoyo universal en el aula para todos.'}
+                      </p>
+                    </div>
+                    <div className="border border-slate-100 rounded-2xl p-4 bg-white">
+                      <span className="text-[9px] font-black uppercase text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">Nivel 2 (Focalizado)</span>
+                      <p className="text-xs text-slate-500 mt-2 font-medium">
+                        {generatedPlan?.rti_supports?.targeted || 'Guías adaptadas y trabajo en parejas.'}
+                      </p>
+                    </div>
+                    <div className="border border-slate-100 rounded-2xl p-4 bg-white">
+                      <span className="text-[9px] font-black uppercase text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full">Nivel 3 (Intensivo)</span>
+                      <p className="text-xs text-slate-500 mt-2 font-medium">
+                        {generatedPlan?.rti_supports?.intensive || 'Tutorías personalizadas e instrumentos simplificados.'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Action Buttons */}
+              <div className="border-t border-slate-100 pt-6 flex justify-between items-center">
+                <button
+                  onClick={() => setShowPreview(false)}
+                  className="px-5 py-2.5 border border-slate-200 rounded-2xl text-xs font-bold text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-all"
+                >
+                  ← Editar Formulario
+                </button>
+                <div className="flex gap-3">
+                  <Link
+                    href="/"
+                    className="px-5 py-2.5 bg-slate-800 text-white font-bold text-xs rounded-2xl shadow-xs transition-all hover:bg-slate-700"
+                  >
+                    Volver a Inicio
+                  </Link>
+                </div>
+              </div>
+
+            </div>
+          )}
+
+        </main>
+      </div>
+    </div>
+  );
+}
