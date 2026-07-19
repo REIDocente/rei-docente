@@ -880,7 +880,6 @@ ${oatActitudesFormatted}
         attempt++;
         const _t0 = Date.now();
         console.log(`[generate-chain] ${stepName} — Intento ${attempt}/${maxAttempts}`);
-        console.log(`[REI⏱] ${stepName} | Intento ${attempt}/${maxAttempts} | INICIO | sys:~${Math.round(systemPrompt.length/4)}tk | usr:~${Math.round(userPrompt.length/4)}tk`);
         
         sendEvent('status', {
           step: stepName,
@@ -930,7 +929,6 @@ ${oatActitudesFormatted}
           }
 
           const _dur = ((Date.now() - _t0) / 1000).toFixed(1);
-          console.log(`[REI⏱] ${stepName} | Intento ${attempt} | STREAM_FIN | ${_dur}s | resp:~${Math.round(responseText.length/4)}tk`);
           let cleanText = responseText;
           if (cleanText.startsWith('```json')) {
             cleanText = cleanText.substring(7);
@@ -944,16 +942,13 @@ ${oatActitudesFormatted}
 
           if (validateFn(parsedJson)) {
             console.log(`[generate-chain] ${stepName} completado con éxito en el intento ${attempt}`);
-            console.log(`[REI⏱] ${stepName} | ÉXITO | ${((Date.now()-_t0)/1000).toFixed(1)}s total`);
             return parsedJson;
           } else {
-            console.log(`[REI⏱] ${stepName} | Intento ${attempt} | VALID_FAIL | ${((Date.now()-_t0)/1000).toFixed(1)}s | campos:${Object.keys(parsedJson||{}).join(',')}`);
             lastError = 'El JSON generado no tiene los campos de estructura obligatorios requeridos para esta fase.';
             console.warn(`[generate-chain] ${stepName} falló validación de esquema en el intento ${attempt}: ${lastError}`);
           }
         } catch (err: any) {
           const _errDur = ((Date.now() - _t0) / 1000).toFixed(1);
-          console.log(`[REI⏱] ${stepName} | Intento ${attempt} | EXCEPCIÓN | ${_errDur}s | ${err?.constructor?.name||'?'} | status:${err?.status||'N/A'} | ${(err?.message||'').substring(0,120)}`);
           lastError = err.message || 'Error de comunicación o parseo de JSON.';
           console.warn(`[generate-chain] ${stepName} falló en el intento ${attempt}: ${lastError}`);
         }
