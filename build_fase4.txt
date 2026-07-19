@@ -1,0 +1,30 @@
+
+> app-docente-ia@0.1.0 build
+> next build
+
+[DNS Override] Pre-loaded successfully. Global DNS lookup patched for Supabase & Google.
+▲ Next.js 16.2.9 (Turbopack)
+
+  Creating an optimized production build ...
+[DNS Override] Pre-loaded successfully. Global DNS lookup patched for Supabase & Google.
+✓ Compiled successfully in 7.0s
+  Running TypeScript ...
+  Finished TypeScript in 8.5s ...
+  Collecting page data using 15 workers ...
+Supabase credentials are missing. Please configure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local
+Supabase credentials are missing. Please configure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local
+Error: supabaseUrl is required.
+    at module evaluation (C:\Users\56940\Desktop\rei-docente\.next\server\chunks\[root-of-the-server]__045r0dx._.js:1:1294)
+    at instantiateModule (C:\Users\56940\Desktop\rei-docente\.next\server\chunks\[turbopack]_runtime.js:853:9)
+    at getOrInstantiateModuleFromParent (C:\Users\56940\Desktop\rei-docente\.next\server\chunks\[turbopack]_runtime.js:877:12)
+    at Context.esmImport [as i] (C:\Users\56940\Desktop\rei-docente\.next\server\chunks\[turbopack]_runtime.js:281:20)
+    at module evaluation (C:\Users\56940\Desktop\rei-docente\.next\server\chunks\[root-of-the-server]__045r0dx._.js:1:1858)
+    at instantiateModule (C:\Users\56940\Desktop\rei-docente\.next\server\chunks\[turbopack]_runtime.js:853:9)
+    at instantiateRuntimeModule (C:\Users\56940\Desktop\rei-docente\.next\server\chunks\[turbopack]_runtime.js:882:12)
+Supabase credentials are missing. Please configure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local
+
+> Build error occurred
+Error: Failed to collect page data for /api/curriculum/unidades
+    at ignore-listed frames {
+  type: 'Error'
+}

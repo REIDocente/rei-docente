@@ -45,6 +45,9 @@ interface SessionMetadata {
   tipoOa: string;
   objetivo: string;
   evaluacion: string;
+  recursos: string;
+  duracion: string;
+  producto: string;
 }
 
 interface AdaptationRow {
@@ -60,6 +63,7 @@ const extractMetadataBlock = (text: string): { metadata: SessionMetadata | null;
   let tipoOa = '';
   let objetivo = '';
   let evaluacion = '';
+  let recursos = '';
   let headerEndIndex = -1;
   let parsedFromTable = false;
 
@@ -102,6 +106,8 @@ const extractMetadataBlock = (text: string): { metadata: SessionMetadata | null;
           objetivo = value;
         } else if (field.includes('evaluacin') || field.includes('evaluación')) {
           evaluacion = value;
+        } else if (field.includes('recursos')) {
+          recursos = value;
         }
       }
       tableEndIndex = i;
@@ -125,6 +131,9 @@ const extractMetadataBlock = (text: string): { metadata: SessionMetadata | null;
       } else if (/^Evaluaci[oó]n\s*:/i.test(cleanLine)) {
         evaluacion = cleanLine.replace(/^Evaluaci[oó]n\s*:\s*/i, '').trim();
         headerEndIndex = Math.max(headerEndIndex, i);
+      } else if (/^Recursos\s*:/i.test(cleanLine)) {
+        recursos = cleanLine.replace(/^Recursos\s*:\s*/i, '').trim();
+        headerEndIndex = Math.max(headerEndIndex, i);
       }
     }
   }
@@ -144,7 +153,13 @@ const extractMetadataBlock = (text: string): { metadata: SessionMetadata | null;
         title: title || 'SESIÓN DE CLASE',
         tipoOa: tipoOa || 'No especificado',
         objetivo: cleanObjective(objetivo) || 'No especificado',
-        evaluacion: evaluacion || 'Formativa'
+        evaluacion: evaluacion || 'Formativa',
+        recursos: recursos || '',
+        duracion: (() => {
+          const segs = (title || '').split('·').map((s: string) => s.trim());
+          return segs.length > 1 ? segs[segs.length - 1] : '';
+        })(),
+        producto: ''
       },
       rest: cleanedRestLines.join('\n').trim()
     };
@@ -238,7 +253,7 @@ interface PlanningContent {
   writing_technique?: string;
   backward_design: {
     objective: string;
-    assessment_evidence: string;
+    assessment_evidence: any;
     activities_sequence: string;
   };
   dua_adaptations: any;
@@ -1117,21 +1132,34 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
                       ],
                       spacing: { after: 80 }
                     }),
-
-                    new Paragraph({
+                    ...(metadata.duracion ? [new Paragraph({
                       children: [
-                        new TextRun({ text: "Objetivo: ", bold: true, color: "1E293B", size: 19 }),
-                        new TextRun({ text: " " + metadata.objetivo, color: "334155", size: 19 })
+                        new TextRun({ text: 'Duración: ', bold: true, color: '1E293B', size: 19 }),
+                        new TextRun({ text: metadata.duracion, color: '334155', size: 19 })
                       ],
-                      spacing: { after: 60 }
-                    }),
+                      spacing: { after: 50 }
+                    })] : []),
+                    ...(metadata.recursos ? [new Paragraph({
+                      children: [
+                        new TextRun({ text: 'Recursos: ', bold: true, color: '1E293B', size: 19 }),
+                        new TextRun({ text: metadata.recursos, color: '334155', size: 19 })
+                      ],
+                      spacing: { after: 50 }
+                    })] : []),
                     new Paragraph({
                       children: [
-                        new TextRun({ text: "Evaluación: ", bold: true, color: "1E293B", size: 19 }),
-                        new TextRun({ text: " " + metadata.evaluacion, color: "334155", size: 19 })
+                        new TextRun({ text: 'Evaluación: ', bold: true, color: '1E293B', size: 19 }),
+                        new TextRun({ text: metadata.evaluacion, color: '334155', size: 19 })
+                      ],
+                      spacing: { after: 50 }
+                    }),
+                    ...(metadata.producto ? [new Paragraph({
+                      children: [
+                        new TextRun({ text: 'Producto: ', bold: true, color: '1E293B', size: 19 }),
+                        new TextRun({ text: metadata.producto, color: '334155', size: 19 })
                       ],
                       spacing: { after: 40 }
-                    })
+                    })] : [])
                   ]
                 })
               ]
@@ -1570,13 +1598,29 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
             ],
             spacing: { before: 100, after: 50 }
           }),
-          new Paragraph({ text: planning.content.backward_design.assessment_evidence }),
+          ...(() => {
+            const ae = planning.content.backward_design.assessment_evidence;
+            if (ae && typeof ae === 'object') {
+              const criterios: any[] = (ae.criterios || []).map((criterio: string) =>
+                new Paragraph({ text: `• ${criterio}`, indent: { left: 360 }, spacing: { after: 30 } })
+              );
+              return [
+                new Paragraph({ children: [new TextRun({ text: 'Producto: ', bold: true }), new TextRun({ text: ae.producto || '' })], spacing: { after: 40 } }),
+                new Paragraph({ children: [new TextRun({ text: 'Instrumento: ', bold: true }), new TextRun({ text: ae.instrumento || '' })], spacing: { after: 40 } }),
+                new Paragraph({ children: [new TextRun({ text: 'Criterios mínimos:', bold: true })], spacing: { after: 20 } }),
+                ...criterios
+              ];
+            }
+            return [new Paragraph({ text: typeof ae === 'string' ? ae : '' })];
+          })(),
 
           ...(() => {
             const { metadata, rest } = extractMetadataBlock(planning.content.backward_design.activities_sequence);
             const rendered: any[] = [];
             
             if (metadata) {
+              const aeWord = planning.content.backward_design.assessment_evidence;
+              if (aeWord && typeof aeWord === 'object' && aeWord.producto) metadata.producto = aeWord.producto;
               rendered.push(createSessionMetadataBlockWord(metadata));
               rendered.push(new Paragraph({ text: "", spacing: { after: 150 } }));
             }
@@ -2015,16 +2059,21 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
         doc.setFont('Helvetica', 'normal');
         doc.setFontSize(9);
 
-        const objLines = doc.splitTextToSize(`Objetivo: ${metadata.objetivo}`, maxLineWidth - 10) as string[];
+        const duracionLines = metadata.duracion ? doc.splitTextToSize(`Duración: ${metadata.duracion}`, maxLineWidth - 10) as string[] : [];
+        const recursosLines = metadata.recursos ? doc.splitTextToSize(`Recursos: ${metadata.recursos}`, maxLineWidth - 10) as string[] : [];
         const evalLines = doc.splitTextToSize(`Evaluación: ${metadata.evaluacion}`, maxLineWidth - 10) as string[];
+        const productoLines = metadata.producto ? doc.splitTextToSize(`Producto: ${metadata.producto}`, maxLineWidth - 10) as string[] : [];
 
         const padding = 5;
         const spacingBetween = 4;
-        const totalHeight = 
-          titleLines.length * 5 + 
-          evalLines.length * 4.5 + 
-          padding * 2 + 
-          spacingBetween * 1;
+        const lineH = 4.5;
+        const allFieldLines = [duracionLines, recursosLines, evalLines, productoLines].filter((l: string[]) => l.length > 0);
+        const fieldsH = allFieldLines.reduce((sum: number, l: string[]) => sum + l.length * lineH, 0);
+        const totalHeight =
+          titleLines.length * 5 +
+          spacingBetween - 2 +
+          fieldsH +
+          padding * 2 + 3;
 
         // Draw light blue background rectangle
         doc.setFillColor(224, 242, 254); // Light blue
@@ -2046,20 +2095,28 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
         });
         currentY += spacingBetween - 2;
 
-        // Print Evaluación
-        evalLines.forEach((line, idx) => {
-          if (idx === 0) {
-            doc.setFont('Helvetica', 'bold');
-            const labelWidth = doc.getTextWidth("Evaluación: x") - doc.getTextWidth("x");
-            doc.text("Evaluación: ", marginX + padding + 2, currentY);
-            doc.setFont('Helvetica', 'normal');
-            doc.text(line.replace(/^Evaluaci[oó]n\s*:\s*/i, ''), marginX + padding + 2 + labelWidth, currentY);
-          } else {
-            doc.setFont('Helvetica', 'normal');
-            doc.text(line, marginX + padding + 2, currentY);
-          }
-          currentY += 4.5;
-        });
+        const printLabelLines = (label: string, stripPattern: RegExp, lines: string[]) => {
+          lines.forEach((line: string, idx: number) => {
+            if (idx === 0) {
+              doc.setFont('Helvetica', 'bold');
+              const lw = doc.getTextWidth(`${label}x`) - doc.getTextWidth('x');
+              doc.text(label, marginX + padding + 2, currentY);
+              doc.setFont('Helvetica', 'normal');
+              doc.text(line.replace(stripPattern, ''), marginX + padding + 2 + lw, currentY);
+            } else {
+              doc.setFont('Helvetica', 'normal');
+              doc.text(line, marginX + padding + 2, currentY);
+            }
+            currentY += lineH;
+          });
+        };
+
+        doc.setFontSize(9);
+        doc.setTextColor(15, 23, 42);
+        if (duracionLines.length) printLabelLines('Duración: ', /^Duraci[oó]n\s*:\s*/i, duracionLines);
+        if (recursosLines.length) printLabelLines('Recursos: ', /^Recursos\s*:\s*/i, recursosLines);
+        printLabelLines('Evaluación: ', /^Evaluaci[oó]n\s*:\s*/i, evalLines);
+        if (productoLines.length) printLabelLines('Producto: ', /^Producto\s*:\s*/i, productoLines);
 
         cursorY += totalHeight + 8;
       };
@@ -2284,11 +2341,25 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
         writeText(cleanObjective(planning.content.backward_design.objective));
         cursorY += 2;
         writeText("Evidencia de evaluación:", 10, 'bold', [15, 23, 42]);
-        writeText(planning.content.backward_design.assessment_evidence);
+        (() => {
+          const ae = planning.content.backward_design.assessment_evidence;
+          if (ae && typeof ae === 'object') {
+            writeText(`Producto: ${ae.producto || ''}`, 9.5, 'normal', [15, 23, 42]);
+            writeText(`Instrumento: ${ae.instrumento || ''}`, 9.5, 'normal', [15, 23, 42]);
+            writeText('Criterios mínimos:', 9.5, 'bold', [15, 23, 42]);
+            (ae.criterios || []).forEach((criterio: string) => {
+              writeText(`• ${criterio}`, 9, 'normal', [51, 65, 85]);
+            });
+          } else {
+            writeText(typeof ae === 'string' ? ae : '', 9.5, 'normal', [15, 23, 42]);
+          }
+        })();
         cursorY += 2;
         
         const { metadata, rest } = extractMetadataBlock(planning.content.backward_design.activities_sequence);
         if (metadata) {
+          const aePdf = planning.content.backward_design.assessment_evidence;
+          if (aePdf && typeof aePdf === 'object' && aePdf.producto) metadata.producto = aePdf.producto;
           writeSessionMetadataBlockPdf(metadata);
         }
 
@@ -2684,7 +2755,24 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
                   </div>
                   <div>
                     <strong className="text-slate-800 block mb-1">Evidencia de Evaluación:</strong>
-                    <p className="bg-[#FAF9FC]/40 border border-[#E2E8F0]/60 p-4 rounded-xl">{planning.content.backward_design.assessment_evidence}</p>
+                    <div className="bg-[#FAF9FC]/40 border border-[#E2E8F0]/60 p-4 rounded-xl space-y-3 text-sm">
+                      {planning.content.backward_design.assessment_evidence && typeof planning.content.backward_design.assessment_evidence === 'object' ? (
+                        <>
+                          <div><span className="font-semibold text-slate-700">Producto: </span>{planning.content.backward_design.assessment_evidence?.producto}</div>
+                          <div><span className="font-semibold text-slate-700">Instrumento: </span>{planning.content.backward_design.assessment_evidence?.instrumento}</div>
+                          <div>
+                            <span className="font-semibold text-slate-700 block mb-1">Criterios mínimos:</span>
+                            <ul className="space-y-1 pl-2">
+                              {(planning.content.backward_design.assessment_evidence?.criterios || []).map((criterio: string, idx: number) => (
+                                <li key={idx} className="flex gap-2 text-slate-600"><span className="text-slate-400 shrink-0">•</span>{criterio}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </>
+                      ) : (
+                        <p>{planning.content.backward_design.assessment_evidence}</p>
+                      )}
+                    </div>
                   </div>
                   <div>
                     <strong className="text-slate-800 block mb-1">Secuencia de Actividades (Inicio, Desarrollo, Cierre):</strong>

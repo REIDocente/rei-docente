@@ -400,7 +400,7 @@ ${inferenceProcessBlock}
   2. ¿Qué criterios permiten evaluar esa evidencia en 3 niveles de logro?
   3. ¿Qué secuencia de actividades conduce a esa evidencia de forma eficiente?
   El campo "objective" del JSON: 1-2 oraciones con verbo(s) en infinitivo. PROHIBIDO incluir códigos OA (OA 1, OA 9, OA 21…) ni el texto oficial entre comillas. PROHIBIDO empezar con "El estudiante…" o "El docente…". Solo el objetivo operativo de la sesión.
-  El campo "assessment_evidence" debe nombrar un producto concreto y medible.
+  El campo "assessment_evidence" es un objeto JSON con tres campos: "producto" (producto observable que evidencia el logro), "instrumento" (nombre del instrumento de evaluación) y "criterios" (array de 2-4 criterios mínimos de logro como strings).
 
 ${pedagogicalStructureInstructions}
 
@@ -786,8 +786,7 @@ ${oatActitudesFormatted}
         typeof json.backward_design === 'object' &&
         typeof json.backward_design.objective === 'string' &&
         json.backward_design.objective.trim() !== '' &&
-        typeof json.backward_design.assessment_evidence === 'string' &&
-        json.backward_design.assessment_evidence.trim() !== '' &&
+        (typeof json.backward_design.assessment_evidence === 'string' || (typeof json.backward_design.assessment_evidence === 'object' && json.backward_design.assessment_evidence !== null)) &&
         typeof json.backward_design.activities_sequence === 'string' &&
         json.backward_design.activities_sequence.trim() !== ''
       );
@@ -1015,10 +1014,18 @@ El JSON debe tener exactamente esta estructura:
 {
   "backward_design": {
     "objective": "SOLO el objetivo operativo: 1-2 oraciones con verbo(s) en infinitivo. PROHIBIDO ABSOLUTO: (a) códigos OA como OA 1, OA 9, OA 21; (b) texto oficial del currículo entre comillas; (c) 'El estudiante...', 'El docente...'. CORRECTO: 'Analizar la tesis y los argumentos de una columna de opinión, identificar fallas argumentativas y dialogar fundamentando una postura personal.' INCORRECTO: 'OA 9: Analizar y evaluar textos... El docente conducirá...'",
-    "assessment_evidence": "Describe UN producto concreto y observable que evidencia el logro del OA, incluyendo los criterios mínimos de calidad.",
+    "assessment_evidence": {
+      "producto": "Producto observable que evidencia el logro: describe qué produce o hace el estudiante (ej: 'Ticket de salida OREO escrito individualmente: el estudiante completa una estructura de 4 líneas respondiendo a la pregunta motivadora').",
+      "instrumento": "Nombre del instrumento de evaluación (ej: 'Ticket de salida OREO', 'Rúbrica de escritura', 'Lista de cotejo oral', 'Escala de apreciación').",
+      "criterios": [
+        "Criterio mínimo 1 de logro (observable y concreto).",
+        "Criterio mínimo 2 de logro.",
+        "Criterio mínimo 3 de logro."
+      ]
+    },
     "activities_sequence": "Secuencia de actividades cronológica y compacta. Debes estructurar la sesión de la siguiente manera:
 1. ENCABEZADO DE SESIÓN (OBLIGATORIO): Inicia la secuencia con un encabezado en negrita EXACTAMENTE en este formato: **SESIÓN X · [Nombre Unidad] · [Nombre Lección] · [Curso] · [Duración]**. Inmediatamente después, coloca este bloque de texto:
-'Tipo / OA: [Foco pedagógico e indicación de OAs basales y complementarios]\\nEvaluación: [Formato del ticket de salida y técnica, ej: Formativa — Ticket de salida RICE (individual, escrito)]'. Queda estrictamente PROHIBIDO generar cualquier tabla Markdown en este encabezado.
+'Tipo / OA: [Foco pedagógico e indicación de OAs basales y complementarios]\\nRecursos: [materiales para la sesión: texto impreso, pizarra, cuadernos, tarjetas, colores, etc. — adaptar según la actividad]\\nEvaluación: [Formato del ticket de salida y técnica, ej: Formativa — Ticket de salida RICE (individual, escrito)]'. Queda estrictamente PROHIBIDO generar cualquier tabla Markdown en este encabezado.
 2. Inicio (10-15 min) con guion narrativo y referencias a elementos de anclaje.
 3. Desarrollo (55-65 min) con modelado docente y práctica autónoma. Durante el Desarrollo, utiliza el texto de la sesión provisto como material de lectura base y modela sobre él (no inventes un texto nuevo ni uses textos genéricos; todas las actividades y preguntas de monitoreo lateral deben hacer referencia directa y específica a dicho texto).
 4. Cierre (10-15 min) con ticket de salida de 4 líneas y referencias a anclajes. El ticket de salida debe usar obligatoriamente la técnica de escritura seleccionada: ${writingTechnique.toUpperCase()}. ${writingTechnique === 'rice' ? 'Estructúralo obligatoriamente con el formato de 4 líneas usando exactamente estas etiquetas literales: R (Repetir), I (Incluir), C (Citar), E (Explicar). Cada etiqueta en su propia línea.' : 'Estructúralo obligatoriamente con el formato de 4 líneas usando exactamente la estructura OREO con estas etiquetas literales: O (Opinión), R (Razón), E (Ejemplo), O (Opinión). Cada etiqueta en su propia línea. No uses otras estructuras como hipótesis o contraargumentación.'} Todo extremadamente conciso, sin prosa teórica y sin siglas metodológicas."
