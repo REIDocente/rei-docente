@@ -1117,13 +1117,7 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
                       ],
                       spacing: { after: 80 }
                     }),
-                    new Paragraph({
-                      children: [
-                        new TextRun({ text: "Tipo / OA: ", bold: true, color: "1E293B", size: 19 }),
-                        new TextRun({ text: " " + metadata.tipoOa, color: "334155", size: 19 })
-                      ],
-                      spacing: { after: 60 }
-                    }),
+
                     new Paragraph({
                       children: [
                         new TextRun({ text: "Objetivo: ", bold: true, color: "1E293B", size: 19 }),
@@ -1528,9 +1522,7 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
           new Paragraph({ text: "", spacing: { after: 50 } }),
           new Paragraph({
             children: [
-              new TextRun({ text: oaCodes, italics: true }),
-              new TextRun({ text: "\nObjetivo de clase: ", bold: true }),
-              new TextRun({ text: cleanObjective(planning.content.backward_design.objective) })
+              new TextRun({ text: oaCodes, italics: true })
             ]
           }),
           
@@ -1551,6 +1543,13 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
               new TextRun({ text: planning.reading_level.warning_alert })
             ]
           }),
+
+          new Paragraph({ text: "", spacing: { after: 150 } }),
+
+          // Técnicas de Anclaje
+          createSectionHeaderWord("Técnicas de Anclaje", "F1F5F9", "334155"),
+          new Paragraph({ text: "", spacing: { after: 50 } }),
+          new Paragraph({ text: planning.content.nlp_technique || '' }),
 
           new Paragraph({ text: "", spacing: { after: 150 } }),
 
@@ -2015,7 +2014,7 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
         
         doc.setFont('Helvetica', 'normal');
         doc.setFontSize(9);
-        const tipoLines = doc.splitTextToSize(`Tipo / OA: ${metadata.tipoOa}`, maxLineWidth - 10) as string[];
+
         const objLines = doc.splitTextToSize(`Objetivo: ${metadata.objetivo}`, maxLineWidth - 10) as string[];
         const evalLines = doc.splitTextToSize(`Evaluación: ${metadata.evaluacion}`, maxLineWidth - 10) as string[];
 
@@ -2023,11 +2022,10 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
         const spacingBetween = 4;
         const totalHeight = 
           titleLines.length * 5 + 
-          tipoLines.length * 4.5 + 
           objLines.length * 4.5 + 
           evalLines.length * 4.5 + 
           padding * 2 + 
-          spacingBetween * 3;
+          spacingBetween * 2;
 
         // Draw light blue background rectangle
         doc.setFillColor(224, 242, 254); // Light blue
@@ -2048,24 +2046,6 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
           currentY += 5;
         });
         currentY += spacingBetween - 2;
-
-        // Print Tipo / OA
-        doc.setTextColor(15, 23, 42); // slate-800
-        doc.setFontSize(9);
-        tipoLines.forEach((line, idx) => {
-          if (idx === 0) {
-            doc.setFont('Helvetica', 'bold');
-            const labelWidth = doc.getTextWidth("Tipo / OA: x") - doc.getTextWidth("x");
-            doc.text("Tipo / OA: ", marginX + padding + 2, currentY);
-            doc.setFont('Helvetica', 'normal');
-            doc.text(line.replace(/^Tipo\s*\/\s*OA\s*:\s*/i, ''), marginX + padding + 2 + labelWidth, currentY);
-          } else {
-            doc.setFont('Helvetica', 'normal');
-            doc.text(line, marginX + padding + 2, currentY);
-          }
-          currentY += 4.5;
-        });
-        currentY += spacingBetween - 2.5;
 
         // Print Objetivo
         objLines.forEach((line, idx) => {
@@ -2304,12 +2284,16 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
 
         writeSectionHeaderPdf("Objetivo de Aprendizaje (OA)", [224, 242, 254], [3, 105, 161]);
         writeText(oaCodes, 10, 'italic');
-        writeText("Objetivo de clase: " + cleanObjective(planning.content.backward_design.objective), 10, 'normal');
+
         cursorY += 4;
 
         writeSectionHeaderPdf("Evaluación de Nivel Lector", [224, 242, 254], [3, 105, 161]);
         writeText(`Nivel de lectura estimado: ${planning.reading_level.estimated_level}`);
         writeText(`Alerta pedagógica: ${planning.reading_level.warning_alert}`);
+        cursorY += 4;
+
+        writeSectionHeaderPdf("Técnicas de Anclaje", [241, 245, 249], [51, 65, 85]);
+        writeText(planning.content.nlp_technique || '');
         cursorY += 4;
 
         writeSectionHeaderPdf("1. Diseño Curricular Inverso (Backward Design)", [241, 245, 249], [51, 65, 85]);
@@ -2693,6 +2677,17 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
             </div>
           ) : activeTab === 'complete' ? (
             <div className="space-y-6">
+              {/* Técnicas de Anclaje */}
+              <section className="bg-white backdrop-blur-sm border border-[#E2E8F0]/60 rounded-3xl p-6 md:p-8 space-y-4">
+                <h2 className="text-lg font-extrabold flex items-center gap-2 text-indigo-600 border-b border-[#E2E8F0]/70 pb-3">
+                  <Sparkles className="w-5 h-5" />
+                  Técnicas de Anclaje
+                </h2>
+                <div className="bg-[#FAF9FC]/40 border border-[#E2E8F0]/60 p-4 rounded-xl text-sm text-slate-700 whitespace-pre-line leading-relaxed">
+                  {planning.content.nlp_technique}
+                </div>
+              </section>
+
               {/* Section 1: Backward Design */}
               <section className="bg-white backdrop-blur-sm border border-[#E2E8F0]/60 rounded-3xl p-6 md:p-8 space-y-4">
                 <h2 className="text-lg font-extrabold flex items-center gap-2 text-indigo-600 border-b border-[#E2E8F0]/70 pb-3">
@@ -2701,7 +2696,7 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
                 </h2>
                 <div className="space-y-4 text-sm text-slate-700">
                   <div>
-                    <strong className="text-slate-800 block mb-1">Objetivo del Estudiante:</strong>
+                    <strong className="text-slate-800 block mb-1">Objetivo de la sesión:</strong>
                     <p className="bg-[#FAF9FC]/40 border border-[#E2E8F0]/60 p-4 rounded-xl">{planning.content.backward_design.objective}</p>
                   </div>
                   <div>
@@ -2794,22 +2789,11 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
                 </div>
               </section>
 
-              {/* Section 4: NLP Technique */}
-              <section className="bg-white backdrop-blur-sm border border-[#E2E8F0]/60 rounded-3xl p-6 md:p-8 space-y-4">
-                <h2 className="text-lg font-extrabold flex items-center gap-2 text-indigo-600 border-b border-[#E2E8F0]/70 pb-3">
-                  <Sparkles className="w-5 h-5" />
-                  4. Técnicas de Anclaje
-                </h2>
-                <div className="bg-[#FAF9FC]/40 border border-[#E2E8F0]/60 p-4 rounded-xl text-sm text-slate-700 whitespace-pre-line leading-relaxed">
-                  {planning.content.nlp_technique}
-                </div>
-              </section>
-
-              {/* Section 5: Rubric */}
+              {/* Section 4: Rubric */}
               <section className="bg-white backdrop-blur-sm border border-[#E2E8F0]/60 rounded-3xl p-6 md:p-8 space-y-4">
                 <h2 className="text-lg font-extrabold flex items-center gap-2 text-indigo-600 border-b border-[#E2E8F0]/70 pb-3">
                   <ListTodo className="w-5 h-5" />
-                  5. Rúbrica de Cierre de Sesión
+                  4. Rúbrica de Cierre de Sesión
                 </h2>
                 <div className="bg-[#FAF9FC]/40 border border-[#E2E8F0]/60 p-4 rounded-xl text-sm text-slate-700 whitespace-pre-line leading-relaxed">
                   {planning.content.rubric}
