@@ -901,52 +901,74 @@ export default function EvaluacionesPage() {
 
 
   // ── DUA: construir secciones ──────────────────────────────────────────────
+  // Estructura: Pág 1 = Encabezado+Texto1 | Pág 2 = Preguntas Texto1
+  //             Pág 3 = Texto2 | Pág 4 = Preguntas Texto2 | ... | Pág N = Rúbrica
   const buildDuaEvalSections = (cj: any) => {
     type DuaSection = { tipo: string; label: string; contenido: string };
     const sections: DuaSection[] = [];
-    const textos: any[]  = cj.textos_lectura || [];
-    // preguntas_alternativas es el campo normalizado por la API
+    const textos: any[] = cj.textos_lectura || [];
     const MC  = cj.preguntas_alternativas || cj.preguntas?.filter((p: any) =>
       p.tipo === 'seleccion_multiple' || (Array.isArray(p.alternativas) && p.alternativas.length > 0)
     ) || [];
     const DEV = cj.preguntas_desarrollo || cj.preguntas?.filter((p: any) =>
       p.tipo === 'desarrollo' || p.tipo === 'consigna_abierta'
     ) || [];
-    const tablaSpec = cj.tabla_especificaciones;
-    const rubrica   = cj.rubrica;
+    const rubrica = cj.rubrica;
 
-    // Página 1 — Portada
-    let portada = 'PORTADA E INSTRUCCIONES GENERALES\n';
-    portada += `\nTotal preguntas: ${MC.length} SM + ${DEV.length} desarrollo\n`;
-    if (tablaSpec) {
-      portada += '\nTABLA DE ESPECIFICACIONES:\n';
-      portada += (tablaSpec.filas || tablaSpec.rows || []).slice(0, 12).map((r: any) =>
-        `P${r.n_pregunta}: ${r.habilidad || ''} — ${r.indicador || ''} [Clave: ${r.clave || '—'}]`
-      ).join('\n');
-    }
-    sections.push({ tipo: 'portada', label: 'Portada e instrucciones', contenido: portada });
+    const ga = (alts: any[], ix: number) => {
+      const a = alts[ix];
+      if (!a) return '—';
+      return typeof a === 'string' ? a : (a.texto || '—');
+    };
 
-    // Páginas de textos + preguntas
     if (textos.length > 0) {
+      const pregsPerTexto = Math.ceil(MC.length / textos.length);
+
       textos.forEach((txt: any, tIdx: number) => {
-        const half   = Math.ceil(MC.length / textos.length);
-        const tPregs = MC.slice(tIdx * half, (tIdx + 1) * half);
-        let c = `TEXTO ${tIdx + 1} (tipo: ${txt.tipo || '—'})\nTítulo: ${txt.titulo || '—'}\n\n${(txt.contenido || '').slice(0, 1800)}\n\nPREGUNTAS SM:\n`;
-        c += tPregs.map((q: any, i: number) => {
-          const alts: any[] = Array.isArray(q.alternativas) ? q.alternativas : [];
-          const ga = (ix: number) => { const a = alts[ix]; if (!a) return '—'; return typeof a === 'string' ? a : (a.texto || '—'); };
-          return `P${q.numero_original || q.numero || (tIdx * half + i + 1)}: ${q.enunciado || ''}\n  A) ${ga(0)}\n  B) ${ga(1)}\n  C) ${ga(2)}\n  D) ${ga(3)}\n  [Clave: ${q.clave || '—'}]`;
-        }).join('\n\n');
-        sections.push({ tipo: 'texto_preguntas', label: `Texto ${tIdx + 1} y preguntas`, contenido: c });
+        const tPregs = MC.slice(tIdx * pregsPerTexto, (tIdx + 1) * pregsPerTexto);
+
+        // ── Página de texto ──────────────────────────────────────────────────
+        let cTexto = '';
+        if (tIdx === 0) {
+          // Página 1: instrucciones breves antes del texto
+          cTexto += `INSTRUCCIONES: Lee atentamente los textos y responde las preguntas asociadas.\nTotal: ${MC.length} preguntas de selección múltiple${DEV.length > 0 ? ` + ${DEV.length} de desarrollo` : ''}.\n\n`;
+        }
+        cTexto += `TEXTO ${tIdx + 1}`;
+        if (txt.titulo) cTexto += `: ${txt.titulo}`;
+        if (txt.tipo)   cTexto += ` (Tipo: ${txt.tipo})`;
+        cTexto += `\n\n${(txt.contenido || '').slice(0, 2200)}`;
+
+        const tipoTexto = tIdx === 0 ? 'portada_texto' : 'texto';
+        const lblTexto  = tIdx === 0 ? 'Portada + Texto 1' : `Texto ${tIdx + 1}`;
+        sections.push({ tipo: tipoTexto, label: lblTexto, contenido: cTexto });
+
+        // ── Página de preguntas ──────────────────────────────────────────────
+        if (tPregs.length > 0) {
+          let cPregs = `PREGUNTAS DE SELECCIÓN MÚLTIPLE — Texto ${tIdx + 1}\n\n`;
+          cPregs += tPregs.map((q: any, i: number) => {
+            const alts: any[] = Array.isArray(q.alternativas) ? q.alternativas : [];
+            const num = q.numero_original || q.numero || (tIdx * pregsPerTexto + i + 1);
+            return `P${num}: ${q.enunciado || ''}\n  A) ${ga(alts,0)}\n  B) ${ga(alts,1)}\n  C) ${ga(alts,2)}\n  D) ${ga(alts,3)}\n  [Clave: ${q.clave || '—'}]`;
+          }).join('\n\n');
+          sections.push({ tipo: 'preguntas', label: `Preguntas Texto ${tIdx + 1}`, contenido: cPregs });
+        }
       });
-    } else if (MC.length > 0) {
-      let c = 'PREGUNTAS SM:\n';
-      c += MC.map((q: any, i: number) => {
-        const alts: any[] = Array.isArray(q.alternativas) ? q.alternativas : [];
-        const ga = (ix: number) => { const a = alts[ix]; if (!a) return '—'; return typeof a === 'string' ? a : (a.texto || '—'); };
-        return `P${q.numero_original || i + 1}: ${q.enunciado || ''}\n  A) ${ga(0)}\n  B) ${ga(1)}\n  C) ${ga(2)}\n  D) ${ga(3)}\n  [Clave: ${q.clave || '—'}]`;
-      }).join('\n\n');
-      sections.push({ tipo: 'texto_preguntas', label: 'Preguntas selección múltiple', contenido: c });
+
+    } else {
+      // Sin textos de lectura: portada + preguntas en páginas separadas
+      sections.push({
+        tipo: 'portada',
+        label: 'Portada e instrucciones',
+        contenido: `INSTRUCCIONES: Lee atentamente y responde las preguntas.\nTotal: ${MC.length} SM${DEV.length > 0 ? ` + ${DEV.length} desarrollo` : ''}.`,
+      });
+      if (MC.length > 0) {
+        let c = 'PREGUNTAS DE SELECCIÓN MÚLTIPLE:\n\n';
+        c += MC.map((q: any, i: number) => {
+          const alts: any[] = Array.isArray(q.alternativas) ? q.alternativas : [];
+          return `P${q.numero_original || i + 1}: ${q.enunciado || ''}\n  A) ${ga(alts,0)}\n  B) ${ga(alts,1)}\n  C) ${ga(alts,2)}\n  D) ${ga(alts,3)}\n  [Clave: ${q.clave || '—'}]`;
+        }).join('\n\n');
+        sections.push({ tipo: 'preguntas', label: 'Preguntas selección múltiple', contenido: c });
+      }
     }
 
     // Desarrollo
@@ -959,11 +981,11 @@ export default function EvaluacionesPage() {
 
     // Rúbrica
     if (rubrica) {
-      let c = `INSTRUMENTO: ${rubrica.titulo || 'Rúbrica'} (${rubrica.tipo_instrumento || 'holística'})\n\nCRITERIOS:\n`;
+      let c = `INSTRUMENTO DE EVALUACIÓN: ${rubrica.titulo || 'Rúbrica'} (${rubrica.tipo_instrumento || 'holística'})\n\nCRITERIOS:\n`;
       c += (rubrica.criterios || []).map((cr: any) =>
         `• ${cr.nombre || ''}${cr.ponderacion_pct ? ` (${cr.ponderacion_pct}%)` : ''}: ${cr.logrado || cr.excelente || cr.descriptor || ''}`
       ).join('\n');
-      c += '\n\nPAUTA SM:\n' + MC.map((q: any, i: number) =>
+      c += '\n\nPAUTA DE CORRECCIÓN SM:\n' + MC.map((q: any, i: number) =>
         `P${q.numero_original || i + 1}:${q.clave || '?'}`
       ).join(' | ');
       sections.push({ tipo: 'rubrica', label: 'Rúbrica y pauta', contenido: c });
@@ -972,17 +994,87 @@ export default function EvaluacionesPage() {
     return sections;
   };
 
-  // ── DUA: plantilla de prompt contextual ─────────────────────────────────
-  const buildDuaPrompt = (contenido: string, pagina: number, total: number, ctx: {
-    establecimiento: string; docente: string; asignatura: string;
-    curso: string; tipoEval: string; instrumento: string; oas: string;
-  }): string => {
+    // ── DUA: plantilla de prompt contextual ─────────────────────────────────
+  const buildDuaPrompt = (
+    contenido: string,
+    pagina: number,
+    total: number,
+    tipo: string,
+    ctx: {
+      establecimiento: string; docente: string; asignatura: string;
+      curso: string; tipoEval: string; instrumento: string; oas: string;
+    }
+  ): string => {
+
+    // ── Encabezado institucional (solo página 1) ─────────────────────────────
+    const encabezado = pagina === 1 ? `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DISEÑA EL ENCABEZADO INSTITUCIONAL (solo en esta página):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Nombre del establecimiento centrado arriba: "${ctx.establecimiento || 'LICEO'}"
+
+Luego una tabla de 3 filas con bordes:
+  Fila 1: [Instrumento: ${ctx.instrumento}] [Asignatura: ${ctx.asignatura}] [Curso: ${ctx.curso}] [Letra: ___]
+  Fila 2: [Docente: ${ctx.docente || ''}] [Pje. Ideal: ___ pts] [Pje. Corte: ___ pts] [Tiempo: ___ min]
+  Fila 3: [Nombre del Estudiante: ________________________________] [Fecha: ______] [Pje. Obtenido: ___] [Nota: ___]
+
+Tipo de evaluación: ${ctx.tipoEval} | OA evaluados: ${ctx.oas}
+
+NO incluyas Tabla de Especificaciones. Después del encabezado, continúa con el contenido de esta página.
+` : '';
+
+    // ── Instrucciones DUA según tipo de página ───────────────────────────────
+    const instrDUA = tipo === 'portada_texto' || tipo === 'texto' ? `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ADAPTACIONES DUA PARA TEXTO DE LECTURA:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Ilustración principal que represente el tema o contexto del texto (no decorativa)
+• Pictograma o ícono en el título del texto
+• Fragmentación visual del texto en párrafos con mayor espaciado
+• Vocabulario clave destacado visualmente (recuadros, colores suaves)
+• Íconos al margen para indicar tipo de texto (narrativo, argumentativo, expositivo)
+• Colores suaves para separar secciones del texto
+Las ilustraciones deben ayudar a comprender el texto. NUNCA deben ser decorativas.
+NO modifiques el texto original (ni una palabra).
+` : tipo === 'preguntas' ? `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ADAPTACIONES DUA PARA PREGUNTAS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Numeración clara y grande para cada pregunta
+• Íconos pequeños junto a cada instrucción de respuesta
+• Mayor espaciado entre preguntas y entre alternativas
+• Alternativas (A, B, C, D) en recuadros o con separadores visuales claros
+• Colores suaves para separar bloques de preguntas (de 5 en 5, por ejemplo)
+• Si una pregunta hace referencia a un párrafo del texto, indicarlo visualmente
+NO modifiques el texto de preguntas ni alternativas. Las claves son solo para ti (no las muestres en el resultado).
+` : tipo === 'desarrollo' ? `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ADAPTACIONES DUA PARA PREGUNTA DE DESARROLLO:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Consigna con tipografía clara y destacada
+• Espacio de respuesta bien delimitado (líneas o recuadro grande)
+• Ícono que represente "escribir" o "argumentar"
+• Indicación visual del puntaje disponible
+• Si aplica: organizador gráfico o esquema de apoyo para planificar la respuesta
+` : tipo === 'rubrica' ? `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ADAPTACIONES DUA PARA RÚBRICA:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Tabla de rúbrica con diseño editorial limpio y profesional
+• Encabezados de columna con color suave distintivo
+• Criterios numerados con íconos o pictogramas de apoyo
+• Pauta de corrección SM al final en tabla ordenada
+• Tipografía clara y legible, sin texto pequeño
+` : `
+• Ilustraciones relacionadas con el contenido
+• Mayor espaciado y bloques visuales claros
+• Íconos para representar acciones o conceptos clave
+`;
+
     return `Actúa como diseñador gráfico editorial, ilustrador educativo y especialista en Diseño Universal para el Aprendizaje (DUA), con amplia experiencia diseñando evaluaciones escolares para editoriales como Santillana, SM, Zig-Zag, Oxford y Pearson.
 
-La evaluación completa se encuentra adjunta en formato PDF. Antes de comenzar, analiza el documento completo para mantener continuidad visual y pedagógica entre todas las páginas.
-
 ════════════════════════════════════════════════════
-DATOS DE CONTEXTO (solo para tu referencia interna)
+DATOS DE CONTEXTO (referencia interna — no los muestres como bloque)
 • Establecimiento: ${ctx.establecimiento || '(no especificado)'}
 • Docente: ${ctx.docente || '(no especificado)'}
 • Asignatura: ${ctx.asignatura}
@@ -990,51 +1082,18 @@ DATOS DE CONTEXTO (solo para tu referencia interna)
 • Tipo de evaluación: ${ctx.tipoEval}
 • Instrumento: ${ctx.instrumento}
 • OA evaluados: ${ctx.oas}
-• Cantidad de páginas: ${total}
+• Total de páginas: ${total}
 ════════════════════════════════════════════════════
 
-MISIÓN: Transformar el contenido adjunto en una versión ilustrada y visualmente accesible, siguiendo los principios del DUA. Trabaja únicamente sobre la Página ${pagina} de ${total}.
-
+MISIÓN: Transformar el contenido de esta página en una versión ilustrada y visualmente accesible, siguiendo los principios del DUA. Trabaja ÚNICAMENTE sobre la Página ${pagina} de ${total}.
+${encabezado}
+${instrDUA}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-REGLAS DEL ENCABEZADO (SOLO página 1):
+NO MODIFIQUES BAJO NINGUNA CIRCUNSTANCIA:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Si esta es la Página 1, diseña el encabezado institucional como una tabla profesional con este formato exacto:
-
-LÍNEA SUPERIOR (fuera de la tabla, centrado o alineado al margen):
-  → Nombre del establecimiento: "${ctx.establecimiento || 'LICEO'}"
-
-TABLA DE ENCABEZADO (3 filas):
-  Fila 1: [Instrumento: ${ctx.instrumento}] [Asignatura/Especialidad: ${ctx.asignatura}] [Curso: ${ctx.curso}] [Letra: ___]
-  Fila 2: [Docente Responsable: ${ctx.docente || ''}] [Pje. Ideal: ___ pts] [Pje. Corte: ___ pts] [Prema/Ex.: ___] [Tiempo: ___ min] [Coef.: ___]
-  Fila 3: [Nombre del Estudiante: ________________________________] [Fecha: ______] [Pje. Obtenido: ___] [Calificación: ___]
-
-Luego el título de la evaluación (ej.: "EVALUACIÓN FORMATIVA") en negrita, centrado.
-
-NO incluyas la Tabla de Especificaciones en la Página 1 ni en ninguna página del documento ilustrado.
-La evaluación comienza directamente con las instrucciones, el texto de lectura y las preguntas.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-ADAPTACIONES DUA — aplica según valor pedagógico:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Ilustraciones relacionadas con los textos de lectura y el contenido
-• Pictogramas para instrucciones y conceptos clave
-• Organizadores gráficos, esquemas visuales, mapas conceptuales
-• Vocabulario clave ilustrado con definiciones visuales
-• Íconos para representar acciones (leer, subrayar, responder)
-• Mayor espaciado entre preguntas y secciones
-• Colores suaves para diferenciar secciones (no alternativas)
-• Fragmentación de textos largos en párrafos visuales
-
-Las ilustraciones deben apoyar la comprensión del contenido. NUNCA deben ser decorativas.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-NO MODIFIQUES bajo ninguna circunstancia:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• El texto original de lecturas, preguntas y alternativas (ni una coma)
 • Los OA evaluados
-• Las preguntas ni sus alternativas (texto exacto)
-• Las respuestas correctas
 • La dificultad académica
-• La pauta de corrección
 • Los nombres y datos institucionales
 
 DISEÑO: Editorial educativa profesional. Limpio, moderno y legible. Formato A4 vertical. 300 dpi. Listo para impresión y proyección en clase.
@@ -1076,7 +1135,7 @@ Genera la Página ${pagina} de ${total} como imagen A4 ilustrada y lista para im
     };
 
     const prompts = sections.map((s, i) =>
-      buildDuaPrompt(s.contenido, i + 1, sections.length, ctx)
+      buildDuaPrompt(s.contenido, i + 1, sections.length, s.tipo, ctx)
     );
 
     setDuaPages(prompts);
