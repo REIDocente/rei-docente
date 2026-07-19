@@ -977,11 +977,12 @@ export default function EvaluacionesPage() {
     establecimiento: string; docente: string; asignatura: string;
     curso: string; tipoEval: string; instrumento: string; oas: string;
   }): string => {
-    return `Actúa como diseñador gráfico editorial, ilustrador educativo, director de arte y especialista en Diseño Universal para el Aprendizaje (DUA), con amplia experiencia diseñando evaluaciones escolares para editoriales como Santillana, SM, Zig-Zag, Oxford y Pearson.
+    return `Actúa como diseñador gráfico editorial, ilustrador educativo y especialista en Diseño Universal para el Aprendizaje (DUA), con amplia experiencia diseñando evaluaciones escolares para editoriales como Santillana, SM, Zig-Zag, Oxford y Pearson.
 
-La evaluación completa se encuentra adjunta en formato PDF. Antes de comenzar, analiza el documento completo para comprender el contexto pedagógico, la estructura de la evaluación y mantener continuidad visual entre todas las páginas.
+La evaluación completa se encuentra adjunta en formato PDF. Antes de comenzar, analiza el documento completo para mantener continuidad visual y pedagógica entre todas las páginas.
 
-INFORMACIÓN GENERAL DE LA EVALUACIÓN:
+════════════════════════════════════════════════════
+DATOS DE CONTEXTO (solo para tu referencia interna)
 • Establecimiento: ${ctx.establecimiento || '(no especificado)'}
 • Docente: ${ctx.docente || '(no especificado)'}
 • Asignatura: ${ctx.asignatura}
@@ -990,45 +991,66 @@ INFORMACIÓN GENERAL DE LA EVALUACIÓN:
 • Instrumento: ${ctx.instrumento}
 • OA evaluados: ${ctx.oas}
 • Cantidad de páginas: ${total}
+════════════════════════════════════════════════════
 
-Toda esta información debe mantenerse exactamente igual que en el documento original. No modifiques nombres, datos institucionales ni información académica.
+MISIÓN: Transformar el contenido adjunto en una versión ilustrada y visualmente accesible, siguiendo los principios del DUA. Trabaja únicamente sobre la Página ${pagina} de ${total}.
 
-MISIÓN: Transformar el contenido adjunto en una versión ilustrada y accesible siguiendo los principios del Diseño Universal para el Aprendizaje (DUA). Trabaja únicamente sobre la Página ${pagina} de ${total}.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+REGLAS DEL ENCABEZADO (SOLO página 1):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Si esta es la Página 1, diseña el encabezado institucional como una tabla profesional con este formato exacto:
 
-ADAPTACIONES DUA — Incorpora únicamente cuando aporten valor pedagógico:
-• Ilustraciones relacionadas con los textos de lectura
+LÍNEA SUPERIOR (fuera de la tabla, centrado o alineado al margen):
+  → Nombre del establecimiento: "${ctx.establecimiento || 'LICEO'}"
+
+TABLA DE ENCABEZADO (3 filas):
+  Fila 1: [Instrumento: ${ctx.instrumento}] [Asignatura/Especialidad: ${ctx.asignatura}] [Curso: ${ctx.curso}] [Letra: ___]
+  Fila 2: [Docente Responsable: ${ctx.docente || ''}] [Pje. Ideal: ___ pts] [Pje. Corte: ___ pts] [Prema/Ex.: ___] [Tiempo: ___ min] [Coef.: ___]
+  Fila 3: [Nombre del Estudiante: ________________________________] [Fecha: ______] [Pje. Obtenido: ___] [Calificación: ___]
+
+Luego el título de la evaluación (ej.: "EVALUACIÓN FORMATIVA") en negrita, centrado.
+
+NO incluyas la Tabla de Especificaciones en la Página 1 ni en ninguna página del documento ilustrado.
+La evaluación comienza directamente con las instrucciones, el texto de lectura y las preguntas.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ADAPTACIONES DUA — aplica según valor pedagógico:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Ilustraciones relacionadas con los textos de lectura y el contenido
 • Pictogramas para instrucciones y conceptos clave
-• Organizadores gráficos, mapas conceptuales, esquemas visuales
-• Vocabulario ilustrado
-• Íconos para representar acciones o conceptos
-• Mayor espaciado y bloques visuales
-• Fragmentación de textos largos
-• Colores suaves para diferenciar secciones
+• Organizadores gráficos, esquemas visuales, mapas conceptuales
+• Vocabulario clave ilustrado con definiciones visuales
+• Íconos para representar acciones (leer, subrayar, responder)
+• Mayor espaciado entre preguntas y secciones
+• Colores suaves para diferenciar secciones (no alternativas)
+• Fragmentación de textos largos en párrafos visuales
 
-Las ilustraciones deben ayudar a comprender el contenido. NUNCA deben ser decorativas.
+Las ilustraciones deben apoyar la comprensión del contenido. NUNCA deben ser decorativas.
 
-NO MODIFIQUES:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+NO MODIFIQUES bajo ninguna circunstancia:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 • Los OA evaluados
-• Las preguntas ni alternativas
+• Las preguntas ni sus alternativas (texto exacto)
 • Las respuestas correctas
 • La dificultad académica
-• La tabla de especificaciones
 • La pauta de corrección
+• Los nombres y datos institucionales
 
-DISEÑO: Editorial educativa profesional. Limpio. Moderno. Alta resolución. Formato A4 vertical. 300 dpi. Listo para impresión.
+DISEÑO: Editorial educativa profesional. Limpio, moderno y legible. Formato A4 vertical. 300 dpi. Listo para impresión y proyección en clase.
 
 ENTREGA: Genera SOLO esta página (Página ${pagina} de ${total}) como imagen A4 completa e independiente. No combines páginas. No crees collages ni mosaicos.
 
-────────────────────────────────────────────────────
+────────────────────────────────────────
 CONTENIDO DE ESTA PÁGINA:
 
 ${contenido}
-────────────────────────────────────────────────────
+────────────────────────────────────────
 
-Genera la Página ${pagina} de ${total} como imagen A4 ilustrada.`;
+Genera la Página ${pagina} de ${total} como imagen A4 ilustrada y lista para imprimir.`;
   };
 
-  // ── DUA: generar prompts por página (sin llamada API) ────────────────────
+    // ── DUA: generar prompts por página (sin llamada API) ────────────────────
   const handleDuaGenerate = () => {
     if (!result) return;
     const cj = result.contenido_json || result;
