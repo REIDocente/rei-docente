@@ -151,6 +151,16 @@ export default function GuiasPage() {
   const [showImagePromptModal, setShowImagePromptModal] = useState(false);
   const [imagePromptCopied, setImagePromptCopied] = useState(false);
 
+  // ── DUA cola automática ───────────────────────────────────────────────────
+  const [showDuaModal, setShowDuaModal]       = useState(false);
+  const [duaPages, setDuaPages]               = useState<(string | null)[]>([]);
+  const [duaLabels, setDuaLabels]             = useState<string[]>([]);
+  const [duaGenerating, setDuaGenerating]     = useState(false);
+  const [duaStep, setDuaStep]                 = useState(-1);
+  const [duaViewIdx, setDuaViewIdx]           = useState(0);
+  const [duaPageCopied, setDuaPageCopied]     = useState(false);
+  const [duaAllCopied, setDuaAllCopied]       = useState(false);
+
   let resultCj = result?.contenido_json || {};
   if (typeof resultCj === 'string') {
     try {
@@ -693,6 +703,112 @@ export default function GuiasPage() {
     };
   };
 
+
+
+  // ── DUA: construir secciones de guía ─────────────────────────────────────
+  const buildDuaGuiaSections = (cj: any) => {
+    type DuaSection = { tipo: string; label: string; contenido: string };
+    const sections: DuaSection[] = [];
+    const univ = cj.universal || {};
+
+    // Página 1 — Portada + Texto
+    const lectura = univ.lectura_principal || cj.texto_sesion || cj.texto || null;
+    let c1 = 'PORTADA Y TEXTO DE LECTURA\n';
+    if (lectura) {
+      c1 += typeof lectura === 'string'
+        ? lectura.slice(0, 1800)
+        : `Título: ${lectura.titulo || lectura.title || '—'}\n${(lectura.cuerpo || lectura.contenido || lectura.content || '').slice(0, 1800)}`;
+    } else {
+      c1 += '[Sin texto de lectura — agregar encabezado de guía con objetivo y pregunta de anticipación]';
+    }
+    sections.push({ tipo: 'portada', label: 'Portada y texto de lectura', contenido: c1 });
+
+    // Página 2 — Actividades
+    const actividades = univ.actividades || cj.bloques || cj.actividades || [];
+    let c2 = 'ACTIVIDADES PRINCIPALES:\n';
+    if (Array.isArray(actividades) && actividades.length > 0) {
+      c2 += actividades.slice(0, 6).map((a: any, i: number) => {
+        const titulo  = a.titulo || a.nombre || a.tipo || `Actividad ${i + 1}`;
+        const instrs  = a.instrucciones || a.descripcion || a.enunciado || a.contenido || '';
+        const pregsAc: any[] = a.preguntas || a.items || [];
+        let bloque = `[${titulo}]\n${typeof instrs === 'string' ? instrs.slice(0, 250) : ''}`;
+        if (pregsAc.length > 0) {
+          bloque += '\n' + pregsAc.slice(0, 4).map((p: any) =>
+            `  - ${typeof p === 'string' ? p : (p.enunciado || p.pregunta || p.texto || '')}`
+          ).join('\n');
+        }
+        return bloque;
+      }).join('\n\n');
+    } else {
+      c2 += '[Sin actividades explícitas — generar actividades DUA basadas en el texto de la página 1]';
+    }
+    sections.push({ tipo: 'actividades', label: 'Actividades principales', contenido: c2 });
+
+    // Página 3 — Desafío + Cierre
+    const desafio   = univ.desafio_ludico || cj.desafio_ludico || null;
+    const reflexion = univ.reflexion_final || cj.reflexion_final || '';
+    let c3 = 'DESAFÍO LÚDICO Y CIERRE:\n';
+    if (desafio) {
+      c3 += typeof desafio === 'string' ? desafio.slice(0, 500) :
+        `[${desafio.tipo || 'Desafío'}] ${desafio.instrucciones || desafio.descripcion || ''}`.slice(0, 500);
+    } else {
+      c3 += '[Sin desafío — generar uno apropiado para el tema]';
+    }
+    if (reflexion) c3 += `\n\nREFLEXIÓN FINAL:\n${typeof reflexion === 'string' ? reflexion.slice(0, 300) : ''}`;
+    sections.push({ tipo: 'cierre', label: 'Desafío y cierre', contenido: c3 });
+
+    return sections;
+  };
+
+  // ── DUA: cola automática ──────────────────────────────────────────────────
+  const handleDuaGenerate = async () => {
+    if (!result || duaGenerating) return;
+    const cj = result.contenido_json || result;
+    const sections = buildDuaGuiaSections(cj);
+    if (sections.length === 0) return;
+
+    const ctxAsig  = String(result.asignatura || result.subject || 'Lengua y Literatura');
+    const ctxNivel = String(result.nivel || curso || '5° Básico');
+    const ctxOa    = String(result.oa || oa || 'OA General');
+
+    setDuaPages(new Array(sections.length).fill(null));
+    setDuaLabels(sections.map(s => s.label));
+    setDuaStep(0);
+    setDuaGenerating(true);
+    setShowDuaModal(true);
+    setDuaViewIdx(0);
+    setDuaPageCopied(false);
+    setDuaAllCopied(false);
+
+    const { data: { session } } = await (await import('@/lib/supabase')).supabase.auth.getSession().catch(() => ({ data: { session: null } }));
+    const token = (session as any)?.access_token ?? '';
+
+    for (let i = 0; i < sections.length; i++) {
+      setDuaStep(i);
+      try {
+        const res = await fetch('/api/dua', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+          body: JSON.stringify({
+            modulo: 'guia',
+            tipo_pagina: sections[i].tipo,
+            pagina: i + 1,
+            total: sections.length,
+            contenido: sections[i].contenido,
+            contexto: { asignatura: ctxAsig, nivel: ctxNivel, oa: ctxOa },
+          }),
+        });
+        const data = await res.json();
+        setDuaPages(prev => { const n = [...prev]; n[i] = res.ok ? (data.pagina_adaptada ?? '') : `[Error: ${data.error || 'desconocido'}]`; return n; });
+      } catch (err: any) {
+        setDuaPages(prev => { const n = [...prev]; n[i] = `[Error de red: ${err.message}]`; return n; });
+      }
+    }
+
+    setDuaStep(-1);
+    setDuaGenerating(false);
+    setDuaViewIdx(0);
+  };
 
   // ── Export PDF Client-side ────────────────────────────────────────────────
   const triggerPdfDownload = () => {
@@ -1456,6 +1572,14 @@ export default function GuiasPage() {
                           className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl transition-all">
                           <Download className="w-3.5 h-3.5" />
                           Word
+                        </button>
+                        <button
+                          onClick={handleDuaGenerate}
+                          disabled={!result || duaGenerating}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 text-white text-xs font-semibold rounded-xl transition-all"
+                          title="Adaptar guía con DUA — generación automática página por página"
+                        >
+                          {duaGenerating ? <><Loader2 className="w-3 h-3 animate-spin" /> DUA...</> : <>🧩 DUA</>}
                         </button>
                         <button
                           onClick={() => setShowImagePromptModal(true)}
@@ -2290,6 +2414,142 @@ export default function GuiasPage() {
       </div>{/* closes flex-1 lg:pl-64 */}
 
       {/* ── MODAL: PROMPT PARA IMÁGENES IA ── */}
+
+      {/* ── Modal DUA Guía ──────────────────────────────────────────────────── */}
+      {showDuaModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm">
+          <div className="relative w-full max-w-2xl bg-white border border-[#E2E8F0] rounded-3xl shadow-2xl flex flex-col max-h-[90vh]">
+
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+              <div>
+                <h3 className="text-sm font-black text-slate-800">🧩 Guía DUA</h3>
+                <p className="text-[10px] text-slate-400 mt-0.5">
+                  {duaGenerating
+                    ? `Generando página ${duaStep + 1} de ${duaLabels.length}...`
+                    : `${duaPages.length} página${duaPages.length !== 1 ? 's' : ''} listas`}
+                </p>
+              </div>
+              {!duaGenerating && (
+                <button
+                  onClick={() => setShowDuaModal(false)}
+                  className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+
+            {/* Body */}
+            <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
+
+              {/* Vista progreso */}
+              {duaGenerating && (
+                <div className="space-y-2">
+                  {duaLabels.map((lbl, idx) => {
+                    const done = duaPages[idx] !== null;
+                    const curr = idx === duaStep;
+                    return (
+                      <div key={idx} className={`flex items-center gap-3 px-4 py-3 rounded-xl border transition-colors ${
+                        done ? 'bg-emerald-50 border-emerald-100' :
+                        curr ? 'bg-teal-50 border-teal-200' :
+                        'bg-slate-50 border-slate-100'
+                      }`}>
+                        <span className="text-base leading-none">
+                          {done ? '✅' : curr ? '⏳' : '⌛'}
+                        </span>
+                        <span className={`text-[11px] font-semibold ${done ? 'text-emerald-700' : curr ? 'text-teal-700' : 'text-slate-400'}`}>
+                          {lbl}{curr ? ' — generando...' : ''}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Vista resultado */}
+              {!duaGenerating && duaPages.length > 0 && (
+                <div className="space-y-4">
+                  {/* Tabs */}
+                  <div className="flex flex-wrap gap-1.5">
+                    {duaLabels.map((lbl, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => { setDuaViewIdx(idx); setDuaPageCopied(false); }}
+                        className={`px-2.5 py-1 text-[9px] font-bold rounded-lg border transition-all ${
+                          duaViewIdx === idx
+                            ? 'bg-emerald-600 border-emerald-600 text-white'
+                            : 'bg-slate-50 border-slate-200 text-slate-500 hover:border-emerald-300'
+                        }`}
+                      >
+                        {idx + 1}. {lbl}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Navegación */}
+                  <div className="flex items-center justify-between">
+                    <button
+                      onClick={() => { setDuaViewIdx(i => Math.max(0, i - 1)); setDuaPageCopied(false); }}
+                      disabled={duaViewIdx === 0}
+                      className="px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-30 transition-all"
+                    >
+                      ← Anterior
+                    </button>
+                    <span className="text-[10px] font-bold text-slate-500">
+                      📄 {duaViewIdx + 1} / {duaPages.length}
+                    </span>
+                    <button
+                      onClick={() => { setDuaViewIdx(i => Math.min(duaPages.length - 1, i + 1)); setDuaPageCopied(false); }}
+                      disabled={duaViewIdx === duaPages.length - 1}
+                      className="px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-30 transition-all"
+                    >
+                      Siguiente →
+                    </button>
+                  </div>
+
+                  {/* Contenido */}
+                  <pre className="text-[10px] text-slate-700 font-mono whitespace-pre-wrap leading-relaxed bg-slate-50 border border-slate-200 rounded-2xl p-4 max-h-72 overflow-y-auto">
+                    {duaPages[duaViewIdx] ?? 'Cargando...'}
+                  </pre>
+
+                  {/* Botones */}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(duaPages[duaViewIdx] ?? '');
+                        setDuaPageCopied(true); setDuaAllCopied(false);
+                        setTimeout(() => setDuaPageCopied(false), 2000);
+                      }}
+                      className="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold rounded-xl transition-all"
+                    >
+                      {duaPageCopied ? '✅ Copiado' : '📋 Copiar esta página'}
+                    </button>
+                    <button
+                      onClick={() => {
+                        const todo = duaPages.map((p, i) =>
+                          `═══ PÁGINA ${i + 1}: ${duaLabels[i] || ''} ═══\n\n${p || ''}`
+                        ).join('\n\n');
+                        navigator.clipboard.writeText(todo);
+                        setDuaAllCopied(true); setDuaPageCopied(false);
+                        setTimeout(() => setDuaAllCopied(false), 2000);
+                      }}
+                      className="flex-1 py-2 bg-slate-700 hover:bg-slate-800 text-white text-[11px] font-bold rounded-xl transition-all"
+                    >
+                      {duaAllCopied ? '✅ Copiado todo' : '📄 Copiar todo'}
+                    </button>
+                  </div>
+
+                  <p className="text-center text-[9px] text-slate-400">
+                    Pega cada página en Word, Google Docs o Canva para imprimir
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {showImagePromptModal && result && (() => {
         const asignatura = result.asignatura || result.subject || 'Lengua y Literatura';
         const nivelGuia = result.nivel || curso || '5° Básico';

@@ -388,6 +388,16 @@ export default function EvaluacionesPage() {
   const [upgradeRenewalDate, setUpgradeRenewalDate] = useState<string | null>(null);
   const [upgradeLimit, setUpgradeLimit] = useState<number>(12);
 
+  // ── DUA cola automática ───────────────────────────────────────────────────
+  const [showDuaModal, setShowDuaModal]       = useState(false);
+  const [duaPages, setDuaPages]               = useState<(string | null)[]>([]);
+  const [duaLabels, setDuaLabels]             = useState<string[]>([]);
+  const [duaGenerating, setDuaGenerating]     = useState(false);
+  const [duaStep, setDuaStep]                 = useState(-1);
+  const [duaViewIdx, setDuaViewIdx]           = useState(0);
+  const [duaPageCopied, setDuaPageCopied]     = useState(false);
+  const [duaAllCopied, setDuaAllCopied]       = useState(false);
+
   // ── Auth Init ─────────────────────────────────────────────────────────────
   useEffect(() => {
     const init = async () => {
@@ -883,6 +893,126 @@ export default function EvaluacionesPage() {
         criterios: rubricaCriterios
       }
     };
+  };
+
+
+  // ── DUA: construir secciones ──────────────────────────────────────────────
+  const buildDuaEvalSections = (cj: any) => {
+    type DuaSection = { tipo: string; label: string; contenido: string };
+    const sections: DuaSection[] = [];
+    const textos: any[]  = cj.textos_lectura || [];
+    const pregs: any[]   = cj.preguntas || [];
+    const MC  = pregs.filter((p: any) => p.tipo === 'seleccion_multiple' || (Array.isArray(p.alternativas) && p.alternativas.length > 0));
+    const DEV = pregs.filter((p: any) => p.tipo === 'desarrollo' || p.tipo === 'consigna_abierta');
+    const tablaSpec = cj.tabla_especificaciones;
+    const rubrica   = cj.rubrica;
+
+    // Página 1 — Portada
+    let portada = 'PORTADA E INSTRUCCIONES GENERALES\n';
+    portada += `\nTotal preguntas: ${MC.length} SM + ${DEV.length} desarrollo\n`;
+    if (tablaSpec) {
+      portada += '\nTABLA DE ESPECIFICACIONES:\n';
+      portada += (tablaSpec.filas || tablaSpec.rows || []).slice(0, 12).map((r: any) =>
+        `P${r.n_pregunta}: ${r.habilidad || ''} — ${r.indicador || ''} [Clave: ${r.clave || '—'}]`
+      ).join('\n');
+    }
+    sections.push({ tipo: 'portada', label: 'Portada e instrucciones', contenido: portada });
+
+    // Páginas de textos + preguntas
+    if (textos.length > 0) {
+      textos.forEach((txt: any, tIdx: number) => {
+        const half   = Math.ceil(MC.length / textos.length);
+        const tPregs = MC.slice(tIdx * half, (tIdx + 1) * half);
+        let c = `TEXTO ${tIdx + 1} (tipo: ${txt.tipo || '—'})\nTítulo: ${txt.titulo || '—'}\n\n${(txt.contenido || '').slice(0, 1800)}\n\nPREGUNTAS SM:\n`;
+        c += tPregs.map((q: any, i: number) => {
+          const alts: any[] = Array.isArray(q.alternativas) ? q.alternativas : [];
+          const ga = (ix: number) => { const a = alts[ix]; if (!a) return '—'; return typeof a === 'string' ? a : (a.texto || '—'); };
+          return `P${q.numero_original || q.numero || (tIdx * half + i + 1)}: ${q.enunciado || ''}\n  A) ${ga(0)}\n  B) ${ga(1)}\n  C) ${ga(2)}\n  D) ${ga(3)}\n  [Clave: ${q.clave || '—'}]`;
+        }).join('\n\n');
+        sections.push({ tipo: 'texto_preguntas', label: `Texto ${tIdx + 1} y preguntas`, contenido: c });
+      });
+    } else if (MC.length > 0) {
+      let c = 'PREGUNTAS SM:\n';
+      c += MC.map((q: any, i: number) => {
+        const alts: any[] = Array.isArray(q.alternativas) ? q.alternativas : [];
+        const ga = (ix: number) => { const a = alts[ix]; if (!a) return '—'; return typeof a === 'string' ? a : (a.texto || '—'); };
+        return `P${q.numero_original || i + 1}: ${q.enunciado || ''}\n  A) ${ga(0)}\n  B) ${ga(1)}\n  C) ${ga(2)}\n  D) ${ga(3)}\n  [Clave: ${q.clave || '—'}]`;
+      }).join('\n\n');
+      sections.push({ tipo: 'texto_preguntas', label: 'Preguntas selección múltiple', contenido: c });
+    }
+
+    // Desarrollo
+    if (DEV.length > 0) {
+      const c = DEV.map((q: any, i: number) =>
+        `PREGUNTA DE DESARROLLO ${i + 1}:\n${q.enunciado || ''}\n[Puntaje: ${q.puntaje || 4} pts]`
+      ).join('\n\n');
+      sections.push({ tipo: 'desarrollo', label: 'Pregunta de desarrollo', contenido: c });
+    }
+
+    // Rúbrica
+    if (rubrica) {
+      let c = `INSTRUMENTO: ${rubrica.titulo || 'Rúbrica'} (${rubrica.tipo_instrumento || 'holística'})\n\nCRITERIOS:\n`;
+      c += (rubrica.criterios || []).map((cr: any) =>
+        `• ${cr.nombre || ''}${cr.ponderacion_pct ? ` (${cr.ponderacion_pct}%)` : ''}: ${cr.logrado || cr.excelente || cr.descriptor || ''}`
+      ).join('\n');
+      c += '\n\nPAUTA SM:\n' + MC.map((q: any, i: number) =>
+        `P${q.numero_original || i + 1}:${q.clave || '?'}`
+      ).join(' | ');
+      sections.push({ tipo: 'rubrica', label: 'Rúbrica y pauta', contenido: c });
+    }
+
+    return sections;
+  };
+
+  // ── DUA: cola automática ──────────────────────────────────────────────────
+  const handleDuaGenerate = async () => {
+    if (!result || duaGenerating) return;
+    const cj = result.contenido_json || result;
+    const sections = buildDuaEvalSections(cj);
+    if (sections.length === 0) return;
+
+    const ctxAsig  = String(result.asignatura || result.subject || 'Lengua y Literatura');
+    const ctxNivel = String(result.nivel || result.grade || curso || '5° Básico');
+    const ctxOa    = String(result.oa || oa || 'OA General');
+    const ctxTipo  = String(result.tipo_evaluacion || tipoEvaluacion || 'Formativa');
+
+    setDuaPages(new Array(sections.length).fill(null));
+    setDuaLabels(sections.map(s => s.label));
+    setDuaStep(0);
+    setDuaGenerating(true);
+    setShowDuaModal(true);
+    setDuaViewIdx(0);
+    setDuaPageCopied(false);
+    setDuaAllCopied(false);
+
+    const { data: { session } } = await (await import('@/lib/supabase')).supabase.auth.getSession().catch(() => ({ data: { session: null } }));
+    const token = (session as any)?.access_token ?? '';
+
+    for (let i = 0; i < sections.length; i++) {
+      setDuaStep(i);
+      try {
+        const res = await fetch('/api/dua', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+          body: JSON.stringify({
+            modulo: 'evaluacion',
+            tipo_pagina: sections[i].tipo,
+            pagina: i + 1,
+            total: sections.length,
+            contenido: sections[i].contenido,
+            contexto: { asignatura: ctxAsig, nivel: ctxNivel, oa: ctxOa, tipo: ctxTipo },
+          }),
+        });
+        const data = await res.json();
+        setDuaPages(prev => { const n = [...prev]; n[i] = res.ok ? (data.pagina_adaptada ?? '') : `[Error: ${data.error || 'desconocido'}]`; return n; });
+      } catch (err: any) {
+        setDuaPages(prev => { const n = [...prev]; n[i] = `[Error de red: ${err.message}]`; return n; });
+      }
+    }
+
+    setDuaStep(-1);
+    setDuaGenerating(false);
+    setDuaViewIdx(0);
   };
 
   // ── Client PDF download ───────────────────────────────────────────────────
@@ -2958,6 +3088,14 @@ export default function EvaluacionesPage() {
                         >
                           <FileDown className="w-3.5 h-3.5" /> Descargar Word
                         </button>
+                        <button
+                          onClick={handleDuaGenerate}
+                          disabled={!result || duaGenerating}
+                          className="p-2 bg-violet-600 hover:bg-violet-700 disabled:opacity-40 text-white rounded-lg transition-colors flex items-center gap-1.5 text-[11px] font-bold"
+                          title="Adaptar evaluación con DUA — generación automática página por página"
+                        >
+                          {duaGenerating ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> DUA...</> : <>🧩 Adaptar DUA</>}
+                        </button>
                       </div>
                     </div>
 
@@ -3250,6 +3388,142 @@ export default function EvaluacionesPage() {
             </div>
 
           </div>
+
+
+      {/* ── Modal DUA Evaluación ────────────────────────────────────────────── */}
+      {showDuaModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm">
+          <div className="relative w-full max-w-2xl bg-white border border-[#E2E8F0] rounded-3xl shadow-2xl flex flex-col max-h-[90vh]">
+
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+              <div>
+                <h3 className="text-sm font-black text-slate-800">🧩 Evaluación DUA</h3>
+                <p className="text-[10px] text-slate-400 mt-0.5">
+                  {duaGenerating
+                    ? `Generando página ${duaStep + 1} de ${duaLabels.length}...`
+                    : `${duaPages.length} página${duaPages.length !== 1 ? 's' : ''} listas`}
+                </p>
+              </div>
+              {!duaGenerating && (
+                <button
+                  onClick={() => setShowDuaModal(false)}
+                  className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+
+            {/* Body */}
+            <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
+
+              {/* Vista progreso */}
+              {duaGenerating && (
+                <div className="space-y-2">
+                  {duaLabels.map((lbl, idx) => {
+                    const done = duaPages[idx] !== null;
+                    const curr = idx === duaStep;
+                    return (
+                      <div key={idx} className={`flex items-center gap-3 px-4 py-3 rounded-xl border transition-colors ${
+                        done ? 'bg-emerald-50 border-emerald-100' :
+                        curr ? 'bg-violet-50 border-violet-200' :
+                        'bg-slate-50 border-slate-100'
+                      }`}>
+                        <span className="text-base leading-none">
+                          {done ? '✅' : curr ? '⏳' : '⌛'}
+                        </span>
+                        <span className={`text-[11px] font-semibold ${done ? 'text-emerald-700' : curr ? 'text-violet-700' : 'text-slate-400'}`}>
+                          {lbl}{curr ? ' — generando...' : ''}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Vista resultado */}
+              {!duaGenerating && duaPages.length > 0 && (
+                <div className="space-y-4">
+                  {/* Tabs de páginas */}
+                  <div className="flex flex-wrap gap-1.5">
+                    {duaLabels.map((lbl, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => { setDuaViewIdx(idx); setDuaPageCopied(false); }}
+                        className={`px-2.5 py-1 text-[9px] font-bold rounded-lg border transition-all ${
+                          duaViewIdx === idx
+                            ? 'bg-violet-600 border-violet-600 text-white'
+                            : 'bg-slate-50 border-slate-200 text-slate-500 hover:border-violet-300'
+                        }`}
+                      >
+                        {idx + 1}. {lbl}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Navegación ← → */}
+                  <div className="flex items-center justify-between">
+                    <button
+                      onClick={() => { setDuaViewIdx(i => Math.max(0, i - 1)); setDuaPageCopied(false); }}
+                      disabled={duaViewIdx === 0}
+                      className="px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-30 transition-all"
+                    >
+                      ← Anterior
+                    </button>
+                    <span className="text-[10px] font-bold text-slate-500">
+                      📄 {duaViewIdx + 1} / {duaPages.length}
+                    </span>
+                    <button
+                      onClick={() => { setDuaViewIdx(i => Math.min(duaPages.length - 1, i + 1)); setDuaPageCopied(false); }}
+                      disabled={duaViewIdx === duaPages.length - 1}
+                      className="px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-30 transition-all"
+                    >
+                      Siguiente →
+                    </button>
+                  </div>
+
+                  {/* Contenido de la página */}
+                  <pre className="text-[10px] text-slate-700 font-mono whitespace-pre-wrap leading-relaxed bg-slate-50 border border-slate-200 rounded-2xl p-4 max-h-72 overflow-y-auto">
+                    {duaPages[duaViewIdx] ?? 'Cargando...'}
+                  </pre>
+
+                  {/* Botones de copia */}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(duaPages[duaViewIdx] ?? '');
+                        setDuaPageCopied(true); setDuaAllCopied(false);
+                        setTimeout(() => setDuaPageCopied(false), 2000);
+                      }}
+                      className="flex-1 py-2 bg-violet-600 hover:bg-violet-700 text-white text-[11px] font-bold rounded-xl transition-all"
+                    >
+                      {duaPageCopied ? '✅ Copiado' : '📋 Copiar esta página'}
+                    </button>
+                    <button
+                      onClick={() => {
+                        const todo = duaPages.map((p, i) =>
+                          `═══ PÁGINA ${i + 1}: ${duaLabels[i] || ''} ═══\n\n${p || ''}`
+                        ).join('\n\n');
+                        navigator.clipboard.writeText(todo);
+                        setDuaAllCopied(true); setDuaPageCopied(false);
+                        setTimeout(() => setDuaAllCopied(false), 2000);
+                      }}
+                      className="flex-1 py-2 bg-slate-700 hover:bg-slate-800 text-white text-[11px] font-bold rounded-xl transition-all"
+                    >
+                      {duaAllCopied ? '✅ Copiado todo' : '📄 Copiar todo'}
+                    </button>
+                  </div>
+
+                  <p className="text-center text-[9px] text-slate-400">
+                    Pega cada página en Word, Google Docs o Canva para imprimir
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
         </main>
 
