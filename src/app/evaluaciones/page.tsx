@@ -477,7 +477,11 @@ export default function EvaluacionesPage() {
   const fetchHistory = async () => {
     setHistoryLoading(true);
     try {
-      const res = await fetch('/api/evaluaciones?limit=30');
+      const { data: { session: _bibSession } } = await (await import('@/lib/supabase')).supabase.auth.getSession().catch(() => ({ data: { session: null } }));
+      const _bibToken = (_bibSession as any)?.access_token ?? '';
+      const res = await fetch('/api/evaluaciones?limit=30', {
+        headers: _bibToken ? { Authorization: `Bearer ${_bibToken}` } : {},
+      });
       if (res.ok) {
         const data = await res.json();
         let list = data.evaluaciones || [];
