@@ -2022,10 +2022,9 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
         const spacingBetween = 4;
         const totalHeight = 
           titleLines.length * 5 + 
-          objLines.length * 4.5 + 
           evalLines.length * 4.5 + 
           padding * 2 + 
-          spacingBetween * 2;
+          spacingBetween * 1;
 
         // Draw light blue background rectangle
         doc.setFillColor(224, 242, 254); // Light blue
@@ -2046,22 +2045,6 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
           currentY += 5;
         });
         currentY += spacingBetween - 2;
-
-        // Print Objetivo
-        objLines.forEach((line, idx) => {
-          if (idx === 0) {
-            doc.setFont('Helvetica', 'bold');
-            const labelWidth = doc.getTextWidth("Objetivo: x") - doc.getTextWidth("x");
-            doc.text("Objetivo: ", marginX + padding + 2, currentY);
-            doc.setFont('Helvetica', 'normal');
-            doc.text(line.replace(/^Objetivo\s*:\s*/i, ''), marginX + padding + 2 + labelWidth, currentY);
-          } else {
-            doc.setFont('Helvetica', 'normal');
-            doc.text(line, marginX + padding + 2, currentY);
-          }
-          currentY += 4.5;
-        });
-        currentY += spacingBetween - 2.5;
 
         // Print Evaluación
         evalLines.forEach((line, idx) => {
