@@ -1107,6 +1107,15 @@ Responde ÚNICAMENTE con un arreglo JSON en el siguiente formato exacto, sin exp
     };
   });
 
+   // Fix A: Eliminar SM sin alternativas validas antes del rebalanceo
+  {
+    const _validAlts = (cleanAlts as any[]).filter((q: any) => !q._alternativas_invalidas);
+    if (_validAlts.length < cleanAlts.length) {
+      console.warn("[EVALUACIONES] " + (cleanAlts.length - _validAlts.length) + " preguntas SM eliminadas por falta de alternativas");
+      _validAlts.forEach((q: any, i: number) => { q.numero = i + 1; });
+      (cleanAlts as any[]).splice(0, cleanAlts.length, ..._validAlts);
+    }
+  }
    // Rebalanceo de claves si hay concentración > 40% (Bug 2)
   const mcCount = cleanAlts.length;
   if (mcCount > 0) {
@@ -1120,14 +1129,34 @@ Responde ÚNICAMENTE con un arreglo JSON en el siguiente formato exacto, sin exp
     const threshold = mcCount * 0.40;
     
     if (maxFreq > threshold) {
-      // Aplicar distribución balanceada real (no rotatoria)
+      // Aplicar distribución balanceada con swap semántico de alternativas
       const balancedKeys = generateBalancedKeysSequence(mcCount);
+      const _ltoi: Record<string, number> = { A: 0, B: 1, C: 2, D: 3 };
       cleanAlts.forEach((q, idx) => {
         const qAny = q as any;
-        qAny.clave = balancedKeys[idx];
-        if (qAny.respuesta_correcta) {
-          qAny.respuesta_correcta = qAny.clave;
+        const newKey = balancedKeys[idx];
+        const curKey = String(qAny.clave || 'A').toUpperCase().trim();
+        if (newKey !== curKey) {
+          const alts = qAny.alternativas;
+          if (Array.isArray(alts) && alts.length === 4) {
+            const nI = _ltoi[newKey], oI = _ltoi[curKey];
+            if (nI !== undefined && oI !== undefined) {
+              if (typeof alts[nI] === 'string') {
+                // String array: intercambiar posiciones
+                const tmp = alts[nI]; alts[nI] = alts[oI]; alts[oI] = tmp;
+              } else if (alts[nI] && alts[oI]) {
+                // Object array: intercambiar texto + flag correcta
+                const tmpT = alts[nI].texto;
+                alts[nI].texto = alts[oI].texto;
+                alts[oI].texto = tmpT;
+                alts.forEach((a: any) => { a.correcta = false; });
+                alts[nI].correcta = true;
+              }
+            }
+          }
         }
+        qAny.clave = newKey;
+        if (qAny.respuesta_correcta) qAny.respuesta_correcta = newKey;
       });
     }
   }
