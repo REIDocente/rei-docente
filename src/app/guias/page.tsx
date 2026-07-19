@@ -148,10 +148,6 @@ export default function GuiasPage() {
   const [upgradeRenewalDate, setUpgradeRenewalDate] = useState<string | null>(null);
   const [upgradeLimit, setUpgradeLimit] = useState<number>(12);
 
-  // ── Image Prompt Generator (zero API cost) ──
-  const [showImagePromptModal, setShowImagePromptModal] = useState(false);
-  const [imagePromptCopied, setImagePromptCopied] = useState(false);
-
   // ── DUA cola automática ───────────────────────────────────────────────────
   const [showDuaModal, setShowDuaModal]       = useState(false);
   const [duaPages, setDuaPages]               = useState<(string | null)[]>([]);
@@ -1623,13 +1619,7 @@ export default function GuiasPage() {
                         >
                           🧩 Prompts DUA
                         </button>
-                        <button
-                          onClick={() => setShowImagePromptModal(true)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold rounded-xl transition-all"
-                          title="Generar prompt para crear imágenes con IA"
-                        >
-                          🖼️ Imágenes IA
-                        </button>
+
                       </div>
                     </div>
                     {/* Printable Page Canvas */}
@@ -2565,125 +2555,7 @@ export default function GuiasPage() {
         </div>
       )}
 
-      {showImagePromptModal && result && (() => {
-        const asignatura = result.asignatura || result.subject || 'Lengua y Literatura';
-        const nivelGuia = result.nivel || curso || '5° Básico';
-        const temaGuia = result.tema || tema || result.titulo || 'Tema de la guía';
-        const oaGuia = result.oa || oa || 'OA General';
 
-        const prompt = `Genera 3 imágenes educativas para una guía de aprendizaje con estas características:
-
-Asignatura: ${asignatura}
-Nivel: ${nivelGuia}
-Tema: ${temaGuia}
-OA: ${oaGuia}
-
-Imagen 1 — Portada de la guía:
-Ilustración educativa, estilo moderno y limpio, colores llamativos pero no recargados, que represente visualmente el tema "${temaGuia}". Sin texto. Fondo blanco o de color suave.
-
-Imagen 2 — Ilustración de actividad:
-Estudiantes trabajando en grupo o individualmente en una actividad relacionada con "${temaGuia}". Estilo cartoon o ilustración plana. Colores vibrantes.
-
-Imagen 3 — Esquema visual o mapa conceptual:
-Diagrama simple que ilustre el concepto principal de "${temaGuia}" de forma visual. Fondo blanco, líneas claras, iconos simples.
-
-Formato: A4 horizontal, alta resolución, para imprimir.`;
-
-        const handleCopyImagePrompt = () => {
-          navigator.clipboard.writeText(prompt);
-          setImagePromptCopied(true);
-          setTimeout(() => setImagePromptCopied(false), 2500);
-        };
-
-        return (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div
-              className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
-              onClick={() => setShowImagePromptModal(false)}
-            />
-            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden">
-              {/* Header */}
-              <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 shrink-0">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-1.5 bg-violet-100 rounded-lg text-violet-600 text-base leading-none">🖼️</div>
-                  <div>
-                    <h3 className="text-sm font-black text-slate-800">Prompt para Imágenes IA</h3>
-                    <p className="text-[10px] text-slate-400 mt-0.5">Costo: 0 créditos · Sin llamada a Claude</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setShowImagePromptModal(false)}
-                  className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
-                >
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-
-              {/* Body */}
-              <div className="flex-1 overflow-y-auto p-5 space-y-4">
-                {/* Instrucción */}
-                <div className="bg-violet-50 border border-violet-100 rounded-xl px-4 py-3 text-xs text-violet-900">
-                  <p className="font-bold mb-1">¿Cómo usar este prompt?</p>
-                  <p>Copia el texto y pégalo en cualquier generador de imágenes con IA. Los datos de tu guía ya están incluidos.</p>
-                </div>
-
-                {/* Prompt box */}
-                <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Prompt generado</span>
-                    <button
-                      onClick={handleCopyImagePrompt}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-violet-600 hover:bg-violet-700 text-white text-[10px] font-bold rounded-lg transition-all cursor-pointer"
-                    >
-                      {imagePromptCopied ? (
-                        <><span>✓</span> ¡Copiado!</>
-                      ) : (
-                        <><span>📋</span> Copiar prompt</>
-                      )}
-                    </button>
-                  </div>
-                  <pre className="text-[10px] text-slate-600 font-mono whitespace-pre-wrap leading-relaxed bg-white border border-slate-100 rounded-lg p-3 max-h-64 overflow-y-auto">
-                    {prompt}
-                  </pre>
-                </div>
-
-                {/* Links externos */}
-                <div className="space-y-2">
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Abrir generador de imágenes</p>
-                  <div className="flex flex-wrap gap-2">
-                    <a
-                      href="https://chatgpt.com"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl transition-all"
-                    >
-                      ChatGPT + DALL·E →
-                    </a>
-                    <a
-                      href="https://www.canva.com/ai-image-generator/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 px-3 py-2 bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold rounded-xl transition-all"
-                    >
-                      Canva IA →
-                    </a>
-                    <a
-                      href="https://www.bing.com/images/create"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 px-3 py-2 border border-slate-200 hover:bg-slate-50 text-slate-600 text-xs font-bold rounded-xl transition-all"
-                    >
-                      Bing Image Creator →
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      })()}
 
     </div>
   );
