@@ -57,6 +57,7 @@ interface Planning {
   subject: string;
   grade: string;
   learning_objective: string;
+  contenido_json?: { textos_lectura?: Array<{ titulo?: string; tipo?: string; contenido?: string }> } | null;
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -420,7 +421,7 @@ export default function EvaluacionesPage() {
       try {
         const { data: planningsData } = await supabase
           .from('plannings')
-          .select('id, unit, subject, grade, learning_objective')
+          .select('id, unit, subject, grade, learning_objective, contenido_json')
           .order('created_at', { ascending: false });
         setPlannings(planningsData || []);
         if (planningsData && planningsData.length > 0) {
@@ -608,7 +609,8 @@ export default function EvaluacionesPage() {
         establecimiento: establecimiento,
         docente: docente,
         fuente: origen === 'kit' ? 'kit_clase' : origen === 'lectura' ? 'lectura_domiciliaria' : 'tema_libre',
-        libro_id: origen === 'lectura' ? selectedLibroId : undefined
+        libro_id: origen === 'lectura' ? selectedLibroId : undefined,
+        kit_textos: origen === 'kit' ? (currentPlanning?.contenido_json?.textos_lectura ?? null) : undefined
       };
 
       const res = await fetch('/api/evaluaciones', {

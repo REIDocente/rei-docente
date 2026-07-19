@@ -45,7 +45,7 @@ export function buildEvaluacionMinimalPrompt(params: EvaluacionPromptParams): st
 
   const techniqueType = (tipo_evaluacion === 'formativa' || tipo_evaluacion === 'diagnostica') ? 'OREO' : 'RICE';
 
-  const textosInstruccion = fuente === 'lectura_domiciliaria' && textos_provistos
+  const textosInstruccion = textos_provistos // textos provistos para lectura_dom y kit_clase
     ? textos_provistos
     : fuente === 'kit_clase'
     ? `Genera los textos de lectura y el listado de preguntas.\n\nTécnica de respuesta de desarrollo requerida:\n${techniqueType}\n\nInstrucciones de textos:\n- Texto 1 de tipo ${texto_1_tipo} relacionado con la unidad "${unidad || 'curricular'}". MÁXIMO 180 palabras.\n- Texto 2 de tipo ${texto_2_tipo} complementario al mismo tema. MÁXIMO 180 palabras.\n- Sé conciso y directo.`

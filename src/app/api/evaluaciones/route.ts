@@ -623,7 +623,7 @@ async function generateAndCorrectEvaluation(
     unidad?: string;
   }
 ): Promise<Record<string, unknown>> {
-  const maxTokens = params.fuente === 'lectura_domiciliaria' ? 6000
+  const maxTokens = params.textos_provistos ? 6000
     : params.fuente === 'kit_clase' ? 8000
     : 10000;
   console.log("[EVALUACIONES] fuente:", params.fuente, "max_tokens:", maxTokens);
@@ -1589,6 +1589,23 @@ Las preguntas deben referirse estrictamente a los personajes, trama, conflictos,
           `Técnica de respuesta de desarrollo: RICE\n` +
           `Genera ÚNICAMENTE las preguntas referidas a este texto.`;
       }
+    }
+  }
+
+  // Kit de Clase: construir textos_provistos desde la planificación
+  if (fuente === 'kit_clase') {
+    const kitTextos = (body.kit_textos as Array<{ titulo?: string; tipo?: string; contenido?: string }> | null | undefined);
+    if (Array.isArray(kitTextos) && kitTextos.length > 0) {
+      const partes = kitTextos.map((t: { titulo?: string; tipo?: string; contenido?: string }, i: number) => {
+        const tipo = t.tipo || (i === 0 ? 'Argumentativo' : 'Expositivo');
+        const contenido = t.contenido || '';
+        return 'Texto ' + (i + 1) + ' (' + tipo + '):\n' + contenido;
+      }).join('\n\n');
+      textos_provistos =
+        'TEXTOS DE LECTURA PROVISTOS — Usa EXACTAMENTE estos textos como \"textos_lectura\" en el JSON. NO generes textos nuevos.\n\n' +
+        partes +
+        '\n\nGenera ÚNICAMENTE las preguntas y la rúbrica referidas a estos textos. No agregues más texto de lectura.';
+      console.log('[EVALUACIONES] Kit de Clase: ' + kitTextos.length + ' texto(s) provistos desde contenido_json');
     }
   }
 
