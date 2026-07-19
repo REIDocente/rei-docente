@@ -905,9 +905,13 @@ export default function EvaluacionesPage() {
     type DuaSection = { tipo: string; label: string; contenido: string };
     const sections: DuaSection[] = [];
     const textos: any[]  = cj.textos_lectura || [];
-    const pregs: any[]   = cj.preguntas || [];
-    const MC  = pregs.filter((p: any) => p.tipo === 'seleccion_multiple' || (Array.isArray(p.alternativas) && p.alternativas.length > 0));
-    const DEV = pregs.filter((p: any) => p.tipo === 'desarrollo' || p.tipo === 'consigna_abierta');
+    // preguntas_alternativas es el campo normalizado por la API
+    const MC  = cj.preguntas_alternativas || cj.preguntas?.filter((p: any) =>
+      p.tipo === 'seleccion_multiple' || (Array.isArray(p.alternativas) && p.alternativas.length > 0)
+    ) || [];
+    const DEV = cj.preguntas_desarrollo || cj.preguntas?.filter((p: any) =>
+      p.tipo === 'desarrollo' || p.tipo === 'consigna_abierta'
+    ) || [];
     const tablaSpec = cj.tabla_especificaciones;
     const rubrica   = cj.rubrica;
 
