@@ -760,57 +760,64 @@ export default function GuiasPage() {
     return sections;
   };
 
-  // ── DUA: cola automática ──────────────────────────────────────────────────
-  const handleDuaGenerate = async () => {
-    if (!result || duaGenerating) return;
+  // ── DUA: plantilla de prompt ─────────────────────────────────────────────
+  const buildDuaPromptGuia = (contenido: string, pagina: number, total: number): string => {
+    return `Actúa como ilustrador editorial, diseñador gráfico educativo y especialista en Diseño Universal para el Aprendizaje (DUA), con experiencia en la creación de material escolar para editoriales como Santillana, SM, Zig-Zag, Oxford y Pearson.
+
+MISIÓN: Transformar el contenido adjunto en una versión ilustrada y visualmente accesible siguiendo los principios del Diseño Universal para el Aprendizaje (DUA).
+
+ADAPTACIONES DUA — Incorpora únicamente cuando aporten valor pedagógico:
+• Ilustraciones relacionadas con el tema o texto de la guía
+• Pictogramas para instrucciones y conceptos clave
+• Organizadores gráficos, mapas conceptuales, esquemas visuales
+• Vocabulario ilustrado
+• Íconos para representar acciones o conceptos
+• Mayor espaciado y bloques visuales
+• Fragmentación de textos largos
+• Colores suaves para diferenciar secciones
+
+Las ilustraciones deben ayudar a comprender el contenido. NUNCA deben ser decorativas.
+
+NO MODIFIQUES:
+• Los OA
+• Las actividades ni preguntas
+• Las respuestas
+• El nivel de dificultad
+• El contenido pedagógico
+
+DISEÑO: Editorial educativa profesional. Limpio. Moderno. Alta resolución. Formato A4 vertical. 300 dpi. Listo para impresión.
+
+ENTREGA: Genera SOLO esta página (Página ${pagina} de ${total}) como imagen A4 completa e independiente. No combines páginas. No crees collages ni mosaicos.
+
+────────────────────────────────────────────────────
+CONTENIDO DE ESTA PÁGINA:
+
+${contenido}
+────────────────────────────────────────────────────
+
+Genera la Página ${pagina} de ${total} como imagen A4 ilustrada.`;
+  };
+
+  // ── DUA: generar prompts por página (sin llamada API) ────────────────────
+  const handleDuaGenerate = () => {
+    if (!result) return;
     const cj = result.contenido_json || result;
     const sections = buildDuaGuiaSections(cj);
     if (sections.length === 0) return;
-
-    const ctxAsig  = String(result.asignatura || result.subject || 'Lengua y Literatura');
-    const ctxNivel = String(result.nivel || curso || '5° Básico');
-    const ctxOa    = String(result.oa || oa || 'OA General');
-
-    setDuaPages(new Array(sections.length).fill(null));
+    const prompts = sections.map((s, i) =>
+      buildDuaPromptGuia(s.contenido, i + 1, sections.length)
+    );
+    setDuaPages(prompts);
     setDuaLabels(sections.map(s => s.label));
-    setDuaStep(0);
-    setDuaGenerating(true);
+    setDuaStep(-1);
+    setDuaGenerating(false);
     setShowDuaModal(true);
     setDuaViewIdx(0);
     setDuaPageCopied(false);
     setDuaAllCopied(false);
-
-    const { data: { session } } = await (await import('@/lib/supabase')).supabase.auth.getSession().catch(() => ({ data: { session: null } }));
-    const token = (session as any)?.access_token ?? '';
-
-    for (let i = 0; i < sections.length; i++) {
-      setDuaStep(i);
-      try {
-        const res = await fetch('/api/dua', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-          body: JSON.stringify({
-            modulo: 'guia',
-            tipo_pagina: sections[i].tipo,
-            pagina: i + 1,
-            total: sections.length,
-            contenido: sections[i].contenido,
-            contexto: { asignatura: ctxAsig, nivel: ctxNivel, oa: ctxOa },
-          }),
-        });
-        const data = await res.json();
-        setDuaPages(prev => { const n = [...prev]; n[i] = res.ok ? (data.pagina_adaptada ?? '') : `[Error: ${data.error || 'desconocido'}]`; return n; });
-      } catch (err: any) {
-        setDuaPages(prev => { const n = [...prev]; n[i] = `[Error de red: ${err.message}]`; return n; });
-      }
-    }
-
-    setDuaStep(-1);
-    setDuaGenerating(false);
-    setDuaViewIdx(0);
   };
 
-  // ── Export PDF Client-side ────────────────────────────────────────────────
+    // ── Export PDF Client-side ────────────────────────────────────────────────
   const triggerPdfDownload = () => {
     if (!result) return;
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
@@ -1575,11 +1582,11 @@ export default function GuiasPage() {
                         </button>
                         <button
                           onClick={handleDuaGenerate}
-                          disabled={!result || duaGenerating}
+                          disabled={!result}
                           className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 text-white text-xs font-semibold rounded-xl transition-all"
-                          title="Adaptar guía con DUA — generación automática página por página"
+                          title="Generar prompts DUA para ChatGPT / Gemini / Canva"
                         >
-                          {duaGenerating ? <><Loader2 className="w-3 h-3 animate-spin" /> DUA...</> : <>🧩 DUA</>}
+                          🧩 Prompts DUA
                         </button>
                         <button
                           onClick={() => setShowImagePromptModal(true)}
@@ -2423,11 +2430,9 @@ export default function GuiasPage() {
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
               <div>
-                <h3 className="text-sm font-black text-slate-800">🧩 Guía DUA</h3>
+                <h3 className="text-sm font-black text-slate-800">🧩 Prompts DUA — Guía</h3>
                 <p className="text-[10px] text-slate-400 mt-0.5">
-                  {duaGenerating
-                    ? `Generando página ${duaStep + 1} de ${duaLabels.length}...`
-                    : `${duaPages.length} página${duaPages.length !== 1 ? 's' : ''} listas`}
+                  {duaPages.length} prompt{duaPages.length !== 1 ? 's' : ''} listo{duaPages.length !== 1 ? 's' : ''} — pega cada uno en ChatGPT, Gemini o Canva
                 </p>
               </div>
               {!duaGenerating && (
@@ -2443,32 +2448,7 @@ export default function GuiasPage() {
             {/* Body */}
             <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
 
-              {/* Vista progreso */}
-              {duaGenerating && (
-                <div className="space-y-2">
-                  {duaLabels.map((lbl, idx) => {
-                    const done = duaPages[idx] !== null;
-                    const curr = idx === duaStep;
-                    return (
-                      <div key={idx} className={`flex items-center gap-3 px-4 py-3 rounded-xl border transition-colors ${
-                        done ? 'bg-emerald-50 border-emerald-100' :
-                        curr ? 'bg-teal-50 border-teal-200' :
-                        'bg-slate-50 border-slate-100'
-                      }`}>
-                        <span className="text-base leading-none">
-                          {done ? '✅' : curr ? '⏳' : '⌛'}
-                        </span>
-                        <span className={`text-[11px] font-semibold ${done ? 'text-emerald-700' : curr ? 'text-teal-700' : 'text-slate-400'}`}>
-                          {lbl}{curr ? ' — generando...' : ''}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {/* Vista resultado */}
-              {!duaGenerating && duaPages.length > 0 && (
+              {duaPages.length > 0 && (
                 <div className="space-y-4">
                   {/* Tabs */}
                   <div className="flex flex-wrap gap-1.5">
@@ -2523,7 +2503,7 @@ export default function GuiasPage() {
                       }}
                       className="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold rounded-xl transition-all"
                     >
-                      {duaPageCopied ? '✅ Copiado' : '📋 Copiar esta página'}
+                      {duaPageCopied ? '✅ Copiado' : '📋 Copiar este prompt'}
                     </button>
                     <button
                       onClick={() => {
@@ -2536,12 +2516,12 @@ export default function GuiasPage() {
                       }}
                       className="flex-1 py-2 bg-slate-700 hover:bg-slate-800 text-white text-[11px] font-bold rounded-xl transition-all"
                     >
-                      {duaAllCopied ? '✅ Copiado todo' : '📄 Copiar todo'}
+                      {duaAllCopied ? '✅ Copiado todo' : '📄 Copiar todos los prompts'}
                     </button>
                   </div>
 
                   <p className="text-center text-[9px] text-slate-400">
-                    Pega cada página en Word, Google Docs o Canva para imprimir
+                    Pega cada prompt en ChatGPT, Gemini o Canva para generar la página ilustrada
                   </p>
                 </div>
               )}
