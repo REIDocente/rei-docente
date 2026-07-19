@@ -972,11 +972,28 @@ export default function EvaluacionesPage() {
     return sections;
   };
 
-  // ── DUA: plantilla de prompt ─────────────────────────────────────────────
-  const buildDuaPrompt = (contenido: string, pagina: number, total: number): string => {
-    return `Actúa como ilustrador editorial, diseñador gráfico educativo y especialista en Diseño Universal para el Aprendizaje (DUA), con experiencia en la creación de material escolar para editoriales como Santillana, SM, Zig-Zag, Oxford y Pearson.
+  // ── DUA: plantilla de prompt contextual ─────────────────────────────────
+  const buildDuaPrompt = (contenido: string, pagina: number, total: number, ctx: {
+    establecimiento: string; docente: string; asignatura: string;
+    curso: string; tipoEval: string; instrumento: string; oas: string;
+  }): string => {
+    return `Actúa como diseñador gráfico editorial, ilustrador educativo, director de arte y especialista en Diseño Universal para el Aprendizaje (DUA), con amplia experiencia diseñando evaluaciones escolares para editoriales como Santillana, SM, Zig-Zag, Oxford y Pearson.
 
-MISIÓN: Transformar el contenido adjunto en una versión ilustrada y accesible siguiendo los principios del Diseño Universal para el Aprendizaje (DUA).
+La evaluación completa se encuentra adjunta en formato PDF. Antes de comenzar, analiza el documento completo para comprender el contexto pedagógico, la estructura de la evaluación y mantener continuidad visual entre todas las páginas.
+
+INFORMACIÓN GENERAL DE LA EVALUACIÓN:
+• Establecimiento: ${ctx.establecimiento || '(no especificado)'}
+• Docente: ${ctx.docente || '(no especificado)'}
+• Asignatura: ${ctx.asignatura}
+• Curso: ${ctx.curso}
+• Tipo de evaluación: ${ctx.tipoEval}
+• Instrumento: ${ctx.instrumento}
+• OA evaluados: ${ctx.oas}
+• Cantidad de páginas: ${total}
+
+Toda esta información debe mantenerse exactamente igual que en el documento original. No modifiques nombres, datos institucionales ni información académica.
+
+MISIÓN: Transformar el contenido adjunto en una versión ilustrada y accesible siguiendo los principios del Diseño Universal para el Aprendizaje (DUA). Trabaja únicamente sobre la Página ${pagina} de ${total}.
 
 ADAPTACIONES DUA — Incorpora únicamente cuando aporten valor pedagógico:
 • Ilustraciones relacionadas con los textos de lectura
@@ -1018,8 +1035,26 @@ Genera la Página ${pagina} de ${total} como imagen A4 ilustrada.`;
     const sections = buildDuaEvalSections(cj);
     if (sections.length === 0) return;
 
+    const instrLabels: Record<string, string> = {
+      rubrica_holistica: 'Rúbrica holística',
+      analitica_descriptiva: 'Rúbrica analítica descriptiva',
+      analitica_cuantitativa: 'Rúbrica analítica cuantitativa',
+      lista_cotejo: 'Lista de cotejo',
+      escala_apreciacion: 'Escala de apreciación',
+      pauta_correccion: 'Pauta de corrección',
+    };
+    const ctx = {
+      establecimiento: establecimiento || cj.establecimiento || '',
+      docente: docente || cj.docente || '',
+      asignatura: String(cj.asignatura || result.asignatura || 'Lenguaje y Comunicación'),
+      curso: String(cj.nivel || result.nivel || curso || ''),
+      tipoEval: String(cj.tipo_evaluacion || tipoEvaluacion || 'Formativa'),
+      instrumento: instrLabels[instrumento] || instrumento,
+      oas: String(cj.tabla_especificaciones?.oa_evaluado || (cj.oa_codes || []).join(', ') || ''),
+    };
+
     const prompts = sections.map((s, i) =>
-      buildDuaPrompt(s.contenido, i + 1, sections.length)
+      buildDuaPrompt(s.contenido, i + 1, sections.length, ctx)
     );
 
     setDuaPages(prompts);
