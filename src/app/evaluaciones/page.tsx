@@ -987,17 +987,7 @@ export default function EvaluacionesPage() {
       sections.push({ tipo: 'desarrollo', label: 'Pregunta de desarrollo', contenido: c });
     }
 
-    // Rúbrica
-    if (rubrica) {
-      let c = `INSTRUMENTO DE EVALUACIÓN: ${rubrica.titulo || 'Rúbrica'} (${rubrica.tipo_instrumento || 'holística'})\n\nCRITERIOS:\n`;
-      c += (rubrica.criterios || []).map((cr: any) =>
-        `• ${cr.nombre || ''}${cr.ponderacion_pct ? ` (${cr.ponderacion_pct}%)` : ''}: ${cr.logrado || cr.excelente || cr.descriptor || ''}`
-      ).join('\n');
-      c += '\n\nPAUTA DE CORRECCIÓN SM:\n' + MC.map((q: any, i: number) =>
-        `P${q.numero_original || i + 1}:${q.clave || '?'}`
-      ).join(' | ');
-      sections.push({ tipo: 'rubrica', label: 'Rúbrica y pauta', contenido: c });
-    }
+    // Rúbrica — omitida de Versión Visual (ya viene en el PDF exportado)
 
     return sections;
   };
