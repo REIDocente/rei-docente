@@ -831,10 +831,11 @@ export default function GuiasPage() {
 
   // ── DUA Real: 3 páginas condensadas ──────────────────────────────────────
   const buildDuaRealPromptGuia = (
-    instruccion: string,
+    contenido: string,
     pagina: number,
     total: number,
-    ctx?: { establecimiento?: string; docente?: string; asignatura?: string; curso?: string; oas?: string }
+    ctx?: { establecimiento?: string; docente?: string; asignatura?: string; curso?: string; oas?: string },
+    notaDUA?: string
   ): string => {
     const _est  = ctx?.establecimiento || '';
     const _doc  = ctx?.docente || '';
@@ -842,21 +843,19 @@ export default function GuiasPage() {
     const _cur  = ctx?.curso || '';
     const _oas  = ctx?.oas || '';
     const lines: string[] = [];
-    lines.push('Eres un especialista en Diseno Universal para el Aprendizaje (DUA) y disenador grafico educativo, con experiencia en editoriales chilenas (Santillana, SM, Zig-Zag).');
-    lines.push('');
-    lines.push('Tienes adjunta la guia de aprendizaje COMPLETA en PDF. Analizala antes de comenzar.');
+    lines.push('Actua como disenador grafico editorial, ilustrador educativo y especialista en Diseno Universal para el Aprendizaje (DUA), con experiencia en editoriales chilenas (Santillana, SM, Zig-Zag).');
     lines.push('');
     lines.push('==================================================');
-    lines.push('DATOS DE CONTEXTO');
+    lines.push('DATOS DE CONTEXTO (referencia interna)');
     lines.push('Establecimiento: ' + (_est || '(no especificado)'));
     lines.push('Docente: ' + (_doc || '(no especificado)'));
     lines.push('Asignatura: ' + _asig);
     lines.push('Curso: ' + _cur);
     lines.push('OA trabajados: ' + _oas);
+    lines.push('Total de paginas: ' + total);
     lines.push('==================================================');
     lines.push('');
-    lines.push('Esta es la VERSION DUA de la guia. Tendra ' + total + ' paginas en total (mas compacta que el original).');
-    lines.push('Genera UNICAMENTE la Pagina ' + pagina + ' de ' + total + '.');
+    lines.push('MISION: Generar la Pagina ' + pagina + ' de ' + total + ' de la VERSION DUA de esta guia de aprendizaje (version condensada con los 3 principios aplicados).');
     lines.push('');
     if (pagina === 1) {
       lines.push('ENCABEZADO INSTITUCIONAL (solo esta pagina):');
@@ -868,9 +867,11 @@ export default function GuiasPage() {
       lines.push('OA visible en recuadro: "En esta guia aprenderas a..."');
       lines.push('');
     }
-    lines.push('INSTRUCCION PARA ESTA PAGINA:');
-    lines.push(instruccion);
-    lines.push('');
+    if (notaDUA) {
+      lines.push('NOTA DUA PARA ESTA PAGINA:');
+      lines.push(notaDUA);
+      lines.push('');
+    }
     lines.push('--- PRINCIPIO 1: REPRESENTACION ---');
     lines.push('- Ilustraciones relacionadas al contenido de esta pagina');
     lines.push('- Pictogramas para instrucciones (lapiz, lupa, estrella)');
@@ -893,8 +894,12 @@ export default function GuiasPage() {
     lines.push('');
     lines.push('NO MODIFICAR: OA, sentido pedagogico, objetivo de aprendizaje.');
     lines.push('DISENO: Editorial educativa profesional. A4 vertical. 300 dpi. Listo para imprimir.');
-    lines.push('');
     lines.push('ENTREGA: SOLO Pagina ' + pagina + ' de ' + total + ' como imagen A4. No combines paginas.');
+    lines.push('');
+    lines.push('----------------------------------------');
+    lines.push('CONTENIDO DE ESTA PAGINA:');
+    lines.push('');
+    lines.push(contenido);
     return lines.join('\n');
   };
 
@@ -908,25 +913,43 @@ export default function GuiasPage() {
       curso: String((cj as any).nivel || (cj as any).curso || ''),
       oas: String(((cj as any).oa_codes || []).join(', ') || (cj as any).oa || ''),
     };
+
+    // Extraer secciones del JSON (igual que Version Visual)
+    const allSections = buildDuaGuiaSections(cj);
+    const textoSec      = allSections.find(s => s.tipo === 'portada');
+    const actividadSec  = allSections.find(s => s.tipo === 'actividades');
+    const cierreSec     = allSections.find(s => s.tipo === 'cierre');
+
+    const contenidoTexto = textoSec?.contenido ||
+      '[Sin texto de lectura — incluir encabezado de guia con objetivo y pregunta de anticipacion]';
+    const contenidoActs  = actividadSec?.contenido ||
+      '[Sin actividades — generar actividades DUA basadas en el texto de la pagina anterior]';
+    const contenidoCierre = (cierreSec?.contenido || '') +
+      '\n\nAGREGAR: (1) Reflexion: "Aprendi que... / Todavia tengo dudas sobre...", (2) Semaforo de autoevaluacion, (3) Mensaje motivador final.';
+
     const duaSections = [
       {
         label: 'Pag 1 DUA — Portada y Texto',
-        instruccion: 'Extrae del PDF el texto o lectura principal. Puedes simplificar levemente el vocabulario dificil pero mantener el contenido. NO incluyas las actividades en esta pagina. Agrega una pregunta de anticipacion al inicio: "Que sabes sobre este tema? / Que crees que aprenderas?"',
+        contenido: contenidoTexto,
+        nota: 'Puedes simplificar levemente el vocabulario dificil manteniendo el sentido. Agrega pregunta de anticipacion al inicio. NO incluyas las actividades en esta pagina.',
       },
       {
         label: 'Pag 2 DUA — Actividades',
-        instruccion: 'Extrae del PDF las actividades mas representativas del OA. Selecciona solo las esenciales (puedes reducir la cantidad). Omite actividades de menor relevancia. Adapta con espacios de respuesta amplios y opciones alternativas de expresion.',
+        contenido: contenidoActs,
+        nota: 'Selecciona solo las actividades MAS REPRESENTATIVAS del OA. Puedes reducir la cantidad. Adapta con espacios de respuesta amplios y opciones alternativas.',
       },
       {
         label: 'Pag 3 DUA — Desafio y Cierre',
-        instruccion: 'Crea la pagina de cierre con: (1) Desafio opcional breve relacionado al tema, (2) Reflexion: "Aprendi que... / Todavia tengo dudas sobre...", (3) Semaforo de autoevaluacion, (4) Mensaje motivador final.',
+        contenido: contenidoCierre,
+        nota: '',
       },
     ];
     const prompts = duaSections.map((s, i) =>
-      buildDuaRealPromptGuia(s.instruccion, i + 1, duaSections.length, _ctx)
+      buildDuaRealPromptGuia(s.contenido, i + 1, duaSections.length, _ctx, s.nota || undefined)
     );
     setDuaRealPages(prompts);
     setDuaRealLabels(duaSections.map(s => s.label));
+    setDuaRealViewIdx(0);
     setShowDuaRealModal(true);
   };
 

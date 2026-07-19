@@ -1109,10 +1109,11 @@ Genera la Página ${pagina} de ${total} como imagen A4 ilustrada y lista para im
 
   // ── DUA Real: 3 páginas condensadas ──────────────────────────────────────
   const buildDuaRealPromptEval = (
-    instruccion: string,
+    contenido: string,
     pagina: number,
     total: number,
-    ctx?: { establecimiento?: string; docente?: string; asignatura?: string; curso?: string; oas?: string }
+    ctx?: { establecimiento?: string; docente?: string; asignatura?: string; curso?: string; oas?: string },
+    notaDUA?: string
   ): string => {
     const _est  = ctx?.establecimiento || '';
     const _doc  = ctx?.docente || '';
@@ -1120,21 +1121,19 @@ Genera la Página ${pagina} de ${total} como imagen A4 ilustrada y lista para im
     const _cur  = ctx?.curso || '';
     const _oas  = ctx?.oas || '';
     const lines: string[] = [];
-    lines.push('Eres un especialista en Diseno Universal para el Aprendizaje (DUA) y disenador grafico educativo, con experiencia en editoriales chilenas (Santillana, SM, Zig-Zag).');
-    lines.push('');
-    lines.push('Tienes adjunta la evaluacion COMPLETA en PDF. Analizala antes de comenzar.');
+    lines.push('Actua como disenador grafico editorial, ilustrador educativo y especialista en Diseno Universal para el Aprendizaje (DUA), con experiencia en editoriales chilenas (Santillana, SM, Zig-Zag).');
     lines.push('');
     lines.push('==================================================');
-    lines.push('DATOS DE CONTEXTO');
+    lines.push('DATOS DE CONTEXTO (referencia interna)');
     lines.push('Establecimiento: ' + (_est || '(no especificado)'));
     lines.push('Docente: ' + (_doc || '(no especificado)'));
     lines.push('Asignatura: ' + _asig);
     lines.push('Curso: ' + _cur);
     lines.push('OA evaluados: ' + _oas);
+    lines.push('Total de paginas: ' + total);
     lines.push('==================================================');
     lines.push('');
-    lines.push('Esta es la VERSION DUA de la evaluacion. Tendra ' + total + ' paginas en total (mas compacta que el original).');
-    lines.push('Genera UNICAMENTE la Pagina ' + pagina + ' de ' + total + '.');
+    lines.push('MISION: Generar la Pagina ' + pagina + ' de ' + total + ' de la VERSION DUA de esta evaluacion (version condensada con los 3 principios aplicados).');
     lines.push('');
     if (pagina === 1) {
       lines.push('ENCABEZADO INSTITUCIONAL (solo esta pagina):');
@@ -1146,9 +1145,11 @@ Genera la Página ${pagina} de ${total} como imagen A4 ilustrada y lista para im
       lines.push('OA visible en recuadro: "En esta evaluacion demostraras que puedes..."');
       lines.push('');
     }
-    lines.push('INSTRUCCION PARA ESTA PAGINA:');
-    lines.push(instruccion);
-    lines.push('');
+    if (notaDUA) {
+      lines.push('NOTA DUA PARA ESTA PAGINA:');
+      lines.push(notaDUA);
+      lines.push('');
+    }
     lines.push('--- PRINCIPIO 1: REPRESENTACION ---');
     lines.push('- Ilustraciones que apoyen la comprension del contenido de esta pagina');
     lines.push('- Pictogramas para instrucciones (lapiz, ojo, etc.)');
@@ -1170,8 +1171,12 @@ Genera la Página ${pagina} de ${total} como imagen A4 ilustrada y lista para im
     lines.push('');
     lines.push('NO MODIFICAR: OA, alternativas correctas, valor de preguntas, sentido pedagogico.');
     lines.push('DISENO: Editorial educativa profesional. A4 vertical. 300 dpi. Listo para imprimir.');
-    lines.push('');
     lines.push('ENTREGA: SOLO Pagina ' + pagina + ' de ' + total + ' como imagen A4. No combines paginas.');
+    lines.push('');
+    lines.push('----------------------------------------');
+    lines.push('CONTENIDO DE ESTA PAGINA:');
+    lines.push('');
+    lines.push(contenido);
     return lines.join('\n');
   };
 
@@ -1185,22 +1190,37 @@ Genera la Página ${pagina} de ${total} como imagen A4 ilustrada y lista para im
       curso: String((cj as any).nivel || (cj as any).curso || ''),
       oas: String(((cj as any).oa_codes || []).join(', ') || (cj as any).oa || ''),
     };
+
+    // Extraer secciones del JSON (igual que Version Visual)
+    const allSections = buildDuaEvalSections(cj);
+    const textoSecs = allSections.filter(s => s.tipo === 'portada_texto' || s.tipo === 'texto' || s.tipo === 'portada');
+    const pregSecs  = allSections.filter(s => s.tipo === 'preguntas' || s.tipo === 'desarrollo');
+
+    const contenidoTexto = textoSecs.map(s => s.contenido).join('\n\n') ||
+      '[Sin texto de lectura — incluir encabezado e instrucciones de la evaluacion]';
+    const contenidoPregs = pregSecs.map(s => s.contenido).join('\n\n') ||
+      '[Sin preguntas disponibles]';
+    const contenidoCierre = 'PAGINA DE CIERRE DUA\nIncluye: (1) Semaforo de autoevaluacion, (2) Espacio de reflexion: "Aprendi que... / Todavia tengo dudas sobre...", (3) Mensaje motivador de cierre.';
+
     const duaSections = [
       {
-        label: 'Pag 1 DUA — Encabezado y Texto',
-        instruccion: 'Extrae del PDF el texto de lectura completo. Puedes simplificar levemente el vocabulario dificil pero mantener el contenido y sentido. NO incluyas las preguntas en esta pagina. Agrega: (1) numeracion de parrafos, (2) pregunta de anticipacion al inicio: "Segun el titulo, de que crees que tratara el texto?"',
+        label: 'Pag 1 DUA — Texto',
+        contenido: contenidoTexto,
+        nota: 'Puedes simplificar levemente el vocabulario dificil manteniendo el sentido. Agrega: numeracion de parrafos + pregunta de anticipacion al inicio.',
       },
       {
         label: 'Pag 2 DUA — Preguntas',
-        instruccion: 'Extrae del PDF las preguntas de evaluacion. Selecciona solo las MAS representativas del OA: 4-5 preguntas de seleccion multiple + 1 pregunta de desarrollo. Omite las menos esenciales para el OA. Incluye lineas suficientes para responder y el puntaje de cada pregunta.',
+        contenido: contenidoPregs,
+        nota: 'Selecciona solo las preguntas MAS REPRESENTATIVAS del OA (4-5 SM + 1 desarrollo max). Omite las menos esenciales. Mantiene claves correctas y puntajes.',
       },
       {
-        label: 'Pag 3 DUA — Rubrica y Cierre',
-        instruccion: 'Extrae la rubrica del PDF y simplificala usando lenguaje accesible para el nivel del curso. Agrega: (1) espacio de autoevaluacion junto a la rubrica, (2) semaforo de autoevaluacion al final, (3) mensaje motivador de cierre.',
+        label: 'Pag 3 DUA — Cierre',
+        contenido: contenidoCierre,
+        nota: '',
       },
     ];
     const prompts = duaSections.map((s, i) =>
-      buildDuaRealPromptEval(s.instruccion, i + 1, duaSections.length, _ctx)
+      buildDuaRealPromptEval(s.contenido, i + 1, duaSections.length, _ctx, s.nota || undefined)
     );
     setDuaRealPages(prompts);
     setDuaRealLabels(duaSections.map(s => s.label));
