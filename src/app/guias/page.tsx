@@ -756,99 +756,88 @@ export default function GuiasPage() {
       c3 += '[Sin desafío — generar uno apropiado para el tema]';
     }
     if (reflexion) c3 += `\n\nREFLEXIÓN FINAL:\n${typeof reflexion === 'string' ? reflexion.slice(0, 300) : ''}`;
-    sections.push({ tipo: 'cierre', lab  // ── DUA: plantilla de prompt contextual ─────────────────────────────────
-  const buildDuaPromptGuia = (contenido: string, pagina: number, total: number, ctx?: {
-    establecimiento?: string; docente?: string; asignatura?: string; curso?: string; oas?: string;
-  }): string => {
-    const _est  = ctx?.establecimiento || '';
-    const _doc  = ctx?.docente || '';
-    const _asig = ctx?.asignatura || 'Lenguaje y Comunicación';
-    const _cur  = ctx?.curso || '';
-    const _oas  = ctx?.oas || '';
-    return `Actúa como ilustrador editorial, diseñador gráfico educativo y especialista en Diseño Universal para el Aprendizaje (DUA), con experiencia en la creación de material escolar para editoriales como Santillana, SM, Zig-Zag, Oxford y Pearson.
+    sections.push({ tipo: 'cierre', label: 'Desafío y cierre', contenido: c3 });
 
-La guía completa se encuentra adjunta en formato PDF. Antes de comenzar, analiza el documento completo para mantener continuidad visual y pedagógica entre todas las páginas.
-
-════════════════════════════════════════════════════
-DATOS DE CONTEXTO (solo para tu referencia interna)
-• Establecimiento: ${_est || '(no especificado)'}
-• Docente: ${_doc || '(no especificado)'}
-• Asignatura: ${_asig}
-• Curso: ${_cur}
-• OA trabajados: ${_oas}
-• Cantidad de páginas: ${total}
-════════════════════════════════════════════════════
-
-MISIÓN: Transformar el contenido adjunto en una versión ilustrada y visualmente accesible, siguiendo los principios del DUA. Trabaja únicamente sobre la Página ${pagina} de ${total}.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-REGLAS DEL ENCABEZADO (SOLO página 1):
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Si esta es la Página 1, diseña el encabezado institucional como una tabla profesional con este formato exacto:
-
-LÍNEA SUPERIOR (fuera de la tabla, centrado o alineado al margen):
-  → Nombre del establecimiento: "${_est || 'LICEO'}"
-
-TABLA DE ENCABEZADO (3 filas):
-  Fila 1: [Tipo de material: GUÍA DE APRENDIZAJE] [Asignatura/Especialidad: ${_asig}] [Curso: ${_cur}] [Letra: ___]
-  Fila 2: [Docente Responsable: ${_doc || ''}] [Fecha: ______] [OA: ${_oas}]
-  Fila 3: [Nombre del Estudiante: ________________________________] [Puntaje: ___] [Nota: ___]
-
-Luego el título de la guía en negrita, centrado.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-ADAPTACIONES DUA — aplica según valor pedagógico:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Ilustraciones relacionadas con el tema o texto de la guía
-• Pictogramas para instrucciones y conceptos clave
-• Organizadores gráficos, mapas conceptuales, esquemas visuales
-• Vocabulario ilustrado con definiciones visuales
-• Íconos para representar acciones (leer, subrayar, responder, investigar)
-• Mayor espaciado y bloques visuales entre actividades
-• Colores suaves para diferenciar secciones
-• Fragmentación de textos largos en párrafos visuales
-
-Las ilustraciones deben apoyar la comprensión del contenido. NUNCA deben ser decorativas.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-NO MODIFIQUES bajo ninguna circunstancia:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-• Los OA trabajados
-• Las actividades ni preguntas (texto exacto)
-• Las respuestas
-• El nivel de dificultad
-• El contenido pedagógico
-• Los nombres y datos institucionales
-
-DISEÑO: Editorial educativa profesional. Limpio, moderno y legible. Formato A4 vertical. 300 dpi. Listo para impresión y proyección en clase.
-
-ENTREGA: Genera SOLO esta página (Página ${pagina} de ${total}) como imagen A4 completa e independiente. No combines páginas. No crees collages ni mosaicos.
-
-────────────────────────────────────────
-CONTENIDO DE ESTA PÁGINA:
-
-${contenido}
-────────────────────────────────────────
-
-Genera la Página ${pagina} de ${total} como imagen A4 ilustrada y lista para imprimir.`;
+    return sections;
   };
 
-  era la Página ${pagina} de ${total} como imagen A4 ilustrada.`;
+  // ── DUA: plantilla de prompt guía (contextual) ─────────────────────────────
+  const buildDuaPromptGuia = (contenido: string, pagina: number, total: number, ctx?: { establecimiento?: string; docente?: string; asignatura?: string; curso?: string; oas?: string }): string => {
+    const _est  = (ctx && ctx.establecimiento) || '';
+    const _doc  = (ctx && ctx.docente) || '';
+    const _asig = (ctx && ctx.asignatura) || 'Lenguaje y Comunicación';
+    const _cur  = (ctx && ctx.curso) || '';
+    const _oas  = (ctx && ctx.oas) || '';
+
+    const lines = [];
+    lines.push('Actua como ilustrador editorial, disenador grafico educativo y especialista en Diseno Universal para el Aprendizaje (DUA), con experiencia en editoriales como Santillana, SM, Zig-Zag, Oxford y Pearson.');
+    lines.push('');
+    lines.push('La guia completa se encuentra adjunta en formato PDF. Analiza el documento completo antes de comenzar para mantener continuidad visual entre paginas.');
+    lines.push('');
+    lines.push('==================================================');
+    lines.push('DATOS DE CONTEXTO (referencia interna)');
+    lines.push('Establecimiento: ' + (_est || '(no especificado)'));
+    lines.push('Docente: ' + (_doc || '(no especificado)'));
+    lines.push('Asignatura: ' + _asig);
+    lines.push('Curso: ' + _cur);
+    lines.push('OA trabajados: ' + _oas);
+    lines.push('Total de paginas: ' + total);
+    lines.push('==================================================');
+    lines.push('');
+    lines.push('MISION: Transformar esta pagina en una version ilustrada y accesible segun los principios del DUA. Trabaja UNICAMENTE sobre la Pagina ' + pagina + ' de ' + total + '.');
+
+    if (pagina === 1) {
+      lines.push('');
+      lines.push('ENCABEZADO INSTITUCIONAL (solo pagina 1):');
+      lines.push('Nombre del establecimiento arriba: ' + (_est || 'LICEO'));
+      lines.push('Tabla de encabezado (3 filas):');
+      lines.push('  Fila 1: [Tipo: GUIA DE APRENDIZAJE] [Asignatura: ' + _asig + '] [Curso: ' + _cur + '] [Letra: ___]');
+      lines.push('  Fila 2: [Docente: ' + (_doc || '') + '] [Fecha: ______] [OA: ' + _oas + ']');
+      lines.push('  Fila 3: [Nombre del Estudiante: ___________________________] [Puntaje: ___] [Nota: ___]');
+      lines.push('Luego el titulo de la guia en negrita, centrado.');
+    }
+
+    lines.push('');
+    lines.push('ADAPTACIONES DUA:');
+    lines.push('- Ilustraciones relacionadas con el tema o texto de la guia');
+    lines.push('- Pictogramas para instrucciones y conceptos clave');
+    lines.push('- Organizadores graficos, mapas conceptuales, esquemas visuales');
+    lines.push('- Vocabulario ilustrado con definiciones visuales');
+    lines.push('- Iconos para representar acciones (leer, subrayar, responder)');
+    lines.push('- Mayor espaciado y bloques visuales entre actividades');
+    lines.push('- Colores suaves para diferenciar secciones');
+    lines.push('Las ilustraciones deben apoyar la comprension. NUNCA decorativas.');
+    lines.push('');
+    lines.push('NO MODIFIQUES: OA, actividades, preguntas, respuestas, contenido pedagogico, nombres institucionales.');
+    lines.push('');
+    lines.push('DISENO: Editorial educativa profesional. A4 vertical. 300 dpi. Listo para impresion.');
+    lines.push('');
+    lines.push('ENTREGA: SOLO Pagina ' + pagina + ' de ' + total + ' como imagen A4 independiente. No combines paginas.');
+    lines.push('');
+    lines.push('----------------------------------------');
+    lines.push('CONTENIDO DE ESTA PAGINA:');
+    lines.push('');
+    lines.push(contenido);
+    lines.push('----------------------------------------');
+    lines.push('');
+    lines.push('Genera la Pagina ' + pagina + ' de ' + total + ' como imagen A4 ilustrada y lista para imprimir.');
+
+    return lines.join('\n');
   };
 
-  // ── DUA: generar prompts por página (sin llamada API) ────────────────────
+    // ── DUA: generar prompts por página (sin llamada API) ────────────────────
   const handleDuaGenerate = () => {
     if (!result) return;
     const cj = result.contenido_json || result;
     const sections = buildDuaGuiaSections(cj);
     if (sections.length === 0) return;
-    const _cj = result.contenido_json || result;
+    const _cjCtx = result.contenido_json || result;
     const _ctx = {
-      establecimiento: (typeof establecimientoGuia !== 'undefined' ? establecimientoGuia : '') || _cj.establecimiento || '',
-      docente: docenteNombre || _cj.docente || '',
-      asignatura: String(_cj.asignatura || 'Lenguaje y Comunicación'),
-      curso: String(_cj.nivel || _cj.curso || ''),
-      oas: String((_cj.oa_codes || []).join(', ') || _cj.oa || ''),
+      establecimiento: establecimientoGuia || _cjCtx.establecimiento || '',
+      docente: docenteNombre || _cjCtx.docente || '',
+      asignatura: String(_cjCtx.asignatura || 'Lenguaje y Comunicacion'),
+      curso: String(_cjCtx.nivel || _cjCtx.curso || ''),
+      oas: String((_cjCtx.oa_codes || []).join(', ') || _cjCtx.oa || ''),
     };
     const prompts = sections.map((s, i) =>
       buildDuaPromptGuia(s.contenido, i + 1, sections.length, _ctx)
