@@ -607,7 +607,7 @@ export default function EvaluacionesPage() {
         texto_2_tipo: texto2Tipo,
         establecimiento: establecimiento,
         docente: docente,
-        fuente: origen === 'lectura' ? 'lectura_domiciliaria' : undefined,
+        fuente: origen === 'kit' ? 'kit_clase' : origen === 'lectura' ? 'lectura_domiciliaria' : 'tema_libre',
         libro_id: origen === 'lectura' ? selectedLibroId : undefined
       };
 

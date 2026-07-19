@@ -618,12 +618,18 @@ async function generateAndCorrectEvaluation(
     texto_1_tipo?: string;
     texto_2_tipo?: string;
     libroContexto?: string;
+    fuente?: string;
+    textos_provistos?: string;
+    unidad?: string;
   }
 ): Promise<Record<string, unknown>> {
-  console.log("Llamando a Claude API...");
+  const maxTokens = params.fuente === 'lectura_domiciliaria' ? 6000
+    : params.fuente === 'kit_clase' ? 8000
+    : 10000;
+  console.log("[EVALUACIONES] fuente:", params.fuente, "max_tokens:", maxTokens);
   const response = await anthropic.messages.create({
     model:      model,
-    max_tokens: 16000,
+    max_tokens: maxTokens,
     system:     [
       {
         type: 'text',
@@ -642,7 +648,10 @@ async function generateAndCorrectEvaluation(
       n_preguntas_desarrollo: params.n_preguntas_desarrollo ?? 2,
       instrumento: params.instrumento ?? 'rubrica_analitica',
       texto_1_tipo: params.texto_1_tipo ?? 'Argumentativo',
-      texto_2_tipo: params.texto_2_tipo ?? 'Expositivo'
+      texto_2_tipo: params.texto_2_tipo ?? 'Expositivo',
+      fuente: params.fuente,
+      textos_provistos: params.textos_provistos,
+      unidad: params.unidad
     }) + `\n\n${params.libroContexto || ''}\n\nREGLAS DE LÍMITES MÁXIMOS DE PREGUNTAS (ESTRICTO):
 - Alternativas (selección múltiple): máximo 25 preguntas únicas, no repetidas.
 - Desarrollo: máximo 5 preguntas únicas, no repetidas.
@@ -1504,8 +1513,10 @@ export async function POST(req: NextRequest) {
   }
   const model = 'claude-sonnet-4-6';
 
+  const fuente = (body.fuente as string | undefined) ?? 'tema_libre';
   let libroContexto = '';
-  if (body.fuente === 'lectura_domiciliaria' && body.libro_id) {
+  let textos_provistos: string | undefined;
+  if (fuente === 'lectura_domiciliaria' && body.libro_id) {
     const supabaseClient = makeSupabaseClient(token);
     const { data: libro } = await supabaseClient
       .from('biblioteca_libros')
@@ -1531,8 +1542,24 @@ METADATOS DEL EXPEDIENTE DEL LIBRO:
   - Inferenciales: ${(libro.preguntas_inferenciales || []).join('\n')}
   - Críticas: ${(libro.preguntas_criticas || []).join('\n')}
 
-INSTRUCCIÓN ESPECIAL: Los textos de lectura generados ("textos_lectura") deben ser fragmentos adaptados, adaptaciones didácticas o análisis/reseñas sobre la obra "${libro.titulo}". Las preguntas de la evaluación deben referirse estrictamente a los personajes, trama, conflictos, vocabulario o fragmentos clave de la obra "${libro.titulo}" detallada en el expediente. No inventes hechos ni cambies los nombres de los personajes.
+Las preguntas deben referirse estrictamente a los personajes, trama, conflictos, vocabulario o fragmentos clave de la obra "${libro.titulo}" detallada en el expediente. No inventes hechos ni cambies los nombres de los personajes.
 `;
+      // Construir textos_provistos desde fragmentos del libro
+      const frags = libro.fragmentos_clave as string[] | undefined;
+      if (frags && frags.length >= 2) {
+        textos_provistos =
+          `TEXTOS DE LECTURA YA PROPORCIONADOS — USA ESTOS FRAGMENTOS EXACTAMENTE COMO "textos_lectura" EN EL JSON. NO generes textos nuevos.\n\n` +
+          `Texto 1 (fragmento de "${libro.titulo}"): ${frags[0]}\n\n` +
+          `Texto 2 (fragmento de "${libro.titulo}"): ${frags[1]}\n\n` +
+          `Técnica de respuesta de desarrollo: RICE\n` +
+          `Genera ÚNICAMENTE las preguntas (seleccion_multiple y desarrollo) referidas a estos textos.`;
+      } else if (frags && frags.length === 1) {
+        textos_provistos =
+          `TEXTO DE LECTURA YA PROPORCIONADO — USA ESTE FRAGMENTO COMO "textos_lectura" EN EL JSON. NO generes textos nuevos.\n\n` +
+          `Texto 1 (fragmento de "${libro.titulo}"): ${frags[0]}\n\n` +
+          `Técnica de respuesta de desarrollo: RICE\n` +
+          `Genera ÚNICAMENTE las preguntas referidas a este texto.`;
+      }
     }
   }
 
@@ -1545,7 +1572,10 @@ INSTRUCCIÓN ESPECIAL: Los textos de lectura generados ("textos_lectura") deben 
       nivel, eje, oa_codes, oa_textos, tipos,
       n_preguntas, duracion_min, dificultad, titulo,
       tipo_evaluacion, tipo_preguntas, n_preguntas_multiple, n_preguntas_desarrollo, instrumento,
-      texto_1_tipo, texto_2_tipo, libroContexto
+      texto_1_tipo, texto_2_tipo, libroContexto,
+      fuente,
+      textos_provistos,
+      unidad: (body.unidad as string | undefined)
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);

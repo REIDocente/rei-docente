@@ -21,6 +21,9 @@ export interface EvaluacionPromptParams {
   instrumento: string;
   texto_1_tipo: string;
   texto_2_tipo: string;
+  fuente?: string;
+  textos_provistos?: string;
+  unidad?: string;
 }
 
 export function buildEvaluacionMinimalPrompt(params: EvaluacionPromptParams): string {
@@ -34,10 +37,19 @@ export function buildEvaluacionMinimalPrompt(params: EvaluacionPromptParams): st
     n_preguntas_multiple,
     n_preguntas_desarrollo,
     texto_1_tipo,
-    texto_2_tipo
+    texto_2_tipo,
+    fuente,
+    textos_provistos,
+    unidad
   } = params;
 
   const techniqueType = (tipo_evaluacion === 'formativa' || tipo_evaluacion === 'diagnostica') ? 'OREO' : 'RICE';
+
+  const textosInstruccion = fuente === 'lectura_domiciliaria' && textos_provistos
+    ? textos_provistos
+    : fuente === 'kit_clase'
+    ? `Genera los textos de lectura y el listado de preguntas.\n\nTécnica de respuesta de desarrollo requerida:\n${techniqueType}\n\nInstrucciones de textos:\n- Texto 1 de tipo ${texto_1_tipo} relacionado con la unidad "${unidad || 'curricular'}". MÁXIMO 180 palabras.\n- Texto 2 de tipo ${texto_2_tipo} complementario al mismo tema. MÁXIMO 180 palabras.\n- Sé conciso y directo.`
+    : `Genera los textos de lectura y el listado de preguntas.\n\nTécnica de respuesta de desarrollo requerida:\n${techniqueType}\n\nInstrucciones de textos:\n- Texto 1 de tipo ${texto_1_tipo}.\n- Texto 2 de tipo ${texto_2_tipo}.\n- Extensión obligatoria de acuerdo con el nivel escolar. Cuenta las palabras reales.`;
 
   return `Curso: ${nivel}
 Unidad: General curricular
@@ -45,15 +57,7 @@ OA: ${oa_code} — ${oa_texto}
 Tema: Evaluación consolidada y pauta
 Nivel DUA: Universal
 
-Genera los textos de lectura y el listado de preguntas.
-
-Técnica de respuesta de desarrollo requerida:
-${techniqueType}
-
-Instrucciones de textos:
-- Texto 1 de tipo ${texto_1_tipo}.
-- Texto 2 de tipo ${texto_2_tipo}.
-- Extensión obligatoria de acuerdo con el nivel escolar. Cuenta las palabras reales.
+${textosInstruccion}
 
 Reglas de unicidad de preguntas:
 - Genera exactamente ${n_preguntas_multiple} preguntas de tipo seleccion_multiple únicas e irrepetibles. Para cada pregunta de selección múltiple, incluye el campo clave con la letra de la respuesta correcta (A, B, C o D). DISTRIBUCIÓN DE CLAVES OBLIGATORIA: De las preguntas de selección múltiple, exactamente el 25% deben tener clave A, 25% clave B, 25% clave C y 25% clave D. Está PROHIBIDO tener más de 2 preguntas consecutivas con la misma clave. Varía deliberadamente cuál alternativa es la correcta en cada pregunta.
