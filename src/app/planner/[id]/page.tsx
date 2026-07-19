@@ -1699,8 +1699,8 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
 
           new Paragraph({ text: "", spacing: { after: 150 } }),
 
-          // Section 3: Rúbrica de Cierre
-          createSectionHeaderWord("3. Rúbrica de Cierre", "F1F5F9", "334155"),
+          // Section 3: Rúbrica de Evaluación
+          createSectionHeaderWord("3. Rúbrica de Evaluación", "F1F5F9", "334155"),
           new Paragraph({ text: "", spacing: { after: 50 } }),
           ...parseAndRenderTextWord(planning.content.rubric)
         ];
@@ -1838,7 +1838,7 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
             spacing: { after: 150 }
           }),
 
-          createSectionHeaderWord("Rúbrica de Cierre", "F1F5F9", "334155"),
+          createSectionHeaderWord("Rúbrica de Evaluación", "F1F5F9", "334155"),
           new Paragraph({ text: "", spacing: { after: 50 } }),
           new Paragraph({
             children: [
@@ -2402,7 +2402,7 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
         writeTablePdf(tableRows);
         cursorY += 4;
 
-        writeSectionHeaderPdf("3. Rúbrica de Cierre", [241, 245, 249], [51, 65, 85]);
+        writeSectionHeaderPdf("3. Rúbrica de Evaluación", [241, 245, 249], [51, 65, 85]);
         parseAndRenderTextPdf(planning.content.rubric);
       } else if (activeTab === 'brief') {
         suffix = '_Breve';
@@ -2490,7 +2490,7 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
         writeText(utp.nlp_technique.closing);
         cursorY += 4;
 
-        writeSectionHeaderPdf("Rúbrica de Cierre", [241, 245, 249], [51, 65, 85]);
+        writeSectionHeaderPdf("Rúbrica de Evaluación", [241, 245, 249], [51, 65, 85]);
         writeText(utp.rubric_summary);
       }
 
@@ -2864,7 +2864,7 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
               <section className="bg-white backdrop-blur-sm border border-[#E2E8F0]/60 rounded-3xl p-6 md:p-8 space-y-4">
                 <h2 className="text-lg font-extrabold flex items-center gap-2 text-indigo-600 border-b border-[#E2E8F0]/70 pb-3">
                   <ListTodo className="w-5 h-5" />
-                  4. Rúbrica de Cierre de Sesión
+                  4. Rúbrica de Evaluación
                 </h2>
                 <div className="bg-[#FAF9FC]/40 border border-[#E2E8F0]/60 p-4 rounded-xl text-sm text-slate-700 whitespace-pre-line leading-relaxed">
                   {planning.content.rubric}
@@ -2975,9 +2975,9 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
                     </div>
                   </div>
 
-                  {/* Rúbrica de Cierre */}
+                  {/* Rúbrica de Evaluación */}
                   <div className="bg-[#FAF9FC]/40 border border-[#E2E8F0]/60 p-5 rounded-xl space-y-2">
-                    <strong className="text-indigo-300 text-xs uppercase font-bold block">Rúbrica de Cierre</strong>
+                    <strong className="text-indigo-300 text-xs uppercase font-bold block">Rúbrica de Evaluación</strong>
                     <p className="text-xs leading-relaxed">{planning.content.utp_documentation?.rubric_summary}</p>
                   </div>
                 </div>
