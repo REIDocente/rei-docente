@@ -7,6 +7,7 @@ export interface RubricaCriterio {
   insuficiente?: string;
   logrado?: string;
   no_logrado?: string;
+  parcial?: string;
   destacado?: string;
   en_desarrollo?: string;
   descripcion?: string;
@@ -51,22 +52,24 @@ export const getListaCotejo = (devQuestions: any[]): Rubrica => {
       criterios.push({
         nombre: `Pregunta ${num}: Evalúa si el alumno responde al indicador: ${q.indicador || 'Comprensión lectora.'}`,
         oa: q.oa || 'General',
-        logrado: "Responde de forma completa al indicador aplicando la técnica solicitada.",
-        no_logrado: "No responde, o responde de forma vaga o incoherente."
+        logrado: "Nivel 2 (Logrado): Responde de forma completa al indicador aplicando la técnica solicitada.",
+        parcial: "Nivel 1 (Parcial): Responde parcialmente o con imprecisiones al indicador.",
+        no_logrado: "Nivel 0 (No logrado): No responde, o responde de forma vaga e incoherente."
       });
     });
   } else {
     criterios.push({
       nombre: "Comprende las ideas principales de los textos leídos.",
       oa: "General",
-      logrado: "Identifica correctamente las ideas centrales en las preguntas de selección múltiple.",
-      no_logrado: "Falla al reconocer las ideas centrales del texto."
+      logrado: "Nivel 2 (Logrado): Identifica correctamente las ideas centrales del texto.",
+      parcial: "Nivel 1 (Parcial): Identifica parcialmente las ideas centrales con imprecisiones.",
+      no_logrado: "Nivel 0 (No logrado): No logra identificar las ideas centrales del texto."
     });
   }
   return {
     titulo: "LISTA DE COTEJO DE DESEMPEÑO",
     tipo_instrumento: "lista_cotejo",
-    instruccion: "Marque con un Sí (Logrado) o No (No Logrado) la presencia del indicador de desempeño en cada ítem.",
+    instruccion: "Evalúe con 2 (Logrado), 1 (Parcial) o 0 (No logrado) cada indicador de desempeño.",
     criterios
   };
 };

@@ -73,6 +73,7 @@ REGLAS ABSOLUTAS DE CALIDAD DE PREGUNTAS:
    - Las alternativas A, B, C y D deben tener una extensión extremadamente similar (diferencia de máximo 2 a 3 palabras o 8 a 12 caracteres sin contar espacios).
    - NUNCA usar "Todas las anteriores", "Ninguna de las anteriores", ni "A y B son correctas".
    - Para cada pregunta de selección múltiple, incluye el campo clave con la letra de la respuesta correcta (A, B, C o D). DISTRIBUCIÓN DE CLAVES OBLIGATORIA: De las preguntas de selección múltiple, exactamente el 25% deben tener clave A, 25% clave B, 25% clave C y 25% clave D. Está PROHIBIDO tener más de 2 preguntas consecutivas con la misma clave. Varía deliberadamente cuál alternativa es la correcta en cada pregunta.
+   - OBLIGATORIO SIN EXCEPCIÓN: Cada pregunta de tipo "seleccion_multiple" DEBE incluir el campo "alternativas" con exactamente 4 opciones (A, B, C, D). Ninguna pregunta de alternativas puede carecer de este campo ni tenerlo vacío.
 
 2. ASOCIACIÓN Y ORGANIZACIÓN DE PREGUNTAS POR TEXTO:
    - Las preguntas deben aparecer ordenadas por texto: primero las del Texto 1, luego las del Texto 2, y al final las integradoras de ambos textos.
@@ -1110,11 +1111,11 @@ Responde ÚNICAMENTE con un arreglo JSON en el siguiente formato exacto, sin exp
     const threshold = mcCount * 0.40;
     
     if (maxFreq > threshold) {
-      // Aplicar distribución rotatoria en el fallback
-      const rotation = ['A', 'B', 'C', 'D'];
+      // Aplicar distribución balanceada real (no rotatoria)
+      const balancedKeys = generateBalancedKeysSequence(mcCount);
       cleanAlts.forEach((q, idx) => {
         const qAny = q as any;
-        qAny.clave = rotation[idx % 4];
+        qAny.clave = balancedKeys[idx];
         if (qAny.respuesta_correcta) {
           qAny.respuesta_correcta = qAny.clave;
         }
@@ -1261,16 +1262,10 @@ Responde ÚNICAMENTE con un arreglo JSON en el siguiente formato exacto, sin exp
       });
     } else {
       const techniqueType = (params.tipo_evaluacion === 'formativa' || params.tipo_evaluacion === 'diagnostica') ? 'OREO' : 'RICE';
-      const criteriaArr = techniqueType === 'OREO' ? [
-        'Opinión (O): Expresa con claridad su postura u opinión sobre el tema planteado.',
-        'Razones (R): Entrega al menos una razón justificada basada en el texto para apoyar su opinión.',
-        'Evidencia/Ejemplo (E): Menciona un ejemplo concreto extraído de la lectura.',
-        'Opinión final (O): Cierra reafirmando su postura inicial de forma coherente.',
-      ] : [
-        'Repetir (R): Enuncia o reformula la pregunta con sus propias palabras al inicio.',
-        'Incluir (I): Declara con claridad su postura o respuesta directa a la interrogante.',
-        'Citar (C): Incorpora una cita textual relevante y directa de la lectura.',
-        'Explicar (E): Detalla la conexión entre la cita incorporada y su postura.',
+      const criteriaArr = [
+        `Nivel Alto (4 pts): Responde con claridad e incorpora cita o evidencia textual relevante. Aplica la técnica ${techniqueType} de forma completa y coherente.`,
+        `Nivel Medio (2-3 pts): Responde parcialmente o sin cita del texto. Aplica la técnica ${techniqueType} de forma incompleta o con imprecisiones.`,
+        `Nivel Inicial (0-1 pts): Respuesta incompleta, incorrecta o ausente. No incorpora evidencia del texto ni aplica la técnica ${techniqueType}.`,
       ];
 
       respuestas.push({

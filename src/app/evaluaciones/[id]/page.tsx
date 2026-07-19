@@ -325,7 +325,7 @@ const LETRA_COLORS: Record<string, string> = {
 
 function getInstrumentHeaders(tipo: string) {
   if (tipo === 'lista_cotejo') {
-    return ['Criterio / Dimensión / Indicador', 'Logrado (Sí)', 'No Logrado (No)'];
+    return ['Criterio / Indicador', 'Nivel 2 (Logrado)', 'Nivel 1 (Parcial)', 'Nivel 0 (No logrado)'];
   } else if (tipo === 'escala_apreciacion') {
     return ['Criterio / Dimensión', 'Destacado', 'Logrado', 'En Desarrollo', 'No Logrado'];
   } else if (tipo === 'rubrica_holistica') {
@@ -340,6 +340,7 @@ function renderCriterioColumns(crit: any, tipo: string) {
     return (
       <>
         <td className="px-3 py-2.5 border-r border-slate-200 text-emerald-600 font-semibold">{crit.logrado || crit.si}</td>
+        <td className="px-3 py-2.5 border-r border-slate-200 text-amber-600 font-semibold">{crit.parcial || '—'}</td>
         <td className="px-3 py-2.5 text-rose-600 font-semibold">{crit.no_logrado || crit.no}</td>
       </>
     );
@@ -467,7 +468,12 @@ function PreguntaCard({ p, idx, tipoEvaluacion }: { p: Pregunta; idx: number; ti
       )}
 
       {/* Enunciado */}
-      <p className="text-sm text-slate-800 leading-relaxed font-sans">{idx + 1}. {p.enunciado}</p>
+      <p className="text-sm text-slate-800 leading-relaxed font-sans">
+        {idx + 1}. {p.enunciado}
+        {(p.tipo === 'consigna_abierta' || p.tipo === 'desarrollo') && (
+          <span className="ml-2 text-xs font-semibold text-sky-600 bg-sky-50 px-1.5 py-0.5 rounded-md border border-sky-200">(4 pts)</span>
+        )}
+      </p>
 
       {/* Technique instruction */}
       {esAbierta && (
@@ -513,11 +519,13 @@ function PreguntaCard({ p, idx, tipoEvaluacion }: { p: Pregunta; idx: number; ti
             <div className="border-b border-dashed border-slate-200 w-full h-4"></div>
             <div className="border-b border-dashed border-slate-200 w-full h-4"></div>
           </div>
-          {p.criterios_correccion && (
-            <div className="text-[11px] text-slate-500 font-sans space-y-1">
-              <p className="font-semibold">Criterios de evaluación:</p>
-              {p.criterios_correccion.map((c, i) => (
-                <p key={i} className="leading-relaxed pl-2 text-[10px] text-slate-550">• {c}</p>
+          {p.criterios_correccion && p.criterios_correccion.length > 0 && (
+            <div className="text-[11px] text-slate-500 font-sans space-y-1.5">
+              <p className="font-semibold">Rúbrica de evaluación:</p>
+              {p.criterios_correccion.slice(0, 3).map((c, i) => (
+                <div key={i} className={`pl-2 text-[10px] leading-relaxed rounded px-2 py-1 ${
+                  i === 0 ? 'text-emerald-700 bg-emerald-50/60' : i === 1 ? 'text-amber-700 bg-amber-50/60' : 'text-rose-600 bg-rose-50/60'
+                }`}>{c}</div>
               ))}
             </div>
           )}
@@ -1258,7 +1266,7 @@ export default function EvaluacionDetailPage() {
         devAnswers.forEach((resp: any) => {
           const num = resp.pregunta;
           sections.push(new Paragraph({
-            children: [new TextRun({ text: `Pregunta ${num} (Desarrollo)`, bold: true, size: 22 })]
+            children: [new TextRun({ text: `Pregunta ${num} (4 pts)`, bold: true, size: 22 })]
           }));
           const instTipo = contenido.tipo_evaluacion || ev?.tipo_evaluacion || 'formativa';
           const techniqueInstructionText = getTechniqueInstruction(instTipo);
@@ -1273,11 +1281,12 @@ export default function EvaluacionDetailPage() {
           }));
           if (resp.criterios_correccion?.length) {
             sections.push(new Paragraph({
-              children: [new TextRun({ text: `Criterios de evaluación:`, bold: true, size: 20, color: '666666' })]
+              children: [new TextRun({ text: `Rúbrica de evaluación:`, bold: true, size: 20, color: '666666' })]
             }));
-            resp.criterios_correccion.forEach((c: string) => {
+            const rubColors = ['16a34a', 'd97706', 'dc2626'];
+            resp.criterios_correccion.slice(0, 3).forEach((c: string, ci: number) => {
               sections.push(new Paragraph({
-                children: [new TextRun({ text: `• ${c}`, size: 20, color: '666666' })]
+                children: [new TextRun({ text: `  ${c}`, size: 20, color: rubColors[ci] || '666666' })]
               }));
             });
           }
@@ -1509,9 +1518,12 @@ export default function EvaluacionDetailPage() {
             }
             h += printTextInCol(`${p.numero_original || p.numero}. ${p.enunciado}`, 9.5, true, '#1e293b', true);
             const alts = p.alternativas ?? [];
+            const altLetters = ['A','B','C','D'];
             if (alts.length > 0) {
-              alts.forEach((alt: any) => {
-                h += printTextInCol(`   ${alt.letra}) ${alt.texto}`, 8.5, false, '#475569', true);
+              alts.forEach((alt: any, ai: number) => {
+                const letra = typeof alt === 'string' ? altLetters[ai] : (alt.letra || altLetters[ai]);
+                const texto = typeof alt === 'string' ? alt : (alt.texto || '');
+                h += printTextInCol(`   ${letra}) ${texto}`, 8.5, false, '#475569', true);
               });
             } else {
               h += printTextInCol(`   [Alternativas no disponibles]`, 8.5, false, '#475569', true);
@@ -1549,9 +1561,12 @@ export default function EvaluacionDetailPage() {
             doc.setTextColor(148, 163, 184); // slate-400
             doc.setFont('helvetica', 'normal');
             const alts = p.alternativas ?? [];
+            const altLetters2 = ['A','B','C','D'];
             if (alts.length > 0) {
-              alts.forEach((alt: any) => {
-                const linesAlt = doc.splitTextToSize(`   ${alt.letra}) ${alt.texto}`, currentWidth);
+              alts.forEach((alt: any, ai: number) => {
+                const letra = typeof alt === 'string' ? altLetters2[ai] : (alt.letra || altLetters2[ai]);
+                const texto = typeof alt === 'string' ? alt : (alt.texto || '');
+                const linesAlt = doc.splitTextToSize(`   ${letra}) ${texto}`, currentWidth);
                 linesAlt.forEach((line: string) => {
                   doc.text(line, colX, colY[colIndex]);
                   colY[colIndex] += 8.5 * 0.45;
@@ -2162,15 +2177,18 @@ export default function EvaluacionDetailPage() {
         devAnswers.forEach((resp: any) => {
           if (y > 240) { doc.addPage(); fillBackground(); y = margin; }
           const num = resp.pregunta;
-          addText(`Pregunta ${num} (Desarrollo)`, 9.5, true, '#1e293b');
+          addText(`Pregunta ${num} (4 pts)`, 9.5, true, '#1e293b');
           const instTipo = contenido.tipo_evaluacion || ev?.tipo_evaluacion || 'formativa';
           const techniqueInstructionText = getTechniqueInstruction(instTipo);
           addText(`   ${techniqueInstructionText}`, 8, true, '#be123c');
           addText(`Respuesta esperada: ${resp.respuesta_esperada}`, 9, false, '#16a34a');
           
           if (resp.criterios_correccion?.length) {
-            addText('Criterios de evaluación:', 8.5, true, '#64748b');
-            resp.criterios_correccion.forEach((c: string) => addText(`• ${c}`, 8.5, false, '#64748b'));
+            addText('Rúbrica de evaluación:', 8.5, true, '#64748b');
+            resp.criterios_correccion.slice(0, 3).forEach((c: string, ci: number) => {
+              const rColor = ci === 0 ? '#16a34a' : ci === 1 ? '#d97706' : '#dc2626';
+              addText(`  ${c}`, 8.5, false, rColor);
+            });
           }
           y += 2;
         });
@@ -2193,7 +2211,7 @@ export default function EvaluacionDetailPage() {
 
         let rColW = [38, 33, 33, 33, 33];
         const getInstrumentHeaders = (tipo: string) => {
-          if (tipo === 'lista_cotejo') return ['Criterio', 'Logrado', 'No Logrado'];
+          if (tipo === 'lista_cotejo') return ['Criterio / Indicador', 'Nv. 2 (Logrado)', 'Nv. 1 (Parcial)', 'Nv. 0 (No logrado)'];
           if (tipo === 'rubrica_holistica') return ['Nivel', 'Descripción del Desempeño'];
           if (tipo === 'escala_apreciacion') return ['Criterio', 'Excelente', 'Bueno', 'Suficiente', 'Insuficiente'];
           return ['Dimensión / Criterio', 'Excelente', 'Bueno', 'Suficiente', 'Insuficiente'];
