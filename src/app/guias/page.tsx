@@ -150,7 +150,11 @@ export default function GuiasPage() {
 
   // ── DUA Real (3 principios) ────────────────────────────────────────────────
   const [showDuaRealModal, setShowDuaRealModal] = useState(false);
-  const [duaRealCopied, setDuaRealCopied] = useState(false);
+  const [duaRealPages, setDuaRealPages]         = useState<(string | null)[]>([]);
+  const [duaRealLabels, setDuaRealLabels]       = useState<string[]>([]);
+  const [duaRealViewIdx, setDuaRealViewIdx]     = useState(0);
+  const [duaRealPageCopied, setDuaRealPageCopied] = useState(false);
+  const [duaRealAllCopied, setDuaRealAllCopied] = useState(false);
 
   // ── DUA cola automática ───────────────────────────────────────────────────
   const [showDuaModal, setShowDuaModal]       = useState(false);
@@ -823,6 +827,107 @@ export default function GuiasPage() {
     lines.push('Genera la Pagina ' + pagina + ' de ' + total + ' como imagen A4 ilustrada y lista para imprimir.');
 
     return lines.join('\n');
+  };
+
+  // ── DUA Real: 3 páginas condensadas ──────────────────────────────────────
+  const buildDuaRealPromptGuia = (
+    instruccion: string,
+    pagina: number,
+    total: number,
+    ctx?: { establecimiento?: string; docente?: string; asignatura?: string; curso?: string; oas?: string }
+  ): string => {
+    const _est  = ctx?.establecimiento || '';
+    const _doc  = ctx?.docente || '';
+    const _asig = ctx?.asignatura || 'Lenguaje y Comunicacion';
+    const _cur  = ctx?.curso || '';
+    const _oas  = ctx?.oas || '';
+    const lines: string[] = [];
+    lines.push('Eres un especialista en Diseno Universal para el Aprendizaje (DUA) y disenador grafico educativo, con experiencia en editoriales chilenas (Santillana, SM, Zig-Zag).');
+    lines.push('');
+    lines.push('Tienes adjunta la guia de aprendizaje COMPLETA en PDF. Analizala antes de comenzar.');
+    lines.push('');
+    lines.push('==================================================');
+    lines.push('DATOS DE CONTEXTO');
+    lines.push('Establecimiento: ' + (_est || '(no especificado)'));
+    lines.push('Docente: ' + (_doc || '(no especificado)'));
+    lines.push('Asignatura: ' + _asig);
+    lines.push('Curso: ' + _cur);
+    lines.push('OA trabajados: ' + _oas);
+    lines.push('==================================================');
+    lines.push('');
+    lines.push('Esta es la VERSION DUA de la guia. Tendra ' + total + ' paginas en total (mas compacta que el original).');
+    lines.push('Genera UNICAMENTE la Pagina ' + pagina + ' de ' + total + '.');
+    lines.push('');
+    if (pagina === 1) {
+      lines.push('ENCABEZADO INSTITUCIONAL (solo esta pagina):');
+      lines.push('Establecimiento: ' + (_est || 'LICEO'));
+      lines.push('Tabla 3 filas:');
+      lines.push('  Fila 1: [GUIA DUA] [Asignatura: ' + _asig + '] [Curso: ' + _cur + '] [Letra: ___]');
+      lines.push('  Fila 2: [Docente: ' + _doc + '] [Fecha: ______] [OA: ' + _oas + ']');
+      lines.push('  Fila 3: [Nombre del Estudiante: ________________________________] [Puntaje: ___] [Nota: ___]');
+      lines.push('OA visible en recuadro: "En esta guia aprenderas a..."');
+      lines.push('');
+    }
+    lines.push('INSTRUCCION PARA ESTA PAGINA:');
+    lines.push(instruccion);
+    lines.push('');
+    lines.push('--- PRINCIPIO 1: REPRESENTACION ---');
+    lines.push('- Ilustraciones relacionadas al contenido de esta pagina');
+    lines.push('- Pictogramas para instrucciones (lapiz, lupa, estrella)');
+    lines.push('- Vocabulario clave resaltado con definicion simple al margen');
+    lines.push('- Colores suaves, tipografia legible, interlineado amplio');
+    lines.push('');
+    lines.push('--- PRINCIPIO 2: ACCION Y EXPRESION ---');
+    lines.push('- Lineas suficientes para responder');
+    lines.push('- Alternativa: "O dibuja tu respuesta aqui:" con espacio');
+    lines.push('- Iniciadores de oracion: "Creo que... / Porque... / Me parece..."');
+    lines.push('- Instrucciones en pasos numerados si son largas');
+    lines.push('');
+    lines.push('--- PRINCIPIO 3: IMPLICACION ---');
+    lines.push('- Tono amigable y motivador en todas las instrucciones');
+    if (pagina === total) {
+      lines.push('- Semaforo de autoevaluacion: No lo entendi / Lo estoy logrando / Lo aprendi');
+      lines.push('- Desafio opcional: "Si terminaste, te desafio a..."');
+      lines.push('- Mensaje motivador de cierre');
+    }
+    lines.push('');
+    lines.push('NO MODIFICAR: OA, sentido pedagogico, objetivo de aprendizaje.');
+    lines.push('DISENO: Editorial educativa profesional. A4 vertical. 300 dpi. Listo para imprimir.');
+    lines.push('');
+    lines.push('ENTREGA: SOLO Pagina ' + pagina + ' de ' + total + ' como imagen A4. No combines paginas.');
+    return lines.join('\n');
+  };
+
+  const handleDuaRealGenerate = () => {
+    if (!result) return;
+    const cj = (result as any).contenido_json || result;
+    const _ctx = {
+      establecimiento: establecimientoGuia || String((cj as any).establecimiento || ''),
+      docente: docenteNombre || String((cj as any).docente || ''),
+      asignatura: String((cj as any).asignatura || 'Lenguaje y Comunicacion'),
+      curso: String((cj as any).nivel || (cj as any).curso || ''),
+      oas: String(((cj as any).oa_codes || []).join(', ') || (cj as any).oa || ''),
+    };
+    const duaSections = [
+      {
+        label: 'Pag 1 DUA — Portada y Texto',
+        instruccion: 'Extrae del PDF el texto o lectura principal. Puedes simplificar levemente el vocabulario dificil pero mantener el contenido. NO incluyas las actividades en esta pagina. Agrega una pregunta de anticipacion al inicio: "Que sabes sobre este tema? / Que crees que aprenderas?"',
+      },
+      {
+        label: 'Pag 2 DUA — Actividades',
+        instruccion: 'Extrae del PDF las actividades mas representativas del OA. Selecciona solo las esenciales (puedes reducir la cantidad). Omite actividades de menor relevancia. Adapta con espacios de respuesta amplios y opciones alternativas de expresion.',
+      },
+      {
+        label: 'Pag 3 DUA — Desafio y Cierre',
+        instruccion: 'Crea la pagina de cierre con: (1) Desafio opcional breve relacionado al tema, (2) Reflexion: "Aprendi que... / Todavia tengo dudas sobre...", (3) Semaforo de autoevaluacion, (4) Mensaje motivador final.',
+      },
+    ];
+    const prompts = duaSections.map((s, i) =>
+      buildDuaRealPromptGuia(s.instruccion, i + 1, duaSections.length, _ctx)
+    );
+    setDuaRealPages(prompts);
+    setDuaRealLabels(duaSections.map(s => s.label));
+    setShowDuaRealModal(true);
   };
 
     // ── DUA: generar prompts por página (sin llamada API) ────────────────────
@@ -1624,10 +1729,10 @@ export default function GuiasPage() {
                           🎨 Versión Visual
                         </button>
                         <button
-                          onClick={() => setShowDuaRealModal(true)}
+                          onClick={handleDuaRealGenerate}
                           disabled={!result}
                           className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white text-xs font-semibold rounded-xl transition-all"
-                          title="Prompt DUA completo (3 principios) para ChatGPT / Gemini"
+                          title="Prompts DUA — version condensada 3 principios pagina por pagina"
                         >
                           🧩 Prompts DUA
                         </button>
@@ -2459,114 +2564,104 @@ export default function GuiasPage() {
 
       {/* ── MODAL: PROMPT PARA IMÁGENES IA ── */}
 
-      {/* ── Modal DUA Real (3 principios) — Guia ────────────────────────────── */}
-      {showDuaRealModal && result && (() => {
-        const _r: any = (result as any).contenido_json || result;
-        const _est  = String(establecimientoGuia || _r.establecimiento || '');
-        const _doc  = String(docenteNombre || _r.docente || '');
-        const _asig = String(_r.asignatura || 'Lenguaje y Comunicacion');
-        const _cur  = String(_r.nivel || _r.curso || '');
-        const _oas  = String((_r.oa_codes || []).join(', ') || _r.oa || '');
 
-        const lines: string[] = [];
-        lines.push('Eres un especialista en Diseno Universal para el Aprendizaje (DUA) y adaptacion curricular, con experiencia en educacion chilena (Santillana, SM, Zig-Zag).');
-        lines.push('');
-        lines.push('El PDF adjunto es una GUIA DE APRENDIZAJE de ' + _asig + ' para ' + _cur + '.');
-        lines.push('');
-        lines.push('==================================================');
-        lines.push('DATOS DE CONTEXTO');
-        lines.push('Establecimiento: ' + (_est || '(no especificado)'));
-        lines.push('Docente: ' + (_doc || '(no especificado)'));
-        lines.push('Asignatura: ' + _asig);
-        lines.push('Curso: ' + _cur);
-        lines.push('OA trabajados: ' + _oas);
-        lines.push('==================================================');
-        lines.push('');
-        lines.push('ENCABEZADO INSTITUCIONAL (pagina 1 — mantener exactamente igual):');
-        lines.push('Nombre del establecimiento: ' + (_est || 'LICEO'));
-        lines.push('Tabla 3 filas:');
-        lines.push('  Fila 1: [GUIA DUA] [Asignatura: ' + _asig + '] [Curso: ' + _cur + '] [Letra: ___]');
-        lines.push('  Fila 2: [Docente: ' + _doc + '] [Fecha: ______] [OA: ' + _oas + ']');
-        lines.push('  Fila 3: [Nombre del Estudiante: ________________________________] [Puntaje: ___] [Nota: ___]');
-        lines.push('');
-        lines.push('MISION: Adaptar esta guia de aprendizaje aplicando los 3 principios DUA. Trabaja sobre el PDF adjunto completo.');
-        lines.push('');
-        lines.push('--- PRINCIPIO 1: REPRESENTACION ---');
-        lines.push('- Ilustraciones relacionadas al contenido (1-2 por pagina)');
-        lines.push('- Pictogramas para cada instruccion (icono lapiz, lupa, estrella, etc.)');
-        lines.push('- Vocabulario clave resaltado con definicion simple al margen');
-        lines.push('- Organizador grafico o mapa conceptual para ideas principales');
-        lines.push('- Colores suaves para diferenciar secciones, tipografia legible, interlineado amplio');
-        lines.push('- Puedes simplificar levemente el texto para hacerlo mas accesible, sin perder el sentido pedagogico');
-        lines.push('');
-        lines.push('--- PRINCIPIO 2: ACCION Y EXPRESION ---');
-        lines.push('- Agrega lineas suficientes para escribir respuestas');
-        lines.push('- Ofrece alternativa: "O dibuja tu respuesta aqui:" con espacio grafico');
-        lines.push('- Iniciadores de oracion en preguntas abiertas: "Creo que... / Porque... / Me parece..."');
-        lines.push('- Divide instrucciones largas en pasos numerados');
-        lines.push('- Proporciona organizador previo a cada actividad principal');
-        lines.push('- Puedes reducir la cantidad de preguntas, conservando solo las mas representativas del OA');
-        lines.push('');
-        lines.push('--- PRINCIPIO 3: IMPLICACION ---');
-        lines.push('- Muestra el OA en recuadro visible al inicio: "En esta guia aprenderas a..."');
-        lines.push('- Agrega conexion con la vida real: "Cuando usas esto en tu dia a dia?"');
-        lines.push('- Incluye semaforo de autoevaluacion al final: No lo entendi / Lo estoy logrando / Lo aprendi');
-        lines.push('- Desafio opcional al final: "Si terminaste, te desafio a..."');
-        lines.push('- Usa tono amigable y motivador en todas las instrucciones');
-        lines.push('');
-        lines.push('NO MODIFICAR: OA trabajados, objetivo de aprendizaje, sentido pedagogico del documento.');
-        lines.push('');
-        lines.push('DISENO: Editorial educativa profesional (tipo Santillana / SM / Zig-Zag). A4 vertical. Listo para imprimir.');
-
-        const prompt = lines.join('\n');
-
-        const handleCopy = () => {
-          navigator.clipboard.writeText(prompt);
-          setDuaRealCopied(true);
-          setTimeout(() => setDuaRealCopied(false), 2500);
-        };
-
-        return (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div
-              className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
-              onClick={() => setShowDuaRealModal(false)}
-            />
-            <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden">
-              <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 shrink-0">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-1.5 bg-indigo-100 rounded-lg text-indigo-600 text-base leading-none">🧩</div>
-                  <div>
-                    <h3 className="text-sm font-black text-slate-800">Prompt DUA — Guia</h3>
-                    <p className="text-[10px] text-slate-400 mt-0.5">3 principios DUA · Sin llamada a Claude</p>
-                  </div>
-                </div>
-                <button onClick={() => setShowDuaRealModal(false)} className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 transition-colors">✕</button>
+      {/* ── Modal DUA Real páginas — Guia ──────────────────────────────────── */}
+      {showDuaRealModal && duaRealPages.length > 0 && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm">
+          <div className="relative w-full max-w-2xl bg-white border border-[#E2E8F0] rounded-3xl shadow-2xl flex flex-col max-h-[90vh]">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+              <div>
+                <h3 className="text-sm font-black text-slate-800">🧩 Prompts DUA — Guía</h3>
+                <p className="text-[10px] text-slate-400 mt-0.5">
+                  {duaRealPages.length} páginas DUA · texto simplificado · actividades reducidas · 3 principios
+                </p>
               </div>
-              <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
-                <div className="bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3">
-                  <p className="text-[11px] text-indigo-700 font-semibold">Como usar este prompt</p>
-                  <p className="text-[10px] text-indigo-600 mt-0.5">Copia el texto, abre ChatGPT o Gemini, adjunta el PDF de la guia y pega este prompt. La IA adaptara la guia completa con los 3 principios DUA.</p>
-                </div>
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Prompt generado</span>
-                    <button
-                      onClick={handleCopy}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-bold rounded-lg transition-all"
-                    >
-                      {duaRealCopied ? '✅ Copiado' : '📋 Copiar prompt'}
-                    </button>
-                  </div>
-                  <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 max-h-64 overflow-y-auto">
-                    <pre className="text-[10px] text-slate-600 whitespace-pre-wrap font-mono leading-relaxed">{prompt}</pre>
-                  </div>
-                </div>
+              <button
+                onClick={() => setShowDuaRealModal(false)}
+                className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
+              <div className="bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3">
+                <p className="text-[10px] text-indigo-700">
+                  Adjunta el PDF de la guía en ChatGPT o Gemini y pega el prompt de <strong>cada página por separado</strong>. La IA generará una versión DUA condensada con los 3 principios aplicados.
+                </p>
               </div>
+              {/* Tabs */}
+              <div className="flex flex-wrap gap-1.5">
+                {duaRealLabels.map((lbl, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => { setDuaRealViewIdx(idx); setDuaRealPageCopied(false); }}
+                    className={`px-2.5 py-1 text-[9px] font-bold rounded-lg border transition-all ${
+                      duaRealViewIdx === idx
+                        ? 'bg-indigo-600 border-indigo-600 text-white'
+                        : 'bg-slate-50 border-slate-200 text-slate-500 hover:border-indigo-300'
+                    }`}
+                  >
+                    {idx + 1}. {lbl}
+                  </button>
+                ))}
+              </div>
+              {/* Navegación */}
+              <div className="flex items-center justify-between">
+                <button
+                  onClick={() => { setDuaRealViewIdx(i => Math.max(0, i - 1)); setDuaRealPageCopied(false); }}
+                  disabled={duaRealViewIdx === 0}
+                  className="px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-30 transition-all"
+                >
+                  ← Anterior
+                </button>
+                <span className="text-[10px] font-bold text-slate-500">
+                  📄 {duaRealViewIdx + 1} / {duaRealPages.length}
+                </span>
+                <button
+                  onClick={() => { setDuaRealViewIdx(i => Math.min(duaRealPages.length - 1, i + 1)); setDuaRealPageCopied(false); }}
+                  disabled={duaRealViewIdx === duaRealPages.length - 1}
+                  className="px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-30 transition-all"
+                >
+                  Siguiente →
+                </button>
+              </div>
+              {/* Contenido */}
+              <pre className="text-[10px] text-slate-700 font-mono whitespace-pre-wrap leading-relaxed bg-slate-50 border border-slate-200 rounded-2xl p-4 max-h-72 overflow-y-auto">
+                {duaRealPages[duaRealViewIdx] ?? 'Cargando...'}
+              </pre>
+              {/* Botones */}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(duaRealPages[duaRealViewIdx] ?? '');
+                    setDuaRealPageCopied(true); setDuaRealAllCopied(false);
+                    setTimeout(() => setDuaRealPageCopied(false), 2000);
+                  }}
+                  className="flex-1 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold rounded-xl transition-all"
+                >
+                  {duaRealPageCopied ? '✅ Copiado' : '📋 Copiar este prompt'}
+                </button>
+                <button
+                  onClick={() => {
+                    const todo = duaRealPages.map((p, i) =>
+                      `═══ PÁGINA ${i + 1}: ${duaRealLabels[i] || ''} ═══\n\n${p || ''}`
+                    ).join('\n\n');
+                    navigator.clipboard.writeText(todo);
+                    setDuaRealAllCopied(true); setDuaRealPageCopied(false);
+                    setTimeout(() => setDuaRealAllCopied(false), 2000);
+                  }}
+                  className="flex-1 py-2 bg-slate-700 hover:bg-slate-800 text-white text-[11px] font-bold rounded-xl transition-all"
+                >
+                  {duaRealAllCopied ? '✅ Copiado todo' : '📄 Copiar todos los prompts'}
+                </button>
+              </div>
+              <p className="text-center text-[9px] text-slate-400">
+                Pega cada prompt en ChatGPT o Gemini con el PDF adjunto para generar la versión DUA
+              </p>
             </div>
           </div>
-        );
-      })()}
+        </div>
+      )}
 
       {/* ── Modal DUA Guía ──────────────────────────────────────────────────── */}
       {showDuaModal && (
