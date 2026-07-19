@@ -2512,8 +2512,7 @@ export default function NewPlannerPage() {
                     <div>
                       <h4 className="text-xs font-bold text-slate-800 mb-1">Evidencia de Evaluación:</h4>
                       <p className="text-xs text-slate-650 leading-relaxed font-medium">
-                        {generatedPlan?.backward_design?.assessment_evidence || 
-                         (isGenerating ? 'Esperando evidencia...' : 'Los estudiantes elaboran un informe escrito aplicando rúbricas detalladas.')}
+                        {(() => { const ae = generatedPlan?.backward_design?.assessment_evidence; return (ae && typeof ae === 'object') ? ae.producto || '' : ae || (isGenerating ? 'Esperando evidencia...' : 'Los estudiantes elaboran un informe escrito aplicando rúbricas detalladas.'); })()}
                       </p>
                     </div>
                     <div>
