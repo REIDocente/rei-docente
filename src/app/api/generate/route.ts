@@ -399,7 +399,7 @@ ${inferenceProcessBlock}
      (producto observable, no solo "participación")
   2. ¿Qué criterios permiten evaluar esa evidencia en 3 niveles de logro?
   3. ¿Qué secuencia de actividades conduce a esa evidencia de forma eficiente?
-  El campo "objective" del JSON debe citar el código del OA y su texto oficial.
+  El campo "objective" del JSON: 1-2 oraciones con verbo(s) en infinitivo. PROHIBIDO incluir códigos OA (OA 1, OA 9, OA 21…) ni el texto oficial entre comillas. PROHIBIDO empezar con "El estudiante…" o "El docente…". Solo el objetivo operativo de la sesión.
   El campo "assessment_evidence" debe nombrar un producto concreto y medible.
 
 ${pedagogicalStructureInstructions}
@@ -1014,11 +1014,11 @@ Asegúrate de que todas las comillas dobles dentro de los valores de las cadenas
 El JSON debe tener exactamente esta estructura:
 {
   "backward_design": {
-    "objective": "Cita el código y texto EXACTO del OA oficial (si aplica). Luego describe el objetivo final de aprendizaje de la sesión en lenguaje directo para el docente.",
+    "objective": "SOLO el objetivo operativo: 1-2 oraciones con verbo(s) en infinitivo. PROHIBIDO ABSOLUTO: (a) códigos OA como OA 1, OA 9, OA 21; (b) texto oficial del currículo entre comillas; (c) 'El estudiante...', 'El docente...'. CORRECTO: 'Analizar la tesis y los argumentos de una columna de opinión, identificar fallas argumentativas y dialogar fundamentando una postura personal.' INCORRECTO: 'OA 9: Analizar y evaluar textos... El docente conducirá...'",
     "assessment_evidence": "Describe UN producto concreto y observable que evidencia el logro del OA, incluyendo los criterios mínimos de calidad.",
     "activities_sequence": "Secuencia de actividades cronológica y compacta. Debes estructurar la sesión de la siguiente manera:
 1. ENCABEZADO DE SESIÓN (OBLIGATORIO): Inicia la secuencia con un encabezado en negrita EXACTAMENTE en este formato: **SESIÓN X · [Nombre Unidad] · [Nombre Lección] · [Curso] · [Duración]**. Inmediatamente después, coloca este bloque de texto:
-'Tipo / OA: [Foco pedagógico e indicación de OAs basales y complementarios]\\nObjetivo: [Objetivo de aprendizaje específico sin prefijo oficial del OA]\\nEvaluación: [Formato del ticket de salida y técnica, ej: Formativa — Ticket de salida RICE (individual, escrito)]'. Queda estrictamente PROHIBIDO generar cualquier tabla Markdown en este encabezado.
+'Tipo / OA: [Foco pedagógico e indicación de OAs basales y complementarios]\\nEvaluación: [Formato del ticket de salida y técnica, ej: Formativa — Ticket de salida RICE (individual, escrito)]'. Queda estrictamente PROHIBIDO generar cualquier tabla Markdown en este encabezado.
 2. Inicio (10-15 min) con guion narrativo y referencias a elementos de anclaje.
 3. Desarrollo (55-65 min) con modelado docente y práctica autónoma. Durante el Desarrollo, utiliza el texto de la sesión provisto como material de lectura base y modela sobre él (no inventes un texto nuevo ni uses textos genéricos; todas las actividades y preguntas de monitoreo lateral deben hacer referencia directa y específica a dicho texto).
 4. Cierre (10-15 min) con ticket de salida de 4 líneas y referencias a anclajes. El ticket de salida debe usar obligatoriamente la técnica de escritura seleccionada: ${writingTechnique.toUpperCase()}. ${writingTechnique === 'rice' ? 'Estructúralo obligatoriamente con el formato de 4 líneas usando exactamente estas etiquetas literales: R (Repetir), I (Incluir), C (Citar), E (Explicar). Cada etiqueta en su propia línea.' : 'Estructúralo obligatoriamente con el formato de 4 líneas usando exactamente la estructura OREO con estas etiquetas literales: O (Opinión), R (Razón), E (Ejemplo), O (Opinión). Cada etiqueta en su propia línea. No uses otras estructuras como hipótesis o contraargumentación.'} Todo extremadamente conciso, sin prosa teórica y sin siglas metodológicas."
