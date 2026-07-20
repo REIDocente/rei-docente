@@ -1311,14 +1311,26 @@ Genera la Página ${pagina} de ${total} como imagen A4 ilustrada y lista para im
       escala_apreciacion: 'Escala de apreciación',
       pauta_correccion: 'Pauta de corrección',
     };
+    // Fix: curso — preferir estado del formulario sobre JSON guardado (puede tener valor viejo)
+    const rawOaCodesV = ((cj.oa_codes || []) as string[]).filter((c: string) => c !== 'OA_EVAL');
+    let oasLabelV = rawOaCodesV.join(', ');
+    if (!oasLabelV) {
+      const m = oa.match(/OA\s*\d+/gi);
+      oasLabelV = m ? m.map((x: string) => x.toUpperCase().replace(/\s+/g, ' ')).join(', ') : '';
+    }
+    if (!oasLabelV) {
+      const te = String(cj.tabla_especificaciones?.oa_evaluado || '');
+      oasLabelV = te !== 'OA_EVAL' ? te : '';
+    }
+
     const ctx = {
       establecimiento: establecimiento || cj.establecimiento || '',
       docente: docente || cj.docente || '',
       asignatura: String(cj.asignatura || result.asignatura || 'Lenguaje y Comunicación'),
-      curso: String(cj.nivel || result.nivel || curso || ''),
+      curso: curso || String(cj.nivel || result.nivel || ''),
       tipoEval: String(cj.tipo_evaluacion || tipoEvaluacion || 'Formativa'),
       instrumento: instrLabels[instrumento] || instrumento,
-      oas: String(cj.tabla_especificaciones?.oa_evaluado || (cj.oa_codes || []).join(', ') || ''),
+      oas: oasLabelV,
     };
 
     const prompts = sections.map((s, i) =>
