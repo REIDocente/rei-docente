@@ -1074,6 +1074,19 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
     try {
       const { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, WidthType, AlignmentType } = docxLib;
 
+      // Decodifica entidades HTML antes de escribir en el documento
+      const decodeHtml = (str: string): string => {
+        if (!str) return '';
+        return str
+          .replace(/&apos;/g, "'")
+          .replace(/&quot;/g, '"')
+          .replace(/&amp;/g, '&')
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&#39;/g, "'")
+          .replace(/&nbsp;/g, ' ');
+      };
+
       const createSectionHeaderWord = (title: string, bgColor = "F1F5F9", textColor = "1E293B") => {
         return new Table({
           width: { size: 9360, type: WidthType.DXA },
@@ -1265,7 +1278,7 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
       };
 
       const renderParagraphInWord = (line: string) => {
-        const trimmed = line.trim();
+        const trimmed = decodeHtml(line.trim());
         if (trimmed.startsWith('```')) {
           return null;
         }
@@ -1273,7 +1286,7 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
           return null;
         }
 
-        const cleanedLine = removePlaceholders(line);
+        const cleanedLine = removePlaceholders(decodeHtml(line));
         const cleanLine = cleanedLine.replace(/\*\*|__/g, '').trim();
         if (cleanLine === '') {
           return new Paragraph({ spacing: { after: 50 } });
@@ -1888,6 +1901,13 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
       const sanitizeForPdf = (str: string): string => {
         if (!str) return '';
         return str
+          .replace(/&apos;/g, "'")
+          .replace(/&quot;/g, '"')
+          .replace(/&amp;/g, '&')
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&#39;/g, "'")
+          .replace(/&nbsp;/g, ' ')
           .replace(/\*/g, '')
           .replace(/⚠️/g, '[Alerta]')
           .replace(/☐/g, '[ ]')
