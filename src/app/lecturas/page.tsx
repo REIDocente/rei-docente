@@ -917,29 +917,63 @@ export default function LecturasPage() {
                         ← Volver
                       </button>
                     </div>
-                    <div className="bg-slate-50 rounded-xl border border-slate-100 p-4 max-h-64 overflow-y-auto">
-                      <pre className="text-[10px] font-mono text-slate-600 whitespace-pre-wrap leading-relaxed">{generatedModal}</pre>
-                    </div>
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() => handleDownloadModalPdf()}
-                        disabled={exportingModalPdf}
-                        className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-slate-800 hover:bg-slate-900 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all cursor-pointer"
-                      >
-                        {exportingModalPdf ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileDown className="w-3.5 h-3.5" />}
-                        PDF
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDownloadModalWord()}
-                        disabled={exportingModalWord}
-                        className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all cursor-pointer"
-                      >
-                        {exportingModalWord ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
-                        Word
-                      </button>
-                    </div>
+
+                    {/* Recursos Visuales: mostrar prompts con botón Copiar */}
+                    {openModal?.tipo === 'recursos_visuales' ? (() => {
+                      let prompts: Record<string, string> = {};
+                      try { prompts = JSON.parse(generatedModal); } catch (_e) {}
+                      const labels: Record<string, string> = {
+                        mapa_personajes: '🗺️ Mapa de Personajes',
+                        linea_tiempo: '⏳ Línea de Tiempo',
+                        mapa_conceptual: '🧠 Mapa Conceptual',
+                        arbol_genealogico: '🌳 Árbol Genealógico',
+                        secuencia_narrativa: '📖 Secuencia Narrativa',
+                      };
+                      return (
+                        <div className="space-y-3">
+                          <p className="text-[10px] text-slate-400 font-medium">Copia cada prompt y pégalo en Midjourney, DALL·E o la IA de tu preferencia.</p>
+                          {Object.entries(prompts).map(([key, prompt]) => (
+                            <div key={key} className="bg-slate-50 border border-slate-100 rounded-xl p-3 space-y-2">
+                              <p className="text-[10px] font-black text-slate-700 uppercase tracking-wider">{labels[key] || key}</p>
+                              <p className="text-[10px] text-slate-500 leading-relaxed line-clamp-3">{prompt}</p>
+                              <button
+                                type="button"
+                                onClick={() => navigator.clipboard.writeText(prompt)}
+                                className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-[10px] font-bold transition-all cursor-pointer"
+                              >
+                                <Copy className="w-3 h-3" /> Copiar Prompt
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    })() : (
+                      <>
+                        <div className="bg-slate-50 rounded-xl border border-slate-100 p-4 max-h-64 overflow-y-auto">
+                          <pre className="text-[10px] font-mono text-slate-600 whitespace-pre-wrap leading-relaxed">{generatedModal}</pre>
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleDownloadModalPdf()}
+                            disabled={exportingModalPdf}
+                            className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-slate-800 hover:bg-slate-900 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all cursor-pointer"
+                          >
+                            {exportingModalPdf ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileDown className="w-3.5 h-3.5" />}
+                            PDF
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDownloadModalWord()}
+                            disabled={exportingModalWord}
+                            className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all cursor-pointer"
+                          >
+                            {exportingModalWord ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+                            Word
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </div>
                 )}
               </div>
