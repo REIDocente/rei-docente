@@ -1167,31 +1167,35 @@ export function drawPlayPdf({
     const pares = Array.isArray(juego.pares) ? juego.pares : [];
     const numPares = Math.min(pares.length, 24);
 
+    const totalCards = numPares * 2; // 2 tarjetas por par: concepto + definicion
     let isFirstPage = true;
-    for (let pageIdx = 0; pageIdx < numPares; pageIdx += 8) {
+    for (let pageIdx = 0; pageIdx < totalCards; pageIdx += 8) {
       if (!isFirstPage) {
         doc.addPage();
       }
       isFirstPage = false;
-      drawHeader(`Memoria - Tarjetas de Parejas ${pageIdx + 1} a ${Math.min(pageIdx + 8, numPares)}`);
+      const firstCard = pageIdx + 1;
+      const lastCard = Math.min(pageIdx + 8, totalCards);
+      drawHeader(`Memoria - Tarjetas ${firstCard} a ${lastCard}`);
       y = 35;
 
       const cardW = width / 2 - 5;
       const cardH = 50;
 
       for (let offset = 0; offset < 8; offset++) {
-        const itemIdx = pageIdx + offset;
-        if (itemIdx >= numPares) break;
+        const cardNum = pageIdx + offset;
+        if (cardNum >= totalCards) break;
+
+        const pairIdx = Math.floor(cardNum / 2);
+        const isConcept = cardNum % 2 === 0;
+        const activePar = pares[pairIdx];
 
         const cX = margin + (offset % 2) * (cardW + 10);
         const cY = 35 + Math.floor(offset / 2) * (cardH + 10);
 
         drawDottedRect(cX, cY, cardW, cardH);
-        
-        const activePar = pares[itemIdx];
 
-        const isConcept = offset % 2 === 0;
-        const titleText = isConcept ? `CONCEPTO ${itemIdx + 1}` : `DEFINICIÓN ${itemIdx + 1}`;
+        const titleText = isConcept ? `CONCEPTO ${pairIdx + 1}` : `DEFINICIÓN ${pairIdx + 1}`;
         const mainText = isConcept ? (activePar.concepto || '') : (activePar.definicion || '');
 
         doc.setFontSize(8.5);
@@ -1294,7 +1298,7 @@ export function drawPlayPdf({
         // Nombre de habitacion (con ajuste de texto)
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(255, 255, 255);
-        const rnLines = doc.splitTextToSize(roomName.length > 18 ? roomName.slice(0,17)+'.' : roomName, roomW - 8);
+        const rnLines = doc.splitTextToSize(roomName, roomW - 8);
         const rnFs = rnLines.length > 1 ? 6.5 : 8;
         doc.setFontSize(rnFs);
         rnLines.slice(0, 2).forEach((rl: string, ri: number) => {
