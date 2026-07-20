@@ -882,15 +882,9 @@ export default function LecturasPage() {
                       </div>
                     </div>
                     {openModal.tipo === 'planificacion' && (
-                      <div>
-                        <label className="text-[10px] font-bold text-slate-500 block mb-2">Número de Sesiones</label>
-                        <div className="flex gap-2 flex-wrap">
-                          {[1, 2, 4, 5, 6, 8].map(s => (
-                            <button key={s} type="button" onClick={() => setSesiones(s)} className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer ${sesiones === s ? 'bg-emerald-700 border-emerald-700 text-white' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'}`}>
-                              {s === 1 ? '1 sesión' : `${s} sesiones`}
-                            </button>
-                          ))}
-                        </div>
+                      <div className="flex items-center gap-2 px-3 py-2 bg-emerald-50 border border-emerald-100 rounded-lg">
+                        <span className="text-[10px] font-bold text-emerald-700">📅 Sesión de clase</span>
+                        <span className="text-[10px] text-emerald-600">· 2 horas pedagógicas (45 + 45 min)</span>
                       </div>
                     )}
                     {modalError && <div className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-xl p-3">{modalError}</div>}
