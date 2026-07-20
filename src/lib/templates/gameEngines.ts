@@ -26,7 +26,7 @@ export const gameEngines: GameEngine[] = [
     emoji: '🕵️',
     descripcion: 'Los alumnos resuelven un caso usando pistas del texto leído.',
     ideal_para: 'Comprensión lectora e inferencia',
-    duraciones: [20, 45],
+    duraciones: [45, 90],
     modalidades: ['parejas', 'equipos'],
     dificultades: ['básica', 'media', 'desafiante'],
     estructura: [
@@ -48,7 +48,7 @@ export const gameEngines: GameEngine[] = [
     emoji: '🔐',
     descripcion: 'Los alumnos resuelven 3 pruebas encadenadas para escapar.',
     ideal_para: 'Repaso de contenidos y cierre de unidad',
-    duraciones: [20, 45],
+    duraciones: [45, 90],
     modalidades: ['equipos'],
     dificultades: ['básica', 'media', 'desafiante'],
     estructura: [
@@ -68,7 +68,7 @@ export const gameEngines: GameEngine[] = [
     emoji: '🎯',
     descripcion: 'Cartones con conceptos clave. El docente lee definiciones y los alumnos marcan.',
     ideal_para: 'Vocabulario y conceptos clave',
-    duraciones: [10, 20],
+    duraciones: [45, 90],
     modalidades: ['individual', 'parejas'],
     dificultades: ['básica', 'media'],
     estructura: [
@@ -85,7 +85,7 @@ export const gameEngines: GameEngine[] = [
     emoji: '❓',
     descripcion: 'Preguntas por categorías con sistema de puntos por equipo.',
     ideal_para: 'Repaso rápido de contenidos',
-    duraciones: [10, 20, 45],
+    duraciones: [45, 90],
     modalidades: ['equipos'],
     dificultades: ['básica', 'media', 'desafiante'],
     estructura: [
@@ -103,7 +103,7 @@ export const gameEngines: GameEngine[] = [
     emoji: '🃏',
     descripcion: 'Mazo de cartas con personajes, conceptos o fragmentos. Se juega como duelo o colección.',
     ideal_para: 'Análisis literario y personajes',
-    duraciones: [20, 45],
+    duraciones: [45, 90],
     modalidades: ['parejas', 'equipos'],
     dificultades: ['básica', 'media', 'desafiante'],
     estructura: [
@@ -120,7 +120,7 @@ export const gameEngines: GameEngine[] = [
     emoji: '🧠',
     descripcion: 'Pares de tarjetas que los alumnos deben emparejar (concepto + definición o imagen + nombre).',
     ideal_para: 'Vocabulario, conceptos y personajes',
-    duraciones: [10, 20],
+    duraciones: [45, 90],
     modalidades: ['parejas', 'equipos'],
     dificultades: ['básica', 'media'],
     estructura: [
@@ -137,7 +137,7 @@ export const gameEngines: GameEngine[] = [
     emoji: '🎲',
     descripcion: 'Juego de deducción tipo Cluedo. Los alumnos identifican al culpable, el lugar y la evidencia usando pistas del texto o del OA.',
     ideal_para: 'Lectura domiciliaria, análisis de personajes, comprensión profunda',
-    duraciones: [45],
+    duraciones: [45, 90],
     modalidades: ['equipos', 'parejas'],
     dificultades: ['media', 'desafiante'],
     estructura: [
@@ -157,7 +157,7 @@ export const gameEngines: GameEngine[] = [
     emoji: '🎯',
     descripcion: 'Tablero 8x8 pedagógico. Responde bien: subes por la escalera. Responde mal: bajas por la serpiente.',
     ideal_para: 'Repaso de contenidos, vocabulario, comprensión',
-    duraciones: [20, 45],
+    duraciones: [45, 90],
     modalidades: ['equipos', 'parejas'],
     dificultades: ['básica', 'media', 'desafiante'],
     estructura: [
@@ -175,7 +175,7 @@ export const gameEngines: GameEngine[] = [
     emoji: '🔴',
     descripcion: 'Tablero Ludo clásico de 4 equipos. Para avanzar en casillas especiales debes responder una pregunta del OA.',
     ideal_para: 'Repaso de contenidos con equipos, motivación y competencia sana',
-    duraciones: [45],
+    duraciones: [45, 90],
     modalidades: ['equipos'],
     dificultades: ['básica', 'media'],
     estructura: [

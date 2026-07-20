@@ -252,7 +252,8 @@ export default function REIPlayPage() {
         motorId: generatedGame.motor,
         juego: generatedGame.contenido_json,
         docenteNombre: user?.user_metadata?.full_name || 'Docente',
-        establecimiento: 'RIGOBERTO FONTT IZQUIERDO'
+        establecimiento: 'RIGOBERTO FONTT IZQUIERDO',
+        nivel: generatedGame.nivel || ''
       });
       const blob = await Packer.toBlob(doc);
       const url = URL.createObjectURL(blob);

@@ -6,13 +6,15 @@ interface ExportPlayWordParams {
   juego: any; // contenido_json
   docenteNombre?: string;
   establecimiento?: string;
+  nivel?: string;
 }
 
 export function drawPlayWord({
   motorId,
   juego,
   docenteNombre = 'Docente',
-  establecimiento = 'RIGOBERTO FONTT IZQUIERDO'
+  establecimiento = 'RIGOBERTO FONTT IZQUIERDO',
+  nivel = ''
 }: ExportPlayWordParams): Document {
   const engine = gameEngines.find(e => e.id === motorId);
   const sections: any[] = [];
@@ -39,8 +41,8 @@ export function drawPlayWord({
   const gap = () => new Paragraph({ text: '', spacing: { after: 120 } });
 
   // 1. ENCABEZADO INSTITUCIONAL
-  sections.push(h1(`REI PLAY · JUEGO PEDAGÓGICO: ${engine?.nombre || 'Juego'}`));
-  sections.push(bodyPara(`Establecimiento: ${establecimiento} | Nivel: ${juego.nivel || 'General'}`));
+  sections.push(h1(`REI PLAY · JUEGO PEDAGOGICO: ${engine?.nombre || 'Juego'}`));
+  sections.push(bodyPara(`Establecimiento: ${establecimiento}${nivel ? ` | Nivel: ${nivel}` : ''}`));
   sections.push(bodyPara(`Docente Responsable: ${docenteNombre}`));
   sections.push(gap());
 
@@ -211,32 +213,85 @@ export function drawPlayWord({
       sections.push(gap());
     });
   } else if (motorId === 'clue') {
-    sections.push(h1('CLUE Pedagógico - Mansión del Misterio', '14532d'));
-    sections.push(bodyPara(`Caso: ${juego.nombre_caso || 'Caso sin Título'}`, true));
+    sections.push(h1(`CLUE Pedagogico: ${juego.nombre_caso || 'Caso sin Titulo'}`, '14532d'));
     sections.push(bodyPara(juego.historia || ''));
+    if (juego.nota_ficcion) {
+      sections.push(bodyPara(`Nota: ${juego.nota_ficcion}`, false, '64748b'));
+    }
     sections.push(gap());
 
-    sections.push(h2('Sospechosos de la Mansión'));
+    // Objetivos de Aprendizaje (sección alumno)
+    const oaList = Array.isArray(juego.objetivos_aprendizaje) ? juego.objetivos_aprendizaje : [];
+    if (oaList.length > 0) {
+      sections.push(h2('Objetivos de Aprendizaje Vinculados'));
+      oaList.forEach((oa: any) => {
+        const origenLabel = oa.origen === 'sugerido_ia' ? ' [OA sugerido — verificar]'
+          : oa.origen === 'planificacion' ? ' [de planificacion]'
+          : oa.origen === 'seleccion_docente' ? ' [seleccionado]' : '';
+        sections.push(bodyPara(`${oa.codigo}${origenLabel}:`, true, '14532d'));
+        sections.push(bodyPara(oa.descripcion || ''));
+        sections.push(gap());
+      });
+    }
+
+    sections.push(h2('Sospechosos (4 tarjetas)'));
     const personajes = Array.isArray(juego.personajes) ? juego.personajes : [];
     personajes.forEach((p: any, idx: number) => {
       sections.push(bodyPara(`Sospechoso N° ${idx + 1}: ${p.nombre || ''}`, true, '14532d'));
-      sections.push(bodyPara(`Habitación Inicial: ${p.habitacion_inicial || ''}`));
-      sections.push(bodyPara(`Descripción: ${p.descripcion || ''}`));
-      sections.push(bodyPara(`Motivación: ${p.motivacion || ''}`));
+      sections.push(bodyPara(`Ficha: ${['ROJO', 'AZUL', 'VERDE', 'NARANJA'][idx] || ''}`));
+      sections.push(bodyPara(`Habitacion Inicial: ${p.habitacion_inicial || ''}`));
+      sections.push(bodyPara(`Rol en el contenido: ${p.rol_en_contenido || p.rol_en_obra || p.descripcion || ''}`));
+      sections.push(bodyPara(`Relevancia para el caso: ${p.motivacion || ''}`));
+      sections.push(bodyPara('Indicio textual encontrado: ____________________________________________'));
       sections.push(gap());
     });
 
-    sections.push(h2('Evidencias Distribuidas'));
+    sections.push(h2('Evidencias (6 tarjetas)'));
     const evidencias = Array.isArray(juego.evidencias) ? juego.evidencias : [];
     evidencias.forEach((ev: any, idx: number) => {
       sections.push(bodyPara(`Evidencia N° ${idx + 1}: ${ev.nombre || ''}`, true, '14532d'));
-      sections.push(bodyPara(`Habitación de Ubicación: ${ev.habitacion || ''}`));
-      sections.push(bodyPara(`Descripción de la Evidencia: ${ev.descripcion || ''}`));
+      sections.push(bodyPara(`Habitacion: ${ev.habitacion || ''}`));
+      sections.push(bodyPara(`Descripcion: ${ev.descripcion || ''}`));
+      sections.push(bodyPara(`Relevancia pedagogica: ${ev.relevancia_pedagogica || ''}`));
       sections.push(gap());
     });
 
-    sections.push(h2('Hoja de Investigación y Descarte'));
-    sections.push(bodyPara('Marque con X las pistas descartadas durante la partida.'));
+    sections.push(h2('Habitaciones con Desafios Literarios (6 tarjetas)'));
+    const habitacionesData = Array.isArray(juego.habitaciones) ? juego.habitaciones : [];
+    habitacionesData.forEach((hab: any, idx: number) => {
+      sections.push(bodyPara(`Habitacion N° ${idx + 1}: ${hab.nombre || ''}`, true, '14532d'));
+      sections.push(bodyPara(`Desafio literario: ${hab.desafio || ''}`));
+      sections.push(bodyPara(`Pista al responder correctamente: ${hab.pista || ''}`));
+      sections.push(bodyPara('Respuesta del equipo: ____________________________________________'));
+      sections.push(gap());
+    });
+
+    sections.push(h2('Hoja de Investigacion y Descarte'));
+    sections.push(bodyPara('Marca con X cada carta que hayas visto. La solucion es la carta que nadie puede mostrar.'));
+    sections.push(gap());
+
+    const clueRows = ['SOSPECHOSOS', 'EVIDENCIAS', 'HABITACIONES'];
+    clueRows.forEach(colName => {
+      sections.push(bodyPara(`--- ${colName} ---`, true, '14532d'));
+      const items = colName === 'SOSPECHOSOS' ? personajes.map((p: any) => p.nombre || '')
+        : colName === 'EVIDENCIAS' ? evidencias.map((ev: any) => ev.nombre || '')
+        : habitacionesData.map((h: any) => h.nombre || '');
+      items.forEach((item: string) => {
+        sections.push(bodyPara(`[ ]  ${item}     Quien lo mostro: ________________________`));
+      });
+      sections.push(gap());
+    });
+
+    sections.push(h2('Acusacion Final'));
+    const etiqHip = juego.etiqueta_hipotesis || 'Hipotesis:';
+    const etiqSos = juego.etiqueta_sospechosos || 'El elemento';
+    sections.push(bodyPara(`${etiqHip}:`, true, '14532d'));
+    sections.push(bodyPara(`${etiqSos} ______________, evidencia: ______________, habitacion: ______________.`));
+    sections.push(bodyPara('¿Como se relacionan? ____________________________________________________________'));
+    sections.push(gap());
+    sections.push(bodyPara('Fundamento 1 (cita, dato o episodio del material): _________________________________'));
+    sections.push(bodyPara('Fundamento 2: ____________________________________________________________'));
+    sections.push(bodyPara('¿Como el material revisado apoya tu conclusion? ________________________________'));
 
   } else if (motorId === 'serpiente_escaleras') {
     sections.push(h1('Serpientes y Escaleras Pedagógico', '0891b2'));
@@ -342,12 +397,42 @@ export function drawPlayWord({
       sections.push(gap());
     });
   } else if (motorId === 'clue') {
-    sections.push(h2('Sobre de Solución del Misterio (Docente)'));
+    const oaListDoc = Array.isArray(juego.objetivos_aprendizaje) ? juego.objetivos_aprendizaje : [];
+    if (oaListDoc.length > 0) {
+      sections.push(h2('Objetivos de Aprendizaje Vinculados'));
+      oaListDoc.forEach((oa: any) => {
+        const origenLabel = oa.origen === 'sugerido_ia' ? ' [OA sugerido — verificar]'
+          : oa.origen === 'planificacion' ? ' [de planificacion]'
+          : oa.origen === 'seleccion_docente' ? ' [seleccionado]' : '';
+        sections.push(bodyPara(`${oa.codigo}${origenLabel}:`, true, 'DC2626'));
+        sections.push(bodyPara(oa.descripcion || ''));
+        sections.push(gap());
+      });
+    }
+    sections.push(h2('Sobre de Solucion (CONFIDENCIAL)'));
     const sol = juego.solucion || {};
-    sections.push(bodyPara(`Culpable: ${sol.culpable || ''}`, true));
-    sections.push(bodyPara(`Habitación / Escena: ${sol.habitacion || ''}`, true));
-    sections.push(bodyPara(`Evidencia Clave: ${sol.evidencia || ''}`, true));
-    sections.push(bodyPara(`Explicación de la Pauta: ${sol.explicacion_docente || ''}`));
+    sections.push(bodyPara(`Hipotesis pedagogica central: ${sol.hipotesis_central || sol.culpable || 'Sin definir'}`, true, 'DC2626'));
+    sections.push(bodyPara(`Habitacion: ${sol.habitacion || 'Sin definir'}`, true));
+    sections.push(bodyPara(`Evidencia: ${sol.evidencia || 'Sin definir'}`, true));
+    sections.push(gap());
+    sections.push(bodyPara('Justificacion de la hipotesis central:', true, '14532d'));
+    sections.push(bodyPara(sol.justificacion_hipotesis || sol.rol_del_personaje || ''));
+    sections.push(gap());
+    sections.push(bodyPara('Hipotesis alternativas validas:', true, '14532d'));
+    sections.push(bodyPara(sol.hipotesis_alternativas || ''));
+    sections.push(gap());
+    sections.push(bodyPara('Explicacion pedagogica (segun OA seleccionados):', true, '14532d'));
+    sections.push(bodyPara(sol.explicacion_docente || ''));
+    sections.push(gap());
+    if (sol.rubrica) {
+      sections.push(h2('Rubrica de Evaluacion'));
+      sections.push(bodyPara('NIVEL 3 — Logrado:', true, '166534'));
+      sections.push(bodyPara(sol.rubrica.nivel3 || ''));
+      sections.push(bodyPara('NIVEL 2 — En proceso:', true, '92400e'));
+      sections.push(bodyPara(sol.rubrica.nivel2 || ''));
+      sections.push(bodyPara('NIVEL 1 — Inicial:', true, 'DC2626'));
+      sections.push(bodyPara(sol.rubrica.nivel1 || ''));
+    }
 
   } else if (motorId === 'serpiente_escaleras') {
     sections.push(h2('Clave de Respuestas (Serpientes y Escaleras)'));

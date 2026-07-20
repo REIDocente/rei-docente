@@ -128,30 +128,55 @@ function buildPlaySystemPrompt(motorId: string): string {
 }`;
   } else if (motorId === 'clue') {
     schemaDescription = `{
-  "nombre_caso": "Título del misterio (ej: El Secreto de la Mansión del Sauce)",
-  "historia": "Contexto narrativo del caso, 150 palabras máximo, basado en el texto/OA.",
+  "tipo_misterio": "Clasifica el tipo de misterio segun el contenido. Valores posibles: personaje | causa | conflicto | interpretacion | concepto | postura | problema. Elige el que mejor se ajuste al material del docente.",
+  "tipo_fuente": "Clasifica la fuente del material. Valores posibles: planificacion | lectura_domiciliaria | texto | contenido_curricular.",
+  "nombre_caso": "Titulo del misterio derivado del contenido del docente (max 8 palabras, sin spoilers).",
+  "historia": "Contexto narrativo del caso en 120-150 palabras. Presenta el misterio de forma inmersiva, basandote EXCLUSIVAMENTE en el material proporcionado. El misterio puede ser: identificar un personaje clave, explicar una causa, interpretar un conflicto, resolver un problema, descubrir una idea central, determinar una postura o relacionar conceptos. Adapta el lenguaje del caso al tipo_misterio elegido.",
+  "nota_ficcion": "Nota de 1 oracion aclarando si los sospechosos o evidencias son ficticios, inspirados en el material, o corresponden directamente al contenido. Omite esta nota si todo proviene literalmente del material.",
+  "etiqueta_sospechosos": "Como se llaman los sospechosos en este caso especifico. Ejemplos: 'Personajes', 'Causas', 'Hipotesis', 'Factores', 'Autores', 'Conceptos', 'Posturas'. Elige el termino que corresponda al tipo_misterio.",
+  "etiqueta_hipotesis": "Como se llama la acusacion final en este caso. Ejemplos: 'Acusacion', 'Hipotesis interpretativa', 'Hipotesis causal', 'Postura central', 'Concepto clave', 'Solucion al problema'.",
   "personajes": [
-    { "nombre": "Nombre del Sospechoso 1", "descripcion": "Breve descripción", "motivacion": "Por qué podría ser culpable", "habitacion_inicial": "Habitación de inicio" },
-    { "nombre": "Nombre del Sospechoso 2", "descripcion": "Breve descripción", "motivacion": "Por qué podría ser culpable", "habitacion_inicial": "Habitación de inicio" },
-    { "nombre": "Nombre del Sospechoso 3", "descripcion": "Breve descripción", "motivacion": "Por qué podría ser culpable", "habitacion_inicial": "Habitación de inicio" },
-    { "nombre": "Nombre del Sospechoso 4", "descripcion": "Breve descripción", "motivacion": "Por qué podría ser culpable", "habitacion_inicial": "Habitación de inicio" }
+    { "nombre": "Nombre del elemento 1 (personaje, causa, concepto, etc., max 4 palabras)", "descripcion": "Descripcion breve (max 15 palabras)", "motivacion": "Por que este elemento es relevante para el misterio (max 20 palabras)", "rol_en_contenido": "Rol real en el material del docente (max 15 palabras)", "habitacion_inicial": "Nombre de una de las 6 habitaciones" },
+    { "nombre": "Elemento 2", "descripcion": "Descripcion breve", "motivacion": "Relevancia para el misterio", "rol_en_contenido": "Rol en el material", "habitacion_inicial": "Nombre de habitacion" },
+    { "nombre": "Elemento 3", "descripcion": "Descripcion breve", "motivacion": "Relevancia para el misterio", "rol_en_contenido": "Rol en el material", "habitacion_inicial": "Nombre de habitacion" },
+    { "nombre": "Elemento 4", "descripcion": "Descripcion breve", "motivacion": "Relevancia para el misterio", "rol_en_contenido": "Rol en el material", "habitacion_inicial": "Nombre de habitacion" }
   ],
   "evidencias": [
-    { "nombre": "Nombre de la evidencia 1", "descripcion": "Descripción corta", "habitacion": "Habitación donde se ubica", "relevancia_pedagogica": "Por qué se relaciona con el texto/OA" },
-    { "nombre": "Nombre de la evidencia 2", "descripcion": "Descripción corta", "habitacion": "Habitación donde se ubica", "relevancia_pedagogica": "Por qué se relaciona con el texto/OA" },
-    { "nombre": "Nombre de la evidencia 3", "descripcion": "Descripción corta", "habitacion": "Habitación donde se ubica", "relevancia_pedagogica": "Por qué se relaciona con el texto/OA" },
-    { "nombre": "Nombre de la evidencia 4", "descripcion": "Descripción corta", "habitacion": "Habitación donde se ubica", "relevancia_pedagogica": "Por qué se relaciona con el texto/OA" },
-    { "nombre": "Nombre de la evidencia 5", "descripcion": "Descripción corta", "habitacion": "Habitación donde se ubica", "relevancia_pedagogica": "Por qué se relaciona con el texto/OA" },
-    { "nombre": "Nombre de la evidencia 6", "descripcion": "Descripción corta", "habitacion": "Habitación donde se ubica", "relevancia_pedagogica": "Por qué se relaciona con el texto/OA" }
+    { "nombre": "Nombre evidencia 1 (max 4 palabras)", "descripcion": "Descripcion corta (max 15 palabras)", "habitacion": "Nombre de habitacion", "relevancia_pedagogica": "Como se vincula con los OA seleccionados (max 20 palabras)" },
+    { "nombre": "Evidencia 2", "descripcion": "Descripcion corta", "habitacion": "Nombre de habitacion", "relevancia_pedagogica": "Vinculo con OA" },
+    { "nombre": "Evidencia 3", "descripcion": "Descripcion corta", "habitacion": "Nombre de habitacion", "relevancia_pedagogica": "Vinculo con OA" },
+    { "nombre": "Evidencia 4", "descripcion": "Descripcion corta", "habitacion": "Nombre de habitacion", "relevancia_pedagogica": "Vinculo con OA" },
+    { "nombre": "Evidencia 5", "descripcion": "Descripcion corta", "habitacion": "Nombre de habitacion", "relevancia_pedagogica": "Vinculo con OA" },
+    { "nombre": "Evidencia 6", "descripcion": "Descripcion corta", "habitacion": "Nombre de habitacion", "relevancia_pedagogica": "Vinculo con OA" }
   ],
-  "distribucion_habitaciones": [
-    "Biblioteca", "Salón", "Comedor", "Jardín", "Cocina", "Bodega"
+  "habitaciones": [
+    { "nombre": "Nombre habitacion 1 (puede ser lugar de la obra, espacio tematico o concepto espacial)", "desafio": "Pregunta de analisis en 2-3 oraciones vinculada a los OA seleccionados. El equipo debe responder ANTES de plantear su hipotesis en esta habitacion. Debe ser desafiante y requerir comprension del material.", "pista": "Pista que el equipo recibe al responder correctamente (1 oracion)." },
+    { "nombre": "Habitacion 2", "desafio": "Desafio diferente vinculado a los OA", "pista": "Pista correspondiente" },
+    { "nombre": "Habitacion 3", "desafio": "Desafio diferente", "pista": "Pista correspondiente" },
+    { "nombre": "Habitacion 4", "desafio": "Desafio diferente", "pista": "Pista correspondiente" },
+    { "nombre": "Habitacion 5", "desafio": "Desafio diferente", "pista": "Pista correspondiente" },
+    { "nombre": "Habitacion 6", "desafio": "Desafio diferente", "pista": "Pista correspondiente" }
+  ],
+  "distribucion_habitaciones": ["Habitacion 1", "Habitacion 2", "Habitacion 3", "Habitacion 4", "Habitacion 5", "Habitacion 6"],
+  "objetivos_aprendizaje": [
+    {
+      "codigo": "OA X",
+      "descripcion": "Descripcion completa del objetivo de aprendizaje tal como aparece en el material o en el curriculo chileno.",
+      "origen": "planificacion | seleccion_docente | sugerido_ia"
+    }
   ],
   "solucion": {
-    "culpable": "Nombre del sospechoso culpable",
-    "habitacion": "Nombre de la habitación",
-    "evidencia": "Nombre del objeto evidencia",
-    "explicacion_docente": "Explicación pedagógica detallada de la resolución del misterio."
+    "hipotesis_central": "El elemento principal (personaje, causa, concepto, etc.) seleccionado como respuesta pedagogica central al misterio.",
+    "habitacion": "Nombre de la habitacion donde ocurre el momento clave.",
+    "evidencia": "Nombre de la evidencia que confirma la hipotesis central.",
+    "justificacion_hipotesis": "Por que esta hipotesis es la mas solida segun el material del docente (2-3 oraciones). Sin mencionar obras, personajes o datos no presentes en el contexto.",
+    "hipotesis_alternativas": "Otras respuestas que los alumnos podrian formular y por que tambien son pedagogicamente validas.",
+    "explicacion_docente": "Explicacion pedagogica: (1) Como la hipotesis central se justifica segun los OA seleccionados. (2) Que habilidades evidencia el alumno al fundamentar con 2 elementos del material. (3) Criterio de aceptacion de respuestas alternativas.",
+    "rubrica": {
+      "nivel3": "Logrado: el alumno formula una hipotesis clara y pertinente al tipo_misterio, la fundamenta con 2 elementos concretos del material y explica la relacion entre ambos.",
+      "nivel2": "En proceso: el alumno formula una hipotesis plausible pero la fundamentacion es vaga, incompleta o menciona solo 1 elemento del material.",
+      "nivel1": "Inicial: el alumno propone un elemento pero no lo vincula con el material ni justifica su relacion con el misterio."
+    }
   }
 }`;
   } else if (motorId === 'serpiente_escaleras') {
@@ -201,10 +226,56 @@ function buildPlaySystemPrompt(motorId: string): string {
 }`;
   }
 
-  return `Eres un diseñador de juegos pedagógicos para el sistema escolar chileno (MINEDUC) y Didakta.
+  const clueNote = motorId === 'clue' ? `
+REGLAS OBLIGATORIAS PARA EL MOTOR CLUE (plantilla fija, contenido dinamico):
+
+ESTRUCTURA FIJA: La estructura del CLUE es siempre igual: portada, tablero, 4 sospechosos, 6 evidencias, 6 habitaciones con desafios, hoja de investigacion, reglas, acusacion final y guia docente. NO la modifiques.
+
+CONTENIDO DINAMICO: Todo el contenido proviene EXCLUSIVAMENTE del material entregado por el docente. NO inventes personajes, lugares, evidencias ni datos que no esten en ese material.
+
+ADAPTACION SEGUN MATERIAL:
+- Si el material es una novela o cuento: los sospechosos son personajes, las habitaciones son espacios de la obra, las evidencias son fragmentos u objetos simbolicos.
+- Si el material es una planificacion o unidad curricular: los sospechosos son causas, conceptos, posturas o factores; las habitaciones son ejes tematicos o etapas; las evidencias son datos, ejemplos o fenomenos.
+- Si el material es un texto argumentativo: los sospechosos son posturas o argumentos; las habitaciones son secciones o dimensiones del texto; las evidencias son recursos retóricos, citas o contraargumentos.
+- Si el material es un contenido curricular (historia, ciencias, etc.): los sospechosos son causas, actores o conceptos; las habitaciones son periodos, contextos o categorias; las evidencias son hechos, documentos o fenomenos.
+
+TIPO DE MISTERIO: Elige el tipo_misterio que mejor corresponda al material:
+- personaje: ¿quien es el responsable o protagonista central?
+- causa: ¿que factor explica mejor el fenomeno?
+- conflicto: ¿que tension o contradiccion es la mas determinante?
+- interpretacion: ¿que lectura del texto es mas solida?
+- concepto: ¿que idea conecta mejor los elementos?
+- postura: ¿que argumento o posicion se sostiene mejor?
+- problema: ¿que condicion genero el problema central?
+
+DESAFIOS PEDAGOGICOS: Cada habitacion tiene un desafio vinculado a los OA seleccionados por el docente. Los desafios deben requerir comprension, analisis o aplicacion del material, no solo memoria.
+
+LIMITES DE TEXTO PARA TARJETAS:
+- Nombre de sospechoso/elemento: max 4 palabras.
+- Descripcion de sospechoso: max 15 palabras.
+- Motivacion/relevancia: max 20 palabras.
+- Nombre de evidencia: max 4 palabras.
+- Descripcion de evidencia: max 15 palabras.
+
+HIPOTESIS, NO VERDAD CERRADA: La solucion es una hipotesis pedagogica solida, no una verdad absoluta. El docente debe aceptar otras hipotesis bien fundamentadas. Incluye siempre hipotesis_alternativas validas.
+
+OBJETIVOS DE APRENDIZAJE (campo objetivos_aprendizaje — OBLIGATORIO):
+- Revisa los "OAs entregados" en el prompt de usuario. Si hay OA codes (ej: OA 3, OA 8), incluyelos en objetivos_aprendizaje con:
+  * codigo: el codigo exacto entregado (ej: "OA 3")
+  * descripcion: la descripcion completa del OA segun el curriculo MINEDUC chileno para ese nivel y asignatura
+  * origen: usa el valor que se indica en "ORIGEN DE LOS OA:" del prompt de usuario
+- Si NO hay OA codes en el prompt: SUGIERE 2-3 OA pertinentes al nivel y asignatura del juego, con origen "sugerido_ia"
+- Todos los desafios de habitaciones, la hipotesis final y la rubrica deben construirse a partir de estos OA
+- NUNCA fijes OA 3 y OA 8 por defecto. Usa solo los OA del material o sugiere los pertinentes
+- El campo objetivos_aprendizaje debe siempre estar presente en el JSON de respuesta
+
+PROHIBIDO: No menciones obras, personajes, autores, datos o contenidos que NO esten en el material del docente. El motor CLUE es una plantilla reutilizable; su contenido viene del aula, no de ejemplos externos.
+` : '';
+
+  return `Eres un diseñador de juegos pedagógicos para el sistema escolar chileno (MINEDUC) y REI Docente.
 Estás generando un juego de tipo "${motorId}".
 Recibirás un motor de juego con estructura fija. Tu único trabajo es completar los campos de contenido indicados. NO inventes secciones nuevas. NO modifiques la estructura. Solo completa el contenido pedagógico de cada campo.
-
+${clueNote}
 Debes responder ÚNICAMENTE con un objeto JSON válido, sin texto introductorio, sin explicaciones ni etiquetas markdown de código (como \`\`\`json).
 Asegúrate de que todas las comillas dobles dentro de las cadenas estén correctamente escapadas.
 
@@ -319,12 +390,25 @@ CONTEXTO DEL LIBRO DOMICILIARIO:
     }
   }
 
+  // Determinar origen de los OA para el campo objetivos_aprendizaje
+  const oaOrigen = motor === 'clue'
+    ? (fuente === 'planificacion' ? 'planificacion'
+      : fuente === 'lectura_domiciliaria' ? 'seleccion_docente'
+      : oa_codes.length > 0 ? 'seleccion_docente'
+      : 'sugerido_ia')
+    : '';
+
+  const oaBlock = motor === 'clue'
+    ? `OAs entregados: ${oa_codes.length > 0 ? oa_codes.join(', ') : '(ninguno — sugerir OA pertinentes)'}
+ORIGEN DE LOS OA: ${oaOrigen}`
+    : `- OAs seleccionados: ${oa_codes.join(', ')}`;
+
   const userPrompt = `
 DATOS DE CONFIGURACIÓN DEL JUEGO:
 - Motor de Juego: ${motor}
 - Tema del Juego: ${effectiveTema}
 - Curso / Nivel: ${nivel}
-- OAs seleccionados: ${oa_codes.join(', ')}
+- ${oaBlock}
 - Duración de la partida: ${duracion} minutos
 - Modalidad de juego: ${modalidad}
 - Dificultad: ${dificultad}

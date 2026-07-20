@@ -49,7 +49,7 @@ export function drawPlayPdf({
     doc.setFontSize(8);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(rAccent, gAccent, bAccent);
-    doc.text("DIDAKTA PLAY", margin + 5, 17);
+    doc.text("REI PLAY", margin + 5, 17);
 
     doc.setTextColor(100, 116, 139);
     doc.setFont('helvetica', 'normal');
@@ -68,7 +68,7 @@ export function drawPlayPdf({
     doc.setFontSize(7.5);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(148, 163, 184); // slate-400
-    const footerText = `Generado con Didakta · LICEO ${establecimiento}`;
+    const footerText = `Generado con REI Docente · LICEO ${establecimiento}`;
     doc.text(footerText, margin, pageHeight - 10);
     doc.text(`Página ${pageNum} de ${totalPages}`, pageWidth - margin - 20, pageHeight - 10);
   };
@@ -837,275 +837,744 @@ export function drawPlayPdf({
 
   } else if (motorId === 'clue') {
     const width = getPageWidth();
+    const rooms: string[] = Array.isArray(juego.habitaciones)
+      ? juego.habitaciones.map((h: any) => h.nombre || '')
+      : (Array.isArray(juego.distribucion_habitaciones) ? juego.distribucion_habitaciones : ['Biblioteca', 'Salon', 'Comedor', 'Jardin', 'Cocina', 'Bodega']);
+    const personajes = Array.isArray(juego.personajes) ? juego.personajes : [];
+    const evidencias = Array.isArray(juego.evidencias) ? juego.evidencias : [];
+    const habitacionesData = Array.isArray(juego.habitaciones) ? juego.habitaciones : [];
+    const sol = juego.solucion || {};
+
+    // Colores de ficha por sospechoso (sin emojis)
+    const fichaColors: [number, number, number][] = [
+      [239, 68, 68],   // rojo
+      [59, 130, 246],  // azul
+      [16, 185, 129],  // verde
+      [245, 158, 11],  // naranja
+    ];
+    const fichaLabels = ['ROJO', 'AZUL', 'VERDE', 'NARANJA'];
+
     // ---- PÁGINA 1: Tablero de la Mansión ----
     drawHeader('CLUE - Tablero');
     y = 35;
-    addText(`TABLERO DE LA MANSIÓN: ${juego.nombre_caso || 'Caso sin Título'}`, 14, 'bold', colorHex);
-    y += 5;
+    addText(`TABLERO: ${juego.nombre_caso || 'Caso sin Titulo'}`, 13, 'bold', colorHex);
+    y += 3;
 
-    // Dibujar 6 habitaciones en cuadrícula 3x2
     const roomW = 54;
-    const roomH = 65;
-    const startX = margin + 5;
-    const startY = y + 10;
+    const roomH = 62;
+    const startX = margin + 2;
+    const startY = y + 6;
+    const corridorW = 5;
 
-    const rooms = juego.distribucion_habitaciones || ["Biblioteca", "Salón", "Comedor", "Jardín", "Cocina", "Bodega"];
-    
-    // Corredores
+    // Fondo del tablero
+    doc.setFillColor(248, 250, 252);
+    doc.rect(startX - 2, startY - 2, 3 * roomW + 2 * corridorW + 4, 2 * roomH + corridorW + 4, 'F');
+
+    // Corredor horizontal central
+    doc.setFillColor(220, 230, 220);
+    doc.rect(startX, startY + roomH, 3 * roomW + 2 * corridorW, corridorW, 'F');
+    // Corredor vertical central
+    doc.rect(startX + roomW, startY, corridorW, 2 * roomH + corridorW, 'F');
+    doc.rect(startX + 2 * roomW + corridorW, startY, corridorW, 2 * roomH + corridorW, 'F');
+
+    // Dibuja flechas de corredor
     doc.setDrawColor(rAccent, gAccent, bAccent);
-    doc.setLineWidth(3);
-    doc.line(startX + 10, startY + roomH + 10, startX + 3 * roomW - 10, startY + roomH + 10); // horizontal corridor
-    doc.line(startX + roomW + roomW/2, startY + 10, startX + roomW + roomW/2, startY + 2 * roomH + 15); // vertical corridor
+    doc.setLineWidth(0.3);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(6);
+    doc.setTextColor(rAccent, gAccent, bAccent);
 
-    // Dibujar habitaciones
-    doc.setLineWidth(0.8);
+    // Habitaciones
+    doc.setLineWidth(0.7);
     for (let r = 0; r < 2; r++) {
       for (let c = 0; c < 3; c++) {
-        const roomName = rooms[r * 3 + c] || `Habitación ${r * 3 + c + 1}`;
-        const rx = startX + c * (roomW + 5);
-        const ry = startY + r * (roomH + 20);
+        const roomIdx = r * 3 + c;
+        const roomName = rooms[roomIdx] || `Habitacion ${roomIdx + 1}`;
+        const rx = startX + c * (roomW + corridorW);
+        const ry = startY + r * (roomH + corridorW);
+        const [fr, fg, fb] = fichaColors[roomIdx % fichaColors.length];
 
+        // Fondo de habitación
+        doc.setFillColor(240, 248, 240);
         doc.setDrawColor(rAccent, gAccent, bAccent);
-        doc.rect(rx, ry, roomW, roomH);
+        doc.rect(rx, ry, roomW, roomH, 'FD');
+
+        // Cabecera coloreada
+        doc.setFillColor(rAccent, gAccent, bAccent);
+        doc.rect(rx, ry, roomW, 11, 'F');
 
         // Nombre de habitación
-        doc.setFontSize(9);
+        doc.setFontSize(8);
         doc.setFont('helvetica', 'bold');
-        doc.setTextColor(rAccent, gAccent, bAccent);
-        doc.text(roomName, rx + 4, ry + 10);
+        doc.setTextColor(255, 255, 255);
+        doc.text(roomName, rx + 4, ry + 8);
 
-        // Línea para colocar carta
-        doc.setFontSize(7.5);
+        // Numero de habitacion
+        doc.setFontSize(22);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(200, 220, 200);
+        doc.text(String(roomIdx + 1), rx + roomW - 14, ry + roomH - 5);
+
+        // Linea "Evidencia aqui"
+        doc.setFontSize(6.5);
         doc.setFont('helvetica', 'normal');
         doc.setTextColor(148, 163, 184);
-        doc.text("Evidencia: ________________", rx + 4, ry + 35);
-        
-        // Simular círculos de sospechosos si corresponde
-        if (r === 0 && c === 0) {
-          doc.setFillColor(239, 68, 68); // Rojo
-          doc.circle(rx + 8, ry + roomH - 8, 3, 'F');
-        } else if (r === 0 && c === 2) {
-          doc.setFillColor(59, 130, 246); // Azul
-          doc.circle(rx + 8, ry + roomH - 8, 3, 'F');
-        } else if (r === 1 && c === 0) {
-          doc.setFillColor(16, 185, 129); // Verde
-          doc.circle(rx + 8, ry + roomH - 8, 3, 'F');
-        } else if (r === 1 && c === 2) {
-          doc.setFillColor(245, 158, 11); // Naranja
-          doc.circle(rx + 8, ry + roomH - 8, 3, 'F');
+        doc.text('Carta evidencia:', rx + 4, ry + 22);
+        doc.setDrawColor(180, 200, 180);
+        doc.setLineWidth(0.3);
+        doc.line(rx + 4, ry + 26, rx + roomW - 4, ry + 26);
+        doc.line(rx + 4, ry + 32, rx + roomW - 4, ry + 32);
+
+        // Puerta (indicador de entrada)
+        doc.setFillColor(fr, fg, fb);
+        doc.setLineWidth(0.5);
+        if (r === 0) {
+          // puerta abajo
+          doc.rect(rx + roomW / 2 - 4, ry + roomH - 2, 8, 2, 'F');
+        } else {
+          // puerta arriba
+          doc.rect(rx + roomW / 2 - 4, ry, 8, 2, 'F');
+        }
+
+        // Posicion inicial de ficha del sospechoso con ese indice
+        const susIdx = personajes.findIndex((p: any) =>
+          (p.habitacion_inicial || '').toLowerCase() === roomName.toLowerCase()
+        );
+        if (susIdx >= 0) {
+          const [cr, cg, cb] = fichaColors[susIdx % fichaColors.length];
+          doc.setFillColor(cr, cg, cb);
+          doc.circle(rx + roomW - 8, ry + 18, 3.5, 'F');
+          doc.setFontSize(5.5);
+          doc.setFont('helvetica', 'bold');
+          doc.setTextColor(255, 255, 255);
+          doc.text(fichaLabels[susIdx % fichaLabels.length].slice(0, 1), rx + roomW - 9.5, ry + 19.5);
         }
       }
+    }
+
+    // Leyenda
+    const legX = startX;
+    const legY = startY + 2 * roomH + corridorW + 10;
+    doc.setFontSize(7.5);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(rAccent, gAccent, bAccent);
+    doc.text('LEYENDA:', legX, legY);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(71, 85, 105);
+
+    const leyendaItems = [
+      'Las puertas de color indican por donde se entra a cada habitacion.',
+      'El circulo de color muestra la posicion inicial del sospechoso de ese color.',
+      'Los pasillos grises conectan las habitaciones. Para moverse: lanza el dado y avanza ese numero de pasos.',
+      'Un paso = cruzar un pasillo o entrar/salir de una habitacion.',
+    ];
+    leyendaItems.forEach((item, i) => {
+      doc.text(`- ${item}`, legX, legY + 6 + i * 5);
+    });
+
+    // Nota ficcion
+    y = legY + 36;
+    if (juego.nota_ficcion) {
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'italic');
+      doc.setTextColor(148, 163, 184);
+      const notaLines = doc.splitTextToSize(`Nota: ${juego.nota_ficcion}`, width);
+      notaLines.forEach((l: string, li: number) => {
+        doc.text(l, startX, y + li * 4);
+      });
+      y += notaLines.length * 4 + 3;
+    }
+
+    // Bloque de Objetivos de Aprendizaje
+    const oaList = Array.isArray(juego.objetivos_aprendizaje) ? juego.objetivos_aprendizaje : [];
+    if (oaList.length > 0) {
+      doc.setFillColor(240, 253, 244);
+      doc.setDrawColor(rAccent, gAccent, bAccent);
+      doc.setLineWidth(0.4);
+      const oaBlockY = y;
+      // Calcular alto del bloque
+      let oaBlockH = 10;
+      oaList.forEach((oa: any) => {
+        const lines = doc.splitTextToSize(`${oa.codigo}: ${oa.descripcion || ''}`, width - 14);
+        oaBlockH += lines.length * 3.8 + 3;
+      });
+      doc.rect(startX, oaBlockY, width + 2, oaBlockH, 'FD');
+
+      doc.setFontSize(7.5);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(rAccent, gAccent, bAccent);
+      doc.text('OBJETIVOS DE APRENDIZAJE VINCULADOS:', startX + 4, oaBlockY + 7);
+
+      let oaY = oaBlockY + 13;
+      oaList.forEach((oa: any) => {
+        const origenLabel = oa.origen === 'sugerido_ia' ? ' [sugerido]'
+          : oa.origen === 'planificacion' ? ' [planificacion]'
+          : oa.origen === 'seleccion_docente' ? ' [seleccionado]'
+          : '';
+        doc.setFontSize(7);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(rAccent, gAccent, bAccent);
+        doc.text(`${oa.codigo}${origenLabel}:`, startX + 4, oaY);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(51, 65, 85);
+        const descLines = doc.splitTextToSize(oa.descripcion || '', width - 14);
+        descLines.forEach((l: string, li: number) => {
+          doc.text(l, startX + 4, oaY + 4 + li * 3.8);
+        });
+        oaY += 4 + descLines.length * 3.8 + 3;
+      });
     }
 
     // ---- PÁGINA 2: Sospechosos ----
     doc.addPage();
     drawHeader('CLUE - Sospechosos');
     y = 35;
-    addText('TARJETAS DE SOSPECHOSOS (Recortables)', 14, 'bold', colorHex);
-    y += 10;
+    addText('TARJETAS DE SOSPECHOSOS  (recorta por la linea punteada)', 13, 'bold', colorHex);
+    y += 6;
 
-    const personajes = Array.isArray(juego.personajes) ? juego.personajes : [];
-    const cardW = width / 2 - 5;
-    const cardH = 80;
+    const cardW = width / 2 - 6;
+    const cardH = 88;
 
     personajes.forEach((p: any, idx: number) => {
-      const cX = margin + (idx % 2) * (cardW + 10);
-      const cY = y + Math.floor(idx / 2) * (cardH + 10);
+      const cX = margin + (idx % 2) * (cardW + 12);
+      const cY = y + Math.floor(idx / 2) * (cardH + 8);
+      const [cr, cg, cb] = fichaColors[idx % fichaColors.length];
 
       drawDottedRect(cX, cY, cardW, cardH);
+      doc.setFillColor(248, 252, 248);
       doc.setDrawColor(rAccent, gAccent, bAccent);
-      doc.rect(cX + 2, cY + 2, cardW - 4, cardH - 4);
+      doc.setLineWidth(0.6);
+      doc.rect(cX + 1.5, cY + 1.5, cardW - 3, cardH - 3, 'FD');
 
-      // Dibujar etiqueta de sospechoso
-      doc.setFontSize(10);
+      // Cabecera de color
+      doc.setFillColor(cr, cg, cb);
+      doc.rect(cX + 1.5, cY + 1.5, cardW - 3, 13, 'F');
+      doc.setFontSize(9.5);
       doc.setFont('helvetica', 'bold');
-      doc.setTextColor(rAccent, gAccent, bAccent);
-      doc.text(p.nombre || 'Sospechoso', cX + 6, cY + 12);
-      
-      doc.setFontSize(7.5);
+      doc.setTextColor(255, 255, 255);
+      doc.text(p.nombre || 'Sospechoso', cX + 6, cY + 11);
+
+      // Etiqueta color (ficha)
+      doc.setFontSize(6.5);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(255, 255, 255);
+      doc.text(`FICHA ${fichaLabels[idx % fichaLabels.length]}`, cX + cardW - 22, cY + 11);
+
+      // Habitacion inicial
+      doc.setFontSize(7);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(100, 116, 139);
-      doc.text(`Inicia en: ${p.habitacion_inicial || 'Bodega'}`, cX + 6, cY + 18);
+      doc.text(`Inicia en: ${p.habitacion_inicial || 'Biblioteca'}`, cX + 6, cY + 20);
 
-      // Descripción
-      doc.setTextColor(51, 65, 85);
-      let descLines = doc.splitTextToSize(`Motivo: ${p.motivacion || ''}`, cardW - 12);
-      descLines.forEach((l: string, lIdx: number) => {
-        doc.text(l, cX + 6, cY + 28 + lIdx * 4);
+      // Rol en obra
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'italic');
+      doc.setTextColor(100, 116, 139);
+      const rolLines = doc.splitTextToSize(`Rol: ${p.rol_en_contenido || p.rol_en_obra || p.descripcion || ''}`, cardW - 12);
+      rolLines.slice(0, 2).forEach((l: string, li: number) => {
+        doc.text(l, cX + 6, cY + 27 + li * 4);
       });
 
-      // Sospechoso dibuja y colorea
-      doc.setDrawColor(180, 190, 205);
-      doc.setFillColor(252, 253, 254);
-      doc.setLineDashPattern([3, 3], 0);
-      doc.rect(cX + 6, cY + 38, cardW - 12, 24, 'FD');
-      doc.setLineDashPattern([], 0);
-      doc.setFontSize(7);
-      doc.setTextColor(148, 163, 184);
+      // Motivacion / influencia
+      doc.setFontSize(7.5);
       doc.setFont('helvetica', 'normal');
-      doc.text("✏️ Dibuja al sospechoso aquí", cX + 16, cY + 51);
+      doc.setTextColor(51, 65, 85);
+      const motivLines = doc.splitTextToSize(`Influencia: ${p.motivacion || ''}`, cardW - 12);
+      motivLines.slice(0, 3).forEach((l: string, li: number) => {
+        doc.text(l, cX + 6, cY + 39 + li * 4.2);
+      });
 
+      // Campo "Indicio textual" (reemplaza el espacio de dibujo)
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(rAccent, gAccent, bAccent);
+      doc.text('Indicio textual encontrado:', cX + 6, cY + 57);
+      doc.setDrawColor(180, 200, 180);
+      doc.setLineWidth(0.3);
+      doc.line(cX + 6, cY + 63, cX + cardW - 6, cY + 63);
+      doc.line(cX + 6, cY + 69, cX + cardW - 6, cY + 69);
+      doc.line(cX + 6, cY + 75, cX + cardW - 6, cY + 75);
+
+      // Descripcion en cursiva al fondo
+      doc.setFontSize(6.5);
       doc.setFont('helvetica', 'italic');
       doc.setTextColor(148, 163, 184);
-      doc.text(p.descripcion || '', cX + 6, cY + 68);
+      const descLines = doc.splitTextToSize(p.descripcion || '', cardW - 12);
+      descLines.slice(0, 1).forEach((l: string, li: number) => {
+        doc.text(l, cX + 6, cY + cardH - 7 + li * 4);
+      });
     });
 
     // ---- PÁGINA 3: Evidencias ----
     doc.addPage();
     drawHeader('CLUE - Evidencias');
     y = 35;
-    addText('TARJETAS DE EVIDENCIA (Recortables)', 14, 'bold', colorHex);
-    y += 10;
+    addText('TARJETAS DE EVIDENCIA  (recorta por la linea punteada)', 13, 'bold', colorHex);
+    y += 3;
+    if (juego.nota_ficcion) {
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'italic');
+      doc.setTextColor(148, 163, 184);
+      const nfLines = doc.splitTextToSize(`Nota: ${juego.nota_ficcion}`, width);
+      nfLines.forEach((l: string, li: number) => {
+        doc.text(l, margin, y + li * 3.8);
+      });
+      y += 7;
+    }
+    y += 3;
 
-    const evidencias = Array.isArray(juego.evidencias) ? juego.evidencias : [];
     const evW = width / 3 - 4;
-    const evH = 65;
+    const evH = 68;
 
     evidencias.forEach((ev: any, idx: number) => {
       const cX = margin + (idx % 3) * (evW + 6);
-      const cY = y + Math.floor(idx / 3) * (evH + 10);
+      const cY = y + Math.floor(idx / 3) * (evH + 8);
 
       drawDottedRect(cX, cY, evW, evH);
+      doc.setFillColor(248, 252, 248);
       doc.setDrawColor(rAccent, gAccent, bAccent);
-      doc.rect(cX + 2, cY + 2, evW - 4, evH - 4);
+      doc.setLineWidth(0.6);
+      doc.rect(cX + 1.5, cY + 1.5, evW - 3, evH - 3, 'FD');
 
-      doc.setFontSize(8.5);
+      // Cabecera
+      doc.setFillColor(rAccent, gAccent, bAccent);
+      doc.rect(cX + 1.5, cY + 1.5, evW - 3, 11, 'F');
+      doc.setFontSize(7.5);
       doc.setFont('helvetica', 'bold');
-      doc.setTextColor(rAccent, gAccent, bAccent);
-      doc.text(ev.nombre || 'Objeto', cX + 5, cY + 10);
-
-      doc.setFontSize(7);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor(100, 116, 139);
-      doc.text(`Habitación: ${ev.habitacion || ''}`, cX + 5, cY + 16);
-
-      doc.setTextColor(51, 65, 85);
-      const evDesc = doc.splitTextToSize(ev.descripcion || '', evW - 10);
-      evDesc.forEach((l: string, lIdx: number) => {
-        doc.text(l, cX + 5, cY + 24 + lIdx * 3.5);
+      doc.setTextColor(255, 255, 255);
+      const nombreLines = doc.splitTextToSize(ev.nombre || 'Objeto', evW - 10);
+      nombreLines.slice(0, 2).forEach((l: string, li: number) => {
+        doc.text(l, cX + 5, cY + 8 + li * 4);
       });
 
-      // Determine type of evidence and draw geometric shape in top-right corner
-      let shapeType = 'objeto'; // default (square)
-      const evName = (ev.nombre || '').toLowerCase();
-      const evDescText = (ev.descripcion || '').toLowerCase();
-      if (
-        evName.includes('habitacion') || evName.includes('habitación') ||
-        evName.includes('salon') || evName.includes('salón') ||
-        evName.includes('biblioteca') || evName.includes('cocina') ||
-        evName.includes('jardin') || evName.includes('jardín') ||
-        evName.includes('bodega') || evName.includes('comedor') ||
-        evDescText.includes('lugar') || evDescText.includes('habitación')
-      ) {
-        shapeType = 'lugar'; // circle
-      } else if (
-        evName.includes('persona') || evName.includes('sospechoso') ||
-        evName.includes('testigo') || evName.includes('acusado') ||
-        evName.includes('autor') || evName.includes('amigo') ||
-        evDescText.includes('persona') || evDescText.includes('testigo')
-      ) {
-        shapeType = 'persona'; // triangle
-      } else {
-        // Fallback using index
-        if (idx === 2 || idx === 3) shapeType = 'lugar';
-        else if (idx === 4 || idx === 5) shapeType = 'persona';
-      }
+      // Habitacion
+      doc.setFontSize(6.5);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(100, 116, 139);
+      doc.text(`Hab.: ${ev.habitacion || ''}`, cX + 5, cY + 18);
 
-      if (shapeType === 'objeto') {
-        doc.setDrawColor(rAccent, gAccent, bAccent);
-        doc.setFillColor(255, 255, 255);
-        doc.rect(cX + evW - 12, cY + 4, 8, 8);
-      } else if (shapeType === 'lugar') {
-        doc.setDrawColor(rAccent, gAccent, bAccent);
-        doc.setFillColor(255, 255, 255);
-        doc.circle(cX + evW - 8, cY + 8, 4);
-      } else if (shapeType === 'persona') {
-        doc.setDrawColor(rAccent, gAccent, bAccent);
-        doc.setFillColor(255, 255, 255);
-        const tx1 = cX + evW - 8;
-        const ty1 = cY + 4;
-        const tx2 = cX + evW - 12;
-        const ty2 = cY + 12;
-        const tx3 = cX + evW - 4;
-        const ty3 = cY + 12;
-        doc.triangle(tx1, ty1, tx2, ty2, tx3, ty3);
-      }
+      // Descripcion
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(51, 65, 85);
+      const evDesc = doc.splitTextToSize(ev.descripcion || '', evW - 10);
+      evDesc.slice(0, 3).forEach((l: string, li: number) => {
+        doc.text(l, cX + 5, cY + 26 + li * 4);
+      });
+
+      // Relevancia pedagogica
+      doc.setFontSize(6.5);
+      doc.setFont('helvetica', 'italic');
+      doc.setTextColor(rAccent, gAccent, bAccent);
+      const relLines = doc.splitTextToSize(ev.relevancia_pedagogica || '', evW - 10);
+      relLines.slice(0, 2).forEach((l: string, li: number) => {
+        doc.text(l, cX + 5, cY + evH - 12 + li * 3.5);
+      });
     });
 
-    // ---- PÁGINA 4: Hoja de Investigación ----
+    // ---- PÁGINA 4: Tarjetas de Habitaciones (con desafíos) ----
     doc.addPage();
-    drawHeader('CLUE - Investigación');
+    drawHeader('CLUE - Habitaciones');
     y = 35;
-    addText('HOJA DE INVESTIGACIÓN DEL ALUMNO', 14, 'bold', colorHex);
-    y += 5;
-    addText('Usa esta tabla para descartar los sospechosos y evidencias mientras juegas.', 9, 'normal', '#64748b');
-    y += 5;
+    addText('TARJETAS DE HABITACIONES  (recorta por la linea punteada)', 13, 'bold', colorHex);
+    y += 3;
+    addText('El docente coloca una tarjeta de evidencia boca abajo en cada habitacion. Antes de plantear su hipotesis, el equipo debe responder el desafio de la tarjeta.', 8, 'normal', '#64748b');
+    y += 6;
 
-    // Tabla
-    const rowH = 10;
-    const colW = width / 3;
+    const habW = width / 2 - 6;
+    const habH = 95;
+
+    habitacionesData.forEach((hab: any, idx: number) => {
+      const cX = margin + (idx % 2) * (habW + 12);
+      const cY = y + Math.floor(idx / 2) * (habH + 6);
+
+      drawDottedRect(cX, cY, habW, habH);
+      doc.setFillColor(240, 253, 244);
+      doc.setDrawColor(rAccent, gAccent, bAccent);
+      doc.setLineWidth(0.6);
+      doc.rect(cX + 1.5, cY + 1.5, habW - 3, habH - 3, 'FD');
+
+      // Cabecera
+      doc.setFillColor(rAccent, gAccent, bAccent);
+      doc.rect(cX + 1.5, cY + 1.5, habW - 3, 14, 'F');
+
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(255, 255, 255);
+      doc.text(hab.nombre || `Habitacion ${idx + 1}`, cX + 6, cY + 11);
+
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(255, 255, 255);
+      doc.text(`HAB. N${idx + 1}`, cX + habW - 20, cY + 11);
+
+      // Etiqueta desafio
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(rAccent, gAccent, bAccent);
+      doc.text('DESAFIO LITERARIO:', cX + 6, cY + 23);
+
+      // Texto del desafio
+      doc.setFontSize(7.5);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(30, 41, 59);
+      const desafioLines = doc.splitTextToSize(hab.desafio || 'Responde la pregunta del docente.', habW - 12);
+      desafioLines.slice(0, 6).forEach((l: string, li: number) => {
+        doc.text(l, cX + 6, cY + 30 + li * 4.5);
+      });
+
+      // Espacio de respuesta
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(rAccent, gAccent, bAccent);
+      doc.text('Respuesta del equipo:', cX + 6, cY + 61);
+      doc.setDrawColor(180, 200, 180);
+      doc.setLineWidth(0.3);
+      doc.line(cX + 6, cY + 66, cX + habW - 6, cY + 66);
+      doc.line(cX + 6, cY + 72, cX + habW - 6, cY + 72);
+
+      // Pista
+      doc.setFontSize(6.5);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(rAccent, gAccent, bAccent);
+      doc.text('PISTA (si responde bien):', cX + 6, cY + 80);
+      doc.setFont('helvetica', 'italic');
+      doc.setTextColor(51, 65, 85);
+      const pistaLines = doc.splitTextToSize(hab.pista || '', habW - 12);
+      pistaLines.slice(0, 2).forEach((l: string, li: number) => {
+        doc.text(l, cX + 6, cY + 86 + li * 4);
+      });
+    });
+
+    // ---- PÁGINA 5: Hoja de Investigación ----
+    doc.addPage();
+    drawHeader('CLUE - Investigacion');
+    y = 35;
+    addText('HOJA DE INVESTIGACION  (una por equipo)', 13, 'bold', colorHex);
+    y += 3;
+    addText('Marca con X las cartas que has visto o que te mostraron. La solucion es la carta que NADIE puede mostrar.', 8.5, 'normal', '#64748b');
+    y += 6;
+
+    // Tabla de descarte - 4 columnas: Sospechosos, Evidencias, Habitaciones, Quien mostro
+    const rowHInv = 9;
+    const col4W = [width * 0.28, width * 0.25, width * 0.23, width * 0.24];
+    const col4X = [margin, margin + col4W[0], margin + col4W[0] + col4W[1], margin + col4W[0] + col4W[1] + col4W[2]];
+    const tableH = 12 * rowHInv + rowHInv;
+
+    // Fondo tabla
+    doc.setFillColor(248, 252, 248);
     doc.setDrawColor(rAccent, gAccent, bAccent);
-    doc.rect(margin, y, width, 120);
+    doc.setLineWidth(0.5);
+    doc.rect(margin, y, width, tableH, 'FD');
 
-    // Headers
-    doc.line(margin, y + rowH, margin + width, y + rowH);
+    // Header row
+    doc.setFillColor(rAccent, gAccent, bAccent);
+    doc.rect(margin, y, width, rowHInv, 'F');
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9);
-    doc.setTextColor(rAccent, gAccent, bAccent);
-    doc.text("SOSPECHOSOS", margin + 5, y + 7);
-    doc.text("EVIDENCIAS", margin + colW + 5, y + 7);
-    doc.text("HABITACIONES", margin + 2 * colW + 5, y + 7);
+    doc.setFontSize(7.5);
+    doc.setTextColor(255, 255, 255);
+    ['SOSPECHOSOS', 'EVIDENCIAS', 'HABITACIONES', 'QUIEN LO MOSTRO?'].forEach((h, hi) => {
+      doc.text(h, col4X[hi] + 3, y + 6.5);
+    });
 
-    // Dividers verticales
-    doc.line(margin + colW, y, margin + colW, y + 120);
-    doc.line(margin + 2 * colW, y, margin + 2 * colW, y + 120);
+    // Divisores verticales
+    doc.setDrawColor(rAccent, gAccent, bAccent);
+    doc.setLineWidth(0.3);
+    col4X.slice(1).forEach(cx => {
+      doc.line(cx, y, cx, y + tableH);
+    });
 
-    // Rellenar filas vacías de descarte
+    // Filas de datos
     doc.setFont('helvetica', 'normal');
-    doc.setTextColor(100, 116, 139);
-    for (let i = 1; i < 11; i++) {
-      doc.line(margin, y + i * rowH + rowH, margin + width, y + i * rowH + rowH);
-      // Escribir datos
-      const sName = personajes[i - 1]?.nombre || '';
-      const eName = evidencias[i - 1]?.nombre || '';
-      const rName = rooms[i - 1] || '';
+    doc.setFontSize(7.5);
+    const maxRows = Math.max(personajes.length, evidencias.length, rooms.length, 6);
+    for (let i = 0; i < maxRows; i++) {
+      const rowY = y + rowHInv + i * rowHInv;
+      doc.setDrawColor(200, 220, 200);
+      doc.setLineWidth(0.2);
+      doc.line(margin, rowY + rowHInv, margin + width, rowY + rowHInv);
 
-      doc.text(sName ? `[  ] ${sName}` : '', margin + 5, y + i * rowH + 7);
-      doc.text(eName ? `[  ] ${eName}` : '', margin + colW + 5, y + i * rowH + 7);
-      doc.text(rName ? `[  ] ${rName}` : '', margin + 2 * colW + 5, y + i * rowH + 7);
+      doc.setTextColor(71, 85, 105);
+      const sName = personajes[i]?.nombre || '';
+      const eName = evidencias[i]?.nombre || '';
+      const rName = rooms[i] || '';
+
+      if (sName) doc.text(`[ ] ${sName}`, col4X[0] + 3, rowY + 6.5);
+      if (eName) {
+        const eLines = doc.splitTextToSize(`[ ] ${eName}`, col4W[1] - 6);
+        doc.text(eLines[0], col4X[1] + 3, rowY + 6.5);
+      }
+      if (rName) doc.text(`[ ] ${rName}`, col4X[2] + 3, rowY + 6.5);
+      // Linea para quien mostro
+      doc.setDrawColor(180, 200, 180);
+      doc.setLineWidth(0.2);
+      doc.line(col4X[3] + 3, rowY + 7, col4X[3] + col4W[3] - 4, rowY + 7);
     }
 
-    y += 130;
-    addText('🕵️ ACUSACIÓN FINAL:', 11, 'bold', colorHex);
+    y += tableH + 10;
+
+    // Acusación final mejorada
+    addText('ACUSACION FINAL  (completa cuando estes listo/a para acusar)', 10, 'bold', colorHex);
+    y += 3;
+
+    doc.setFillColor(240, 253, 244);
+    doc.setDrawColor(rAccent, gAccent, bAccent);
+    doc.setLineWidth(0.5);
+    doc.rect(margin, y, width, 50, 'FD');
+
+    doc.setFontSize(8);
+    // Etiqueta dinámica según tipo_misterio del juego
+    const etiquetaHip = juego.etiqueta_hipotesis || 'Hipotesis:';
+    const etiquetaSos = juego.etiqueta_sospechosos || 'El elemento';
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(rAccent, gAccent, bAccent);
+    doc.text(`${etiquetaHip}:`, margin + 5, y + 10);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(51, 65, 85);
+    doc.text(etiquetaSos, margin + 5, y + 17);
+    doc.line(margin + 5 + doc.getTextWidth(etiquetaSos) + 2, y + 18, margin + 90, y + 18);
+    doc.text(', evidencia:', margin + 91, y + 17);
+    doc.line(margin + 115, y + 18, margin + width - 5, y + 18);
+
+    doc.text('Habitacion:', margin + 5, y + 25);
+    doc.line(margin + 32, y + 26, margin + 90, y + 26);
+    doc.text('¿Como se relaciona?', margin + 91, y + 25);
+    doc.line(margin + 130, y + 26, margin + width - 5, y + 26);
+
+    doc.line(margin + 5, y + 33, margin + width - 5, y + 33);
+
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(rAccent, gAccent, bAccent);
+    doc.text('Fundamento 1 (cita, dato o episodio del material):', margin + 5, y + 40);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(51, 65, 85);
+    doc.line(margin + 5, y + 47, margin + width - 5, y + 47);
+
+    y += 55;
+    doc.setFillColor(248, 252, 248);
+    doc.rect(margin, y, width, 25, 'FD');
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(rAccent, gAccent, bAccent);
+    doc.text('Fundamento 2:', margin + 5, y + 8);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(51, 65, 85);
+    doc.line(margin + 5, y + 14, margin + width - 5, y + 14);
+    doc.text('¿Como el material revisado apoya tu conclusion?', margin + 5, y + 21);
+    doc.line(margin + 100, y + 21, margin + width - 5, y + 21);
+
+    // ---- PÁGINA 6: Reglas ----
+    doc.addPage();
+    drawHeader('CLUE - Reglas del Juego');
+    y = 35;
+    addText('INSTRUCCIONES COMPLETAS', 13, 'bold', colorHex);
+    y += 5;
+
+    // Materiales
+    addText('MATERIALES NECESARIOS', 10, 'bold', colorHex);
     y += 2;
-    addText('Culpable: __________________  Evidencia: __________________  Lugar: __________________', 10, 'normal', '#334155');
+    const materiales = [
+      '1 dado de 6 caras (no incluido, aportado por el docente)',
+      '1 ficha de color por equipo: rojo, azul, verde y naranja (monedas, botones u objetos similares)',
+      '1 sobre de papel para guardar la solucion docente (sellado antes de la partida)',
+      'Hojas de investigacion impresas (1 por equipo)',
+      'Tijeras para recortar las tarjetas de sospechosos, evidencias y habitaciones',
+    ];
+    materiales.forEach(m => {
+      doc.setFontSize(8.5);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(51, 65, 85);
+      const mLines = doc.splitTextToSize(`- ${m}`, width - 5);
+      mLines.forEach((l: string) => {
+        doc.text(l, margin + 3, y);
+        y += 4.5;
+      });
+    });
 
-    // ---- PÁGINA 5: Reglas ----
+    y += 4;
+    addText('CUANTOS JUGADORES: 2 a 4 equipos de 2 a 3 alumnos cada uno.', 9, 'normal', '#334155');
+    addText('DURACION: 45 o 90 minutos segun la configuracion elegida.', 9, 'normal', '#334155');
+
+    y += 4;
+    addText('PREPARACION (hace el docente antes de clase)', 10, 'bold', colorHex);
+    y += 2;
+    const prepSteps = [
+      'Imprime y recorta todas las tarjetas: 4 sospechosos, 6 evidencias y 6 habitaciones.',
+      'Escoge al azar 1 tarjeta de sospechoso, 1 de evidencia y 1 de habitacion. Colocalas dentro del sobre sellado sin que nadie las vea. Esa es la solucion.',
+      'Coloca las tarjetas de habitaciones sobre el tablero, una por habitacion, boca arriba (lado desafio visible).',
+      'Reparte TODAS las tarjetas restantes (sospechosos + evidencias) de forma equitativa entre los equipos. Cada equipo las guarda en secreto.',
+      'Cada equipo coloca su ficha en la habitacion inicial indicada en la tarjeta del sospechoso que mas tiene.',
+    ];
+    prepSteps.forEach((s, si) => {
+      doc.setFontSize(8.5);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(51, 65, 85);
+      const sLines = doc.splitTextToSize(`${si + 1}. ${s}`, width - 5);
+      sLines.forEach((l: string) => {
+        doc.text(l, margin + 3, y);
+        y += 4.5;
+      });
+    });
+
+    y += 4;
+    addText('DESARROLLO DE UN TURNO', 10, 'bold', colorHex);
+    y += 2;
+    const turnSteps = [
+      'El equipo en turno lanza el dado y mueve su ficha ese numero de pasos (pasillos o entradas).',
+      'Si el equipo entra a una habitacion, DEBE responder el desafio literario de esa tarjeta.',
+      'Si responde correctamente, recibe la pista de la habitacion y puede hacer una sugerencia: nombra un sospechoso, una evidencia y esa habitacion.',
+      'El equipo a la izquierda revisa si tiene alguna de las 3 cartas nombradas. Si tiene alguna, muestra en secreto UNA sola al equipo que pregunta. El equipo que pregunta marca esa carta como descartada en su hoja.',
+      'Si nadie puede mostrar ninguna carta, todos lo saben y eso es informacion valiosa.',
+      'El turno pasa al siguiente equipo a la izquierda.',
+    ];
+    turnSteps.forEach((s, si) => {
+      doc.setFontSize(8.5);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(51, 65, 85);
+      const sLines = doc.splitTextToSize(`${si + 1}. ${s}`, width - 5);
+      sLines.forEach((l: string) => {
+        doc.text(l, margin + 3, y);
+        y += 4.5;
+      });
+    });
+
+    y += 4;
+    addText('ACUSACION FINAL Y VICTORIA', 10, 'bold', colorHex);
+    y += 2;
+    const victSteps = [
+      'Cuando un equipo cree saber la solucion, puede hacer una acusacion final EN CUALQUIER TURNO (no necesita estar en una habitacion).',
+      'La acusacion final incluye: sospechoso + evidencia + habitacion + una hipotesis escrita en la hoja de investigacion (con 2 fundamentos textuales).',
+      'El docente abre el sobre en secreto y verifica. Si es correcta: ese equipo gana.',
+      'Si la acusacion es incorrecta: ese equipo ya no puede acusar de nuevo, pero sigue jugando y mostrando cartas a otros equipos. El juego continua.',
+      'Si ningún equipo acierta, el docente revela la solucion y se discute en plenario.',
+    ];
+    victSteps.forEach((s, si) => {
+      doc.setFontSize(8.5);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(51, 65, 85);
+      const sLines = doc.splitTextToSize(`${si + 1}. ${s}`, width - 5);
+      sLines.forEach((l: string) => {
+        doc.text(l, margin + 3, y);
+        y += 4.5;
+      });
+    });
+
+    // Ejemplo de turno
+    y += 4;
+    doc.setFillColor(240, 253, 244);
+    doc.setDrawColor(rAccent, gAccent, bAccent);
+    doc.setLineWidth(0.4);
+    const ejY = y;
+    doc.rect(margin, ejY, width, 28, 'FD');
+    doc.setFontSize(8.5);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(rAccent, gAccent, bAccent);
+    doc.text('EJEMPLO DE TURNO:', margin + 5, ejY + 8);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(51, 65, 85);
+    const ejHab = rooms[0] || 'Habitacion 1';
+    const ejSos = personajes[0]?.nombre || 'Sospechoso 1';
+    const ejEv = evidencias[2]?.nombre || 'Evidencia 3';
+    const ejTexto = `El Equipo Rojo lanza el dado y saca 4. Mueve su ficha 4 pasos y entra a ${ejHab}. Lee el desafio de la tarjeta y el equipo debate la respuesta. Recibe la pista. Luego dice: "Sugerimos a ${ejSos}, con ${ejEv}, en ${ejHab}". El equipo a la izquierda revisa sus cartas: tiene "${ejEv}", la muestra en secreto al Equipo Rojo. El Equipo Rojo marca "${ejEv}" como descartada en su hoja de investigacion.`;
+    const ejLines = doc.splitTextToSize(ejTexto, width - 12);
+    ejLines.forEach((l: string, li: number) => {
+      doc.text(l, margin + 5, ejY + 14 + li * 4.5);
+    });
+
+    // ---- PÁGINA 7: Guía Docente / Sobre de Solución ----
     doc.addPage();
-    drawHeader('CLUE - Reglas');
+    drawHeader('CLUE - Guia Docente', true);
     y = 35;
-    addText('INSTRUCCIONES DE JUEGO', 14, 'bold', colorHex);
-    y += 8;
-    addText('1. Preparación: El docente recorta el Sobre de Solución e introduce en él el Culpable, Lugar y Evidencia correctos. Las demás cartas se reparten entre los equipos.', 9.5, 'normal', '#334155');
-    addText('2. Cómo jugar: Los alumnos lanzan el dado para moverse entre las habitaciones de la mansión.', 9.5, 'normal', '#334155');
-    addText('3. Sugerencia/Acusación: Al entrar a una habitación, el equipo hace una hipótesis pedagógica (ej. "Yo acuso al sospechoso X con la evidencia Y en esta sala").', 9.5, 'normal', '#334155');
-    addText('4. Descarte: El equipo a la izquierda debe refutar mostrando en secreto una de las cartas nombradas si la tiene.', 9.5, 'normal', '#334155');
-    addText('5. Victoria: El primer equipo en deducir las 3 cartas ocultas en el sobre docente gana.', 9.5, 'normal', '#334155');
+    addText('GUIA DOCENTE  (USO EXCLUSIVO - NO DISTRIBUIR)', 13, 'bold', '#dc2626');
+    y += 5;
 
-    // ---- PÁGINA 6: Solución (Docente) ----
-    doc.addPage();
-    drawHeader('CLUE - Solución', true);
-    y = 35;
-    addText('SOBRE DE SOLUCIÓN (CONFIDENCIAL)', 14, 'bold', '#dc2626');
-    y += 10;
+    // Sobre de solucion
+    doc.setFillColor(254, 242, 242);
+    doc.setDrawColor(220, 38, 38);
+    doc.setLineWidth(0.7);
+    doc.rect(margin, y, width, 35, 'FD');
+    addText('SOBRE DE SOLUCION', 11, 'bold', '#dc2626');
+    y += 4;
+    addText(`Hipotesis pedagogica central: ${sol.hipotesis_central || sol.culpable || 'Sin definir'}`, 10, 'bold', '#1e293b');
+    addText(`Habitacion: ${sol.habitacion || 'Sin definir'}`, 10, 'bold', '#1e293b');
+    addText(`Evidencia: ${sol.evidencia || 'Sin definir'}`, 10, 'bold', '#1e293b');
+    y += 4;
 
-    const sol = juego.solucion || {};
-    addText(`Culpable del Misterio: ${sol.culpable || 'Sin definir'}`, 11, 'bold', '#1e293b');
-    addText(`Lugar del Crimen: ${sol.habitacion || 'Sin definir'}`, 11, 'bold', '#1e293b');
-    addText(`Evidencia Clave: ${sol.evidencia || 'Sin definir'}`, 11, 'bold', '#1e293b');
-    y += 10;
-    addText('Explicación y Pauta del Docente:', 10.5, 'bold', '#dc2626');
-    addText(sol.explicacion_docente || 'Explicación detallada.', 9.5, 'normal', '#334155');
+    // Rol del personaje
+    addText('ROL DEL SOSPECHOSO EN LA LECTURA DE CASTEL:', 9.5, 'bold', '#dc2626');
+    addText(sol.justificacion_hipotesis || sol.rol_del_personaje || sol.explicacion_docente || '', 9, 'normal', '#334155');
+    y += 3;
+
+    // Hipotesis alternativas
+    if (sol.hipotesis_alternativas) {
+      addText('HIPOTESIS ALTERNATIVAS VALIDAS:', 9.5, 'bold', '#dc2626');
+      addText(sol.hipotesis_alternativas, 9, 'normal', '#334155');
+      y += 3;
+    }
+
+    // Explicacion pedagogica
+    addText('EXPLICACION PEDAGOGICA (segun OA seleccionados):', 9.5, 'bold', '#dc2626');
+    addText(sol.explicacion_docente || '', 9, 'normal', '#334155');
+    y += 5;
+
+    // Rubrica
+    // OA en guía docente (antes de la rúbrica)
+    const oaListDoc = Array.isArray(juego.objetivos_aprendizaje) ? juego.objetivos_aprendizaje : [];
+    if (oaListDoc.length > 0) {
+      addText('OBJETIVOS DE APRENDIZAJE VINCULADOS:', 9.5, 'bold', '#dc2626');
+      y += 2;
+      oaListDoc.forEach((oa: any) => {
+        const origenLabel = oa.origen === 'sugerido_ia' ? ' [OA sugerido por IA — verificar]'
+          : oa.origen === 'planificacion' ? ' [de planificacion]'
+          : oa.origen === 'seleccion_docente' ? ' [seleccionado por docente]'
+          : '';
+        doc.setFontSize(8.5);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(30, 41, 59);
+        doc.text(`${oa.codigo}${origenLabel}`, margin + 5, y);
+        y += 5;
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(71, 85, 105);
+        const dLines = doc.splitTextToSize(oa.descripcion || '', width - 10);
+        dLines.forEach((l: string) => { doc.text(l, margin + 8, y); y += 4.2; });
+        y += 2;
+      });
+      y += 4;
+    }
+
+    if (sol.rubrica) {
+      addText('RUBRICA DE EVALUACION', 10, 'bold', colorHex);
+      y += 2;
+
+      const rubRects: Array<{ nivel: string; desc: string; color: [number, number, number] }> = [
+        { nivel: 'NIVEL 3 — Logrado', desc: sol.rubrica.nivel3 || '', color: [22, 101, 52] },
+        { nivel: 'NIVEL 2 — En proceso', desc: sol.rubrica.nivel2 || '', color: [146, 64, 14] },
+        { nivel: 'NIVEL 1 — Inicial', desc: sol.rubrica.nivel1 || '', color: [185, 28, 28] },
+      ];
+
+      rubRects.forEach(rr => {
+        const rrY = y;
+        doc.setFillColor(248, 252, 248);
+        doc.setDrawColor(rr.color[0], rr.color[1], rr.color[2]);
+        doc.setLineWidth(0.4);
+        const descLines2 = doc.splitTextToSize(rr.desc, width - 40);
+        const rrH = 10 + descLines2.length * 4.5;
+        doc.rect(margin, rrY, width, rrH, 'FD');
+
+        doc.setFontSize(8.5);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(rr.color[0], rr.color[1], rr.color[2]);
+        doc.text(rr.nivel, margin + 5, rrY + 8);
+
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(51, 65, 85);
+        descLines2.forEach((l: string, li: number) => {
+          doc.text(l, margin + 38, rrY + 8 + li * 4.5);
+        });
+        y += rrH + 3;
+      });
+    }
 
   } else if (motorId === 'serpiente_escaleras') {
     const width = getPageWidth();
