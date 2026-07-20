@@ -547,7 +547,8 @@ export default function DashboardPage() {
             )}
           </main>
 
-          {/* ── PANEL DERECHO ── */}
+          {/* ── PANEL DERECHO — solo en Biblioteca ── */}
+          {currentTab === 'biblioteca' && (
           <aside className="w-full xl:w-76 bg-white p-6 space-y-6 shrink-0" style={{ borderLeft: '1px solid #E5E7EB' }}>
 
             {/* Actividad Reciente */}
@@ -641,6 +642,7 @@ export default function DashboardPage() {
             </div>
 
           </aside>
+          )}
         </div>
       </div>
     </div>
