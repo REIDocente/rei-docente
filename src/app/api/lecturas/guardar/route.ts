@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { createClient } from '@supabase/supabase-js';
 
+export const maxDuration = 60;
+
 function makeSupabaseClient(token: string) {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

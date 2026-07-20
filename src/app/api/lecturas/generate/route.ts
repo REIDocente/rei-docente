@@ -3,6 +3,8 @@ import Anthropic from '@anthropic-ai/sdk';
 import { createClient } from '@supabase/supabase-js';
 import { checkTrialLimit, incrementCounter } from '@/lib/trialGuard';
 
+export const maxDuration = 60;
+
 // Import templates
 import { PLANNING_TEMPLATE } from '@/lib/templates/reading/planningTemplate';
 import { GUIDE_TEMPLATE } from '@/lib/templates/reading/guideTemplate';
