@@ -14,7 +14,13 @@ export async function GET(req: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
 
+  // Normalizar: quitar acentos para búsqueda flexible
+  function normalize(str: string) {
+    return str.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+  }
+
   try {
+    // Traer todos los libros que contengan alguna palabra del título buscado
     const { data: libros, error } = await supabase
       .from('biblioteca_libros')
       .select('*')
@@ -24,6 +30,19 @@ export async function GET(req: NextRequest) {
 
     if (libros && libros.length > 0) {
       return NextResponse.json({ encontrado: true, libro: libros[0] });
+    }
+
+    // Segunda búsqueda: normalizar acentos comparando en memoria
+    const { data: todos } = await supabase
+      .from('biblioteca_libros')
+      .select('*');
+
+    if (todos) {
+      const normalInput = normalize(titulo);
+      const match = todos.find((l: any) =>
+        normalize(l.titulo).includes(normalInput) || normalInput.includes(normalize(l.titulo))
+      );
+      if (match) return NextResponse.json({ encontrado: true, libro: match });
     }
 
     return NextResponse.json({ encontrado: false });
