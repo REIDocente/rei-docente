@@ -49,24 +49,6 @@ export async function POST(req: NextRequest) {
     userId = userData.user.id;
   }
 
-  // ── Guard Check ──
-  const guard = await checkTrialLimit(supabase, userId, 'lecturas_generated');
-  if (guard.blocked) {
-    const isActive = guard.profile?.plan_status === 'active';
-    return NextResponse.json(
-      {
-        error: 'limite_alcanzado',
-        reason: guard.reason,
-        tipo: 'lecturas_generated',
-        limit: isActive ? 999999 : 3,
-        current: guard.profile?.lecturas_generated ?? 0,
-        plan_status: guard.profile?.plan_status,
-        renewal_date: guard.renewalDate,
-      },
-      { status: 403 }
-    );
-  }
-
   let body: any;
   try {
     body = await req.json();
@@ -78,6 +60,59 @@ export async function POST(req: NextRequest) {
 
   if (!libro_id) return NextResponse.json({ error: 'El campo "libro_id" es obligatorio' }, { status: 400 });
   if (!tipo) return NextResponse.json({ error: 'El campo "tipo" es obligatorio' }, { status: 400 });
+
+  // ── Block Experiencias REI during Pilot ──
+  if (tipo === 'experiencia') {
+    return NextResponse.json(
+      {
+        error: 'limite_alcanzado',
+        message: 'Alcanzaste el límite del plan piloto. Has utilizado todas las generaciones disponibles para este módulo.',
+        reason: 'limit_reached',
+        tipo: 'experiencias_rei_count',
+        limit: 0,
+        current: 0,
+      },
+      { status: 403 }
+    );
+  }
+
+  // ── Guard Check for Lecturas ──
+  const { data: existingRows, error: fetchErr } = await supabase
+    .from('lecturas_docente')
+    .select('libro_id, recursos_generados')
+    .eq('user_id', userId);
+
+  if (fetchErr) {
+    return NextResponse.json({ error: 'Error al verificar límites' }, { status: 500 });
+  }
+
+  const booksWithResources = (existingRows || []).filter(row => {
+    const recs = row.recursos_generados;
+    return recs && typeof recs === 'object' && Object.keys(recs).length > 0;
+  });
+
+  const uniqueBooksCount = booksWithResources.length;
+  const isThisBookAlreadyStarted = booksWithResources.some(row => row.libro_id === libro_id);
+
+  if (!isThisBookAlreadyStarted) {
+    const guard = await checkTrialLimit(supabase, userId, 'lecturas_generated');
+    if (guard.blocked) {
+      const isActive = guard.profile?.plan_status === 'active';
+      return NextResponse.json(
+        {
+          error: 'limite_alcanzado',
+          message: 'Alcanzaste el límite del plan piloto. Has utilizado todas las generaciones disponibles para este módulo.',
+          reason: guard.reason,
+          tipo: 'lecturas_generated',
+          limit: isActive ? 999999 : 1,
+          current: uniqueBooksCount,
+          plan_status: guard.profile?.plan_status,
+          renewal_date: guard.renewalDate,
+        },
+        { status: 403 }
+      );
+    }
+  }
 
   // ── Cargar expediente de biblioteca_libros ──
   const { data: libro, error: libroErr } = await supabase
@@ -286,7 +321,9 @@ Responde SIEMPRE con el contenido completo de la plantilla hasta el final, inclu
     }
 
     // Incrementar contador de uso
-    await incrementCounter(supabase, userId, 'lecturas_generated');
+    if (!isThisBookAlreadyStarted) {
+      await incrementCounter(supabase, userId, 'lecturas_generated');
+    }
 
     return NextResponse.json({ content: generatedContent });
 

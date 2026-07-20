@@ -1480,9 +1480,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           error: 'limite_alcanzado',
+          message: 'Alcanzaste el límite del plan piloto. Has utilizado todas las generaciones disponibles para este módulo.',
           reason: guard.reason,
           tipo: 'evaluations_generated',
-          limit: isActive ? 12 : 6,
+          limit: isActive ? 12 : 5,
           current: guard.profile?.evaluations_generated ?? 0,
           plan_status: guard.profile?.plan_status,
           renewal_date: guard.renewalDate,

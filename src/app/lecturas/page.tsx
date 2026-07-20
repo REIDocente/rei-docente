@@ -475,7 +475,10 @@ export default function LecturasPage() {
       // Persistir en DB (fire-and-forget)
       persistirRecurso(key, nuevoRecurso);
     } catch (e: any) {
-      setModalError(e.message);
+      const msg = e.message === 'limite_alcanzado'
+        ? 'Alcanzaste el límite del plan piloto. Has utilizado todas las generaciones disponibles para este módulo.'
+        : e.message;
+      setModalError(msg);
     } finally {
       setGeneratingModal(false);
     }
@@ -541,7 +544,12 @@ export default function LecturasPage() {
           // Persistir en DB (fire-and-forget)
           persistirRecurso(key, nuevoRecurso);
           setKitProgreso((prev: string[]) => [...prev.slice(0, -1), `✅ ${item.label}`]);
-        } else { setKitProgreso((prev: string[]) => [...prev.slice(0, -1), `❌ Error en ${item.label}`]); }
+        } else {
+          const errMsg = data.error === 'limite_alcanzado'
+            ? 'Límite del plan piloto alcanzado'
+            : (data.error || 'Error');
+          setKitProgreso((prev: string[]) => [...prev.slice(0, -1), `❌ ${item.label}: ${errMsg}`]);
+        }
       } catch { setKitProgreso((prev: string[]) => [...prev.slice(0, -1), `❌ Error en ${item.label}`]); }
     }
     if (kitSeleccionado.play) {

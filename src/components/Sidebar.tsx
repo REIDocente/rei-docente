@@ -31,6 +31,7 @@ export default function Sidebar({ sidebarOpen = false, setSidebarOpen }: Sidebar
   const [initials, setInitials] = useState('U');
   const [userName, setUserName] = useState('Docente');
   const [loading, setLoading] = useState(true);
+  const [profileData, setProfileData] = useState<any>(null);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -44,6 +45,15 @@ export default function Sidebar({ sidebarOpen = false, setSidebarOpen }: Sidebar
             : (email ? email[0].toUpperCase() : 'U');
           setInitials(initLetters);
           setUserName(fullName || email.split('@')[0]);
+
+          const { data: profile } = await supabase
+            .from('user_profiles')
+            .select('*')
+            .eq('id', user.id)
+            .maybeSingle();
+          if (profile) {
+            setProfileData(profile);
+          }
         }
       } catch (err) {
         console.warn('Error fetching user for sidebar:', err);
@@ -167,6 +177,31 @@ export default function Sidebar({ sidebarOpen = false, setSidebarOpen }: Sidebar
             </nav>
           </div>
         </div>
+
+        {/* LÍMITES PLAN PILOTO */}
+        {profileData && profileData.plan_status === 'trial' && (
+          <div className="p-3 bg-violet-50/50 border border-violet-100/50 rounded-2xl space-y-2 mt-4">
+            <span className="text-[9px] font-black uppercase tracking-wider text-violet-700 block">Límites Plan Piloto</span>
+            <div className="space-y-1.5 text-[10px] font-bold text-slate-600">
+              <div className="flex justify-between">
+                <span>Planificaciones:</span>
+                <span className="text-slate-800">{profileData.planifications_generated} de 5</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Evaluaciones:</span>
+                <span className="text-slate-800">{profileData.evaluations_generated} de 5</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Guías:</span>
+                <span className="text-slate-800">{profileData.guides_generated} de 5</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Lectura domic.:</span>
+                <span className="text-slate-800">{profileData.lecturas_generated} de 1</span>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Perfil del Docente & Logout */}
         <div className="space-y-4 pt-4 border-t border-slate-100/80">

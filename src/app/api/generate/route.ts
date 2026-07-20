@@ -476,14 +476,14 @@ export async function POST(req: NextRequest) {
             ? 'Tu período de prueba gratuita ha expirado (duración de 1 semana). Contacta a la administradora para renovar tu acceso.'
             : isActive
             ? 'Has alcanzado tu cupo mensual de 24 planificaciones.'
-            : 'Has alcanzado el límite de 10 planificaciones de tu período de prueba. Contacta a la administradora si necesitas más.';
+            : 'Alcanzaste el límite del plan piloto. Has utilizado todas las generaciones disponibles para este módulo.';
           return NextResponse.json(
             {
               error: 'limite_alcanzado',
               message: errorMsg,
               reason: guard.reason,
               tipo: 'planifications_generated',
-              limit: isActive ? 24 : 10,
+              limit: isActive ? 24 : 5,
               current: guard.profile?.planifications_generated ?? 0,
               plan_status: guard.profile?.plan_status,
               renewal_date: guard.renewalDate,

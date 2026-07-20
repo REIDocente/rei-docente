@@ -17,7 +17,8 @@ export function drawPlayWord({
   nivel = ''
 }: ExportPlayWordParams): Document {
   const engine = gameEngines.find(e => e.id === motorId);
-  const sections: any[] = [];
+  const studentParagraphs: any[] = [];
+  const teacherParagraphs: any[] = [];
 
   const h1 = (text: string, color = '1E3A5F') => new Paragraph({
     text,
@@ -40,174 +41,153 @@ export function drawPlayWord({
 
   const gap = () => new Paragraph({ text: '', spacing: { after: 120 } });
 
-  // 1. ENCABEZADO INSTITUCIONAL
-  sections.push(h1(`REI PLAY · JUEGO PEDAGOGICO: ${engine?.nombre || 'Juego'}`));
-  sections.push(bodyPara(`Establecimiento: ${establecimiento}${nivel ? ` | Nivel: ${nivel}` : ''}`));
-  sections.push(bodyPara(`Docente Responsable: ${docenteNombre}`));
-  sections.push(gap());
-
-  // ── SECCIÓN DEL ALUMNO ──
-  sections.push(h2('=== SECCIÓN DEL ESTUDIANTE ===', '0F766E'));
-  sections.push(gap());
+  // ── SECCIÓN DEL ESTUDIANTE (KIT DEL ESTUDIANTE) ──
+  const caseTitle = juego.nombre_caso || engine?.nombre || 'Juego Pedagógico';
+  studentParagraphs.push(h1(`REI PLAY · ${caseTitle.toUpperCase()}`, '1E3A5F'));
+  studentParagraphs.push(bodyPara(`Establecimiento: ${establecimiento}${nivel ? ` | Nivel: ${nivel}` : ''}`));
+  studentParagraphs.push(bodyPara(`Docente Responsable: ${docenteNombre}`));
+  studentParagraphs.push(gap());
 
   if (motorId === 'detective') {
     const oaListDetW = Array.isArray(juego.objetivos_aprendizaje) ? juego.objetivos_aprendizaje : [];
     const estacionesW = Array.isArray(juego.estaciones) ? juego.estaciones : [];
 
-    sections.push(h1(juego.nombre_caso || 'Expediente sin Titulo', '1E3A5F'));
-    sections.push(bodyPara('DETECTIVE REI · EXPEDIENTE DE INVESTIGACION POR ESTACIONES', true, '64748b'));
-    sections.push(gap());
+    studentParagraphs.push(bodyPara('DETECTIVE REI · EXPEDIENTE DE INVESTIGACIÓN POR ESTACIONES', true, '64748b'));
+    studentParagraphs.push(gap());
 
     if (juego.nota_metodologica) {
-      sections.push(bodyPara(`Nota: ${juego.nota_metodologica}`, false, '92400e'));
-      sections.push(gap());
+      studentParagraphs.push(bodyPara(`Nota: ${juego.nota_metodologica}`, false, '92400e'));
+      studentParagraphs.push(gap());
     }
 
-    // Ficha
-    sections.push(bodyPara('Investigador(a): ____________________________________________________', true));
-    sections.push(bodyPara(`Equipo N°: _______   Nivel: ${nivel || ''}   Fecha: _____ / _____ / 2026`));
-    sections.push(bodyPara('Roles: Lector/a  |  Analista  |  Secretario/a  |  Encargado/a de pistas  |  Portavoz', true, '1E3A5F'));
-    sections.push(gap());
+    studentParagraphs.push(bodyPara('Investigador(a): ____________________________________________________', true));
+    studentParagraphs.push(bodyPara(`Organización: 6 equipos de 6 a 8 estudiantes (40-45 alumnos) | Equipo N°: _______ | Fecha: _____ / _____ / 2026`));
+    studentParagraphs.push(bodyPara('Roles: Lector/a | Analista | Secretario/a | Encargado/a de pistas | Portavoz | Guardián del tiempo (opcional) | Encargado/a del código (opcional) | Moderador/a (opcional)', true, '1E3A5F'));
+    studentParagraphs.push(gap());
 
-    // OA
     if (oaListDetW.length > 0) {
-      sections.push(h2('Objetivos de Aprendizaje Vinculados'));
+      studentParagraphs.push(h2('Objetivos de Aprendizaje Vinculados (Síntesis)'));
       oaListDetW.forEach((oa: any) => {
-        const origenLblW = oa.origen === 'sugerido_ia' ? ' [OA sugerido — verificar]' : oa.origen === 'planificacion' ? ' [de planificacion]' : ' [seleccionado]';
-        sections.push(bodyPara(`${oa.codigo}${origenLblW}:`, true, '1E3A5F'));
-        sections.push(bodyPara(oa.descripcion || ''));
-        sections.push(gap());
+        const desc = oa.descripcion || '';
+        const sintesis = desc.length > 110 ? desc.slice(0, 107) + '...' : desc;
+        studentParagraphs.push(bodyPara(`${oa.codigo}: ${sintesis}`, false, '334155'));
       });
+      studentParagraphs.push(gap());
     }
 
-    // Objetivo y contexto
-    sections.push(h2('Objetivo de la Investigacion'));
-    sections.push(bodyPara(juego.objetivo_investigacion || '', true));
-    sections.push(gap());
+    studentParagraphs.push(h2('Objetivo de la Investigación'));
+    studentParagraphs.push(juego.objetivo_investigacion ? bodyPara(juego.objetivo_investigacion, true) : bodyPara('El equipo debe construir una hipótesis fundamentada sobre el tema central.', true));
+    studentParagraphs.push(gap());
 
-    sections.push(h2('Contexto del Caso'));
-    sections.push(bodyPara(juego.contexto_narrativo || ''));
-    sections.push(gap());
+    studentParagraphs.push(h2('Contexto del Caso'));
+    studentParagraphs.push(bodyPara(juego.contexto_narrativo || ''));
+    studentParagraphs.push(gap());
 
-    // Registro de codigos
-    sections.push(h2('Registro de Codigos por Estacion'));
-    sections.push(bodyPara('Anota la letra-codigo desbloqueada en cada estacion:'));
-    sections.push(bodyPara('Est. 1: [ _ ]   Est. 2: [ _ ]   Est. 3: [ _ ]   Est. 4: [ _ ]   Est. 5: [ _ ]   Est. 6: [ _ ]'));
-    sections.push(bodyPara('Codigo final formado: ___________________________', true));
-    sections.push(gap());
+    studentParagraphs.push(h2('Registro de Códigos por Estación'));
+    studentParagraphs.push(bodyPara('Anota la letra-código desbloqueada en cada estación:'));
+    studentParagraphs.push(bodyPara('Est. 1: [   ]   Est. 2: [   ]   Est. 3: [   ]   Est. 4: [   ]   Est. 5: [   ]   Est. 6: [   ]'));
+    studentParagraphs.push(bodyPara('Código final formado: ___________________________', true));
+    studentParagraphs.push(gap());
 
-    // Estaciones
     estacionesW.forEach((est: any, idx: number) => {
       const pista = est.pista || {};
       const tipoEv = pista.tipo_evidencia || 'recreacion_pedagogica';
-      const tipoLabel = tipoEv === 'cita_textual' ? 'Cita textual' : tipoEv === 'parafrasis' ? 'Parafrasis' : 'Recreacion pedagogica';
+      const tipoLabel = tipoEv === 'cita_textual' ? 'Cita textual' : tipoEv === 'parafrasis' ? 'Paráfrasis' : 'Recreación pedagógica';
       const fuente = pista.fuente || {};
       const contenido = pista.contenido || '';
       const textoPista = tipoEv === 'cita_textual' ? `"${contenido}"` : contenido;
 
-      sections.push(h2(`Estacion ${idx + 1}: ${est.nombre || ''}`));
-      sections.push(bodyPara(`OA trabajado: ${est.oa_vinculado || ''}  |  Duracion: 6-8 minutos`, false, '64748b'));
-      sections.push(gap());
+      studentParagraphs.push(h2(`Estación ${idx + 1}: ${est.nombre || ''}`));
+      studentParagraphs.push(bodyPara(`OA trabajado: ${est.oa_vinculado || ''} | Duración: 6-8 minutos`, false, '64748b'));
+      studentParagraphs.push(gap());
 
-      sections.push(bodyPara(`PISTA [${tipoLabel}]:`, true, '1E3A5F'));
-      sections.push(bodyPara(textoPista));
+      studentParagraphs.push(bodyPara(`PISTA [${tipoLabel}]:`, true, '1E3A5F'));
+      studentParagraphs.push(bodyPara(textoPista));
 
       if (tipoEv === 'cita_textual' && (fuente.obra || fuente.capitulo)) {
         const fStr = [fuente.obra, fuente.autor, fuente.capitulo ? `Cap. ${fuente.capitulo}` : '', fuente.pagina ? `p. ${fuente.pagina}` : ''].filter(Boolean).join(' - ');
-        sections.push(bodyPara(`Fuente: ${fStr}`, false, '64748b'));
+        studentParagraphs.push(bodyPara(`Fuente: ${fStr}`, false, '64748b'));
       }
 
       if (tipoEv === 'recreacion_pedagogica') {
-        sections.push(bodyPara('Advertencia: Esta pista es una recreacion pedagogica inspirada en el material de estudio. No corresponde a una cita textual.', false, '92400e'));
+        studentParagraphs.push(bodyPara('Advertencia: Esta pista es una recreación pedagógica inspirada en el material de estudio. No corresponde a una cita textual.', false, '92400e'));
       }
 
-      sections.push(gap());
-      sections.push(bodyPara('DESAFIO PEDAGOGICO:', true, '1E3A5F'));
-      sections.push(bodyPara(est.desafio || ''));
-      sections.push(gap());
-      sections.push(bodyPara('Respuesta del equipo:'));
-      sections.push(bodyPara('___________________________________________________________________________________'));
-      sections.push(bodyPara('___________________________________________________________________________________'));
-      sections.push(bodyPara('___________________________________________________________________________________'));
-      sections.push(gap());
-      sections.push(bodyPara(`Codigo desbloqueado: [ _ ]`, true, '1E3A5F'));
-      sections.push(gap());
+      studentParagraphs.push(gap());
+      studentParagraphs.push(bodyPara('DESAFÍO PEDAGÓGICO:', true, '1E3A5F'));
+      studentParagraphs.push(bodyPara(est.desafio || ''));
+      studentParagraphs.push(gap());
+      studentParagraphs.push(bodyPara('Respuesta del equipo:'));
+      studentParagraphs.push(bodyPara('___________________________________________________________________________________'));
+      studentParagraphs.push(bodyPara('___________________________________________________________________________________'));
+      studentParagraphs.push(bodyPara('___________________________________________________________________________________'));
+      studentParagraphs.push(gap());
+      studentParagraphs.push(bodyPara(`Código desbloqueado: [   ]`, true, '1E3A5F'));
+      studentParagraphs.push(gap());
     });
 
-    // Expediente final
     const ef = juego.expediente_final || {};
-    sections.push(h2('Expediente Final del Equipo'));
-    if (ef.instruccion) sections.push(bodyPara(ef.instruccion, false, '64748b'));
-    sections.push(gap());
-    sections.push(bodyPara(ef.hipotesis_guia || 'Hipotesis del equipo:', true, '1E3A5F'));
-    sections.push(bodyPara('___________________________________________________________________________________'));
-    sections.push(bodyPara('___________________________________________________________________________________'));
-    sections.push(gap());
-    sections.push(bodyPara(ef.fundamento_guia || 'Fundamento 1 (cita, dato o episodio del material):', true, '1E3A5F'));
-    sections.push(bodyPara('___________________________________________________________________________________'));
-    sections.push(gap());
-    sections.push(bodyPara('Fundamento 2:', true, '1E3A5F'));
-    sections.push(bodyPara('___________________________________________________________________________________'));
-    sections.push(gap());
-    sections.push(bodyPara(ef.conclusion_guia || 'Conclusion: ¿como conecta tu hipotesis con los temas del material?', true, '1E3A5F'));
-    sections.push(bodyPara('___________________________________________________________________________________'));
-    sections.push(gap());
+    studentParagraphs.push(h2('Expediente Final del Equipo'));
+    if (ef.instruccion) studentParagraphs.push(bodyPara(ef.instruccion, false, '64748b'));
+    studentParagraphs.push(gap());
+    studentParagraphs.push(bodyPara(ef.hipotesis_guia || 'Hipótesis del equipo:', true, '1E3A5F'));
+    studentParagraphs.push(bodyPara('___________________________________________________________________________________'));
+    studentParagraphs.push(bodyPara('___________________________________________________________________________________'));
+    studentParagraphs.push(gap());
+    studentParagraphs.push(bodyPara(ef.fundamento_guia || 'Fundamento 1 (cita, dato o episodio del material):', true, '1E3A5F'));
+    studentParagraphs.push(bodyPara('___________________________________________________________________________________'));
+    studentParagraphs.push(gap());
+    studentParagraphs.push(bodyPara('Fundamento 2:', true, '1E3A5F'));
+    studentParagraphs.push(bodyPara('___________________________________________________________________________________'));
+    studentParagraphs.push(gap());
+    studentParagraphs.push(bodyPara(ef.conclusion_guia || 'Conclusión: ¿cómo conecta tu hipótesis con los temas del material?', true, '1E3A5F'));
+    studentParagraphs.push(bodyPara('___________________________________________________________________________________'));
+    studentParagraphs.push(gap());
 
-    // Ticket
-    sections.push(h2('Ticket de Salida'));
+    studentParagraphs.push(h2('Ticket de Salida'));
     const ticketsW = Array.isArray(juego.ticket) ? juego.ticket : [];
     ticketsW.forEach((t: any, idx: number) => {
       const tText = typeof t === 'string' ? t : (t.pregunta || String(t));
-      sections.push(bodyPara(`${idx + 1}. ${tText}`, true));
-      sections.push(bodyPara('___________________________________________________________________________________'));
-      sections.push(gap());
+      studentParagraphs.push(bodyPara(`${idx + 1}. ${tText}`, true));
+      studentParagraphs.push(bodyPara('___________________________________________________________________________________'));
+      studentParagraphs.push(gap());
     });
-    sections.push(bodyPara('Autoevaluacion colaborativa: ¿Todos participaron activamente? ¿Que rol fue mas desafiante?', true));
-    sections.push(bodyPara('___________________________________________________________________________________'));
+    studentParagraphs.push(bodyPara('Autoevaluación colaborativa: ¿Todos participaron activamente? ¿Qué rol fue más desafiante?', true));
+    studentParagraphs.push(bodyPara('___________________________________________________________________________________'));
 
   } else if (motorId === 'escape_room') {
-    sections.push(h1('Misión de Escape Room', '7F1D1D'));
-    sections.push(bodyPara(juego.mision || ''));
-    sections.push(gap());
-
-    sections.push(h2('Pruebas a Resolver'));
-    sections.push(h2('Prueba 1'));
-    sections.push(bodyPara(juego.prueba1 || ''));
-    sections.push(bodyPara('Código Prueba 1: [ _____ ]', true));
-    sections.push(gap());
-
-    sections.push(h2('Prueba 2'));
-    sections.push(bodyPara(juego.prueba2 || ''));
-    sections.push(bodyPara('Código Prueba 2: [ _____ ]', true));
-    sections.push(gap());
-
-    sections.push(h2('Prueba 3'));
-    sections.push(bodyPara(juego.prueba3 || ''));
-    sections.push(bodyPara('Código Prueba 3 (FINAL): [ _____ ]', true));
-    sections.push(gap());
-
-    sections.push(h2('Ticket de Salida (Reflexión)'));
-    sections.push(bodyPara(juego.ticket || ''));
-    sections.push(bodyPara('Respuesta: __________________________________________________________________________'));
+    studentParagraphs.push(bodyPara(juego.mision || ''));
+    studentParagraphs.push(gap());
+    studentParagraphs.push(h2('Pruebas a Resolver'));
+    studentParagraphs.push(h2('Prueba 1'));
+    studentParagraphs.push(bodyPara(juego.prueba1 || ''));
+    studentParagraphs.push(bodyPara('Código Prueba 1: [ _____ ]', true));
+    studentParagraphs.push(gap());
+    studentParagraphs.push(h2('Prueba 2'));
+    studentParagraphs.push(bodyPara(juego.prueba2 || ''));
+    studentParagraphs.push(bodyPara('Código Prueba 2: [ _____ ]', true));
+    studentParagraphs.push(gap());
+    studentParagraphs.push(h2('Prueba 3'));
+    studentParagraphs.push(bodyPara(juego.prueba3 || ''));
+    studentParagraphs.push(bodyPara('Código Prueba 3 (FINAL): [ _____ ]', true));
+    studentParagraphs.push(gap());
+    studentParagraphs.push(h2('Ticket de Salida (Reflexión)'));
+    studentParagraphs.push(bodyPara(juego.ticket || ''));
+    studentParagraphs.push(bodyPara('Respuesta: __________________________________________________________________________'));
 
   } else if (motorId === 'bingo') {
-    sections.push(h1('Bingo de Conceptos Clave', '166534'));
-    sections.push(bodyPara(juego.instrucciones || 'Reglas del Bingo: Complete el cartón según las definiciones leídas por el docente.'));
-    sections.push(gap());
-
-    sections.push(h2('Cartones del Estudiante (6 Cartones)'));
+    studentParagraphs.push(bodyPara(juego.instrucciones || 'Reglas del Bingo: Complete el cartón según las definiciones leídas por el docente.'));
+    studentParagraphs.push(gap());
+    studentParagraphs.push(h2('Cartones del Estudiante (6 Cartones)'));
     const conceptos = Array.isArray(juego.conceptos) ? juego.conceptos : [];
-    
-    // Crear 6 cartones 4x4
     for (let cNum = 0; cNum < 6; cNum++) {
-      sections.push(h2(`Cartón N° ${cNum + 1}`));
+      studentParagraphs.push(h2(`Cartón N° ${cNum + 1}`));
       const rows = [];
       const cIndex = cNum * 4;
-
       for (let r = 0; r < 4; r++) {
         const cells = [];
         for (let c = 0; c < 4; c++) {
-          const concept = conceptos[(cIndex + r * 4 + c) % conceptos.length] || 'Didakta';
+          const concept = conceptos[(cIndex + r * 4 + c) % conceptos.length] || 'Concepto';
           cells.push(new TableCell({
             width: { size: 25, type: WidthType.PERCENTAGE },
             children: [new Paragraph({ text: concept, spacing: { before: 100, after: 100 } })]
@@ -215,31 +195,26 @@ export function drawPlayWord({
         }
         rows.push(new TableRow({ children: cells }));
       }
-
-      sections.push(new Table({
+      studentParagraphs.push(new Table({
         rows,
         width: { size: 100, type: WidthType.PERCENTAGE }
       }));
-      sections.push(gap());
+      studentParagraphs.push(gap());
     }
 
   } else if (motorId === 'trivia') {
-    sections.push(h1('Trivia Pedagógica', '4C1D95'));
-    sections.push(bodyPara(juego.instrucciones || 'Responda las preguntas por equipo y anote sus puntuaciones.'));
-    sections.push(gap());
-
-    sections.push(h2('Tarjetas de Trivia'));
+    studentParagraphs.push(bodyPara(juego.instrucciones || 'Responda las preguntas por equipo y anote sus puntuaciones.'));
+    studentParagraphs.push(gap());
+    studentParagraphs.push(h2('Tarjetas de Trivia'));
     const preguntas = Array.isArray(juego.preguntas) ? juego.preguntas : [];
     const categorias = Array.isArray(juego.categorias) ? juego.categorias : [];
-
     preguntas.forEach((p: any, idx: number) => {
       const cat = categorias[idx] || 'General';
-      sections.push(bodyPara(`Tarjeta N° ${idx + 1} - Categoría: ${cat}`, true, '4C1D95'));
-      sections.push(bodyPara(`Pregunta: ${p}`));
-      sections.push(gap());
+      studentParagraphs.push(bodyPara(`Tarjeta N° ${idx + 1} - Categoría: ${cat}`, true, '4C1D95'));
+      studentParagraphs.push(bodyPara(`Pregunta: ${p}`));
+      studentParagraphs.push(gap());
     });
-
-    sections.push(h2('Tabla de Puntuación (Equipos)'));
+    studentParagraphs.push(h2('Tabla de Puntuación (Equipos)'));
     const teamsHeader = new TableRow({
       children: ['Equipo 1', 'Equipo 2', 'Equipo 3', 'Equipo 4', 'Equipo 5'].map(t => new TableCell({
         width: { size: 20, type: WidthType.PERCENTAGE },
@@ -252,350 +227,337 @@ export function drawPlayWord({
         children: [new Paragraph({ text: s, spacing: { before: 80, after: 80 } })]
       }))
     });
-    sections.push(new Table({
+    studentParagraphs.push(new Table({
       rows: [teamsHeader, scoreRow],
       width: { size: 100, type: WidthType.PERCENTAGE }
     }));
 
   } else if (motorId === 'cartas') {
-    sections.push(h1('Duelo de Cartas Pedagógicas', '92400E'));
-    sections.push(bodyPara(juego.reglas || 'Reglas del mazo de cartas.'));
-    sections.push(gap());
-
-    sections.push(h2('Mazo de Cartas (16 Cartas)'));
+    studentParagraphs.push(bodyPara(juego.reglas || 'Reglas del mazo de cartas.'));
+    studentParagraphs.push(gap());
+    studentParagraphs.push(h2('Mazo de Cartas (16 Cartas)'));
     const mazo = Array.isArray(juego.cartas) ? juego.cartas : [];
     mazo.forEach((card: any, idx: number) => {
-      sections.push(bodyPara(`Carta N° ${idx + 1}: ${card.nombre || 'Personaje'}`, true, '92400E'));
-      sections.push(bodyPara(`Atributos: ${card.atributos || ''}`));
-      sections.push(bodyPara(`Habilidad/Cita: ${card.descripcion || card.cita_habilidad || ''}`));
-      sections.push(gap());
+      studentParagraphs.push(bodyPara(`Carta N° ${idx + 1}: ${card.nombre || 'Carta'}`, true, '92400E'));
+      studentParagraphs.push(bodyPara(`Atributos: ${card.atributos || ''}`));
+      studentParagraphs.push(bodyPara(`Habilidad/Cita: ${card.descripcion || card.cita_habilidad || ''}`));
+      studentParagraphs.push(gap());
     });
 
   } else if (motorId === 'memoria') {
-    sections.push(h1('Juego de Memoria', '0C4A6E'));
-    sections.push(bodyPara(juego.instrucciones || 'Encuentre las parejas emparejando los conceptos con sus definiciones correctas.'));
-    sections.push(gap());
-
-    sections.push(h2('Tarjetas de Memoria'));
+    studentParagraphs.push(bodyPara(juego.instrucciones || 'Encuentre las parejas emparejando los conceptos con sus definiciones correctas.'));
+    studentParagraphs.push(gap());
+    studentParagraphs.push(h2('Tarjetas de Memoria'));
     const pares = Array.isArray(juego.pares) ? juego.pares : [];
     pares.forEach((p: any, idx: number) => {
-      sections.push(bodyPara(`Par N° ${idx + 1}`, true, '0C4A6E'));
-      sections.push(bodyPara(`Tarjeta Concepto: ${p.concepto}`));
-      sections.push(bodyPara(`Tarjeta Definición: ${p.definicion}`));
-      sections.push(gap());
+      studentParagraphs.push(bodyPara(`Par N° ${idx + 1} - Concepto`, true, '0C4A6E'));
+      studentParagraphs.push(bodyPara(p.concepto));
+      studentParagraphs.push(bodyPara(`Par N° ${idx + 1} - Definición`, true, '0C4A6E'));
+      studentParagraphs.push(bodyPara(p.definicion));
+      studentParagraphs.push(gap());
     });
-  } else if (motorId === 'clue') {
-    sections.push(h1(`CLUE Pedagogico: ${juego.nombre_caso || 'Caso sin Titulo'}`, '14532d'));
-    sections.push(bodyPara(juego.historia || ''));
-    if (juego.nota_ficcion) {
-      sections.push(bodyPara(`Nota: ${juego.nota_ficcion}`, false, '64748b'));
-    }
-    sections.push(gap());
 
-    // Objetivos de Aprendizaje (sección alumno)
+  } else if (motorId === 'clue') {
+    studentParagraphs.push(bodyPara(juego.historia || ''));
+    if (juego.nota_ficcion) {
+      studentParagraphs.push(bodyPara(`Nota: ${juego.nota_ficcion}`, false, '64748b'));
+    }
+    studentParagraphs.push(gap());
+
     const oaList = Array.isArray(juego.objetivos_aprendizaje) ? juego.objetivos_aprendizaje : [];
     if (oaList.length > 0) {
-      sections.push(h2('Objetivos de Aprendizaje Vinculados'));
+      studentParagraphs.push(h2('Objetivos de Aprendizaje Vinculados (Síntesis)'));
       oaList.forEach((oa: any) => {
-        const origenLabel = oa.origen === 'sugerido_ia' ? ' [OA sugerido — verificar]'
-          : oa.origen === 'planificacion' ? ' [de planificacion]'
-          : oa.origen === 'seleccion_docente' ? ' [seleccionado]' : '';
-        sections.push(bodyPara(`${oa.codigo}${origenLabel}:`, true, '14532d'));
-        sections.push(bodyPara(oa.descripcion || ''));
-        sections.push(gap());
+        const desc = oa.descripcion || '';
+        const sintesis = desc.length > 110 ? desc.slice(0, 107) + '...' : desc;
+        studentParagraphs.push(bodyPara(`${oa.codigo}: ${sintesis}`));
       });
+      studentParagraphs.push(gap());
     }
 
-    sections.push(h2('Sospechosos (4 tarjetas)'));
+    studentParagraphs.push(h2('Sospechosos (4 tarjetas)'));
     const personajes = Array.isArray(juego.personajes) ? juego.personajes : [];
     personajes.forEach((p: any, idx: number) => {
-      sections.push(bodyPara(`Sospechoso N° ${idx + 1}: ${p.nombre || ''}`, true, '14532d'));
-      sections.push(bodyPara(`Ficha: ${['ROJO', 'AZUL', 'VERDE', 'NARANJA'][idx] || ''}`));
-      sections.push(bodyPara(`Habitacion Inicial: ${p.habitacion_inicial || ''}`));
-      sections.push(bodyPara(`Rol en el contenido: ${p.rol_en_contenido || p.rol_en_obra || p.descripcion || ''}`));
-      sections.push(bodyPara(`Relevancia para el caso: ${p.motivacion || ''}`));
-      sections.push(bodyPara('Indicio textual encontrado: ____________________________________________'));
-      sections.push(gap());
+      studentParagraphs.push(bodyPara(`Sospechoso N° ${idx + 1}: ${p.nombre || ''}`, true, '14532d'));
+      studentParagraphs.push(bodyPara(`Ficha: ${['ROJO', 'AZUL', 'VERDE', 'NARANJA'][idx] || ''} | Habitación Inicial: ${p.habitacion_inicial || ''}`));
+      studentParagraphs.push(bodyPara(`Rol en el contenido: ${p.rol_en_contenido || p.rol_en_obra || p.descripcion || ''}`));
+      studentParagraphs.push(bodyPara(`Relevancia para el caso: ${p.motivacion || ''}`));
+      studentParagraphs.push(bodyPara('Indicio textual encontrado: ____________________________________________'));
+      studentParagraphs.push(gap());
     });
 
-    sections.push(h2('Evidencias (6 tarjetas)'));
+    studentParagraphs.push(h2('Evidencias (6 tarjetas)'));
     const evidencias = Array.isArray(juego.evidencias) ? juego.evidencias : [];
     evidencias.forEach((ev: any, idx: number) => {
-      sections.push(bodyPara(`Evidencia N° ${idx + 1}: ${ev.nombre || ''}`, true, '14532d'));
-      sections.push(bodyPara(`Habitacion: ${ev.habitacion || ''}`));
-      sections.push(bodyPara(`Descripcion: ${ev.descripcion || ''}`));
-      sections.push(bodyPara(`Relevancia pedagogica: ${ev.relevancia_pedagogica || ''}`));
-      sections.push(gap());
+      studentParagraphs.push(bodyPara(`Evidencia N° ${idx + 1}: ${ev.nombre || ''}`, true, '14532d'));
+      studentParagraphs.push(bodyPara(`Habitación: ${ev.habitacion || ''} | Descripción: ${ev.descripcion || ''}`));
+      studentParagraphs.push(bodyPara(`Relevancia pedagógica: ${ev.relevancia_pedagogica || ''}`));
+      studentParagraphs.push(gap());
     });
 
-    sections.push(h2('Habitaciones con Desafios Literarios (6 tarjetas)'));
+    studentParagraphs.push(h2('Habitaciones con Desafíos Literarios (6 tarjetas)'));
     const habitacionesData = Array.isArray(juego.habitaciones) ? juego.habitaciones : [];
     habitacionesData.forEach((hab: any, idx: number) => {
-      sections.push(bodyPara(`Habitacion N° ${idx + 1}: ${hab.nombre || ''}`, true, '14532d'));
-      sections.push(bodyPara(`Desafio literario: ${hab.desafio || ''}`));
-      sections.push(bodyPara(`Pista al responder correctamente: ${hab.pista || ''}`));
-      sections.push(bodyPara('Respuesta del equipo: ____________________________________________'));
-      sections.push(gap());
+      studentParagraphs.push(bodyPara(`Habitación N° ${idx + 1}: ${hab.nombre || ''}`, true, '14532d'));
+      studentParagraphs.push(bodyPara(`Desafío literario: ${hab.desafio || ''}`));
+      studentParagraphs.push('Respuesta del equipo: ____________________________________________');
+      studentParagraphs.push(gap());
     });
 
-    sections.push(h2('Hoja de Investigacion y Descarte'));
-    sections.push(bodyPara('Marca con X cada carta que hayas visto. La solucion es la carta que nadie puede mostrar.'));
-    sections.push(gap());
+    studentParagraphs.push(h2('Hoja de Investigación y Descarte'));
+    studentParagraphs.push(bodyPara('Marca con X cada carta que hayas visto. La solución es la carta que nadie puede mostrar.'));
+    studentParagraphs.push(gap());
 
     const clueRows = ['SOSPECHOSOS', 'EVIDENCIAS', 'HABITACIONES'];
     clueRows.forEach(colName => {
-      sections.push(bodyPara(`--- ${colName} ---`, true, '14532d'));
+      studentParagraphs.push(bodyPara(`--- ${colName} ---`, true, '14532d'));
       const items = colName === 'SOSPECHOSOS' ? personajes.map((p: any) => p.nombre || '')
         : colName === 'EVIDENCIAS' ? evidencias.map((ev: any) => ev.nombre || '')
         : habitacionesData.map((h: any) => h.nombre || '');
       items.forEach((item: string) => {
-        sections.push(bodyPara(`[ ]  ${item}     Quien lo mostro: ________________________`));
+        studentParagraphs.push(bodyPara(`[ ]  ${item}     Quién lo mostró: ________________________`));
       });
-      sections.push(gap());
+      studentParagraphs.push(gap());
     });
 
-    sections.push(h2('Acusacion Final'));
-    const etiqHip = juego.etiqueta_hipotesis || 'Hipotesis:';
+    studentParagraphs.push(h2('Acusación Final'));
+    const etiqHip = juego.etiqueta_hipotesis || 'Hipótesis:';
     const etiqSos = juego.etiqueta_sospechosos || 'El elemento';
-    sections.push(bodyPara(`${etiqHip}:`, true, '14532d'));
-    sections.push(bodyPara(`${etiqSos} ______________, evidencia: ______________, habitacion: ______________.`));
-    sections.push(bodyPara('¿Como se relacionan? ____________________________________________________________'));
-    sections.push(gap());
-    sections.push(bodyPara('Fundamento 1 (cita, dato o episodio del material): _________________________________'));
-    sections.push(bodyPara('Fundamento 2: ____________________________________________________________'));
-    sections.push(bodyPara('¿Como el material revisado apoya tu conclusion? ________________________________'));
+    studentParagraphs.push(bodyPara(`${etiqHip}:`, true, '14532d'));
+    studentParagraphs.push(bodyPara(`${etiqSos} ______________, evidencia: ______________, habitación: ______________.`));
+    studentParagraphs.push(bodyPara('¿Cómo se relacionan? ____________________________________________________________'));
+    studentParagraphs.push(gap());
+    studentParagraphs.push(bodyPara('Fundamento 1 (cita, dato o episodio del material): _________________________________'));
+    studentParagraphs.push(bodyPara('Fundamento 2: ____________________________________________________________'));
 
   } else if (motorId === 'serpiente_escaleras') {
-    sections.push(h1('Serpientes y Escaleras Pedagógico', '0891b2'));
-    sections.push(bodyPara('Lanza el dado, avanza casillas y responde las preguntas para avanzar más rápido por las escaleras o evitar bajar por las serpientes.'));
-    sections.push(gap());
-
-    sections.push(h2('Tarjetas de Preguntas (20 Preguntas)'));
+    studentParagraphs.push(bodyPara('Lanza el dado, avanza casillas y responde las preguntas para avanzar más rápido por las escaleras o evitar bajar por las serpientes.'));
+    studentParagraphs.push(gap());
+    studentParagraphs.push(h2('Tarjetas de Preguntas (20 Preguntas)'));
     const preguntas = Array.isArray(juego.preguntas) ? juego.preguntas : [];
     preguntas.forEach((p: any, idx: number) => {
-      sections.push(bodyPara(`Pregunta N° ${idx + 1}:`, true, '0891b2'));
-      sections.push(bodyPara(p));
-      sections.push(bodyPara('Respuesta del Alumno: __________________________________________________'));
-      sections.push(gap());
+      studentParagraphs.push(bodyPara(`Pregunta N° ${idx + 1}:`, true, '0891b2'));
+      studentParagraphs.push(bodyPara(p));
+      studentParagraphs.push(bodyPara('Respuesta del Alumno: __________________________________________________'));
+      studentParagraphs.push(gap());
     });
 
   } else if (motorId === 'ludo') {
-    sections.push(h1('Ludo Pedagógico', 'b91c1c'));
-    sections.push(bodyPara('Clásico juego de ludo donde caer en casillas especiales requiere responder preguntas de dificultad variable para avanzar o no retroceder.'));
-    sections.push(gap());
-
-    sections.push(h2('Preguntas Fáciles (Verde)'));
+    studentParagraphs.push(bodyPara('Clásico juego de ludo donde caer en casillas especiales requiere responder preguntas de dificultad variable para avanzar o no retroceder.'));
+    studentParagraphs.push(gap());
+    studentParagraphs.push(h2('Preguntas Fáciles (Verde)'));
     const faciles = Array.isArray(juego.preguntas_faciles) ? juego.preguntas_faciles : [];
     faciles.forEach((p: any, idx: number) => {
-      sections.push(bodyPara(`Pregunta Fácil N° ${idx + 1}:`, true, '16a34a'));
-      sections.push(bodyPara(p));
-      sections.push(gap());
+      studentParagraphs.push(bodyPara(`Pregunta Fácil N° ${idx + 1}:`, true, '16a34a'));
+      studentParagraphs.push(bodyPara(p));
+      studentParagraphs.push(gap());
     });
-
-    sections.push(h2('Preguntas Medias (Amarillo)'));
+    studentParagraphs.push(h2('Preguntas Medias (Amarillo)'));
     const medias = Array.isArray(juego.preguntas_medias) ? juego.preguntas_medias : [];
     medias.forEach((p: any, idx: number) => {
-      sections.push(bodyPara(`Pregunta Media N° ${idx + 1}:`, true, 'eab308'));
-      sections.push(bodyPara(p));
-      sections.push(gap());
+      studentParagraphs.push(bodyPara(`Pregunta Media N° ${idx + 1}:`, true, 'eab308'));
+      studentParagraphs.push(bodyPara(p));
+      studentParagraphs.push(gap());
     });
-
-    sections.push(h2('Preguntas Difíciles (Rojo)'));
+    studentParagraphs.push(h2('Preguntas Difíciles (Rojo)'));
     const dificiles = Array.isArray(juego.preguntas_dificiles) ? juego.preguntas_dificiles : [];
     dificiles.forEach((p: any, idx: number) => {
-      sections.push(bodyPara(`Pregunta Difícil N° ${idx + 1}:`, true, 'dc2626'));
-      sections.push(bodyPara(p));
-      sections.push(gap());
+      studentParagraphs.push(bodyPara(`Pregunta Difícil N° ${idx + 1}:`, true, 'dc2626'));
+      studentParagraphs.push(bodyPara(p));
+      studentParagraphs.push(gap());
     });
   }
 
-  // ── SECCIÓN DEL DOCENTE (USO EXCLUSIVO DOCENTE) ──
-  sections.push(gap());
-  sections.push(gap());
-  sections.push(h1('=== USO EXCLUSIVO DOCENTE ===', 'DC2626'));
-  sections.push(gap());
+  // ── SECCIÓN DEL DOCENTE (GUÍA DOCENTE) ──
+  teacherParagraphs.push(h1('GUÍA DOCENTE · USO EXCLUSIVO', 'DC2626'));
+  teacherParagraphs.push(bodyPara(`Establecimiento: ${establecimiento}${nivel ? ` | Nivel: ${nivel}` : ''}`));
+  teacherParagraphs.push(bodyPara(`Docente Responsable: ${docenteNombre}`));
+  teacherParagraphs.push(gap());
 
   if (motorId === 'detective') {
     const solW = juego.solucion || {};
     const oaListDetDoc = Array.isArray(juego.objetivos_aprendizaje) ? juego.objetivos_aprendizaje : [];
 
-    // OA
     if (oaListDetDoc.length > 0) {
-      sections.push(h2('Objetivos de Aprendizaje Vinculados'));
+      teacherParagraphs.push(h2('Objetivos de Aprendizaje Vinculados (Descripciones Completas)'));
       oaListDetDoc.forEach((oa: any) => {
-        const origenLblDoc = oa.origen === 'sugerido_ia' ? ' [OA sugerido — verificar]' : oa.origen === 'planificacion' ? ' [de planificacion]' : ' [seleccionado]';
-        sections.push(bodyPara(`${oa.codigo}${origenLblDoc}:`, true, 'DC2626'));
-        sections.push(bodyPara(oa.descripcion || ''));
-        sections.push(gap());
+        const origenLblDoc = oa.origen === 'sugerido_ia' ? ' [OA sugerido — verificar]' : oa.origen === 'planificacion' ? ' [de planificación]' : ' [seleccionado]';
+        teacherParagraphs.push(bodyPara(`${oa.codigo}${origenLblDoc}:`, true, 'DC2626'));
+        teacherParagraphs.push(bodyPara(oa.descripcion || ''));
+        teacherParagraphs.push(gap());
       });
     }
 
-    // Respuestas por estacion
-    sections.push(h2('Respuestas Esperadas por Estacion'));
+    teacherParagraphs.push(h2('Respuestas Esperadas por Estación'));
     const respEstW = Array.isArray(solW.respuestas_estaciones) ? solW.respuestas_estaciones : [];
     respEstW.forEach((re: any) => {
-      sections.push(bodyPara(`Estacion ${re.estacion} — Codigo: [${re.codigo_letra || '_'}]`, true, '1E3A5F'));
-      sections.push(bodyPara(`Respuesta esperada: ${re.respuesta_esperada || ''}`));
-      sections.push(bodyPara(`Criterio de aceptacion: ${re.criterio_aceptacion || ''}`, false, '64748b'));
-      sections.push(gap());
+      teacherParagraphs.push(bodyPara(`Estación ${re.estacion} — Código: [ ${re.codigo_letra || '_'} ]`, true, '1E3A5F'));
+      teacherParagraphs.push(bodyPara(`Respuesta esperada: ${re.respuesta_esperada || ''}`));
+      teacherParagraphs.push(bodyPara(`Criterio de aceptación: ${re.criterio_aceptacion || ''}`, false, '64748b'));
+      teacherParagraphs.push(gap());
     });
 
     if (solW.codigo_final_verificado) {
-      sections.push(bodyPara(`CODIGO FINAL VERIFICADO: ${solW.codigo_final_verificado}`, true, 'DC2626'));
-      sections.push(gap());
+      teacherParagraphs.push(bodyPara(`CÓDIGO FINAL VERIFICADO: ${solW.codigo_final_verificado}`, true, 'DC2626'));
+      teacherParagraphs.push(gap());
     }
 
-    sections.push(h2('Hipotesis Central (referencia)'));
-    sections.push(bodyPara(solW.hipotesis_central || ''));
-    sections.push(gap());
+    teacherParagraphs.push(h2('Hipótesis Central (Referencia)'));
+    teacherParagraphs.push(bodyPara(solW.hipotesis_central || ''));
+    teacherParagraphs.push(gap());
 
-    sections.push(h2('Hipotesis Alternativas Validas'));
-    sections.push(bodyPara(solW.hipotesis_alternativas || ''));
-    sections.push(gap());
+    teacherParagraphs.push(h2('Hipótesis Alternativas Válidas'));
+    teacherParagraphs.push(bodyPara(solW.hipotesis_alternativas || ''));
+    teacherParagraphs.push(gap());
 
-    sections.push(h2('Explicacion Pedagogica (segun OA seleccionados)'));
-    sections.push(bodyPara(solW.explicacion_pedagogica || ''));
-    sections.push(gap());
+    teacherParagraphs.push(h2('Explicación Pedagógica (según OA seleccionados)'));
+    teacherParagraphs.push(bodyPara(solW.explicacion_pedagogica || ''));
+    teacherParagraphs.push(gap());
 
     if (solW.nota_responsabilidad) {
-      sections.push(bodyPara('Nota sobre responsabilidad:', true, 'DC2626'));
-      sections.push(bodyPara(solW.nota_responsabilidad));
-      sections.push(gap());
+      teacherParagraphs.push(bodyPara('Nota sobre responsabilidad:', true, 'DC2626'));
+      teacherParagraphs.push(bodyPara(solW.nota_responsabilidad));
+      teacherParagraphs.push(gap());
     }
 
-    sections.push(h2('Rubrica de Evaluacion del Expediente Final'));
+    teacherParagraphs.push(h2('Rúbrica de Evaluación del Expediente Final'));
     if (solW.rubrica) {
-      sections.push(bodyPara('NIVEL 3 — Logrado:', true, '166534'));
-      sections.push(bodyPara(solW.rubrica.nivel3 || ''));
-      sections.push(bodyPara('NIVEL 2 — En proceso:', true, '92400e'));
-      sections.push(bodyPara(solW.rubrica.nivel2 || ''));
-      sections.push(bodyPara('NIVEL 1 — Inicial:', true, 'DC2626'));
-      sections.push(bodyPara(solW.rubrica.nivel1 || ''));
+      teacherParagraphs.push(bodyPara('NIVEL 3 — Logrado:', true, '166534'));
+      teacherParagraphs.push(bodyPara(solW.rubrica.nivel3 || ''));
+      teacherParagraphs.push(bodyPara('NIVEL 2 — En proceso:', true, '92400e'));
+      teacherParagraphs.push(bodyPara(solW.rubrica.nivel2 || ''));
+      teacherParagraphs.push(bodyPara('NIVEL 1 — Inicial:', true, 'DC2626'));
+      teacherParagraphs.push(bodyPara(solW.rubrica.nivel1 || ''));
     }
 
   } else if (motorId === 'escape_room') {
-    sections.push(h2('Respuestas del Escape Room'));
-    sections.push(bodyPara(`Clave Prueba 1: ${juego.clave1 || 'A'}`, true));
-    sections.push(bodyPara(`Clave Prueba 2: ${juego.clave2 || 'B'}`, true));
-    sections.push(bodyPara(`Clave Prueba 3 (FINAL): ${juego.clave_final || 'C'}`, true));
-    sections.push(gap());
-    sections.push(bodyPara('Solución Detallada:', true));
-    sections.push(bodyPara(juego.solucion || ''));
+    teacherParagraphs.push(h2('Respuestas del Escape Room'));
+    teacherParagraphs.push(bodyPara(`Clave Prueba 1: ${juego.clave1 || 'A'}`, true));
+    teacherParagraphs.push(bodyPara(`Clave Prueba 2: ${juego.clave2 || 'B'}`, true));
+    teacherParagraphs.push(bodyPara(`Clave Prueba 3 (FINAL): ${juego.clave_final || 'C'}`, true));
+    teacherParagraphs.push(gap());
+    teacherParagraphs.push(bodyPara('Solución Detallada:', true));
+    teacherParagraphs.push(bodyPara(juego.solucion || ''));
 
   } else if (motorId === 'bingo') {
-    sections.push(h2('Tarjetas de Llamada del Docente (Bingo)'));
+    teacherParagraphs.push(h2('Tarjetas de Llamada del Docente (Bingo)'));
     const defs = Array.isArray(juego.definiciones) ? juego.definiciones : [];
     defs.forEach((def: any, idx: number) => {
       const cLabel = typeof def === 'object' ? (def.concepto || `Concepto ${idx+1}`) : `Definición ${idx+1}`;
       const dText = typeof def === 'object' ? (def.definicion || '') : def;
-      sections.push(bodyPara(`Definición N° ${idx + 1}: ${dText}`));
-      sections.push(bodyPara(`[ Concepto clave: ${cLabel} ]`, true, '166534'));
-      sections.push(gap());
+      teacherParagraphs.push(bodyPara(`Definición N° ${idx + 1}: ${dText}`));
+      teacherParagraphs.push(bodyPara(`[ Concepto clave: ${cLabel} ]`, true, '166534'));
+      teacherParagraphs.push(gap());
     });
 
   } else if (motorId === 'trivia') {
-    sections.push(h2('Clave de Respuestas de Trivia'));
+    teacherParagraphs.push(h2('Clave de Respuestas de Trivia'));
     const preguntas = Array.isArray(juego.preguntas) ? juego.preguntas : [];
     const respuestas = Array.isArray(juego.respuestas) ? juego.respuestas : [];
     preguntas.forEach((p: any, idx: number) => {
-      sections.push(bodyPara(`Pregunta ${idx + 1}: ${p}`, true));
-      sections.push(bodyPara(`Respuesta Correcta: ${respuestas[idx] || 'Sin definir.'}`, true, '16A34A'));
-      sections.push(gap());
+      teacherParagraphs.push(bodyPara(`Pregunta ${idx + 1}: ${p}`, true));
+      teacherParagraphs.push(bodyPara(`Respuesta Correcta: ${respuestas[idx] || 'Sin definir.'}`, true, '16A34A'));
+      teacherParagraphs.push(gap());
     });
 
   } else if (motorId === 'cartas') {
-    sections.push(h2('Sugerencia de Dinámicas y Respuestas de Cartas'));
-    sections.push(bodyPara('Utilice el mazo de cartas para combates o debates literarios, asignando a los personajes para defender sus posturas según sus atributos y citas.'));
+    teacherParagraphs.push(h2('Sugerencia de Dinámicas y Respuestas de Cartas'));
+    teacherParagraphs.push(bodyPara('Utilice el mazo de cartas para combates o debates literarios, asignando a los personajes para defender sus posturas según sus atributos y citas.'));
 
   } else if (motorId === 'memoria') {
-    sections.push(h2('Pauta de Emparejamientos Correctos'));
+    teacherParagraphs.push(h2('Pauta de Emparejamientos Correctos'));
     const pares = Array.isArray(juego.pares) ? juego.pares : [];
     pares.forEach((p: any, idx: number) => {
-      sections.push(bodyPara(`Par ${idx + 1}: [ Concepto: ${p.concepto} ] <--> [ Definición: ${p.definicion} ]`, true));
-      sections.push(gap());
+      teacherParagraphs.push(bodyPara(`Par ${idx + 1}: [ Concepto: ${p.concepto} ] <--> [ Definición: ${p.definicion} ]`, true));
+      teacherParagraphs.push(gap());
     });
+
   } else if (motorId === 'clue') {
     const oaListDoc = Array.isArray(juego.objetivos_aprendizaje) ? juego.objetivos_aprendizaje : [];
     if (oaListDoc.length > 0) {
-      sections.push(h2('Objetivos de Aprendizaje Vinculados'));
+      teacherParagraphs.push(h2('Objetivos de Aprendizaje Vinculados (Descripciones Completas)'));
       oaListDoc.forEach((oa: any) => {
         const origenLabel = oa.origen === 'sugerido_ia' ? ' [OA sugerido — verificar]'
-          : oa.origen === 'planificacion' ? ' [de planificacion]'
+          : oa.origen === 'planificacion' ? ' [de planificación]'
           : oa.origen === 'seleccion_docente' ? ' [seleccionado]' : '';
-        sections.push(bodyPara(`${oa.codigo}${origenLabel}:`, true, 'DC2626'));
-        sections.push(bodyPara(oa.descripcion || ''));
-        sections.push(gap());
+        teacherParagraphs.push(bodyPara(`${oa.codigo}${origenLabel}:`, true, 'DC2626'));
+        teacherParagraphs.push(bodyPara(oa.descripcion || ''));
+        teacherParagraphs.push(gap());
       });
     }
-    sections.push(h2('Sobre de Solucion (CONFIDENCIAL)'));
+    teacherParagraphs.push(h2('Sobre de Solución (CONFIDENCIAL)'));
     const sol = juego.solucion || {};
-    sections.push(bodyPara(`Hipotesis pedagogica central: ${sol.hipotesis_central || sol.culpable || 'Sin definir'}`, true, 'DC2626'));
-    sections.push(bodyPara(`Habitacion: ${sol.habitacion || 'Sin definir'}`, true));
-    sections.push(bodyPara(`Evidencia: ${sol.evidencia || 'Sin definir'}`, true));
-    sections.push(gap());
-    sections.push(bodyPara('Justificacion de la hipotesis central:', true, '14532d'));
-    sections.push(bodyPara(sol.justificacion_hipotesis || sol.rol_del_personaje || ''));
-    sections.push(gap());
-    sections.push(bodyPara('Hipotesis alternativas validas:', true, '14532d'));
-    sections.push(bodyPara(sol.hipotesis_alternativas || ''));
-    sections.push(gap());
-    sections.push(bodyPara('Explicacion pedagogica (segun OA seleccionados):', true, '14532d'));
-    sections.push(bodyPara(sol.explicacion_docente || ''));
-    sections.push(gap());
+    teacherParagraphs.push(bodyPara(`Hipótesis pedagógica central: ${sol.hipotesis_central || sol.culpable || 'Sin definir'}`, true, 'DC2626'));
+    teacherParagraphs.push(bodyPara(`Habitación: ${sol.habitacion || 'Sin definir'}`, true));
+    teacherParagraphs.push(bodyPara(`Evidencia: ${sol.evidencia || 'Sin definir'}`, true));
+    teacherParagraphs.push(gap());
+    teacherParagraphs.push(bodyPara('Justificación de la hipótesis central:', true, '14532d'));
+    teacherParagraphs.push(bodyPara(sol.justificacion_hipotesis || sol.rol_del_personaje || ''));
+    teacherParagraphs.push(gap());
+    teacherParagraphs.push(bodyPara('Hipótesis alternativas válidas:', true, '14532d'));
+    teacherParagraphs.push(bodyPara(sol.hipotesis_alternativas || ''));
+    teacherParagraphs.push(gap());
+    teacherParagraphs.push(bodyPara('Explicación pedagógica (según OA seleccionados):', true, '14532d'));
+    teacherParagraphs.push(bodyPara(sol.explicacion_docente || ''));
+    teacherParagraphs.push(gap());
     if (sol.rubrica) {
-      sections.push(h2('Rubrica de Evaluacion'));
-      sections.push(bodyPara('NIVEL 3 — Logrado:', true, '166534'));
-      sections.push(bodyPara(sol.rubrica.nivel3 || ''));
-      sections.push(bodyPara('NIVEL 2 — En proceso:', true, '92400e'));
-      sections.push(bodyPara(sol.rubrica.nivel2 || ''));
-      sections.push(bodyPara('NIVEL 1 — Inicial:', true, 'DC2626'));
-      sections.push(bodyPara(sol.rubrica.nivel1 || ''));
+      teacherParagraphs.push(h2('Rúbrica de Evaluación'));
+      teacherParagraphs.push(bodyPara('NIVEL 3 — Logrado:', true, '166534'));
+      teacherParagraphs.push(bodyPara(sol.rubrica.nivel3 || ''));
+      teacherParagraphs.push(bodyPara('NIVEL 2 — En proceso:', true, '92400e'));
+      teacherParagraphs.push(bodyPara(sol.rubrica.nivel2 || ''));
+      teacherParagraphs.push(bodyPara('NIVEL 1 — Inicial:', true, 'DC2626'));
+      teacherParagraphs.push(bodyPara(sol.rubrica.nivel1 || ''));
     }
 
   } else if (motorId === 'serpiente_escaleras') {
-    sections.push(h2('Clave de Respuestas (Serpientes y Escaleras)'));
+    teacherParagraphs.push(h2('Clave de Respuestas (Serpientes y Escaleras)'));
     const preguntas = Array.isArray(juego.preguntas) ? juego.preguntas : [];
     const respuestas = Array.isArray(juego.respuestas) ? juego.respuestas : [];
     preguntas.forEach((p: any, idx: number) => {
-      sections.push(bodyPara(`Pregunta ${idx + 1}: ${p}`, true));
-      sections.push(bodyPara(`Respuesta Correcta: ${respuestas[idx] || ''}`, true, '16A34A'));
-      sections.push(gap());
+      teacherParagraphs.push(bodyPara(`Pregunta ${idx + 1}: ${p}`, true));
+      teacherParagraphs.push(bodyPara(`Respuesta Correcta: ${respuestas[idx] || ''}`, true, '16A34A'));
+      teacherParagraphs.push(gap());
     });
 
   } else if (motorId === 'ludo') {
-    sections.push(h2('Clave de Respuestas (Ludo)'));
+    teacherParagraphs.push(h2('Clave de Respuestas (Ludo)'));
     const faciles = Array.isArray(juego.preguntas_faciles) ? juego.preguntas_faciles : [];
     const medias = Array.isArray(juego.preguntas_medias) ? juego.preguntas_medias : [];
     const dificiles = Array.isArray(juego.preguntas_dificiles) ? juego.preguntas_dificiles : [];
     const respuestas = juego.respuestas || {};
 
-    sections.push(h2('Respuestas Fáciles'));
+    teacherParagraphs.push(h2('Respuestas Fáciles'));
     faciles.forEach((p: any, idx: number) => {
-      sections.push(bodyPara(`P: ${p}`));
-      sections.push(bodyPara(`R: ${(respuestas.faciles && respuestas.faciles[idx]) || ''}`, true, '16A34A'));
+      teacherParagraphs.push(bodyPara(`P: ${p}`));
+      teacherParagraphs.push(bodyPara(`R: ${(respuestas.faciles && respuestas.faciles[idx]) || ''}`, true, '16A34A'));
     });
-    sections.push(gap());
+    teacherParagraphs.push(gap());
 
-    sections.push(h2('Respuestas Medias'));
+    teacherParagraphs.push(h2('Respuestas Medias'));
     medias.forEach((p: any, idx: number) => {
-      sections.push(bodyPara(`P: ${p}`));
-      sections.push(bodyPara(`R: ${(respuestas.medias && respuestas.medias[idx]) || ''}`, true, '16A34A'));
+      teacherParagraphs.push(bodyPara(`P: ${p}`));
+      teacherParagraphs.push(bodyPara(`R: ${(respuestas.medias && respuestas.medias[idx]) || ''}`, true, '16A34A'));
     });
-    sections.push(gap());
+    teacherParagraphs.push(gap());
 
-    sections.push(h2('Respuestas Difíciles'));
+    teacherParagraphs.push(h2('Respuestas Difíciles'));
     dificiles.forEach((p: any, idx: number) => {
-      sections.push(bodyPara(`P: ${p}`));
-      sections.push(bodyPara(`R: ${(respuestas.dificiles && respuestas.dificiles[idx]) || ''}`, true, '16A34A'));
+      teacherParagraphs.push(bodyPara(`P: ${p}`));
+      teacherParagraphs.push(bodyPara(`R: ${(respuestas.dificiles && respuestas.dificiles[idx]) || ''}`, true, '16A34A'));
     });
   }
 
-  // Retornamos el documento estructurado en una única sección con sus párrafos
+  // Return the multi-section Word Document
   return new Document({
     sections: [
       {
         properties: {},
-        children: sections
+        children: studentParagraphs
+      },
+      {
+        properties: {},
+        children: teacherParagraphs
       }
     ]
   });

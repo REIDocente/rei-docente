@@ -152,10 +152,10 @@ export function drawPlayPdf({
     addText(`Asignatura: Lengua y Literatura`, 9.5, 'normal', '#334155', margin + 5);
     addText(`Nivel: ${juego.nivel || (oaListDet.length > 0 ? '' : 'General')}`, 9.5, 'normal', '#334155', margin + 5);
     addText(`Investigador(a): ________________________________________`, 9.5, 'bold', '#1e293b', margin + 5);
-    addText(`Equipo N°: _______`, 9.5, 'normal', '#334155', margin + 5);
+    addText(`Organización: 6 equipos de 6 a 8 estudiantes (40-45 alumnos) | Equipo N°: _______`, 8.5, 'normal', '#334155', margin + 5);
     addText(`Fecha: _____ / _____ / 2026`, 9.5, 'normal', '#334155', margin + 5);
     y += 4;
-    addText('Roles: Lector/a  |  Analista  |  Secretario/a  |  Encargado/a de pistas  |  Portavoz', 8.5, 'bold', colorHex, margin + 5);
+    addText('Roles: Lector/a | Analista | Secretario/a | Encargado/a de pistas | Portavoz | Guardián del tiempo (opcional) | Encargado/a del código (opcional) | Moderador/a (opcional)', 7.5, 'bold', colorHex, margin + 5);
 
     // Objetivo
     y += 14;
@@ -278,24 +278,25 @@ export function drawPlayPdf({
     doc.setTextColor(100, 116, 139);
     doc.text('Los equipos rotan en orden cada 6-8 minutos al toque de senal del docente.', margin, stStartY + 2 * stH + stGap + 8);
 
-    // OA block en mapa
+    // OA block en mapa (síntesis breve dinámica)
     if (oaListDet.length > 0) {
       const oaBlockY = stStartY + 2 * stH + stGap + 14;
-      doc.setFontSize(7.5);
+      doc.setFontSize(8);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(rAccent, gAccent, bAccent);
       doc.text('OBJETIVOS DE APRENDIZAJE:', margin, oaBlockY);
       let oaY2 = oaBlockY + 5;
       oaListDet.forEach((oa: any) => {
-        const origenLbl = oa.origen === 'sugerido_ia' ? ' [sugerido]' : oa.origen === 'planificacion' ? ' [planificacion]' : ' [seleccionado]';
+        const desc = oa.descripcion || '';
+        const sintesis = desc.length > 110 ? desc.slice(0, 107) + '...' : desc;
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(rAccent, gAccent, bAccent);
-        doc.text(`${oa.codigo}${origenLbl}`, margin, oaY2);
-        oaY2 += 4;
+        doc.text(`${oa.codigo}:`, margin, oaY2);
+        const codeW = doc.getTextWidth(`${oa.codigo}: `);
         doc.setFont('helvetica', 'normal');
         doc.setTextColor(71, 85, 105);
-        const oaDescLines = doc.splitTextToSize(oa.descripcion || '', lWidth - 20);
-        oaDescLines.slice(0, 2).forEach((l: string) => { doc.text(l, margin + 4, oaY2); oaY2 += 4; });
+        doc.text(sintesis, margin + codeW, oaY2);
+        oaY2 += 4.5;
       });
     }
 
@@ -368,7 +369,7 @@ export function drawPlayPdf({
       doc.setFontSize(11);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(255, 255, 255);
-      doc.text(`ESTACION ${idx + 1}: ${(est.nombre || '').toUpperCase()}`, margin + 6, y + 10);
+      doc.text(`ESTACIÓN ${idx + 1}: ${(est.nombre || '').toUpperCase()}`, margin + 6, y + 10);
       y += 20;
 
       // OA vinculado
@@ -379,7 +380,7 @@ export function drawPlayPdf({
       doc.setFontSize(7.5);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(100, 116, 139);
-      doc.text('Duracion: 6-8 minutos  |  Roles: todos activos', margin + 80, y);
+      doc.text('Duración: 6-8 minutos  |  Roles: todos activos', margin + 80, y);
       y += 8;
 
       // PISTA
@@ -389,7 +390,7 @@ export function drawPlayPdf({
       const fuente = pista.fuente || {};
 
       // Etiqueta tipo evidencia
-      const tipoLabel = tipoEv === 'cita_textual' ? 'CITA TEXTUAL' : tipoEv === 'parafrasis' ? 'PARAFRASIS' : 'RECREACION PEDAGOGICA';
+      const tipoLabel = tipoEv === 'cita_textual' ? 'CITA TEXTUAL' : tipoEv === 'parafrasis' ? 'PARÁFRASIS' : 'RECREACIÓN PEDAGÓGICA';
       const tipoColor = tipoEv === 'cita_textual' ? '#166534' : tipoEv === 'parafrasis' ? '#1e3a5f' : '#92400e';
       const [tr, tg, tb] = [parseInt(tipoColor.slice(1,3),16), parseInt(tipoColor.slice(3,5),16), parseInt(tipoColor.slice(5,7),16)];
 
@@ -400,54 +401,73 @@ export function drawPlayPdf({
       y += 5;
 
       // Caja de pista
-      const pistaBoxH = 38;
+      const textoPista = tipoEv === 'cita_textual' ? `"${contenido}"` : contenido;
+      const pistaStyle = tipoEv === 'cita_textual' ? 'italic' : 'normal';
+      
+      doc.setFontSize(9.5);
+      doc.setFont('helvetica', pistaStyle);
+      const pistaLines = doc.splitTextToSize(textoPista, pWidth - 10);
+      
+      let extraHeightForSource = 0;
+      let fuenteStr = '';
+      if (tipoEv === 'cita_textual' && (fuente.obra || fuente.capitulo || fuente.pagina)) {
+        fuenteStr = [fuente.obra, fuente.autor, fuente.capitulo ? `Cap. ${fuente.capitulo}` : '', fuente.pagina ? `p. ${fuente.pagina}` : '', fuente.ubicacion].filter(Boolean).join(' - ');
+        extraHeightForSource = 6;
+      }
+      
+      const pistaBoxH = Math.max(25, (pistaLines.length * 5) + 8 + extraHeightForSource);
+      
+      const boxStartY = y;
       doc.setFillColor(250, 252, 255);
       doc.setDrawColor(tr, tg, tb);
       doc.setLineWidth(0.6);
-      doc.rect(margin, y, pWidth, pistaBoxH, 'FD');
-      y += 6;
-
-      const textoPista = tipoEv === 'cita_textual' ? `"${contenido}"` : contenido;
-      const pistaStyle = tipoEv === 'cita_textual' ? 'italic' : 'normal';
-      doc.setFontSize(9.5);
-      doc.setFont('helvetica', pistaStyle);
+      doc.rect(margin, boxStartY, pWidth, pistaBoxH, 'FD');
+      
+      y += 6; // top padding
       doc.setTextColor(30, 41, 59);
-      const pistaLines = doc.splitTextToSize(textoPista, pWidth - 10);
-      pistaLines.slice(0, 4).forEach((l: string) => { doc.text(l, margin + 5, y); y += 5; });
-
-      // Fuente (solo cita_textual)
-      if (tipoEv === 'cita_textual' && (fuente.obra || fuente.capitulo || fuente.pagina)) {
-        const fuenteStr = [fuente.obra, fuente.autor, fuente.capitulo ? `Cap. ${fuente.capitulo}` : '', fuente.pagina ? `p. ${fuente.pagina}` : '', fuente.ubicacion].filter(Boolean).join(' - ');
+      pistaLines.forEach((l: string) => {
+        doc.text(l, margin + 5, y);
+        y += 5;
+      });
+      
+      if (fuenteStr) {
         doc.setFontSize(7.5);
         doc.setFont('helvetica', 'italic');
         doc.setTextColor(100, 116, 139);
         doc.text(`Fuente: ${fuenteStr}`, margin + 5, y);
         y += 4;
       }
+      
+      y = boxStartY + pistaBoxH + 6;
 
-      // Advertencia recreacion
+      // Check if remaining components fit on current page; otherwise break page
+      const desafioLines = doc.splitTextToSize(est.desafio || '', pWidth);
+      const spaceNeeded = (desafioLines.length * 5.5) + (tipoEv === 'recreacion_pedagogica' ? 112 : 97);
+      if (y + spaceNeeded > pageHeight - 15) {
+        doc.addPage('a4', 'portrait');
+        drawHeader(`Detective REI - Estacion ${idx + 1} (Continuacion)`);
+        y = 35;
+      }
+
+      // Advertencia recreación (se muestra una única vez controladamente abajo de la caja si es recreación)
       if (tipoEv === 'recreacion_pedagogica') {
-        y = margin + 35 + pistaBoxH + 8;
         doc.setFontSize(7);
         doc.setFont('helvetica', 'italic');
         doc.setTextColor(146, 64, 14);
-        const advLines = doc.splitTextToSize('Advertencia: Esta pista es una recreacion pedagogica inspirada en el material de estudio. No corresponde a una cita textual de la obra o fuente original.', pWidth);
+        const advLines = doc.splitTextToSize('Advertencia: Esta pista es una recreación pedagógica inspirada en el material de estudio. No corresponde a una cita textual de la obra o fuente original.', pWidth);
         advLines.forEach((l: string) => { doc.text(l, margin, y); y += 3.5; });
-      } else {
-        y = margin + 35 + pistaBoxH + 6;
+        y += 6;
       }
-      y += 6;
 
-      // DESAFIO
+      // DESAFÍO
       doc.setFontSize(10);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(rAccent, gAccent, bAccent);
-      doc.text('DESAFIO PEDAGOGICO:', margin, y);
+      doc.text('DESAFÍO PEDAGÓGICO:', margin, y);
       y += 6;
       doc.setFontSize(9.5);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(30, 41, 59);
-      const desafioLines = doc.splitTextToSize(est.desafio || '', pWidth);
       desafioLines.forEach((l: string) => { doc.text(l, margin, y); y += 5.5; });
       y += 4;
 
@@ -464,21 +484,17 @@ export function drawPlayPdf({
       }
       y += 38;
 
-      // Codigo desbloqueado
+      // Código desbloqueado
       doc.setFillColor(rAccent, gAccent, bAccent);
       doc.rect(margin, y, pWidth, 16, 'F');
       doc.setFontSize(10);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(255, 255, 255);
-      doc.text('CODIGO DESBLOQUEADO AL RESOLVER:', margin + 6, y + 7);
-      doc.setFontSize(10);
+      doc.text('CÓDIGO DESBLOQUEADO AL RESOLVER:', margin + 6, y + 10);
       doc.setDrawColor(255, 255, 255);
       doc.setLineWidth(0.5);
       doc.rect(margin + pWidth - 20, y + 2, 14, 12);
-      doc.setFontSize(7.5);
-      doc.setFont('helvetica', 'normal');
-      doc.setTextColor(200, 220, 255);
-      doc.text('letra aqui', margin + pWidth - 19, y + 10);
+      // La casilla queda completamente vacía (no se imprime "letra aqui" para el estudiante)
     });
 
     // ---- PÁGINA 10: Expediente Final ----
@@ -610,10 +626,9 @@ export function drawPlayPdf({
       doc.line(margin, y + li * 9, margin + pWidth, y + li * 9);
     }
 
-    // ---- PÁGINA 12: Guia Docente (Confidencial) ----
-    doc.addPage('a4', 'portrait');
-    drawHeader('Detective REI - Guia Docente', true);
-    y = 35;
+    // ---- PÁGINA 12+: Guia Docente (Confidencial) ----
+    const sol = juego.solucion || {};
+    const respEstaciones = Array.isArray(sol.respuestas_estaciones) ? sol.respuestas_estaciones : [];
 
     const addDocText = (text: string, size: number, style = 'normal', colorHexD = '#334155') => {
       if (!text) return;
@@ -622,17 +637,33 @@ export function drawPlayPdf({
       const [rd, gd, bd] = [parseInt(colorHexD.slice(1,3),16), parseInt(colorHexD.slice(3,5),16), parseInt(colorHexD.slice(5,7),16)];
       doc.setTextColor(rd, gd, bd);
       const dLines = doc.splitTextToSize(text, pWidth);
-      dLines.forEach((l: string) => { doc.text(l, margin, y); y += size * 0.38 + 3.5; });
+      dLines.forEach((l: string) => {
+        if (y > pageHeight - 20) {
+          doc.addPage('a4', 'portrait');
+          drawHeader('Detective REI - Guía Docente', true);
+          y = 35;
+          doc.setFontSize(size);
+          doc.setFont('helvetica', style);
+          doc.setTextColor(rd, gd, bd);
+        }
+        doc.text(l, margin, y);
+        y += size * 0.38 + 3.5;
+      });
     };
 
-    addDocText('GUIA DOCENTE - USO EXCLUSIVO', 13, 'bold', '#dc2626');
+    // PÁGINA 12: Currículum y Contexto
+    doc.addPage('a4', 'portrait');
+    drawHeader('Detective REI - Guía Docente', true);
+    y = 35;
+
+    addDocText('GUÍA DOCENTE - USO EXCLUSIVO (SECCIÓN CURRICULAR)', 12, 'bold', '#dc2626');
     y += 4;
 
-    // OA section
     if (oaListDet.length > 0) {
-      addDocText('OBJETIVOS DE APRENDIZAJE VINCULADOS', 10, 'bold', colorHex);
+      addDocText('OBJETIVOS DE APRENDIZAJE VINCULADOS (DESCRIPCIONES COMPLETAS)', 10, 'bold', colorHex);
+      y += 2;
       oaListDet.forEach((oa: any) => {
-        const origenLblDoc = oa.origen === 'sugerido_ia' ? ' [OA sugerido - verificar]' : oa.origen === 'planificacion' ? ' [de planificacion]' : ' [seleccionado]';
+        const origenLblDoc = oa.origen === 'sugerido_ia' ? ' [OA sugerido - verificar]' : oa.origen === 'planificacion' ? ' [de planificación]' : ' [seleccionado]';
         addDocText(`${oa.codigo}${origenLblDoc}:`, 9, 'bold', '#dc2626');
         addDocText(oa.descripcion || '', 9, 'normal', '#334155');
         y += 2;
@@ -640,36 +671,9 @@ export function drawPlayPdf({
       y += 4;
     }
 
-    // Respuestas por estacion
-    const sol = juego.solucion || {};
-    const respEstaciones = Array.isArray(sol.respuestas_estaciones) ? sol.respuestas_estaciones : [];
-
-    addDocText('RESPUESTAS ESPERADAS POR ESTACION', 10, 'bold', colorHex);
-    y += 2;
-    respEstaciones.forEach((re: any) => {
-      addDocText(`ESTACION ${re.estacion} - Codigo: [${re.codigo_letra || '_'}]`, 9, 'bold', '#1e293b');
-      addDocText(`Respuesta esperada: ${re.respuesta_esperada || ''}`, 9, 'normal', '#334155');
-      addDocText(`Criterio de aceptacion: ${re.criterio_aceptacion || ''}`, 8.5, 'italic', '#64748b');
-      y += 3;
-    });
-
-    y += 2;
-    if (sol.codigo_final_verificado) {
-      addDocText(`CODIGO FINAL VERIFICADO: ${sol.codigo_final_verificado}`, 10, 'bold', '#dc2626');
-      y += 2;
-    }
-
-    addDocText('HIPOTESIS CENTRAL (referencia)', 10, 'bold', colorHex);
-    addDocText(sol.hipotesis_central || '', 9.5, 'normal', '#334155');
-    y += 2;
-
-    addDocText('HIPOTESIS ALTERNATIVAS VALIDAS', 10, 'bold', colorHex);
-    addDocText(sol.hipotesis_alternativas || '', 9.5, 'normal', '#334155');
-    y += 2;
-
-    addDocText('EXPLICACION PEDAGOGICA (segun OA seleccionados)', 10, 'bold', colorHex);
+    addDocText('EXPLICACIÓN PEDAGÓGICA (según OA seleccionados)', 10, 'bold', colorHex);
     addDocText(sol.explicacion_pedagogica || '', 9.5, 'normal', '#334155');
-    y += 2;
+    y += 4;
 
     if (sol.nota_responsabilidad) {
       addDocText('NOTA SOBRE RESPONSABILIDAD', 9, 'bold', '#dc2626');
@@ -677,7 +681,50 @@ export function drawPlayPdf({
       y += 2;
     }
 
-    addDocText('RUBRICA DE EVALUACION DEL EXPEDIENTE FINAL', 10, 'bold', colorHex);
+    // PÁGINA 13: Respuestas Esperadas por Estación
+    doc.addPage('a4', 'portrait');
+    drawHeader('Detective REI - Guía Docente', true);
+    y = 35;
+
+    addDocText('GUÍA DOCENTE - PAUTA DE RESPUESTAS POR ESTACIÓN', 12, 'bold', '#dc2626');
+    y += 4;
+
+    addDocText('RESPUESTAS ESPERADAS Y CRITERIOS DE ACEPTACIÓN', 10, 'bold', colorHex);
+    y += 2;
+    respEstaciones.forEach((re: any) => {
+      if (y > pageHeight - 35) {
+        doc.addPage('a4', 'portrait');
+        drawHeader('Detective REI - Guía Docente', true);
+        y = 35;
+      }
+      addDocText(`ESTACIÓN ${re.estacion} - Código: [ ${re.codigo_letra || '_'} ]`, 9.5, 'bold', '#1e293b');
+      addDocText(`Respuesta esperada: ${re.respuesta_esperada || ''}`, 9, 'normal', '#334155');
+      addDocText(`Criterio de aceptación: ${re.criterio_aceptacion || ''}`, 8.5, 'italic', '#64748b');
+      y += 3;
+    });
+
+    if (sol.codigo_final_verificado) {
+      y += 4;
+      addDocText(`CÓDIGO FINAL VERIFICADO: ${sol.codigo_final_verificado}`, 11, 'bold', '#dc2626');
+    }
+
+    // PÁGINA 14: Resolución y Rúbrica
+    doc.addPage('a4', 'portrait');
+    drawHeader('Detective REI - Guía Docente', true);
+    y = 35;
+
+    addDocText('GUÍA DOCENTE - RESOLUCIÓN Y RÚBRICA', 12, 'bold', '#dc2626');
+    y += 4;
+
+    addDocText('HIPÓTESIS CENTRAL DE REFERENCIA', 10, 'bold', colorHex);
+    addDocText(sol.hipotesis_central || '', 9.5, 'normal', '#334155');
+    y += 4;
+
+    addDocText('HIPÓTESIS ALTERNATIVAS VÁLIDAS', 10, 'bold', colorHex);
+    addDocText(sol.hipotesis_alternativas || '', 9.5, 'normal', '#334155');
+    y += 4;
+
+    addDocText('RÚBRICA DE EVALUACIÓN DEL EXPEDIENTE FINAL', 10, 'bold', colorHex);
     y += 2;
     if (sol.rubrica) {
       addDocText('NIVEL 3 - Logrado:', 9, 'bold', '#166534');

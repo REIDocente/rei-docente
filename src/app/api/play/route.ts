@@ -291,12 +291,19 @@ SISTEMA DE CITAS (CRITICO):
 
 EXPEDIENTE FINAL: La hipotesis es una interpretacion pedagogica fundamentada, no una verdad absoluta. El docente debe aceptar hipotesis alternativas bien fundamentadas.
 
-PAUTA DOCENTE:
+PAUTA DOCENTE (REGLAS NARRATIVAS Y ÉTICAS CRÍTICAS):
 - Si el material involucra un crimen, accion danina o decision cuestionable: la responsabilidad recae en el sujeto o agente de esa accion.
 - NO afirmar que "la mente" o un factor externo fue "el verdadero responsable".
 - NO usar frases como "era inevitable" o "su mente lo llevo a...".
 - Si hay trastorno mental, obsesion o condicionamiento en el material: explicar que ayuda a comprender la construccion narrativa o causal, pero no justifica ni transfiere la responsabilidad del sujeto.
 - La hipotesis_central debe formularse como interpretacion solida, no como verdad cerrada.
+- Para novelas o narrativas que traten sobre crímenes, violencia u obsesiones (como "El Túnel" de Ernesto Sábato): el análisis e hipótesis no deben culpar a una entidad abstracta o "la mente", ni justificar la violencia como resultado de la desilusión de una "mujer ideal". Se debe enfatizar la responsabilidad del sujeto agente y cómo su incapacidad para aceptar la autonomía y alteridad de la persona real (como María Iribarne) transforma la frustración, los celos y la necesidad de control en violencia. Las caracterizaciones de otros personajes (como María o Hunter) deben presentarse explícitamente como la interpretación o proyección subjetiva de Castel, no como hechos objetivos del relato.
+
+CÓDIGO FINAL DE 6 LETRAS (REGLA CRÍTICA):
+- El campo "codigo_final" debe ser una palabra o acrónimo real en español, con significado coherente y estrechamente relacionado con el material (ej: "TUNELA" o "SABATO" para El Túnel, o palabras reales de 6 letras relacionadas con el tema).
+- Las letras de los "codigo_letra" de las 6 estaciones en orden correlativo (Estación 1 a 6) DEBEN formar exactamente esta palabra (ej: Est.1=T, Est.2=U, Est.3=N, Est.4=E, Est.5=L, Est.6=A).
+- Cada "codigo_letra" debe ser de exactamente un carácter.
+- Se verificará automáticamente. Si no coinciden exactamente o no es una palabra válida de 6 letras, la generación será rechazada y se solicitará una regeneración.
 
 OBJETIVOS DE APRENDIZAJE (campo objetivos_aprendizaje — OBLIGATORIO):
 - Revisa los "OAs entregados" en el prompt de usuario. Si hay OA codes, incluyelos con codigo + descripcion MINEDUC + origen.
@@ -392,9 +399,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         error: 'limite_alcanzado',
+        message: 'Alcanzaste el límite del plan piloto. Has utilizado todas las generaciones disponibles para este módulo.',
         reason: guard.reason,
         tipo: 'juegos_generated',
-        limit: isActive ? 999999 : 3,
+        limit: isActive ? 999999 : 0,
         current: guard.profile?.juegos_generated ?? 0,
         plan_status: guard.profile?.plan_status,
         renewal_date: guard.renewalDate,
@@ -507,31 +515,126 @@ Genera el contenido pedagógico completo y detallado para el juego siguiendo las
 
   const anthropic = new Anthropic({ apiKey });
   let rawText = '';
+  let contentJson: any = null;
+  let attempts = 0;
+  const maxAttempts = 3;
+  let validationErrorMsg = '';
 
-  try {
-    const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 8000,
-      system: [
-        {
-          type: 'text',
-          text: buildPlaySystemPrompt(motor),
-          cache_control: { type: 'ephemeral' }
+  while (attempts < maxAttempts) {
+    attempts++;
+    console.log(`[play] Claude generation attempt ${attempts} of ${maxAttempts}...`);
+    try {
+      const messages = [{ role: 'user', content: userPrompt }];
+      if (validationErrorMsg) {
+        messages.push({
+          role: 'user',
+          content: `ERROR EN EL INTENTO ANTERIOR: ${validationErrorMsg}\n\nPor favor, vuelve a generar el JSON completo asegurándote de cumplir ESTRICTAMENTE con:
+1. El código final tiene exactamente 6 letras: codigo_final.length === 6.
+2. Cada estación tiene un código de exactamente un carácter: codigo_letra.length === 1.
+3. El join de todos los códigos de estación en orden es igual al código final: codigos.join("") === codigo_final.
+4. El código final es una palabra significativa y real en español relacionada con el material.
+5. Los códigos correspondientes en solucion.respuestas_estaciones coinciden exactamente.`
+        } as any);
+      }
+
+      const response = await anthropic.messages.create({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 8000,
+        system: [
+          {
+            type: 'text',
+            text: buildPlaySystemPrompt(motor),
+            cache_control: { type: 'ephemeral' }
+          }
+        ] as any,
+        messages: messages as any,
+      });
+
+      rawText = response.content[0].type === 'text' ? response.content[0].text.trim() : '';
+      const cleanText = sanitizeJson(rawText);
+      contentJson = JSON.parse(cleanText);
+
+      // Validation
+      if (motor === 'detective') {
+        const estaciones = Array.isArray(contentJson.estaciones) ? contentJson.estaciones : [];
+        if (estaciones.length !== 6) {
+          throw new Error(`Se esperaban exactamente 6 estaciones, pero se obtuvieron ${estaciones.length}.`);
         }
-      ] as any,
-      messages: [{ role: 'user', content: userPrompt }],
-    });
-    rawText = response.content[0].type === 'text' ? response.content[0].text.trim() : '';
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    console.error('[play] Claude generation failed:', msg);
-    return NextResponse.json({ error: 'Error de Claude al generar el juego. Intente nuevamente.' }, { status: 500 });
+
+        const codigos = estaciones.map((est: any) => (est.codigo_letra || '').toUpperCase().trim()).filter(Boolean);
+        if (codigos.length !== 6) {
+          throw new Error(`Se esperaban 6 códigos de estación, pero se encontraron ${codigos.length}.`);
+        }
+
+        if (!codigos.every((c: string) => c.length === 1)) {
+          throw new Error('Todos los códigos de estación (codigo_letra) deben ser de exactamente 1 carácter.');
+        }
+
+        const codigoFinal = (contentJson.codigo_final || '').toUpperCase().trim();
+        if (codigoFinal.length !== 6) {
+          throw new Error(`El código final debe tener exactamente 6 letras, pero tiene ${codigoFinal.length} ("${codigoFinal}").`);
+        }
+
+        if (codigos.join('') !== codigoFinal) {
+          throw new Error(`Los códigos de estación individuales unidos en orden ("${codigos.join('')}") no coinciden con el código final ("${codigoFinal}").`);
+        }
+
+        // Check if it looks like a real/pronounceable word (e.g. contains vowels, not random consonants)
+        const hasVowels = /[AEIOUÁÉÍÓÚ]/.test(codigoFinal);
+        if (!hasVowels) {
+          throw new Error(`El código final "${codigoFinal}" no parece ser una palabra válida en español (no contiene vocales).`);
+        }
+
+        // Validate solucion
+        if (!contentJson.solucion || !Array.isArray(contentJson.solucion.respuestas_estaciones)) {
+          throw new Error('Falta el objeto "solucion" o "respuestas_estaciones".');
+        }
+
+        const solResp = contentJson.solucion.respuestas_estaciones;
+        if (solResp.length !== 6) {
+          throw new Error(`Se esperaban 6 respuestas de estación en el solucionario, pero se encontraron ${solResp.length}.`);
+        }
+
+        for (let i = 0; i < 6; i++) {
+          const re = solResp.find((r: any) => r.estacion === (i + 1));
+          if (!re) {
+            throw new Error(`Falta la respuesta para la estación ${i + 1} en el solucionario.`);
+          }
+          const solLetra = (re.codigo_letra || '').toUpperCase().trim();
+          if (solLetra !== codigoFinal[i]) {
+            throw new Error(`El código de la estación ${i + 1} en el solucionario ("${solLetra}") no coincide con la letra correspondiente del código final ("${codigoFinal[i]}").`);
+          }
+        }
+
+        // Deduplicate/Clean warning text from clue content to avoid duplicate warning lines
+        estaciones.forEach((est: any) => {
+          if (est.pista && typeof est.pista.contenido === 'string') {
+            let content = est.pista.contenido;
+            content = content.replace(/Advertencia:\s*Esta pista es una recreaci[oó]n pedag[oó]gica[^.]+?\.?\s*/gi, '').trim();
+            content = content.replace(/Nota:\s*Esta pista es una recreaci[oó]n pedag[oó]gica[^.]+?\.?\s*/gi, '').trim();
+            content = content.replace(/Esta pista es una recreaci[oó]n pedag[oó]gica[^.]+?\.?\s*/gi, '').trim();
+            est.pista.contenido = content;
+          }
+        });
+      }
+
+      // If validation passed, break the loop
+      break;
+
+    } catch (err: any) {
+      console.warn(`[play] Validation attempt ${attempts} failed:`, err.message);
+      validationErrorMsg = err.message;
+      if (attempts >= maxAttempts) {
+        return NextResponse.json({
+          error: 'Error de validación de juego tras múltiples intentos de Claude.',
+          details: err.message,
+          raw: rawText
+        }, { status: 500 });
+      }
+    }
   }
 
   try {
-    const cleanText = sanitizeJson(rawText);
-    const contentJson = JSON.parse(cleanText);
-
     // Inject metadata so renderers can access nivel/tema/oa_codes via juego.*
     contentJson.nivel = nivel;
     contentJson.tema = effectiveTema;

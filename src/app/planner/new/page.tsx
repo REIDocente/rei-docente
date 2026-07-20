@@ -1759,14 +1759,14 @@ export default function NewPlannerPage() {
                 ? 'Cupo mensual alcanzado'
                 : upgradeReason === 'trial_expired'
                 ? 'Tu período de prueba ha terminado'
-                : 'Límite de planificaciones alcanzado'}
+                : 'Límite del Plan Piloto'}
             </h2>
             <p className="text-slate-500 text-sm leading-relaxed">
               {upgradePlanStatus === 'active'
                 ? `Has alcanzado tu cupo mensual de ${upgradeLimit} planificaciones en tu suscripción. Tu cupo se renovará automáticamente en tu próximo ciclo el ${formattedRenewalDate}.`
                 : upgradeReason === 'trial_expired'
                 ? 'Tu trial gratuito de 7 días ha expirado. Actualiza tu plan para seguir generando recursos visuales, planificaciones y más.'
-                : `Has generado 10 planificaciones en tu trial gratuito. Los demás módulos siguen funcionando con sus propios límites. Actualiza para generación ilimitada.`}
+                : 'Alcanzaste el límite del plan piloto. Has utilizado todas las generaciones disponibles para este módulo.'}
             </p>
           </div>
 
