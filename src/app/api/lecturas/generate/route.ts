@@ -241,8 +241,8 @@ ${generationInstruction}
 
   try {
     const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 8000,
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 3000,
       system: `Eres un experto en didáctica de la lengua y literatura chilena (MINEDUC) y Didakta.
 Recibirás el expediente completo de un libro y una plantilla de ${tipo}. Tu trabajo es completar la plantilla con contenido pedagógico de alta calidad, alineado al currículum chileno.
 NO inventes información que no esté en el expediente del libro.
