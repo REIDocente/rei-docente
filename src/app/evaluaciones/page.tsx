@@ -456,7 +456,17 @@ export default function EvaluacionesPage() {
           .select('id, libro_id, nivel_docente, oa_docente, biblioteca_libros(id, titulo, autor, cursos_sugeridos, oa_sugeridos)')
           .order('created_at', { ascending: false });
 
-        const flattened = (lecturasData || []).map((ld: any) => ({
+        // Deduplicar por título: preferir el registro que tenga nivel_docente definido
+        const seenTitulos = new Map<string, any>();
+        (lecturasData || []).forEach((ld: any) => {
+          const titulo = ld.biblioteca_libros?.titulo;
+          if (!titulo) return;
+          const existing = seenTitulos.get(titulo);
+          if (!existing || (ld.nivel_docente && !existing.nivel_docente)) {
+            seenTitulos.set(titulo, ld);
+          }
+        });
+        const flattened = Array.from(seenTitulos.values()).map((ld: any) => ({
           id: ld.id,
           libro_id: ld.libro_id,
           titulo: ld.biblioteca_libros?.titulo,
@@ -465,7 +475,7 @@ export default function EvaluacionesPage() {
           oa_docente: ld.oa_docente,
           cursos_sugeridos: ld.biblioteca_libros?.cursos_sugeridos,
           oa_sugeridos: ld.biblioteca_libros?.oa_sugeridos
-        })).filter(l => l.titulo);
+        }));
 
         setLecturas(flattened);
         if (flattened.length > 0) {

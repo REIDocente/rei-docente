@@ -254,13 +254,21 @@ Responde SIEMPRE con el contenido completo de la plantilla hasta el final, inclu
 
     const generatedContent = response.content[0].type === 'text' ? response.content[0].text.trim() : '';
 
-    // Guardar nivel y oa en lecturas_docente para que Evaluaciones los pueda leer
+    // Guardar nivel y oa en lecturas_docente para que Evaluaciones los pueda leer.
+    // Actualizamos TODOS los registros del mismo título (hay libros duplicados en biblioteca_libros).
     if (nivel || (oa && oa.length > 0)) {
-      await supabase
-        .from('lecturas_docente')
-        .update({ nivel_docente: nivel || null, oa_docente: oa.length > 0 ? oa : null })
-        .eq('user_id', userId)
-        .eq('libro_id', libro_id);
+      const { data: librosConMismoTitulo } = await supabase
+        .from('biblioteca_libros')
+        .select('id')
+        .ilike('titulo', libro.titulo);
+      const todosLibroIds = (librosConMismoTitulo || []).map((l: any) => l.id);
+      if (todosLibroIds.length > 0) {
+        await supabase
+          .from('lecturas_docente')
+          .update({ nivel_docente: nivel || null, oa_docente: oa.length > 0 ? oa : null })
+          .eq('user_id', userId)
+          .in('libro_id', todosLibroIds);
+      }
     }
 
     // Incrementar contador de uso
