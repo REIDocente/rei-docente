@@ -1190,24 +1190,85 @@ Genera la Página ${pagina} de ${total} como imagen A4 ilustrada y lista para im
   const handleDuaRealGenerate = () => {
     if (!result) return;
     const cj = (result as any).contenido_json || result;
+
+    // ── Fix #1: OA_EVAL — filtrar y usar estado oa como fallback ─────────────
+    const rawOaCodes: string[] = (cj as any).oa_codes || [];
+    const cleanOaCodes = rawOaCodes.filter((c: string) => c !== 'OA_EVAL');
+    let oasLabel = cleanOaCodes.join(', ');
+    if (!oasLabel) {
+      const matches = oa.match(/OA\s*\d+/gi);
+      oasLabel = matches ? matches.map((m: string) => m.toUpperCase().replace(/\s+/g, ' ')).join(', ') : '';
+    }
+    if (!oasLabel) oasLabel = String((cj as any).oa || '');
+
+    // ── Fix #2: curso — usar estado curso como fallback ───────────────────────
     const _ctx = {
       establecimiento: establecimiento || String((cj as any).establecimiento || ''),
       docente: docente || String((cj as any).docente || ''),
-      asignatura: String((cj as any).asignatura || 'Lenguaje'),
-      curso: String((cj as any).nivel || (cj as any).curso || ''),
-      oas: String(((cj as any).oa_codes || []).join(', ') || (cj as any).oa || ''),
+      asignatura: String((cj as any).asignatura || 'Lenguaje y Comunicacion'),
+      curso: String((cj as any).nivel || (cj as any).curso || curso || ''),
+      oas: oasLabel,
     };
 
-    // Extraer secciones del JSON (igual que Version Visual)
+    // ── Fix #3+4: REI Docente pre-selecciona preguntas ────────────────────────
+    // Gemini solo diseña — no toma decisiones pedagógicas
+    const MC: any[] = cj.preguntas_alternativas || (cj.preguntas || []).filter((p: any) =>
+      p.tipo === 'seleccion_multiple' || (Array.isArray(p.alternativas) && p.alternativas.length > 0)
+    );
+    const DEV: any[] = cj.preguntas_desarrollo || (cj.preguntas || []).filter((p: any) =>
+      p.tipo === 'desarrollo' || p.tipo === 'consigna_abierta'
+    );
+
+    const getHabilidad = (q: any): 'comprender' | 'analizar' | 'evaluar' | 'otro' => {
+      const h = String(q.nivel_cognitivo || q.habilidad || q.habilidad_cognitiva || '').toLowerCase();
+      if (h.includes('comprender') || h.includes('literal') || h.includes('identific')) return 'comprender';
+      if (h.includes('analiz') || h.includes('inferir') || h.includes('inferenci')) return 'analizar';
+      if (h.includes('evaluar') || h.includes('critic') || h.includes('valorar')) return 'evaluar';
+      return 'otro';
+    };
+
+    const byH: Record<string, any[]> = { comprender: [], analizar: [], evaluar: [], otro: [] };
+    MC.forEach((q: any) => byH[getHabilidad(q)].push(q));
+
+    // 2 Comprender + 2 Analizar + 1 Evaluar = máx 5 SM
+    const selected: any[] = [
+      ...byH.comprender.slice(0, 2),
+      ...byH.analizar.slice(0, 2),
+      ...byH.evaluar.slice(0, 1),
+    ];
+    // Completar hasta 5 si faltan categorías
+    if (selected.length < 5) {
+      const usedNums = new Set(selected.map((q: any) => q.numero || q.numero_original));
+      const extras = MC.filter((q: any) => !usedNums.has(q.numero || q.numero_original));
+      selected.push(...extras.slice(0, 5 - selected.length));
+    }
+
+    const gaQ = (alts: any[], ix: number) => {
+      const a = alts[ix]; if (!a) return '—';
+      return typeof a === 'string' ? a : (a.texto || '—');
+    };
+    const habLabel = (q: any) => {
+      const h = getHabilidad(q);
+      return h === 'comprender' ? '(Literal)' : h === 'analizar' ? '(Inferencial)' : h === 'evaluar' ? '(Crítico)' : '';
+    };
+
+    let contenidoPregsSeleccionadas = `PREGUNTAS SELECCIONADAS — ${selected.length} de ${MC.length} (${oasLabel}):\n\n`;
+    contenidoPregsSeleccionadas += selected.map((q: any) => {
+      const alts: any[] = Array.isArray(q.alternativas) ? q.alternativas : [];
+      const num = q.numero_original || q.numero || '?';
+      return `P${num} ${habLabel(q)}: ${q.enunciado || ''}\n  A) ${gaQ(alts,0)}\n  B) ${gaQ(alts,1)}\n  C) ${gaQ(alts,2)}\n  D) ${gaQ(alts,3)}\n  [Clave: ${q.clave || '—'}]`;
+    }).join('\n\n');
+
+    if (DEV.length > 0) {
+      contenidoPregsSeleccionadas += `\n\nPREGUNTA DE DESARROLLO:\n${DEV[0].enunciado || ''}\n[Puntaje: ${DEV[0].puntaje || 4} pts]`;
+    }
+
     const allSections = buildDuaEvalSections(cj);
     const textoSecs = allSections.filter(s => s.tipo === 'portada_texto' || s.tipo === 'texto' || s.tipo === 'portada');
-    const pregSecs  = allSections.filter(s => s.tipo === 'preguntas' || s.tipo === 'desarrollo');
 
     const contenidoTexto = textoSecs.map(s => s.contenido).join('\n\n') ||
       '[Sin texto de lectura — incluir encabezado e instrucciones de la evaluacion]';
-    const contenidoPregs = pregSecs.map(s => s.contenido).join('\n\n') ||
-      '[Sin preguntas disponibles]';
-    const contenidoCierre = 'PAGINA DE CIERRE DUA\nIncluye: (1) Semaforo de autoevaluacion, (2) Espacio de reflexion: "Aprendi que... / Todavia tengo dudas sobre...", (3) Mensaje motivador de cierre.';
+    const contenidoCierre = 'PAGINA DE CIERRE DUA\nIncluye: (1) Semaforo de autoevaluacion: No lo entendi / Lo estoy logrando / Lo aprendi. (2) Espacio de reflexion: "Aprendi que... / Todavia tengo dudas sobre...". (3) Mensaje motivador de cierre.';
 
     const duaSections = [
       {
@@ -1217,8 +1278,8 @@ Genera la Página ${pagina} de ${total} como imagen A4 ilustrada y lista para im
       },
       {
         label: 'Pag 2 DUA — Preguntas',
-        contenido: contenidoPregs,
-        nota: 'Selecciona solo las preguntas MAS REPRESENTATIVAS del OA (4-5 SM + 1 desarrollo max). Omite las menos esenciales. Mantiene claves correctas y puntajes.',
+        contenido: contenidoPregsSeleccionadas,
+        nota: 'Las preguntas ya fueron seleccionadas. Tu tarea es SOLO el diseno editorial DUA: pictogramas, espacio visual, iniciadores de oracion. NO modificar enunciados, alternativas ni claves.',
       },
       {
         label: 'Pag 3 DUA — Cierre',
