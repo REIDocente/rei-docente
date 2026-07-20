@@ -203,7 +203,7 @@ export default function GuiasPage() {
         ? fullName.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase()
         : (email ? email[0].toUpperCase() : 'U');
       setInitials(initLetters);
-      setDocenteNombre(fullName || 'Docente');
+      setDocenteNombre(fullName || '');
 
       // Fetch actual plannings from Supabase
       try {
@@ -937,8 +937,8 @@ export default function GuiasPage() {
     if (!result) return;
     const cj = (result as any).contenido_json || result;
     const _ctx = {
-      establecimiento: establecimientoGuia || String((cj as any).establecimiento || ''),
-      docente: docenteNombre || String((cj as any).docente || ''),
+      establecimiento: establecimientoGuia || '',
+      docente: docenteNombre || '',
       asignatura: String((cj as any).asignatura || 'Lenguaje y Comunicacion'),
       curso: String((cj as any).nivel || (cj as any).curso || ''),
       oas: String(((cj as any).oa_codes || []).join(', ') || (cj as any).oa || ''),
