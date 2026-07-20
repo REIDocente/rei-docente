@@ -221,6 +221,24 @@ function ExpedientePanel({
 
 // ── Component ──────────────────────────────────────────────────────────────
 
+function copyToClipboard(text: string, onSuccess: () => void) {
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(onSuccess).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      onSuccess();
+    });
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    onSuccess();
+  }
+}
+
 export default function LecturasPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
@@ -267,6 +285,7 @@ export default function LecturasPage() {
   const [modalNumDes, setModalNumDes]             = useState(3);
   const [exportingModalPdf, setExportingModalPdf] = useState(false);
   const [exportingModalWord, setExportingModalWord] = useState(false);
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
   // Recursos generados (sesión)
   const [recursosGenerados, setRecursosGenerados] = useState<Record<string, RecursoGenerado>>({});
@@ -938,10 +957,13 @@ export default function LecturasPage() {
                               <p className="text-[10px] text-slate-500 leading-relaxed line-clamp-3">{prompt}</p>
                               <button
                                 type="button"
-                                onClick={() => navigator.clipboard.writeText(prompt)}
-                                className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-[10px] font-bold transition-all cursor-pointer"
+                                onClick={() => copyToClipboard(prompt, () => {
+                                  setCopiedKey(key);
+                                  setTimeout(() => setCopiedKey(null), 2000);
+                                })}
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all cursor-pointer ${copiedKey === key ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-emerald-700 hover:bg-emerald-800 text-white'}`}
                               >
-                                <Copy className="w-3 h-3" /> Copiar Prompt
+                                {copiedKey === key ? <><Check className="w-3 h-3" /> ¡Copiado!</> : <><Copy className="w-3 h-3" /> Copiar Prompt</>}
                               </button>
                             </div>
                           ))}
