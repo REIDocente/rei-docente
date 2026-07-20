@@ -1651,6 +1651,32 @@ export default function GuiasPage() {
                 </div>
               )}
 
+              {/* Datos del establecimiento y docente */}
+              {activeTab === 'generador' && (
+                <div className="grid grid-cols-2 gap-3 pt-1">
+                  <div>
+                    <label className="block text-[8px] font-bold text-slate-400 uppercase mb-1">Nombre del establecimiento</label>
+                    <input
+                      type="text"
+                      value={establecimientoGuia}
+                      onChange={(e) => setEstablecimientoGuia(e.target.value)}
+                      placeholder="Ej: Colegio San Martín"
+                      className="w-full bg-white border border-slate-200 rounded-lg p-1.5 text-[10px] font-semibold focus:outline-none focus:border-emerald-500 transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[8px] font-bold text-slate-400 uppercase mb-1">Nombre del docente</label>
+                    <input
+                      type="text"
+                      value={docenteNombre}
+                      onChange={(e) => setDocenteNombre(e.target.value)}
+                      placeholder="Ej: Juan Pérez"
+                      className="w-full bg-white border border-slate-200 rounded-lg p-1.5 text-[10px] font-semibold focus:outline-none focus:border-emerald-500 transition-colors"
+                    />
+                  </div>
+                </div>
+              )}
+
               {/* Action Button */}
               {activeTab === 'generador' && (
                 <div className="pt-4 border-t border-slate-100">
