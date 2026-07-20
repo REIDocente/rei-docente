@@ -716,50 +716,73 @@ export default function GuiasPage() {
     const sections: DuaSection[] = [];
     const univ = cj.universal || {};
 
-    // Página 1 — Portada + Texto
-    const lectura = univ.lectura_principal || cj.texto_sesion || cj.texto || null;
+    // ── Página 1 — Portada + Texto de Lectura ─────────────────────────────────
+    // Formato Kit de Clase: cj.texto_lectura.contenido
+    // Formato Universal:    cj.universal.desarrollo.texto_principal
     let c1 = 'PORTADA Y TEXTO DE LECTURA\n';
-    if (lectura) {
-      c1 += typeof lectura === 'string'
-        ? lectura.slice(0, 1800)
-        : `Título: ${lectura.titulo || lectura.title || '—'}\n${(lectura.cuerpo || lectura.contenido || lectura.content || '').slice(0, 1800)}`;
+    if (cj.objetivo_clase) c1 += `OBJETIVO: ${cj.objetivo_clase}\n\n`;
+    if (cj.activacion)     c1 += `PREGUNTA DE ACTIVACIÓN: ${cj.activacion}\n\n`;
+
+    const txtLectura = cj.texto_lectura;
+    if (txtLectura && (txtLectura.contenido || txtLectura.cuerpo)) {
+      if (txtLectura.titulo) c1 += `TEXTO: "${txtLectura.titulo}"`;
+      if (txtLectura.tipo)   c1 += ` (${txtLectura.tipo})`;
+      if (txtLectura.autor)  c1 += ` — Autor: ${txtLectura.autor}`;
+      c1 += `\n\n${(txtLectura.contenido || txtLectura.cuerpo || '').slice(0, 2000)}`;
+    } else if (univ.desarrollo?.texto_principal) {
+      c1 += univ.desarrollo.texto_principal.slice(0, 2000);
+    } else if (cj.texto_sesion || cj.texto) {
+      const t = cj.texto_sesion || cj.texto;
+      c1 += typeof t === 'string' ? t.slice(0, 2000) : JSON.stringify(t).slice(0, 2000);
     } else {
-      c1 += '[Sin texto de lectura — agregar encabezado de guía con objetivo y pregunta de anticipación]';
+      c1 += '[Sin texto de lectura disponible]';
     }
     sections.push({ tipo: 'portada', label: 'Portada y texto de lectura', contenido: c1 });
 
-    // Página 2 — Actividades
-    const actividades = univ.actividades || cj.bloques || cj.actividades || [];
-    let c2 = 'ACTIVIDADES PRINCIPALES:\n';
-    if (Array.isArray(actividades) && actividades.length > 0) {
-      c2 += actividades.slice(0, 6).map((a: any, i: number) => {
-        const titulo  = a.titulo || a.nombre || a.tipo || `Actividad ${i + 1}`;
-        const instrs  = a.instrucciones || a.descripcion || a.enunciado || a.contenido || '';
-        const pregsAc: any[] = a.preguntas || a.items || [];
-        let bloque = `[${titulo}]\n${typeof instrs === 'string' ? instrs.slice(0, 250) : ''}`;
-        if (pregsAc.length > 0) {
-          bloque += '\n' + pregsAc.slice(0, 4).map((p: any) =>
-            `  - ${typeof p === 'string' ? p : (p.enunciado || p.pregunta || p.texto || '')}`
-          ).join('\n');
+    // ── Página 2 — Actividades / Desafíos ────────────────────────────────────
+    // Formato Kit de Clase: cj.desafios[] con tipo, instruccion, items/pares/oraciones
+    // Formato Universal:    cj.universal.actividades.preguntas[]
+    let c2 = 'ACTIVIDADES PRINCIPALES:\n\n';
+    const desafios: any[] = cj.desafios || [];
+    if (desafios.length > 0) {
+      c2 += desafios.slice(0, 5).map((d: any, i: number) => {
+        const tipo   = d.tipo ? d.tipo.replace(/_/g, ' ').toUpperCase() : `ACTIVIDAD ${i + 1}`;
+        const instr  = d.instruccion || d.instrucciones || '';
+        const items  = d.items || d.pares || d.oraciones || d.fragmentos || d.afirmaciones || [];
+        let bloque = `[${tipo}]\n${instr}`;
+        if (Array.isArray(items) && items.length > 0) {
+          bloque += '\n' + items.slice(0, 5).map((it: any) => {
+            if (typeof it === 'string') return `  - ${it}`;
+            const txt = it.afirmacion || it.texto || it.izquierda || (it.grupo ? it.grupo.join(', ') : '') || '';
+            return `  - ${txt}`;
+          }).join('\n');
         }
         return bloque;
       }).join('\n\n');
     } else {
-      c2 += '[Sin actividades explícitas — generar actividades DUA basadas en el texto de la página 1]';
+      const preguntas: any[] = univ.actividades?.preguntas || cj.bloques || cj.actividades || [];
+      if (preguntas.length > 0) {
+        c2 += preguntas.slice(0, 6).map((p: any, i: number) => {
+          const num = p.numero || i + 1;
+          return `P${num}: ${p.enunciado || p.texto || p.pregunta || ''}`;
+        }).join('\n');
+        const prod = univ.actividades?.produccion_escrita;
+        if (prod) c2 += `\n\nPRODUCCIÓN ESCRITA:\n${prod.consigna || prod.instruccion || ''}`;
+      } else {
+        c2 += '[Sin actividades — generar actividades DUA basadas en el texto de la página 1]';
+      }
     }
     sections.push({ tipo: 'actividades', label: 'Actividades principales', contenido: c2 });
 
-    // Página 3 — Desafío + Cierre
-    const desafio   = univ.desafio_ludico || cj.desafio_ludico || null;
-    const reflexion = univ.reflexion_final || cj.reflexion_final || '';
-    let c3 = 'DESAFÍO LÚDICO Y CIERRE:\n';
-    if (desafio) {
-      c3 += typeof desafio === 'string' ? desafio.slice(0, 500) :
-        `[${desafio.tipo || 'Desafío'}] ${desafio.instrucciones || desafio.descripcion || ''}`.slice(0, 500);
-    } else {
-      c3 += '[Sin desafío — generar uno apropiado para el tema]';
+    // ── Página 3 — Cierre ────────────────────────────────────────────────────
+    const cierre = univ.cierre || {};
+    let c3 = 'CIERRE:\n';
+    if (cierre.ticket_salida?.pregunta) c3 += `TICKET DE SALIDA: ${cierre.ticket_salida.pregunta}\n\n`;
+    if (Array.isArray(cierre.autoevaluacion) && cierre.autoevaluacion.length > 0) {
+      c3 += `AUTOEVALUACIÓN:\n${cierre.autoevaluacion.map((x: string) => `- ${x}`).join('\n')}\n\n`;
     }
-    if (reflexion) c3 += `\n\nREFLEXIÓN FINAL:\n${typeof reflexion === 'string' ? reflexion.slice(0, 300) : ''}`;
+    if (cierre.frase_pnl) c3 += `FRASE DE CIERRE: ${cierre.frase_pnl}\n`;
+    if (c3 === 'CIERRE:\n') c3 += '[Generar cierre motivador con semáforo de autoevaluación y mensaje final]';
     sections.push({ tipo: 'cierre', label: 'Desafío y cierre', contenido: c3 });
 
     return sections;
