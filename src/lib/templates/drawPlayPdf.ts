@@ -104,227 +104,573 @@ export function drawPlayPdf({
   // 1. GENERACIÓN SEGÚN MOTOR
   if (motorId === 'detective') {
     const width = getPageWidth();
+    const estaciones = Array.isArray(juego.estaciones) ? juego.estaciones : [];
+    const oaListDet = Array.isArray(juego.objetivos_aprendizaje) ? juego.objetivos_aprendizaje : [];
+
     // ---- PÁGINA 1: Portada ----
-    drawHeader('Detective - Portada');
-    y = 50;
-    addText(juego.nombre_caso || 'Caso sin Título', 24, 'bold', colorHex);
-    y += 10;
-    addText('REI PLAY · JUEGO DE MESA PEDAGÓGICO', 10, 'bold', '#64748b');
-    y += 40;
-
-    // Caja de metadatos del investigador
-    doc.setDrawColor(rAccent, gAccent, bAccent);
-    doc.setLineWidth(1);
-    doc.rect(margin, y, width, 45);
-    y += 8;
-    addText(' FICHA DE INVESTIGACIÓN PEDAGÓGICA', 11, 'bold', colorHex, margin + 5);
+    drawHeader('Detective REI - Portada');
+    y = 45;
+    addText(juego.nombre_caso || 'Expediente sin Titulo', 22, 'bold', colorHex);
     y += 6;
-    addText(` Asignatura: Lenguaje y Comunicación`, 10, 'normal', '#334155', margin + 5);
-    addText(` Nivel: ${juego.nivel || 'General'}`, 10, 'normal', '#334155', margin + 5);
-    addText(` Investigador(a): ____________________________________________________`, 10, 'bold', '#1e293b', margin + 5);
-    addText(` Fecha de la Investigación: _____ / _____ / 2026`, 10, 'normal', '#334155', margin + 5);
+    addText('DETECTIVE REI · EXPEDIENTE DE INVESTIGACION POR ESTACIONES', 9, 'bold', '#64748b');
+    y += 14;
 
-    // ---- PÁGINA 2: Mapa de la Escena (Landscape) ----
-    doc.addPage('a4', 'landscape');
-    const lWidth = getPageWidth();
-    drawHeader('Detective - Mapa');
+    // Nota metodologica
+    if (juego.nota_metodologica) {
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'italic');
+      doc.setTextColor(100, 116, 139);
+      const nmLines = doc.splitTextToSize(`Nota: ${juego.nota_metodologica}`, width);
+      nmLines.forEach((l: string) => { doc.text(l, margin, y); y += 4; });
+      y += 4;
+    }
 
-    doc.setFontSize(14);
+    // Ficha de investigador
+    doc.setDrawColor(rAccent, gAccent, bAccent);
+    doc.setLineWidth(0.8);
+    doc.rect(margin, y, width, 68);
+    y += 8;
+    addText('EXPEDIENTE DE INVESTIGACION PEDAGOGICA', 10, 'bold', colorHex, margin + 5);
+    y += 2;
+    addText(`Asignatura: Lengua y Literatura`, 9.5, 'normal', '#334155', margin + 5);
+    addText(`Nivel: ${juego.nivel || (oaListDet.length > 0 ? '' : 'General')}`, 9.5, 'normal', '#334155', margin + 5);
+    addText(`Investigador(a): ________________________________________`, 9.5, 'bold', '#1e293b', margin + 5);
+    addText(`Equipo N°: _______`, 9.5, 'normal', '#334155', margin + 5);
+    addText(`Fecha: _____ / _____ / 2026`, 9.5, 'normal', '#334155', margin + 5);
+    y += 4;
+    addText('Roles: Lector/a  |  Analista  |  Secretario/a  |  Encargado/a de pistas  |  Portavoz', 8.5, 'bold', colorHex, margin + 5);
+
+    // Objetivo
+    y += 14;
+    addText('OBJETIVO DE LA INVESTIGACION:', 10, 'bold', colorHex);
+    y += 2;
+    addText(juego.objetivo_investigacion || 'El equipo debe construir una hipotesis fundamentada sobre el tema central.', 9.5, 'normal', '#334155');
+
+    // Codigo final tracker
+    y += 10;
+    doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(rAccent, gAccent, bAccent);
-    doc.text("MAPA DE LA ESCENA DEL CRIMEN", lWidth / 2 + margin, 35, { align: 'center' });
-    doc.setFontSize(9);
+    doc.text('REGISTRO DE CODIGOS:', margin, y);
+    y += 6;
+    const codigoFinalLetras = juego.codigo_final ? juego.codigo_final.split('') : ['_', '_', '_', '_', '_', '_'];
+    for (let ci = 0; ci < 6; ci++) {
+      const bx = margin + ci * 22;
+      doc.setDrawColor(rAccent, gAccent, bAccent);
+      doc.setLineWidth(0.6);
+      doc.rect(bx, y, 18, 10);
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(148, 163, 184);
+      doc.text(`Est. ${ci + 1}`, bx + 1, y + 4);
+      doc.setLineDashPattern([1, 1], 0);
+      doc.line(bx + 2, y + 8, bx + 16, y + 8);
+      doc.setLineDashPattern([], 0);
+    }
+
+    // ---- PÁGINA 2: Mapa de Estaciones (Landscape) ----
+    doc.addPage('a4', 'landscape');
+    const lWidth = getPageWidth();
+    drawHeader('Detective REI - Mapa de Estaciones');
+    y = 30;
+
+    doc.setFontSize(13);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(rAccent, gAccent, bAccent);
+    doc.text('CIRCUITO DE ESTACIONES', lWidth / 2 + margin, y, { align: 'center' });
+    y += 6;
+    doc.setFontSize(8.5);
+    doc.setFont('helvetica', 'normal');
     doc.setTextColor(71, 85, 105);
-    doc.text(juego.nombre_caso || 'Caso sin Título', lWidth / 2 + margin, 41, { align: 'center' });
+    doc.text(juego.nombre_caso || '', lWidth / 2 + margin, y, { align: 'center' });
+    y += 4;
 
-    // Pasillos de conexión
-    doc.setDrawColor(rAccent, gAccent, bAccent);
-    doc.setLineWidth(4);
-    doc.line(margin + 90, 95, margin + 177, 95);
-    doc.line(margin + 90, 155, margin + 177, 155);
-    doc.line(margin + 133, 95, margin + 133, 155);
+    // 6 estaciones: 3 columnas × 2 filas
+    const stW = (lWidth - 20) / 3;
+    const stH = 65;
+    const stGap = 10;
+    const stStartX = margin;
+    const stStartY = 42;
 
-    // Habitaciones (rectángulos de 80x45)
-    doc.setLineWidth(0.8);
-    doc.setDrawColor(rAccent, gAccent, bAccent);
+    for (let si = 0; si < 6; si++) {
+      const col = si % 3;
+      const row = Math.floor(si / 3);
+      const sx = stStartX + col * (stW + stGap / 3);
+      const sy = stStartY + row * (stH + stGap);
+      const est = estaciones[si] || {};
 
-    // Biblioteca (Arriba Izquierda)
-    doc.rect(margin + 10, 60, 80, 45);
+      // Fondo de estacion
+      doc.setFillColor(248, 250, 252);
+      doc.setDrawColor(rAccent, gAccent, bAccent);
+      doc.setLineWidth(0.7);
+      doc.rect(sx, sy, stW, stH, 'FD');
+
+      // Cabecera coloreada
+      doc.setFillColor(rAccent, gAccent, bAccent);
+      doc.rect(sx, sy, stW, 13, 'F');
+
+      // Numero y nombre
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(255, 255, 255);
+      doc.text(`ESTACION ${si + 1}`, sx + 4, sy + 6);
+      doc.setFontSize(7.5);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(255, 255, 255);
+      const stNombreLines = doc.splitTextToSize(est.nombre || `Estacion ${si + 1}`, stW - 8);
+      doc.text(stNombreLines[0] || '', sx + 4, sy + 11);
+
+      // OA vinculado
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(71, 85, 105);
+      doc.text(`OA: ${est.oa_vinculado || ''}`, sx + 4, sy + 20);
+
+      // Duracion
+      doc.text('Duracion: 6-8 min', sx + 4, sy + 27);
+
+      // Codigo
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(rAccent, gAccent, bAccent);
+      doc.text('Codigo desbloqueado:', sx + 4, sy + 36);
+      doc.setDrawColor(rAccent, gAccent, bAccent);
+      doc.setLineWidth(0.4);
+      doc.rect(sx + 4, sy + 39, 14, 10);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(220, 38, 38);
+      doc.text('_', sx + 9, sy + 46);
+
+      // Flecha de rotacion (entre estaciones horizontales)
+      if (col < 2) {
+        doc.setDrawColor(148, 163, 184);
+        doc.setLineWidth(0.5);
+        const arrowX = sx + stW + 1;
+        const arrowY = sy + stH / 2;
+        doc.line(arrowX, arrowY, arrowX + stGap / 3 - 1, arrowY);
+        doc.setFontSize(7);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(148, 163, 184);
+        doc.text('>', arrowX + stGap / 3 - 3, arrowY + 1.5);
+      }
+    }
+
+    // Flecha de rotacion entre filas
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(100, 116, 139);
+    doc.text('Los equipos rotan en orden cada 6-8 minutos al toque de senal del docente.', margin, stStartY + 2 * stH + stGap + 8);
+
+    // OA block en mapa
+    if (oaListDet.length > 0) {
+      const oaBlockY = stStartY + 2 * stH + stGap + 14;
+      doc.setFontSize(7.5);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(rAccent, gAccent, bAccent);
+      doc.text('OBJETIVOS DE APRENDIZAJE:', margin, oaBlockY);
+      let oaY2 = oaBlockY + 5;
+      oaListDet.forEach((oa: any) => {
+        const origenLbl = oa.origen === 'sugerido_ia' ? ' [sugerido]' : oa.origen === 'planificacion' ? ' [planificacion]' : ' [seleccionado]';
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(rAccent, gAccent, bAccent);
+        doc.text(`${oa.codigo}${origenLbl}`, margin, oaY2);
+        oaY2 += 4;
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(71, 85, 105);
+        const oaDescLines = doc.splitTextToSize(oa.descripcion || '', lWidth - 20);
+        oaDescLines.slice(0, 2).forEach((l: string) => { doc.text(l, margin + 4, oaY2); oaY2 += 4; });
+      });
+    }
+
+    // ---- PÁGINA 3: Reglas del Expediente ----
+    doc.addPage('a4', 'portrait');
+    const pWidth = getPageWidth();
+    drawHeader('Detective REI - Reglas');
+    y = 35;
+    addText('REGLAS DEL EXPEDIENTE DE INVESTIGACION', 13, 'bold', colorHex);
+    y += 6;
+
+    addText('MATERIALES NECESARIOS', 10, 'bold', colorHex);
+    y += 2;
+    addText('Tarjetas de estacion (una por puesto), hoja de Expediente Final por equipo, lapiz o boligrafo.', 9.5, 'normal', '#334155');
+    y += 6;
+
+    addText('ORGANIZACION DEL CURSO', 10, 'bold', colorHex);
+    y += 2;
+    addText('6 equipos de 4 a 6 integrantes. Cada equipo comienza en una estacion diferente.', 9.5, 'normal', '#334155');
+    y += 6;
+
+    addText('ROLES DENTRO DE CADA EQUIPO', 10, 'bold', colorHex);
+    y += 2;
+    const roles = [
+      ['Lector/a', 'Lee en voz alta la pista de la estacion.'],
+      ['Analista', 'Propone la respuesta al desafio pedagogico.'],
+      ['Secretario/a', 'Registra la respuesta y el codigo desbloqueado.'],
+      ['Encargado/a de pistas', 'Verifica que la pista fue revisada antes de responder.'],
+      ['Portavoz', 'Presenta el Expediente Final al curso al terminar.'],
+    ];
+    roles.forEach(([rol, desc]) => {
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(rAccent, gAccent, bAccent);
+      doc.text(`${rol}:`, margin + 4, y);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(51, 65, 85);
+      doc.text(desc, margin + 38, y);
+      y += 6;
+    });
+
+    y += 4;
+    addText('MECANICA DE ROTACION', 10, 'bold', colorHex);
+    y += 2;
+    addText('1. El docente da la senal de inicio. Cada equipo tiene 6 a 8 minutos por estacion.', 9.5, 'normal', '#334155');
+    addText('2. El equipo lee la pista, discute y responde el desafio pedagogico.', 9.5, 'normal', '#334155');
+    addText('3. Al resolver el desafio, el equipo desbloquea una letra-codigo y la anota.', 9.5, 'normal', '#334155');
+    addText('4. Al toque de senal, todos los equipos rotan a la siguiente estacion.', 9.5, 'normal', '#334155');
+    addText('5. Al completar las 6 estaciones, cada equipo construye su Expediente Final.', 9.5, 'normal', '#334155');
+    y += 6;
+
+    addText('CONTEXTO DEL CASO', 10, 'bold', colorHex);
+    y += 2;
+    addText(juego.contexto_narrativo || '', 9.5, 'normal', '#334155');
+    y += 6;
+
+    addText('OBJETIVO DE LA INVESTIGACION', 10, 'bold', colorHex);
+    y += 2;
+    addText(juego.objetivo_investigacion || '', 9.5, 'bold', '#1e293b');
+
+    // ---- PÁGINAS 4-9: Estaciones 1-6 ----
+    estaciones.forEach((est: any, idx: number) => {
+      doc.addPage('a4', 'portrait');
+      drawHeader(`Detective REI - Estacion ${idx + 1}`);
+      y = 35;
+
+      // Cabecera de estacion
+      doc.setFillColor(rAccent, gAccent, bAccent);
+      doc.rect(margin, y, pWidth, 14, 'F');
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(255, 255, 255);
+      doc.text(`ESTACION ${idx + 1}: ${(est.nombre || '').toUpperCase()}`, margin + 6, y + 10);
+      y += 20;
+
+      // OA vinculado
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(rAccent, gAccent, bAccent);
+      doc.text(`OA trabajado: ${est.oa_vinculado || ''}`, margin, y);
+      doc.setFontSize(7.5);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(100, 116, 139);
+      doc.text('Duracion: 6-8 minutos  |  Roles: todos activos', margin + 80, y);
+      y += 8;
+
+      // PISTA
+      const pista = est.pista || {};
+      const tipoEv = pista.tipo_evidencia || 'recreacion_pedagogica';
+      const contenido = pista.contenido || '';
+      const fuente = pista.fuente || {};
+
+      // Etiqueta tipo evidencia
+      const tipoLabel = tipoEv === 'cita_textual' ? 'CITA TEXTUAL' : tipoEv === 'parafrasis' ? 'PARAFRASIS' : 'RECREACION PEDAGOGICA';
+      const tipoColor = tipoEv === 'cita_textual' ? '#166534' : tipoEv === 'parafrasis' ? '#1e3a5f' : '#92400e';
+      const [tr, tg, tb] = [parseInt(tipoColor.slice(1,3),16), parseInt(tipoColor.slice(3,5),16), parseInt(tipoColor.slice(5,7),16)];
+
+      doc.setFontSize(7.5);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(tr, tg, tb);
+      doc.text(`PISTA [${tipoLabel}]`, margin, y);
+      y += 5;
+
+      // Caja de pista
+      const pistaBoxH = 38;
+      doc.setFillColor(250, 252, 255);
+      doc.setDrawColor(tr, tg, tb);
+      doc.setLineWidth(0.6);
+      doc.rect(margin, y, pWidth, pistaBoxH, 'FD');
+      y += 6;
+
+      const textoPista = tipoEv === 'cita_textual' ? `"${contenido}"` : contenido;
+      const pistaStyle = tipoEv === 'cita_textual' ? 'italic' : 'normal';
+      doc.setFontSize(9.5);
+      doc.setFont('helvetica', pistaStyle);
+      doc.setTextColor(30, 41, 59);
+      const pistaLines = doc.splitTextToSize(textoPista, pWidth - 10);
+      pistaLines.slice(0, 4).forEach((l: string) => { doc.text(l, margin + 5, y); y += 5; });
+
+      // Fuente (solo cita_textual)
+      if (tipoEv === 'cita_textual' && (fuente.obra || fuente.capitulo || fuente.pagina)) {
+        const fuenteStr = [fuente.obra, fuente.autor, fuente.capitulo ? `Cap. ${fuente.capitulo}` : '', fuente.pagina ? `p. ${fuente.pagina}` : '', fuente.ubicacion].filter(Boolean).join(' - ');
+        doc.setFontSize(7.5);
+        doc.setFont('helvetica', 'italic');
+        doc.setTextColor(100, 116, 139);
+        doc.text(`Fuente: ${fuenteStr}`, margin + 5, y);
+        y += 4;
+      }
+
+      // Advertencia recreacion
+      if (tipoEv === 'recreacion_pedagogica') {
+        y = margin + 35 + pistaBoxH + 8;
+        doc.setFontSize(7);
+        doc.setFont('helvetica', 'italic');
+        doc.setTextColor(146, 64, 14);
+        const advLines = doc.splitTextToSize('Advertencia: Esta pista es una recreacion pedagogica inspirada en el material de estudio. No corresponde a una cita textual de la obra o fuente original.', pWidth);
+        advLines.forEach((l: string) => { doc.text(l, margin, y); y += 3.5; });
+      } else {
+        y = margin + 35 + pistaBoxH + 6;
+      }
+      y += 6;
+
+      // DESAFIO
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(rAccent, gAccent, bAccent);
+      doc.text('DESAFIO PEDAGOGICO:', margin, y);
+      y += 6;
+      doc.setFontSize(9.5);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(30, 41, 59);
+      const desafioLines = doc.splitTextToSize(est.desafio || '', pWidth);
+      desafioLines.forEach((l: string) => { doc.text(l, margin, y); y += 5.5; });
+      y += 4;
+
+      // Espacio de respuesta
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(51, 65, 85);
+      doc.text('Respuesta del equipo:', margin, y);
+      y += 5;
+      doc.setDrawColor(180, 190, 210);
+      doc.setLineWidth(0.3);
+      for (let li = 0; li < 4; li++) {
+        doc.line(margin, y + li * 8, margin + pWidth, y + li * 8);
+      }
+      y += 38;
+
+      // Codigo desbloqueado
+      doc.setFillColor(rAccent, gAccent, bAccent);
+      doc.rect(margin, y, pWidth, 16, 'F');
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(255, 255, 255);
+      doc.text('CODIGO DESBLOQUEADO AL RESOLVER:', margin + 6, y + 7);
+      doc.setFontSize(10);
+      doc.setDrawColor(255, 255, 255);
+      doc.setLineWidth(0.5);
+      doc.rect(margin + pWidth - 20, y + 2, 14, 12);
+      doc.setFontSize(7.5);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(200, 220, 255);
+      doc.text('letra aqui', margin + pWidth - 19, y + 10);
+    });
+
+    // ---- PÁGINA 10: Expediente Final ----
+    doc.addPage('a4', 'portrait');
+    drawHeader('Detective REI - Expediente Final');
+    y = 35;
+    addText('EXPEDIENTE FINAL DEL EQUIPO', 13, 'bold', colorHex);
+    y += 4;
+
+    const ef = juego.expediente_final || {};
+    if (ef.instruccion) {
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'italic');
+      doc.setTextColor(71, 85, 105);
+      const instrLines = doc.splitTextToSize(ef.instruccion, pWidth);
+      instrLines.forEach((l: string) => { doc.text(l, margin, y); y += 4.5; });
+      y += 4;
+    }
+
+    // Codigo final
     doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(rAccent, gAccent, bAccent);
-    doc.text("📚 Biblioteca", margin + 15, 72);
-    doc.setFontSize(8.5);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(100, 116, 139);
-    doc.text("Colocar PISTA 1 aquí:", margin + 15, 83);
-    doc.setLineDashPattern([1, 1], 0);
-    doc.line(margin + 15, 93, margin + 85, 93);
-    doc.setLineDashPattern([], 0);
+    doc.text('CODIGO FINAL  (6 letras en orden):', margin, y);
+    y += 6;
+    for (let ci2 = 0; ci2 < 6; ci2++) {
+      const bx2 = margin + ci2 * 22;
+      doc.setDrawColor(rAccent, gAccent, bAccent);
+      doc.setLineWidth(0.7);
+      doc.rect(bx2, y, 18, 14);
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(148, 163, 184);
+      doc.text(`Est.${ci2 + 1}`, bx2 + 1, y + 4);
+    }
+    y += 20;
+    doc.setFontSize(9.5);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(30, 41, 59);
+    doc.text('Palabra formada: ________________________', margin + 138, y - 7);
+    y += 4;
 
-    // Salón Principal (Arriba Derecha)
-    doc.rect(margin + lWidth - 90, 60, 80, 45);
+    // Hipotesis
+    doc.setFillColor(248, 250, 252);
+    doc.setDrawColor(rAccent, gAccent, bAccent);
+    doc.setLineWidth(0.5);
+    const hipBoxY = y;
+    doc.rect(margin, hipBoxY, pWidth, 50, 'FD');
+    y += 7;
+    doc.setFontSize(9.5);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(rAccent, gAccent, bAccent);
-    doc.text("🛋️ Salón Principal", margin + lWidth - 85, 72);
-    doc.setFontSize(8.5);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(100, 116, 139);
-    doc.text("Colocar PISTA 2 aquí:", margin + lWidth - 85, 83);
-    doc.setLineDashPattern([1, 1], 0);
-    doc.line(margin + lWidth - 85, 93, margin + lWidth - 15, 93);
-    doc.setLineDashPattern([], 0);
+    doc.text(ef.hipotesis_guia || 'Hipotesis del equipo:', margin + 4, y);
+    y += 6;
+    for (let li = 0; li < 3; li++) {
+      doc.setDrawColor(180, 190, 210);
+      doc.setLineWidth(0.25);
+      doc.line(margin + 4, y + li * 9, margin + pWidth - 4, y + li * 9);
+    }
+    y = hipBoxY + 55;
 
-    // Jardín (Abajo Izquierda)
-    doc.rect(margin + 10, 130, 80, 45);
+    // Fundamentos
+    for (let fi = 1; fi <= 2; fi++) {
+      const fBoxY = y;
+      doc.setFillColor(250, 252, 255);
+      doc.setDrawColor(180, 190, 210);
+      doc.setLineWidth(0.4);
+      doc.rect(margin, fBoxY, pWidth, 32, 'FD');
+      y += 7;
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(rAccent, gAccent, bAccent);
+      doc.text(fi === 1 ? (ef.fundamento_guia || `Fundamento ${fi} (cita, dato o episodio del material):`) : `Fundamento 2:`, margin + 4, y);
+      y += 5;
+      for (let li = 0; li < 2; li++) {
+        doc.setDrawColor(180, 190, 210);
+        doc.setLineWidth(0.25);
+        doc.line(margin + 4, y + li * 8, margin + pWidth - 4, y + li * 8);
+      }
+      y = fBoxY + 36;
+    }
+
+    // Conclusion
+    const conBoxY = y;
+    doc.setFillColor(248, 250, 252);
+    doc.setDrawColor(rAccent, gAccent, bAccent);
+    doc.setLineWidth(0.5);
+    doc.rect(margin, conBoxY, pWidth, 32, 'FD');
+    y += 7;
+    doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(rAccent, gAccent, bAccent);
-    doc.text("🌿 Jardín", margin + 15, 142);
-    doc.setFontSize(8.5);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(100, 116, 139);
-    doc.text("Colocar PISTA 3 aquí:", margin + 15, 153);
-    doc.setLineDashPattern([1, 1], 0);
-    doc.line(margin + 15, 163, margin + 85, 163);
-    doc.setLineDashPattern([], 0);
+    doc.text(ef.conclusion_guia || 'Conclusion: ¿como conecta tu hipotesis con los temas del material?', margin + 4, y);
+    y += 5;
+    for (let li = 0; li < 2; li++) {
+      doc.setDrawColor(180, 190, 210);
+      doc.setLineWidth(0.25);
+      doc.line(margin + 4, y + li * 8, margin + pWidth - 4, y + li * 8);
+    }
 
-    // Cocina (Abajo Derecha)
-    doc.rect(margin + lWidth - 90, 130, 80, 45);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(rAccent, gAccent, bAccent);
-    doc.text("🍴 Cocina", margin + lWidth - 85, 142);
-    doc.setFontSize(8.5);
-    doc.setFont('helvetica', 'normal');
-    doc.setTextColor(100, 116, 139);
-    doc.text("Colocar EVIDENCIA aquí:", margin + lWidth - 85, 153);
-    doc.setLineDashPattern([1, 1], 0);
-    doc.line(margin + lWidth - 85, 163, margin + lWidth - 15, 163);
-    doc.setLineDashPattern([], 0);
-
-    // Pie
-    doc.setFontSize(8);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(71, 85, 105);
-    doc.text("Instrucciones: Coloca las tarjetas de pistas en la habitación correspondiente antes de comenzar.", margin + 10, 185);
-
-    // ---- PÁGINA 3: Historia + Misión (Portrait) ----
+    // ---- PÁGINA 11: Ticket de Salida ----
     doc.addPage('a4', 'portrait');
-    const pWidth = getPageWidth();
-    drawHeader('Detective - Contexto');
+    drawHeader('Detective REI - Ticket de Salida');
     y = 35;
-    addText('HISTORIA DEL MISTERIO', 14, 'bold', colorHex);
-    y += 5;
-    addText(juego.historia || 'Buscando el misterio...', 10, 'normal', '#334155');
-    y += 15;
-    addText('MISIÓN DEL INVESTIGADOR', 14, 'bold', colorHex);
-    y += 5;
-    addText(juego.mision || 'Resolver el caso.', 10, 'bold', '#1e293b');
-
-    // ---- PÁGINA 4: Tarjetas de Pistas (Pistas 1 y 2) ----
-    doc.addPage();
-    drawHeader('Detective - Pistas');
-    y = 35;
-    addText('TARJETAS DE PISTAS (Recortables)', 14, 'bold', colorHex);
-    y += 10;
-
-    const pistasList = Array.isArray(juego.pistas) ? juego.pistas : ['Pista A', 'Pista B', 'Pista C'];
-    
-    // Dibujar Pista 1
-    const p1Y = y;
-    drawDottedRect(margin, p1Y, pWidth, 55);
-    y = p1Y + 8;
-    addText('PISTA 1', 11, 'bold', colorHex, margin + 10);
-    y += 4;
-    addText(pistasList[0] || '', 9.5, 'normal', '#334155', margin + 10);
-
-    // Dibujar Pista 2
-    const p2Y = p1Y + 65;
-    drawDottedRect(margin, p2Y, pWidth, 55);
-    y = p2Y + 8;
-    addText('PISTA 2', 11, 'bold', colorHex, margin + 10);
-    y += 4;
-    addText(pistasList[1] || '', 9.5, 'normal', '#334155', margin + 10);
-
-    // ---- PÁGINA 5: Tarjetas de Pistas (Pista 3) ----
-    doc.addPage();
-    drawHeader('Detective - Pistas');
-    y = 35;
-    addText('TARJETAS DE PISTAS (Recortables)', 14, 'bold', colorHex);
-    y += 10;
-
-    // Dibujar Pista 3
-    const p3Y = y;
-    drawDottedRect(margin, p3Y, pWidth, 55);
-    y = p3Y + 8;
-    addText('PISTA 3', 11, 'bold', colorHex, margin + 10);
-    y += 4;
-    addText(pistasList[2] || '', 9.5, 'normal', '#334155', margin + 10);
-
-    // ---- PÁGINA 6: Preguntas de Investigación ----
-    doc.addPage();
-    drawHeader('Detective - Interrogatorio');
-    y = 35;
-    addText('PREGUNTAS DE INVESTIGACIÓN', 14, 'bold', colorHex);
-    y += 8;
-
-    const preguntasList = Array.isArray(juego.preguntas) ? juego.preguntas : [];
-    preguntasList.forEach((preg: any, idx: number) => {
-      const enunciado = typeof preg === 'object' ? (preg.enunciado || preg.pregunta) : preg;
-      addText(`${idx + 1}. ${enunciado}`, 10, 'bold', '#1e293b');
+    addText('TICKET DE SALIDA: METACOGNICION DEL EQUIPO', 13, 'bold', colorHex);
+    y += 6;
+    const ticketListDet = Array.isArray(juego.ticket) ? juego.ticket : [];
+    ticketListDet.forEach((q: any, idx: number) => {
+      const qText = typeof q === 'string' ? q : (q.pregunta || String(q));
+      addText(`${idx + 1}. ${qText}`, 10, 'bold', '#1e293b');
       y += 2;
-      doc.setDrawColor(200, 200, 200);
-      doc.setLineWidth(0.2);
-      doc.line(margin, y + 4, margin + pWidth, y + 4);
-      doc.line(margin, y + 10, margin + pWidth, y + 10);
-      y += 16;
+      doc.setDrawColor(200, 210, 230);
+      doc.setLineWidth(0.25);
+      for (let li = 0; li < 3; li++) {
+        doc.line(margin, y + li * 9, margin + pWidth, y + li * 9);
+      }
+      y += 30;
     });
 
-    // ---- PÁGINA 7: Evidencia Final ----
-    doc.addPage();
-    drawHeader('Detective - Evidencia');
-    y = 35;
-    addText('REGISTRO DE EVIDENCIA FINAL', 14, 'bold', colorHex);
-    y += 5;
-    addText(juego.evidencia || 'Detalle del hallazgo clave.', 10.5, 'normal', '#1e293b');
-    y += 15;
-    addText('Conclusiones del Investigador:', 10, 'bold', colorHex);
-    y += 10;
-    doc.line(margin, y, margin + pWidth, y);
-    doc.line(margin, y + 8, margin + pWidth, y + 8);
-    doc.line(margin, y + 16, margin + pWidth, y + 16);
-    doc.line(margin, y + 24, margin + pWidth, y + 24);
+    // Autoevaluacion colaborativa
+    y += 4;
+    addText('AUTOEVALUACION DEL TRABAJO EN EQUIPO', 10, 'bold', colorHex);
+    y += 2;
+    addText('¿Todos los integrantes participaron activamente? ¿Que rol fue mas desafiante y por que?', 9.5, 'normal', '#334155');
+    y += 6;
+    doc.setDrawColor(200, 210, 230);
+    doc.setLineWidth(0.25);
+    for (let li = 0; li < 3; li++) {
+      doc.line(margin, y + li * 9, margin + pWidth, y + li * 9);
+    }
 
-    // ---- PÁGINA 8: Ticket de Salida ----
-    doc.addPage();
-    drawHeader('Detective - Cierre');
+    // ---- PÁGINA 12: Guia Docente (Confidencial) ----
+    doc.addPage('a4', 'portrait');
+    drawHeader('Detective REI - Guia Docente', true);
     y = 35;
-    addText('TICKET DE SALIDA: AUTOEVALUACIÓN NARRATIVA', 14, 'bold', colorHex);
-    y += 8;
-    
-    const ticketList = Array.isArray(juego.ticket) ? juego.ticket : ['¿Qué pista te costó más interpretar?', '¿Cómo te sirvió el texto para resolver el caso?'];
-    ticketList.forEach((q: string, idx: number) => {
-      addText(`${idx + 1}. ${q}`, 10, 'bold', '#1e293b');
-      y += 2;
-      doc.line(margin, y + 4, margin + pWidth, y + 4);
-      doc.line(margin, y + 10, margin + pWidth, y + 10);
-      y += 18;
-    });
 
-    // ---- PÁGINA 9: Solución (Docente) ----
-    doc.addPage();
-    drawHeader('Detective - Solución', true);
-    y = 35;
-    addText('RESOLUCIÓN DEL CASO', 14, 'bold', '#dc2626');
-    y += 8;
-    
-    if (typeof juego.solucion === 'object') {
-      Object.keys(juego.solucion).forEach((key) => {
-        addText(`${key.toUpperCase()}:`, 10, 'bold', '#1e293b');
-        addText(String(juego.solucion[key]), 9.5, 'normal', '#334155');
-        y += 4;
+    const addDocText = (text: string, size: number, style = 'normal', colorHexD = '#334155') => {
+      if (!text) return;
+      doc.setFontSize(size);
+      doc.setFont('helvetica', style);
+      const [rd, gd, bd] = [parseInt(colorHexD.slice(1,3),16), parseInt(colorHexD.slice(3,5),16), parseInt(colorHexD.slice(5,7),16)];
+      doc.setTextColor(rd, gd, bd);
+      const dLines = doc.splitTextToSize(text, pWidth);
+      dLines.forEach((l: string) => { doc.text(l, margin, y); y += size * 0.38 + 3.5; });
+    };
+
+    addDocText('GUIA DOCENTE — USO EXCLUSIVO', 13, 'bold', '#dc2626');
+    y += 4;
+
+    // OA section
+    if (oaListDet.length > 0) {
+      addDocText('OBJETIVOS DE APRENDIZAJE VINCULADOS', 10, 'bold', colorHex);
+      oaListDet.forEach((oa: any) => {
+        const origenLblDoc = oa.origen === 'sugerido_ia' ? ' [OA sugerido — verificar]' : oa.origen === 'planificacion' ? ' [de planificacion]' : ' [seleccionado]';
+        addDocText(`${oa.codigo}${origenLblDoc}:`, 9, 'bold', '#dc2626');
+        addDocText(oa.descripcion || '', 9, 'normal', '#334155');
+        y += 2;
       });
-    } else {
-      addText(juego.solucion || 'Respuestas correctas de la pauta.', 10, 'normal', '#334155');
+      y += 4;
+    }
+
+    // Respuestas por estacion
+    const sol = juego.solucion || {};
+    const respEstaciones = Array.isArray(sol.respuestas_estaciones) ? sol.respuestas_estaciones : [];
+
+    addDocText('RESPUESTAS ESPERADAS POR ESTACION', 10, 'bold', colorHex);
+    y += 2;
+    respEstaciones.forEach((re: any) => {
+      addDocText(`ESTACION ${re.estacion} — Codigo: [${re.codigo_letra || '_'}]`, 9, 'bold', '#1e293b');
+      addDocText(`Respuesta esperada: ${re.respuesta_esperada || ''}`, 9, 'normal', '#334155');
+      addDocText(`Criterio de aceptacion: ${re.criterio_aceptacion || ''}`, 8.5, 'italic', '#64748b');
+      y += 3;
+    });
+
+    y += 2;
+    if (sol.codigo_final_verificado) {
+      addDocText(`CODIGO FINAL VERIFICADO: ${sol.codigo_final_verificado}`, 10, 'bold', '#dc2626');
+      y += 2;
+    }
+
+    addDocText('HIPOTESIS CENTRAL (referencia)', 10, 'bold', colorHex);
+    addDocText(sol.hipotesis_central || '', 9.5, 'normal', '#334155');
+    y += 2;
+
+    addDocText('HIPOTESIS ALTERNATIVAS VALIDAS', 10, 'bold', colorHex);
+    addDocText(sol.hipotesis_alternativas || '', 9.5, 'normal', '#334155');
+    y += 2;
+
+    addDocText('EXPLICACION PEDAGOGICA (segun OA seleccionados)', 10, 'bold', colorHex);
+    addDocText(sol.explicacion_pedagogica || '', 9.5, 'normal', '#334155');
+    y += 2;
+
+    if (sol.nota_responsabilidad) {
+      addDocText('NOTA SOBRE RESPONSABILIDAD', 9, 'bold', '#dc2626');
+      addDocText(sol.nota_responsabilidad, 9, 'normal', '#334155');
+      y += 2;
+    }
+
+    addDocText('RUBRICA DE EVALUACION DEL EXPEDIENTE FINAL', 10, 'bold', colorHex);
+    y += 2;
+    if (sol.rubrica) {
+      addDocText('NIVEL 3 — Logrado:', 9, 'bold', '#166534');
+      addDocText(sol.rubrica.nivel3 || '', 9, 'normal', '#334155');
+      y += 2;
+      addDocText('NIVEL 2 — En proceso:', 9, 'bold', '#92400e');
+      addDocText(sol.rubrica.nivel2 || '', 9, 'normal', '#334155');
+      y += 2;
+      addDocText('NIVEL 1 — Inicial:', 9, 'bold', '#dc2626');
+      addDocText(sol.rubrica.nivel1 || '', 9, 'normal', '#334155');
     }
 
   } else if (motorId === 'escape_room') {

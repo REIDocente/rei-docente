@@ -32,32 +32,63 @@ function buildPlaySystemPrompt(motorId: string): string {
 
   if (motorId === 'detective') {
     schemaDescription = `{
-  "nombre_caso": "Nombre descriptivo y atractivo del caso",
-  "historia": "Historia del misterio. Debe ser un relato breve, inmersivo y descriptivo de entre 100 y 150 palabras que contextualice el enigma basándose en los textos/temas provistos.",
-  "mision": "Explicación breve del objetivo de la investigación para el alumno.",
-  "pistas": [
-    "Pista 1: Un hecho, diálogo o detalle descriptivo deducido del texto.",
-    "Pista 2: Un hecho o detalle adicional del texto.",
-    "Pista 3: Una pista final que ayude a conectar los puntos clave."
+  "tipo_fuente": "planificacion | lectura_domiciliaria | texto | contenido_curricular",
+  "nombre_caso": "Titulo atractivo del expediente (max 8 palabras, sin spoilers del desenlace)",
+  "objetivo_investigacion": "Lo que el equipo debe descubrir o demostrar al final (1-2 oraciones).",
+  "contexto_narrativo": "Historia del misterio en 120-150 palabras. Inmersiva, basada exclusivamente en el material del docente.",
+  "nota_metodologica": "Una oracion aclarando si las pistas son citas textuales, parafrasis o recreaciones pedagogicas.",
+  "estaciones": [
+    {
+      "numero": 1,
+      "nombre": "Nombre de la estacion (max 5 palabras, sin emojis)",
+      "pista": {
+        "tipo_evidencia": "cita_textual | parafrasis | recreacion_pedagogica",
+        "fuente": { "obra": "...", "autor": "...", "capitulo": "...", "pagina": "...", "ubicacion": "..." },
+        "contenido": "Texto de la pista. SIN comillas si es parafrasis o recreacion. CON comillas y fuente verificable si es cita_textual."
+      },
+      "desafio": "Pregunta de analisis vinculada a uno o mas OA. 2-3 oraciones. Nivel comprension o analisis, no solo memoria.",
+      "oa_vinculado": "Codigo del OA principal que se trabaja en esta estacion (ej: OA 3)",
+      "codigo_letra": "Una letra mayuscula unica que los equipos desbloquean al resolver el desafio"
+    },
+    { "numero": 2, "nombre": "...", "pista": { "tipo_evidencia": "...", "fuente": {}, "contenido": "..." }, "desafio": "...", "oa_vinculado": "...", "codigo_letra": "..." },
+    { "numero": 3, "nombre": "...", "pista": { "tipo_evidencia": "...", "fuente": {}, "contenido": "..." }, "desafio": "...", "oa_vinculado": "...", "codigo_letra": "..." },
+    { "numero": 4, "nombre": "...", "pista": { "tipo_evidencia": "...", "fuente": {}, "contenido": "..." }, "desafio": "...", "oa_vinculado": "...", "codigo_letra": "..." },
+    { "numero": 5, "nombre": "...", "pista": { "tipo_evidencia": "...", "fuente": {}, "contenido": "..." }, "desafio": "...", "oa_vinculado": "...", "codigo_letra": "..." },
+    { "numero": 6, "nombre": "...", "pista": { "tipo_evidencia": "...", "fuente": {}, "contenido": "..." }, "desafio": "...", "oa_vinculado": "...", "codigo_letra": "..." }
   ],
-  "preguntas": [
-    "Pregunta de comprensión 1",
-    "Pregunta de comprensión 2",
-    "Pregunta de comprensión 3",
-    "Pregunta de comprensión 4",
-    "Pregunta de comprensión 5"
-  ],
-  "evidencia": "Descripción detallada del elemento físico, carta, registro o prueba clave que se encuentra al final de la investigación.",
+  "codigo_final": "Palabra o codigo de 6 letras formado con los codigo_letra de las 6 estaciones en orden",
+  "expediente_final": {
+    "instruccion": "Instruccion para construir el informe final del equipo (1-2 oraciones).",
+    "hipotesis_guia": "Enunciado guia: que hipotesis debe plantear el equipo sobre el tema central.",
+    "fundamento_guia": "Enunciado guia: que tipo de evidencia o episodio del material deben citar.",
+    "conclusion_guia": "Enunciado guia: como conectar la hipotesis con los temas del material."
+  },
   "ticket": [
-    "Pregunta metacognitiva 1",
-    "Pregunta metacognitiva 2"
+    "Pregunta metacognitiva 1 (proceso del equipo o estrategia usada)",
+    "Pregunta metacognitiva 2 (conexion con el material o aprendizaje personal)"
+  ],
+  "objetivos_aprendizaje": [
+    { "codigo": "OA X", "descripcion": "Descripcion completa del OA segun curriculo MINEDUC para ese nivel y asignatura.", "origen": "planificacion | seleccion_docente | sugerido_ia" }
   ],
   "solucion": {
-    "pista1": "Explicación de la pista 1 para el docente.",
-    "pista2": "Explicación de la pista 2.",
-    "pista3": "Explicación de la pista 3.",
-    "preguntas": "Respuestas esperadas de las 5 preguntas.",
-    "evidencia_final": "Conclusión y solución definitiva del caso."
+    "respuestas_estaciones": [
+      { "estacion": 1, "respuesta_esperada": "...", "criterio_aceptacion": "Que elementos debe incluir para aceptarla como valida.", "codigo_letra": "..." },
+      { "estacion": 2, "respuesta_esperada": "...", "criterio_aceptacion": "...", "codigo_letra": "..." },
+      { "estacion": 3, "respuesta_esperada": "...", "criterio_aceptacion": "...", "codigo_letra": "..." },
+      { "estacion": 4, "respuesta_esperada": "...", "criterio_aceptacion": "...", "codigo_letra": "..." },
+      { "estacion": 5, "respuesta_esperada": "...", "criterio_aceptacion": "...", "codigo_letra": "..." },
+      { "estacion": 6, "respuesta_esperada": "...", "criterio_aceptacion": "...", "codigo_letra": "..." }
+    ],
+    "codigo_final_verificado": "Confirma la palabra construida con las 6 letras en orden",
+    "hipotesis_central": "La hipotesis mas solida que los equipos deberian construir",
+    "hipotesis_alternativas": "Otras hipotesis validas que el docente debe aceptar si estan bien fundamentadas",
+    "explicacion_pedagogica": "Como este expediente trabaja los OA seleccionados (2-3 oraciones)",
+    "nota_responsabilidad": "Si el material involucra actos daninos: la responsabilidad recae en el sujeto; no en factores externos ni en una entidad abstracta como 'la mente'.",
+    "rubrica": {
+      "nivel3": "Logrado: hipotesis clara con dos fundamentos del material y conclusion coherente con los OA",
+      "nivel2": "En proceso: hipotesis con un fundamento o conclusion vaga, sin vinculacion explicita a OA",
+      "nivel1": "Inicial: sin hipotesis clara, sin fundamentos del material o sin relacion con el contenido"
+    }
   }
 }`;
   } else if (motorId === 'escape_room') {
@@ -226,6 +257,44 @@ function buildPlaySystemPrompt(motorId: string): string {
 }`;
   }
 
+  const detectiveNote = motorId === 'detective' ? `
+REGLAS OBLIGATORIAS PARA EL MOTOR DETECTIVE REI (plantilla fija, contenido dinamico):
+
+ESTRUCTURA FIJA: El expediente tiene siempre: portada, mapa de estaciones, reglas, 6 estaciones, expediente final, ticket de salida y guia docente. NO modifiques la estructura.
+
+CONTENIDO DINAMICO: Todo el contenido proviene EXCLUSIVAMENTE del material entregado por el docente. No inventes personajes, datos, fragmentos ni hechos que no esten en ese material.
+
+ESTACIONES (OBLIGATORIO — genera exactamente 6):
+- Cada estacion tiene nombre (max 5 palabras, sin emojis), pista, desafio, oa_vinculado y codigo_letra.
+- Los 6 codigos_letra deben formar el codigo_final (palabra o acronimo con significado relacionado al contenido).
+- Cada desafio exige comprension, analisis o interpretacion del material. No preguntas de memoria simple.
+
+SISTEMA DE CITAS (CRITICO):
+- "cita_textual": SOLO si el texto completo esta disponible en el material de entrada. DEBE incluir fuente con ubicacion verificable (capitulo, pagina o equivalente). Si no hay fuente verificable, convierte automaticamente a "parafrasis".
+- "parafrasis": resumen fiel del material, sin comillas.
+- "recreacion_pedagogica": elaboracion inspirada en el material, sin comillas. Debe mostrar advertencia en el PDF/Word.
+- NUNCA pongas comillas en parafrasis ni recreaciones pedagogicas.
+- NUNCA inventes una fuente o ubicacion.
+- Si el material de entrada no contiene el texto completo: usa parafrasis o recreacion_pedagogica.
+
+EXPEDIENTE FINAL: La hipotesis es una interpretacion pedagogica fundamentada, no una verdad absoluta. El docente debe aceptar hipotesis alternativas bien fundamentadas.
+
+PAUTA DOCENTE:
+- Si el material involucra un crimen, accion danina o decision cuestionable: la responsabilidad recae en el sujeto o agente de esa accion.
+- NO afirmar que "la mente" o un factor externo fue "el verdadero responsable".
+- NO usar frases como "era inevitable" o "su mente lo llevo a...".
+- Si hay trastorno mental, obsesion o condicionamiento en el material: explicar que ayuda a comprender la construccion narrativa o causal, pero no justifica ni transfiere la responsabilidad del sujeto.
+- La hipotesis_central debe formularse como interpretacion solida, no como verdad cerrada.
+
+OBJETIVOS DE APRENDIZAJE (campo objetivos_aprendizaje — OBLIGATORIO):
+- Revisa los "OAs entregados" en el prompt de usuario. Si hay OA codes, incluyelos con codigo + descripcion MINEDUC + origen.
+- Si NO hay OA codes: SUGIERE 2-3 OA pertinentes al nivel y asignatura con origen "sugerido_ia".
+- Vincula cada desafio de estacion a uno de estos OA usando el campo oa_vinculado.
+- NUNCA fijes OA especificos por defecto.
+
+PROHIBIDO: No menciones obras, personajes, autores, datos o contenidos que NO esten en el material del docente. Detective REI es una plantilla reutilizable; su contenido viene del aula, no de ejemplos externos.
+` : '';
+
   const clueNote = motorId === 'clue' ? `
 REGLAS OBLIGATORIAS PARA EL MOTOR CLUE (plantilla fija, contenido dinamico):
 
@@ -275,7 +344,7 @@ PROHIBIDO: No menciones obras, personajes, autores, datos o contenidos que NO es
   return `Eres un diseñador de juegos pedagógicos para el sistema escolar chileno (MINEDUC) y REI Docente.
 Estás generando un juego de tipo "${motorId}".
 Recibirás un motor de juego con estructura fija. Tu único trabajo es completar los campos de contenido indicados. NO inventes secciones nuevas. NO modifiques la estructura. Solo completa el contenido pedagógico de cada campo.
-${clueNote}
+${detectiveNote}${clueNote}
 Debes responder ÚNICAMENTE con un objeto JSON válido, sin texto introductorio, sin explicaciones ni etiquetas markdown de código (como \`\`\`json).
 Asegúrate de que todas las comillas dobles dentro de las cadenas estén correctamente escapadas.
 
@@ -390,15 +459,16 @@ CONTEXTO DEL LIBRO DOMICILIARIO:
     }
   }
 
-  // Determinar origen de los OA para el campo objetivos_aprendizaje
-  const oaOrigen = motor === 'clue'
+  // Determinar origen de los OA para motores con campo objetivos_aprendizaje
+  const motorConOaDinamico = motor === 'clue' || motor === 'detective';
+  const oaOrigen = motorConOaDinamico
     ? (fuente === 'planificacion' ? 'planificacion'
       : fuente === 'lectura_domiciliaria' ? 'seleccion_docente'
       : oa_codes.length > 0 ? 'seleccion_docente'
       : 'sugerido_ia')
     : '';
 
-  const oaBlock = motor === 'clue'
+  const oaBlock = motorConOaDinamico
     ? `OAs entregados: ${oa_codes.length > 0 ? oa_codes.join(', ') : '(ninguno — sugerir OA pertinentes)'}
 ORIGEN DE LOS OA: ${oaOrigen}`
     : `- OAs seleccionados: ${oa_codes.join(', ')}`;

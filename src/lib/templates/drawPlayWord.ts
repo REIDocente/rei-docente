@@ -51,47 +51,119 @@ export function drawPlayWord({
   sections.push(gap());
 
   if (motorId === 'detective') {
-    sections.push(h1(`Caso: ${juego.nombre_caso || 'Caso sin Título'}`, '1E3A5F'));
-    sections.push(bodyPara(`Nombre del Investigador(a): ____________________________________________________`));
-    sections.push(bodyPara(`Fecha: _____ / _____ / 2026`));
+    const oaListDetW = Array.isArray(juego.objetivos_aprendizaje) ? juego.objetivos_aprendizaje : [];
+    const estacionesW = Array.isArray(juego.estaciones) ? juego.estaciones : [];
+
+    sections.push(h1(juego.nombre_caso || 'Expediente sin Titulo', '1E3A5F'));
+    sections.push(bodyPara('DETECTIVE REI · EXPEDIENTE DE INVESTIGACION POR ESTACIONES', true, '64748b'));
     sections.push(gap());
 
-    sections.push(h2('Historia del Misterio'));
-    sections.push(bodyPara(juego.historia || ''));
+    if (juego.nota_metodologica) {
+      sections.push(bodyPara(`Nota: ${juego.nota_metodologica}`, false, '92400e'));
+      sections.push(gap());
+    }
+
+    // Ficha
+    sections.push(bodyPara('Investigador(a): ____________________________________________________', true));
+    sections.push(bodyPara(`Equipo N°: _______   Nivel: ${nivel || ''}   Fecha: _____ / _____ / 2026`));
+    sections.push(bodyPara('Roles: Lector/a  |  Analista  |  Secretario/a  |  Encargado/a de pistas  |  Portavoz', true, '1E3A5F'));
     sections.push(gap());
 
-    sections.push(h2('Misión'));
-    sections.push(bodyPara(juego.mision || '', true));
+    // OA
+    if (oaListDetW.length > 0) {
+      sections.push(h2('Objetivos de Aprendizaje Vinculados'));
+      oaListDetW.forEach((oa: any) => {
+        const origenLblW = oa.origen === 'sugerido_ia' ? ' [OA sugerido — verificar]' : oa.origen === 'planificacion' ? ' [de planificacion]' : ' [seleccionado]';
+        sections.push(bodyPara(`${oa.codigo}${origenLblW}:`, true, '1E3A5F'));
+        sections.push(bodyPara(oa.descripcion || ''));
+        sections.push(gap());
+      });
+    }
+
+    // Objetivo y contexto
+    sections.push(h2('Objetivo de la Investigacion'));
+    sections.push(bodyPara(juego.objetivo_investigacion || '', true));
     sections.push(gap());
 
-    sections.push(h2('Tarjetas de Pistas'));
-    const pistas = Array.isArray(juego.pistas) ? juego.pistas : [];
-    pistas.forEach((p: any, idx: number) => {
-      sections.push(bodyPara(`[ PISTA N° ${idx + 1} ]`, true, '1E3A5F'));
-      sections.push(bodyPara(p));
+    sections.push(h2('Contexto del Caso'));
+    sections.push(bodyPara(juego.contexto_narrativo || ''));
+    sections.push(gap());
+
+    // Registro de codigos
+    sections.push(h2('Registro de Codigos por Estacion'));
+    sections.push(bodyPara('Anota la letra-codigo desbloqueada en cada estacion:'));
+    sections.push(bodyPara('Est. 1: [ _ ]   Est. 2: [ _ ]   Est. 3: [ _ ]   Est. 4: [ _ ]   Est. 5: [ _ ]   Est. 6: [ _ ]'));
+    sections.push(bodyPara('Codigo final formado: ___________________________', true));
+    sections.push(gap());
+
+    // Estaciones
+    estacionesW.forEach((est: any, idx: number) => {
+      const pista = est.pista || {};
+      const tipoEv = pista.tipo_evidencia || 'recreacion_pedagogica';
+      const tipoLabel = tipoEv === 'cita_textual' ? 'Cita textual' : tipoEv === 'parafrasis' ? 'Parafrasis' : 'Recreacion pedagogica';
+      const fuente = pista.fuente || {};
+      const contenido = pista.contenido || '';
+      const textoPista = tipoEv === 'cita_textual' ? `"${contenido}"` : contenido;
+
+      sections.push(h2(`Estacion ${idx + 1}: ${est.nombre || ''}`));
+      sections.push(bodyPara(`OA trabajado: ${est.oa_vinculado || ''}  |  Duracion: 6-8 minutos`, false, '64748b'));
+      sections.push(gap());
+
+      sections.push(bodyPara(`PISTA [${tipoLabel}]:`, true, '1E3A5F'));
+      sections.push(bodyPara(textoPista));
+
+      if (tipoEv === 'cita_textual' && (fuente.obra || fuente.capitulo)) {
+        const fStr = [fuente.obra, fuente.autor, fuente.capitulo ? `Cap. ${fuente.capitulo}` : '', fuente.pagina ? `p. ${fuente.pagina}` : ''].filter(Boolean).join(' - ');
+        sections.push(bodyPara(`Fuente: ${fStr}`, false, '64748b'));
+      }
+
+      if (tipoEv === 'recreacion_pedagogica') {
+        sections.push(bodyPara('Advertencia: Esta pista es una recreacion pedagogica inspirada en el material de estudio. No corresponde a una cita textual.', false, '92400e'));
+      }
+
+      sections.push(gap());
+      sections.push(bodyPara('DESAFIO PEDAGOGICO:', true, '1E3A5F'));
+      sections.push(bodyPara(est.desafio || ''));
+      sections.push(gap());
+      sections.push(bodyPara('Respuesta del equipo:'));
+      sections.push(bodyPara('___________________________________________________________________________________'));
+      sections.push(bodyPara('___________________________________________________________________________________'));
+      sections.push(bodyPara('___________________________________________________________________________________'));
+      sections.push(gap());
+      sections.push(bodyPara(`Codigo desbloqueado: [ _ ]`, true, '1E3A5F'));
       sections.push(gap());
     });
 
-    sections.push(h2('Preguntas de Investigación'));
-    const preguntas = Array.isArray(juego.preguntas) ? juego.preguntas : [];
-    preguntas.forEach((p: any, idx: number) => {
-      const enunciado = typeof p === 'object' ? (p.enunciado || p.pregunta) : p;
-      sections.push(bodyPara(`${idx + 1}. ${enunciado}`, true));
-      sections.push(bodyPara('Respuesta: __________________________________________________________________________'));
-      sections.push(gap());
-    });
-
-    sections.push(h2('Registro de Evidencia Final'));
-    sections.push(bodyPara(juego.evidencia || ''));
+    // Expediente final
+    const ef = juego.expediente_final || {};
+    sections.push(h2('Expediente Final del Equipo'));
+    if (ef.instruccion) sections.push(bodyPara(ef.instruccion, false, '64748b'));
+    sections.push(gap());
+    sections.push(bodyPara(ef.hipotesis_guia || 'Hipotesis del equipo:', true, '1E3A5F'));
+    sections.push(bodyPara('___________________________________________________________________________________'));
+    sections.push(bodyPara('___________________________________________________________________________________'));
+    sections.push(gap());
+    sections.push(bodyPara(ef.fundamento_guia || 'Fundamento 1 (cita, dato o episodio del material):', true, '1E3A5F'));
+    sections.push(bodyPara('___________________________________________________________________________________'));
+    sections.push(gap());
+    sections.push(bodyPara('Fundamento 2:', true, '1E3A5F'));
+    sections.push(bodyPara('___________________________________________________________________________________'));
+    sections.push(gap());
+    sections.push(bodyPara(ef.conclusion_guia || 'Conclusion: ¿como conecta tu hipotesis con los temas del material?', true, '1E3A5F'));
+    sections.push(bodyPara('___________________________________________________________________________________'));
     sections.push(gap());
 
-    sections.push(h2('Ticket de Salida (Autoevaluación)'));
-    const tickets = Array.isArray(juego.ticket) ? juego.ticket : [];
-    tickets.forEach((t: any, idx: number) => {
-      sections.push(bodyPara(`${idx + 1}. ${t}`, true));
-      sections.push(bodyPara('Respuesta: __________________________________________________________________________'));
+    // Ticket
+    sections.push(h2('Ticket de Salida'));
+    const ticketsW = Array.isArray(juego.ticket) ? juego.ticket : [];
+    ticketsW.forEach((t: any, idx: number) => {
+      const tText = typeof t === 'string' ? t : (t.pregunta || String(t));
+      sections.push(bodyPara(`${idx + 1}. ${tText}`, true));
+      sections.push(bodyPara('___________________________________________________________________________________'));
       sections.push(gap());
     });
+    sections.push(bodyPara('Autoevaluacion colaborativa: ¿Todos participaron activamente? ¿Que rol fue mas desafiante?', true));
+    sections.push(bodyPara('___________________________________________________________________________________'));
 
   } else if (motorId === 'escape_room') {
     sections.push(h1('Misión de Escape Room', '7F1D1D'));
@@ -344,15 +416,61 @@ export function drawPlayWord({
   sections.push(gap());
 
   if (motorId === 'detective') {
-    sections.push(h2('Respuestas y Solución del Caso'));
-    if (typeof juego.solucion === 'object') {
-      Object.keys(juego.solucion).forEach((key) => {
-        sections.push(bodyPara(`${key.toUpperCase()}:`, true));
-        sections.push(bodyPara(String(juego.solucion[key])));
+    const solW = juego.solucion || {};
+    const oaListDetDoc = Array.isArray(juego.objetivos_aprendizaje) ? juego.objetivos_aprendizaje : [];
+
+    // OA
+    if (oaListDetDoc.length > 0) {
+      sections.push(h2('Objetivos de Aprendizaje Vinculados'));
+      oaListDetDoc.forEach((oa: any) => {
+        const origenLblDoc = oa.origen === 'sugerido_ia' ? ' [OA sugerido — verificar]' : oa.origen === 'planificacion' ? ' [de planificacion]' : ' [seleccionado]';
+        sections.push(bodyPara(`${oa.codigo}${origenLblDoc}:`, true, 'DC2626'));
+        sections.push(bodyPara(oa.descripcion || ''));
         sections.push(gap());
       });
-    } else {
-      sections.push(bodyPara(juego.solucion || ''));
+    }
+
+    // Respuestas por estacion
+    sections.push(h2('Respuestas Esperadas por Estacion'));
+    const respEstW = Array.isArray(solW.respuestas_estaciones) ? solW.respuestas_estaciones : [];
+    respEstW.forEach((re: any) => {
+      sections.push(bodyPara(`Estacion ${re.estacion} — Codigo: [${re.codigo_letra || '_'}]`, true, '1E3A5F'));
+      sections.push(bodyPara(`Respuesta esperada: ${re.respuesta_esperada || ''}`));
+      sections.push(bodyPara(`Criterio de aceptacion: ${re.criterio_aceptacion || ''}`, false, '64748b'));
+      sections.push(gap());
+    });
+
+    if (solW.codigo_final_verificado) {
+      sections.push(bodyPara(`CODIGO FINAL VERIFICADO: ${solW.codigo_final_verificado}`, true, 'DC2626'));
+      sections.push(gap());
+    }
+
+    sections.push(h2('Hipotesis Central (referencia)'));
+    sections.push(bodyPara(solW.hipotesis_central || ''));
+    sections.push(gap());
+
+    sections.push(h2('Hipotesis Alternativas Validas'));
+    sections.push(bodyPara(solW.hipotesis_alternativas || ''));
+    sections.push(gap());
+
+    sections.push(h2('Explicacion Pedagogica (segun OA seleccionados)'));
+    sections.push(bodyPara(solW.explicacion_pedagogica || ''));
+    sections.push(gap());
+
+    if (solW.nota_responsabilidad) {
+      sections.push(bodyPara('Nota sobre responsabilidad:', true, 'DC2626'));
+      sections.push(bodyPara(solW.nota_responsabilidad));
+      sections.push(gap());
+    }
+
+    sections.push(h2('Rubrica de Evaluacion del Expediente Final'));
+    if (solW.rubrica) {
+      sections.push(bodyPara('NIVEL 3 — Logrado:', true, '166534'));
+      sections.push(bodyPara(solW.rubrica.nivel3 || ''));
+      sections.push(bodyPara('NIVEL 2 — En proceso:', true, '92400e'));
+      sections.push(bodyPara(solW.rubrica.nivel2 || ''));
+      sections.push(bodyPara('NIVEL 1 — Inicial:', true, 'DC2626'));
+      sections.push(bodyPara(solW.rubrica.nivel1 || ''));
     }
 
   } else if (motorId === 'escape_room') {
