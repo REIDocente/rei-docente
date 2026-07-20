@@ -507,9 +507,11 @@ export default function VisualPage() {
   const [initials, setInitials] = useState('U');
 
   // Input fields
-  const [origen, setOrigen] = useState<'tema' | 'kit' | 'planificacion'>('tema');
+  const [origen, setOrigen] = useState<'tema' | 'kit' | 'planificacion' | 'lectura'>('tema');
   const [selectedPlanningId, setSelectedPlanningId] = useState<string>('');
   const [plannings, setPlannings] = useState<any[]>([]);
+  const [lecturas, setLecturas] = useState<any[]>([]);
+  const [selectedLecturaId, setSelectedLecturaId] = useState<string>('');
 
   const [curso, setCurso] = useState('5° Básico');
   const [unidad, setUnidad] = useState('');
@@ -571,6 +573,20 @@ export default function VisualPage() {
         console.warn('Error loading plannings:', err);
       }
 
+      // Load lecturas REI
+      try {
+        const { data: lecturasData } = await supabase
+          .from('lecturas_docente')
+          .select('id, titulo_manual, libro_id, biblioteca_libros(titulo, autor, resumen, temas, personajes)')
+          .order('created_at', { ascending: false });
+        setLecturas(lecturasData || []);
+        if (lecturasData && lecturasData.length > 0) {
+          setSelectedLecturaId(lecturasData[0].id);
+        }
+      } catch (err) {
+        console.warn('Error loading lecturas:', err);
+      }
+
       setAuthLoading(false);
       fetchHistory();
     };
@@ -598,7 +614,8 @@ export default function VisualPage() {
   const handleGenerate = useCallback(async () => {
     const hasTema = tema.trim().length > 0;
     const hasPlan = (origen === 'kit' || origen === 'planificacion') && selectedPlanningId;
-    if (!hasTema && !hasPlan) return;
+    const hasLectura = origen === 'lectura' && selectedLecturaId;
+    if (!hasTema && !hasPlan && !hasLectura) return;
 
     setGenerating(true);
     setGenError(null);
@@ -625,6 +642,17 @@ export default function VisualPage() {
           finalUnidad = plan.unit;
           finalOa = plan.learning_objective;
           finalTema = `Recurso visual didáctico sobre: ${plan.unit}. Asignatura: ${plan.subject}. Objetivo de Aprendizaje: ${plan.learning_objective}.`;
+        }
+      }
+
+      if (origen === 'lectura' && selectedLecturaId) {
+        const lec = lecturas.find((l: any) => l.id === selectedLecturaId);
+        if (lec) {
+          const libro = lec.biblioteca_libros as any;
+          finalCurso = curso;
+          finalUnidad = `Lectura Domiciliaria: ${libro?.titulo || lec.titulo_manual}`;
+          finalOa = oa;
+          finalTema = `Recurso visual para lectura domiciliaria del libro "${libro?.titulo || lec.titulo_manual}" de ${libro?.autor || ''}. Resumen: ${libro?.resumen || ''}. Temas centrales: ${(libro?.temas || []).join(', ')}. Personajes principales: ${(libro?.personajes || []).map((p: any) => typeof p === 'string' ? p : p.nombre).slice(0, 4).join(', ')}.`;
         }
       }
 
@@ -969,44 +997,62 @@ ${finalTema}
                       Origen del Recurso
                     </label>
                     <div className="grid grid-cols-3 gap-1 bg-[#FAF9FC] p-1.5 rounded-xl border border-[#E2E8F0]/50 font-sans">
-                      <button
-                        type="button"
-                        onClick={() => setOrigen('tema')}
-                        className={`py-2 px-1 text-[10px] font-bold rounded-lg transition-all truncate ${
-                          origen === 'tema'
-                            ? 'bg-white text-violet-700 shadow-xs'
-                            : 'text-slate-400 hover:text-slate-650'
-                        }`}
-                      >
-                        Tema
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setOrigen('kit')}
-                        className={`py-2 px-1 text-[10px] font-bold rounded-lg transition-all truncate ${
-                          origen === 'kit'
-                            ? 'bg-white text-violet-700 shadow-xs'
-                            : 'text-slate-400 hover:text-slate-650'
-                        }`}
-                      >
-                        Kit de Clase
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setOrigen('planificacion')}
-                        className={`py-2 px-1 text-[10px] font-bold rounded-lg transition-all truncate ${
-                          origen === 'planificacion'
-                            ? 'bg-white text-violet-700 shadow-xs'
-                            : 'text-slate-400 hover:text-slate-650'
-                        }`}
-                      >
+                      <button type="button" onClick={() => setOrigen('planificacion')}
+                        className={`py-2 px-1 text-[10px] font-bold rounded-lg transition-all truncate ${origen === 'planificacion' || origen === 'kit' ? 'bg-white text-violet-700 shadow-xs' : 'text-slate-400 hover:text-slate-600'}`}>
                         Planificación
+                      </button>
+                      <button type="button" onClick={() => setOrigen('tema')}
+                        className={`py-2 px-1 text-[10px] font-bold rounded-lg transition-all truncate ${origen === 'tema' ? 'bg-white text-violet-700 shadow-xs' : 'text-slate-400 hover:text-slate-600'}`}>
+                        Tema Libre
+                      </button>
+                      <button type="button" onClick={() => setOrigen('lectura')}
+                        className={`py-2 px-1 text-[10px] font-bold rounded-lg transition-all truncate ${origen === 'lectura' ? 'bg-white text-emerald-700 shadow-xs' : 'text-slate-400 hover:text-slate-600'}`}>
+                        Lect. Dom.
                       </button>
                     </div>
                   </div>
 
                   {/* Conditionally render inputs based on Origen */}
-                  {origen === 'tema' ? (
+                  {origen === 'lectura' ? (
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                          Lectura Domiciliaria
+                        </label>
+                        {lecturas.length === 0 ? (
+                          <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-xl text-center">
+                            <p className="text-xs text-emerald-700 font-medium">No tienes lecturas analizadas.</p>
+                            <p className="text-[10px] text-emerald-600 mt-0.5">Ve a REI Lecturas y analiza un libro primero.</p>
+                          </div>
+                        ) : (
+                          <select
+                            value={selectedLecturaId}
+                            onChange={(e) => setSelectedLecturaId(e.target.value)}
+                            className="w-full bg-[#FAF9FC] border border-[#E2E8F0]/70 rounded-xl py-2 px-3 text-xs text-slate-700 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all cursor-pointer"
+                          >
+                            {lecturas.map((l: any) => (
+                              <option key={l.id} value={l.id}>
+                                {(l.biblioteca_libros as any)?.titulo || l.titulo_manual}
+                              </option>
+                            ))}
+                          </select>
+                        )}
+                      </div>
+                      <div>
+                        <label className="block text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1">Curso</label>
+                        <select value={curso} onChange={(e) => setCurso(e.target.value)}
+                          className="w-full bg-[#FAF9FC] border border-[#E2E8F0]/70 rounded-xl py-2 px-3 text-xs text-slate-700 focus:outline-none focus:border-emerald-500 transition-all cursor-pointer">
+                          {CHILEAN_COURSES.map((c) => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-[9px] font-bold uppercase tracking-wider text-slate-400 mb-1">OA (opcional)</label>
+                        <input type="text" value={oa} onChange={(e) => setOa(e.target.value)}
+                          placeholder="ej. OA 3, OA 8"
+                          className="w-full bg-[#FAF9FC] border border-[#E2E8F0]/70 rounded-xl py-2 px-3 text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 transition-all" />
+                      </div>
+                    </div>
+                  ) : origen === 'tema' ? (
                     <>
                       {/* Pedagogy Settings Section */}
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -1297,7 +1343,7 @@ ${finalTema}
                   <div className="p-4 bg-slate-50 border border-slate-100 rounded-2xl space-y-2.5 text-xs font-sans">
                     <div className="flex justify-between items-center py-1 border-b border-slate-100/50">
                       <span className="text-slate-400 font-semibold">Origen:</span>
-                      <span className="font-bold text-slate-700 capitalize">{origen === 'tema' ? 'Tema libre' : origen === 'kit' ? 'Kit de Clase' : 'Planificación'}</span>
+                      <span className="font-bold text-slate-700 capitalize">{origen === 'tema' ? 'Tema libre' : origen === 'kit' ? 'Kit de Clase' : origen === 'lectura' ? 'Lectura REI' : 'Planificación'}</span>
                     </div>
                     <div className="flex justify-between items-center py-1 border-b border-slate-100/50">
                       <span className="text-slate-400 font-semibold">Recurso base:</span>
@@ -1349,6 +1395,10 @@ ${finalTema}
                       }
                       if ((origen === 'kit' || origen === 'planificacion') && plannings.length === 0) {
                         setGenError('Por favor selecciona una planificación de origen antes de continuar.');
+                        return;
+                      }
+                      if (origen === 'lectura' && lecturas.length === 0) {
+                        setGenError('No tienes lecturas analizadas. Ve a REI Lecturas primero.');
                         return;
                       }
                     }
