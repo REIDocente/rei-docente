@@ -2847,15 +2847,17 @@ Genera la Página ${pagina} de ${total} como imagen A4 ilustrada y lista para im
 
         {/* PNL BANNER */}
         <div className="px-6 md:px-8 pt-8">
-          <div className="bg-gradient-to-r from-violet-50 via-purple-50/60 to-pink-50/30 border border-violet-100/50 rounded-3xl p-5 flex items-center justify-between relative overflow-hidden shadow-xs">
-            <div className="space-y-1 z-10 max-w-3xl">
-              <span className="text-[9px] font-black uppercase tracking-wider text-rose-600">MENSAJE DEL DÍA</span>
-              <p className="text-slate-800 text-xs md:text-sm font-semibold italic">
-                "Respira: la complejidad del diseño nos toca a nosotros. A ti te toca definir el éxito de tus estudiantes. Hagámoslo simple."
+          <div className="rounded-3xl p-6 flex items-center justify-between relative overflow-hidden border" style={{ background: 'linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)', borderColor: '#E5E7EB', boxShadow: '0 8px 30px rgba(0,0,0,0.05)' }}>
+            <div className="space-y-2 max-w-lg z-10">
+              <h2 className="text-xl font-black" style={{ color: '#0F172A' }}>
+                Evalúa con propósito 🎯
+              </h2>
+              <p className="text-xs leading-relaxed font-semibold" style={{ color: '#64748B' }}>
+                Cada pregunta bien diseñada revela el verdadero aprendizaje de tus estudiantes.
               </p>
             </div>
-            <div className="hidden md:flex w-10 h-10 rounded-full bg-white items-center justify-center shrink-0 shadow-xs border border-violet-50">
-              <Sparkle className="w-5 h-5 text-rose-600" />
+            <div className="hidden sm:flex shrink-0 mr-4 items-center justify-center w-20 h-16">
+              <img src="/assets/dashboard/icons/evaluaciones_icon.png" alt="Evaluaciones" className="w-full h-full object-contain" />
             </div>
           </div>
         </div>

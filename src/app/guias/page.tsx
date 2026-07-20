@@ -1336,15 +1336,17 @@ export default function GuiasPage() {
 
         {/* PNL BANNER */}
         <div className="px-6 md:px-8 pt-8">
-          <div className="bg-gradient-to-r from-emerald-50 via-teal-50/60 to-cyan-50/30 border border-emerald-100/50 rounded-3xl p-5 flex items-center justify-between relative overflow-hidden shadow-xs">
-            <div className="space-y-1 z-10 max-w-3xl">
-              <span className="text-[9px] font-black uppercase tracking-wider text-emerald-600">MENSAJE DEL DÍA</span>
-              <p className="text-slate-800 text-xs md:text-sm font-semibold italic">
-                "Tu didáctica transforma el papel en una herramienta de descubrimiento."
+          <div className="rounded-3xl p-6 flex items-center justify-between relative overflow-hidden border" style={{ background: 'linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)', borderColor: '#E5E7EB', boxShadow: '0 8px 30px rgba(0,0,0,0.05)' }}>
+            <div className="space-y-2 max-w-lg z-10">
+              <h2 className="text-xl font-black" style={{ color: '#0F172A' }}>
+                Guía con intención ✨
+              </h2>
+              <p className="text-xs leading-relaxed font-semibold" style={{ color: '#64748B' }}>
+                Tu didáctica transforma el papel en una herramienta de descubrimiento. Cada guía que creas abre una puerta al aprendizaje.
               </p>
             </div>
-            <div className="hidden md:flex w-10 h-10 rounded-full bg-white items-center justify-center shrink-0 shadow-xs border border-emerald-50">
-              <Sparkle className="w-5 h-5 text-emerald-600" />
+            <div className="hidden sm:flex shrink-0 mr-4 items-center justify-center w-20 h-16">
+              <img src="/assets/dashboard/icons/guias_icon.png" alt="Guías" className="w-full h-full object-contain" />
             </div>
           </div>
         </div>
