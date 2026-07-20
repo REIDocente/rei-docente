@@ -109,11 +109,12 @@ export async function POST(req: NextRequest) {
 
   if (tipo === 'planificacion') {
     templateText = PLANNING_TEMPLATE;
-    generationInstruction = `Completa la plantilla de planificación de lectura domiciliaria adjunta.
-Usa ${sesiones} sesiones en total. Asegúrate de estructurar:
-- Activación (Sesión 1)
-- Durante la lectura (Sesiones 2 a ${sesiones - 1}) con actividades detalladas y preguntas guía.
-- Cierre y Evaluación (Sesión ${sesiones}) con actividad de síntesis, evaluación y metacognición.`;
+    generationInstruction = `Completa la plantilla de sesión de clase adjunta para una lectura domiciliaria.
+La sesión tiene 2 bloques de 45 minutos cada uno (90 minutos en total).
+- Bloque 1 (45 min): activación, contextualización, vocabulario previo, lectura inicial o actividad de anticipación.
+- Bloque 2 (45 min): trabajo con el texto, actividad de desarrollo, cierre con síntesis y metacognición, y tarea domiciliaria.
+Asegúrate de que todas las actividades sean concretas, con instrucciones específicas para el docente, y alineadas al libro y nivel indicados.
+El objetivo de la sesión debe estar redactado en términos de lo que el estudiante logrará.`;
   } else if (tipo === 'guia') {
     templateText = GUIDE_TEMPLATE;
     generationInstruction = `Completa la plantilla de guía de lectura adjunta.

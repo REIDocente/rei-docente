@@ -1,24 +1,50 @@
 export const PLANNING_TEMPLATE = `
-PLANIFICACIÓN DE LECTURA DOMICILIARIA
+PLANIFICACIÓN DE SESIÓN DE CLASE — LECTURA DOMICILIARIA
 
 Libro: {titulo} | Autor: {autor}
 Nivel: {nivel} | OA: {oa}
-Duración: {sesiones} sesiones
+Duración: 2 horas pedagógicas (45 + 45 = 90 min)
 
-OBJETIVOS
-- Objetivo general: {objetivo_general}
-- Objetivos específicos: {objetivos_especificos}
+OBJETIVO DE LA SESIÓN
+{objetivo_sesion}
 
-SESIÓN 1 — ACTIVACIÓN (Antes de leer)
-- Actividad de predicción: {actividad_prediccion}
-- Activación de conocimientos previos: {conocimientos_previos}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BLOQUE 1 — INICIO (45 min)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Activación (10 min)
+- Estrategia: {estrategia_activacion}
 - Pregunta disparadora: {pregunta_disparadora}
 
-SESIONES 2 A {sesiones_intermedias} — DURANTE LA LECTURA
-{actividades_durante}
+Presentación del texto (10 min)
+- Contexto del autor y la obra: {contexto_obra}
+- Vocabulario clave a trabajar (3–5 palabras): {vocabulario_previo}
 
-SESIÓN FINAL — CIERRE Y EVALUACIÓN
-- Actividad de síntesis: {actividad_sintesis}
-- Evaluación: {evaluacion_final}
-- Reflexión metacognitiva: {reflexion}
+Lectura inicial / Actividad de anticipación (25 min)
+- Tipo de lectura: {tipo_lectura}
+- Actividad: {actividad_bloque1}
+- Preguntas guía durante la lectura: {preguntas_durante}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BLOQUE 2 — DESARROLLO Y CIERRE (45 min)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Trabajo con el texto (25 min)
+- Actividad principal: {actividad_desarrollo}
+- Recurso / material de apoyo: {recurso_apoyo}
+- Agrupación: {agrupacion} (individual / pareja / grupo)
+
+Cierre y metacognición (20 min)
+- Actividad de síntesis: {actividad_cierre}
+- Pregunta de reflexión metacognitiva: {pregunta_metacognitiva}
+- Tarea o avance de lectura domiciliaria: {tarea_domiciliaria}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+EVALUACIÓN FORMATIVA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+- Instrumento: {instrumento_evaluacion}
+- Indicadores observados: {indicadores}
+
+NOTAS DOCENTE
+{notas_docente}
 `;

@@ -15,7 +15,7 @@ import { Packer } from 'docx';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
-type TipoRecurso = 'planificacion' | 'guia' | 'banco_preguntas' | 'evaluacion' | 'rubrica' | 'experiencia';
+type TipoRecurso = 'planificacion' | 'guia' | 'banco_preguntas' | 'evaluacion' | 'rubrica' | 'experiencia' | 'recursos_visuales';
 
 interface ModalConfig {
   tipo: TipoRecurso;
@@ -816,19 +816,16 @@ export default function LecturasPage() {
 
               <CollapsibleSection id="kit_planificacion" label="📅 Kit de Planificación" open={openSection === 'kit_planificacion'} onToggle={() => toggleSection('kit_planificacion')}>
                 <div className="grid grid-cols-2 gap-2">
-                  {[
-                    { label: 'Planificación completa', tipo: 'planificacion' as TipoRecurso, sesiones: 8 },
-                    { label: 'Por capítulos', tipo: 'planificacion' as TipoRecurso, sesiones: 4 },
-                    { label: 'Planificación semanal', tipo: 'planificacion' as TipoRecurso, sesiones: 5 },
-                    { label: 'Sesión de clase', tipo: 'planificacion' as TipoRecurso, sesiones: 1 },
-                  ].map(item => (
-                    <ModuleBtn
-                      key={item.label}
-                      label={item.label}
-                      generated={!!recursosGenerados[`${item.tipo}_default`]}
-                      onClick={() => handleOpenModal({ tipo: item.tipo, label: item.label, sesiones: item.sesiones })}
-                    />
-                  ))}
+                  <ModuleBtn
+                    label="Sesión de clase"
+                    generated={!!recursosGenerados['planificacion_default']}
+                    onClick={() => handleOpenModal({ tipo: 'planificacion', label: 'Sesión de clase', sesiones: 2 })}
+                  />
+                  <ModuleBtn
+                    label="Recursos Visuales"
+                    generated={!!recursosGenerados['recursos_visuales_default']}
+                    onClick={() => handleOpenModal({ tipo: 'recursos_visuales', label: 'Recursos Visuales' })}
+                  />
                 </div>
               </CollapsibleSection>
 
