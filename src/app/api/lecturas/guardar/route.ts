@@ -45,7 +45,7 @@ function isValidExpediente(obj: any): boolean {
 function tryParseJson(text: string): any | null {
   try {
     return JSON.parse(stripMarkdown(text));
-  } catch {
+  } catch (_e) {
     return null;
   }
 }
