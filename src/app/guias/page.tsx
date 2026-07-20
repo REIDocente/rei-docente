@@ -101,7 +101,7 @@ export default function GuiasPage() {
   // Auth & Profile
   const [authLoading, setAuthLoading] = useState(true);
   const [initials, setInitials] = useState('U');
-  const [docenteNombre, setDocenteNombre] = useState('Docente');
+  const [docenteNombre, setDocenteNombre] = useState('');
   const [establecimientoGuia, setEstablecimientoGuia] = useState('');
   const [plannings, setPlannings] = useState<Planning[]>([]);
   
@@ -775,12 +775,19 @@ export default function GuiasPage() {
     sections.push({ tipo: 'actividades', label: 'Actividades principales', contenido: c2 });
 
     // ── Página 3 — Cierre ────────────────────────────────────────────────────
+    // Formato Universal: cj.universal.cierre.ticket_salida / autoevaluacion / frase_pnl
+    // Formato Kit de Clase: cj.ticket_salida (string), cj.autoevaluacion (array)
     const cierre = univ.cierre || {};
     let c3 = 'CIERRE:\n';
-    if (cierre.ticket_salida?.pregunta) c3 += `TICKET DE SALIDA: ${cierre.ticket_salida.pregunta}\n\n`;
-    if (Array.isArray(cierre.autoevaluacion) && cierre.autoevaluacion.length > 0) {
-      c3 += `AUTOEVALUACIÓN:\n${cierre.autoevaluacion.map((x: string) => `- ${x}`).join('\n')}\n\n`;
-    }
+    // Ticket de salida
+    const ticketPregunta = cierre.ticket_salida?.pregunta || (typeof cj.ticket_salida === 'string' ? cj.ticket_salida : null);
+    if (ticketPregunta) c3 += `TICKET DE SALIDA: ${ticketPregunta}\n\n`;
+    // Autoevaluación
+    const autoEval = (Array.isArray(cierre.autoevaluacion) && cierre.autoevaluacion.length > 0)
+      ? cierre.autoevaluacion
+      : (Array.isArray(cj.autoevaluacion) && cj.autoevaluacion.length > 0 ? cj.autoevaluacion : null);
+    if (autoEval) c3 += `AUTOEVALUACIÓN:\n${autoEval.map((x: string) => `- ${x}`).join('\n')}\n\n`;
+    // Frase PNL
     if (cierre.frase_pnl) c3 += `FRASE DE CIERRE: ${cierre.frase_pnl}\n`;
     if (c3 === 'CIERRE:\n') c3 += '[Generar cierre motivador con semáforo de autoevaluación y mensaje final]';
     sections.push({ tipo: 'cierre', label: 'Desafío y cierre', contenido: c3 });
