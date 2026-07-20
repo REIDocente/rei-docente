@@ -178,8 +178,8 @@ function ExpedientePanel({
         <div>
           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Vocabulario clave</p>
           <div className="flex flex-wrap gap-1">
-            {vocabulario.slice(0, 8).map((v: string, i: number) => (
-              <span key={i} className="px-2 py-0.5 bg-amber-50 text-amber-700 text-[9px] font-bold rounded-full border border-amber-100">{v}</span>
+            {vocabulario.slice(0, 8).map((v: any, i: number) => (
+              <span key={i} className="px-2 py-0.5 bg-amber-50 text-amber-700 text-[9px] font-bold rounded-full border border-amber-100">{typeof v === 'string' ? v : v.palabra}</span>
             ))}
           </div>
         </div>
