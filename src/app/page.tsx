@@ -249,9 +249,10 @@ export default function DashboardPage() {
     },
   ];
 
-  const fullName = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.user_metadata?.first_name || (profile as any)?.full_name || '';
-  const firstName = fullName ? fullName.split(' ')[0] : 'Docente';
   const email = user?.email || '';
+  const fullName = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.user_metadata?.first_name || (profile as any)?.full_name || '';
+  const emailPrefix = email ? email.split('@')[0] : '';
+  const firstName = fullName ? fullName.split(' ')[0] : (emailPrefix || 'Docente');
   const initials = fullName
     ? fullName.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase()
     : (email ? email[0].toUpperCase() : 'UD');

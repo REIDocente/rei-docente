@@ -55,6 +55,10 @@ export default function LoginPage() {
           },
         });
         if (authError) throw authError;
+        // Guardar full_name en user_profiles si el registro fue inmediato (sin confirmación de email)
+        if (data.session && data.user && nombre) {
+          await supabase.from('user_profiles').upsert({ id: data.user.id, full_name: nombre }, { onConflict: 'id' });
+        }
         if (data.session) {
           setSuccess('¡Registro exitoso! Iniciando sesión...');
           setTimeout(() => { setShowLoginModal(false); router.push('/'); }, 1500);
