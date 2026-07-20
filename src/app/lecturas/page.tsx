@@ -753,7 +753,7 @@ export default function LecturasPage() {
                       className="w-full flex items-center justify-center gap-2 py-3 bg-emerald-700 hover:bg-emerald-800 disabled:opacity-50 text-white rounded-xl text-sm font-bold transition-all cursor-pointer"
                     >
                       {savingAnalysis ? <span><Loader2 className="w-4 h-4 animate-spin" /></span> : <span><CheckCircle className="w-4 h-4" /></span>}
-                      Guardar Expediente y Continuar
+                      {savingAnalysis ? 'Procesando análisis...' : 'Procesar y guardar análisis'}
                     </button>
                   </div>
                 )}

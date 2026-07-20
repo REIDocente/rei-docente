@@ -4,6 +4,9 @@ import { createClient } from '@supabase/supabase-js';
 
 export const maxDuration = 60;
 
+// ── Límite de caracteres para fallback Haiku ──────────────────────────────────
+const HAIKU_INPUT_LIMIT = 20000;
+
 function makeSupabaseClient(token: string) {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -15,17 +18,80 @@ function makeSupabaseClient(token: string) {
 function extractToken(req: NextRequest): string | null {
   const auth = req.headers.get('authorization') ?? '';
   if (auth.startsWith('Bearer ')) return auth.slice(7).trim() || null;
-  if (process.env.NODE_ENV === 'development') {
-    return 'mock-access-token';
-  }
+  if (process.env.NODE_ENV === 'development') return 'mock-access-token';
   return null;
 }
 
-function sanitizeJson(raw: string): string {
+// ── Limpia delimitadores Markdown del texto pegado ────────────────────────────
+function stripMarkdown(raw: string): string {
   return raw
-    .replace(/^```(?:json)?\s*/i, '')
-    .replace(/\s*```$/i, '')
+    .replace(/^```(?:json)?\s*/im, '')
+    .replace(/\s*```\s*$/im, '')
     .trim();
+}
+
+// ── Valida que el JSON tiene los campos mínimos para biblioteca_libros ─────────
+function isValidExpediente(obj: any): boolean {
+  if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return false;
+  const requiredStrings = ['titulo', 'autor', 'resumen'];
+  const requiredArrays  = ['personajes', 'temas'];
+  return (
+    requiredStrings.every(k => typeof obj[k] === 'string' && obj[k].trim().length > 0) &&
+    requiredArrays.every(k => Array.isArray(obj[k]))
+  );
+}
+
+// ── Intenta parsear el texto como JSON ────────────────────────────────────────
+function tryParseJson(text: string): any | null {
+  try {
+    return JSON.parse(stripMarkdown(text));
+  } catch {
+    return null;
+  }
+}
+
+// ── Convierte texto libre a JSON usando Haiku (fallback) ──────────────────────
+async function convertWithHaiku(analisis_raw: string): Promise<{ parsed: any; truncated: boolean }> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey || apiKey === 'tu_anthropic_api_key_aqui') {
+    throw new Error('API Key de Anthropic no configurada');
+  }
+
+  const truncated = analisis_raw.length > HAIKU_INPUT_LIMIT;
+  const input = truncated ? analisis_raw.slice(0, HAIKU_INPUT_LIMIT) : analisis_raw;
+
+  const systemPrompt = `Eres un extractor de información literaria. El usuario te entregará un análisis de un libro en texto libre.
+Extrae la información y devuélvela ÚNICAMENTE como un objeto JSON válido con estos campos exactos.
+No escribas explicaciones. No uses bloques Markdown. Solo el JSON limpio.
+
+{
+  "titulo": "...",
+  "autor": "...",
+  "genero": "...",
+  "resumen": "...",
+  "personajes": [{"nombre": "...", "descripcion": "...", "rol": "...", "relaciones": "..."}],
+  "temas": ["..."],
+  "conflictos": ["..."],
+  "simbolos": ["..."],
+  "vocabulario": [{"palabra": "...", "definicion": "..."}],
+  "estructura_narrativa": "...",
+  "contexto_historico": "...",
+  "valores_mensajes": ["..."],
+  "fragmentos_clave": ["..."]
+}`;
+
+  const anthropic = new Anthropic({ apiKey });
+  const response = await anthropic.messages.create({
+    model: 'claude-haiku-4-5-20251001',
+    max_tokens: 1500,
+    temperature: 0,
+    system: systemPrompt,
+    messages: [{ role: 'user', content: `Análisis del libro:\n\n${input}` }]
+  });
+
+  const text = response.content[0].type === 'text' ? response.content[0].text : '';
+  const parsed = tryParseJson(text);
+  return { parsed, truncated };
 }
 
 export async function POST(req: NextRequest) {
@@ -60,7 +126,7 @@ export async function POST(req: NextRequest) {
   if (!analisis_raw) return NextResponse.json({ error: 'El campo "analisis_raw" es obligatorio' }, { status: 400 });
 
   try {
-    // 1. Verificar si ya existe en biblioteca_libros
+    // ── 1. Verificar si el libro ya existe en biblioteca ──────────────────────
     const { data: existente } = await supabase
       .from('biblioteca_libros')
       .select('*')
@@ -73,59 +139,42 @@ export async function POST(req: NextRequest) {
       libroId = existente[0].id;
       expedienteCompleto = existente[0];
     } else {
-      // 2. Claude para parsear el analisis_raw
-      const apiKey = process.env.ANTHROPIC_API_KEY;
-      if (!apiKey || apiKey === 'tu_anthropic_api_key_aqui') {
-        return NextResponse.json({ error: 'API Key de Anthropic no configurada' }, { status: 500 });
+      // ── 2. Intentar parsear directamente (0 tokens) ───────────────────────
+      let parsedJson = tryParseJson(analisis_raw);
+      let usedHaiku = false;
+      let inputTruncated = false;
+
+      if (!parsedJson || !isValidExpediente(parsedJson)) {
+        // ── 3. Fallback: Haiku convierte texto libre a JSON ───────────────
+        const result = await convertWithHaiku(analisis_raw);
+        parsedJson = result.parsed;
+        usedHaiku = true;
+        inputTruncated = result.truncated;
+
+        if (!parsedJson || !isValidExpediente(parsedJson)) {
+          return NextResponse.json({
+            error: 'No fue posible estructurar el análisis. Verifica que el texto sea legible o usa el formato JSON sugerido en el prompt.'
+          }, { status: 422 });
+        }
       }
 
-      const anthropic = new Anthropic({ apiKey });
-      const systemPrompt = `El siguiente texto es un análisis literario de un libro.
-Extrae la información y devuélvela estrictamente como un objeto JSON válido con estos campos exactos:
-{
-  "titulo": "...",
-  "autor": "...",
-  "genero": "...",
-  "resumen": "...",
-  "personajes": [{"nombre": "...", "descripcion": "...", "rol": "...", "relaciones": "..."}],
-  "temas": ["tema 1", "tema 2"],
-  "conflictos": ["conflicto 1"],
-  "simbolos": ["simbolo 1"],
-  "vocabulario": [{"palabra": "...", "definicion": "..."}],
-  "estructura_narrativa": "...",
-  "contexto_historico": "...",
-  "valores_mensajes": ["valor 1"],
-  "fragmentos_clave": ["cita 1", "cita 2"]
-}
-No devuelvas explicaciones ni bloques de código markdown, solo el objeto JSON limpio.`;
-
-      const response = await anthropic.messages.create({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 4000,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: `Texto del análisis:\n\n${analisis_raw}` }]
-      });
-
-      const cleanText = sanitizeJson(response.content[0].type === 'text' ? response.content[0].text : '');
-      const parsedJson = JSON.parse(cleanText);
-
-      // 3. Guardar en biblioteca_libros
+      // ── 4. Guardar en biblioteca_libros ───────────────────────────────────
       const { data: nuevoLibro, error: dbError } = await supabase
         .from('biblioteca_libros')
         .insert({
-          titulo: parsedJson.titulo || titulo,
-          autor: parsedJson.autor || '',
-          genero: parsedJson.genero || '',
-          resumen: parsedJson.resumen || '',
-          personajes: parsedJson.personajes || [],
-          temas: parsedJson.temas || [],
-          conflictos: parsedJson.conflictos || [],
-          simbolos: parsedJson.simbolos || [],
-          vocabulario: parsedJson.vocabulario || [],
+          titulo:              parsedJson.titulo              || titulo,
+          autor:               parsedJson.autor               || '',
+          genero:              parsedJson.genero              || '',
+          resumen:             parsedJson.resumen             || '',
+          personajes:          parsedJson.personajes          || [],
+          temas:               parsedJson.temas               || [],
+          conflictos:          parsedJson.conflictos          || [],
+          simbolos:            parsedJson.simbolos            || [],
+          vocabulario:         parsedJson.vocabulario         || [],
           estructura_narrativa: parsedJson.estructura_narrativa || '',
-          contexto_historico: parsedJson.contexto_historico || '',
-          valores_mensajes: parsedJson.valores_mensajes || [],
-          fragmentos_clave: parsedJson.fragmentos_clave || []
+          contexto_historico:  parsedJson.contexto_historico  || '',
+          valores_mensajes:    parsedJson.valores_mensajes    || [],
+          fragmentos_clave:    parsedJson.fragmentos_clave    || []
         })
         .select('*')
         .single();
@@ -134,31 +183,31 @@ No devuelvas explicaciones ni bloques de código markdown, solo el objeto JSON l
 
       libroId = nuevoLibro.id;
       expedienteCompleto = nuevoLibro;
+
+      // Log para diagnóstico (no visible al usuario)
+      console.log(`[guardar] Procesado con ${usedHaiku ? 'Haiku (fallback)' : 'JSON directo (0 tokens)'}${inputTruncated ? ' — input truncado a 20.000 chars' : ''}`);
     }
 
-    // 4. Crear registro en lecturas_docente
+    // ── 5. Crear registro en lecturas_docente ─────────────────────────────────
     const { error: docenteErr } = await supabase
       .from('lecturas_docente')
       .insert({
-        user_id: userId,
-        libro_id: libroId,
-        titulo_manual: titulo,
+        user_id:        userId,
+        libro_id:       libroId,
+        titulo_manual:  titulo,
         granularidad,
-        rango_inicio: rango_inicio || null,
-        rango_fin: rango_fin || null,
+        rango_inicio:   rango_inicio || null,
+        rango_fin:      rango_fin    || null,
         analisis_raw,
         observaciones
       });
 
     if (docenteErr) throw docenteErr;
 
-    return NextResponse.json({
-      libro_id: libroId,
-      expediente: expedienteCompleto
-    }, { status: 201 });
+    return NextResponse.json({ libro_id: libroId, expediente: expedienteCompleto }, { status: 201 });
 
   } catch (err: any) {
-    console.error('[guardar] Error parsing or saving analysis:', err.message);
-    return NextResponse.json({ error: 'Error al procesar el análisis del libro: ' + err.message }, { status: 500 });
+    console.error('[guardar] Error:', err.message);
+    return NextResponse.json({ error: 'Error al procesar el análisis: ' + err.message }, { status: 500 });
   }
 }

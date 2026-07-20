@@ -14,69 +14,54 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'El campo "titulo" es obligatorio' }, { status: 400 });
   }
 
-  let resumenSection = '';
-
+  let resumenInstruction = '';
   if (granularidad === 'capitulos') {
-    resumenSection = `2. RESUMEN POR CAPÍTULOS
-   Para cada capítulo del libro indica:
-   - Número y título del capítulo (si lo tiene)
-   - Eventos principales
-   - Personajes que aparecen
-   - Aprendizaje o mensaje del capítulo`;
+    resumenInstruction = `El campo "resumen" debe ser un resumen capítulo por capítulo, indicando para cada uno: número, título (si lo tiene), eventos principales y personajes que aparecen.`;
   } else if (granularidad === 'paginas') {
-    resumenSection = `2. RESUMEN DE PÁGINAS ${rango_inicio || '1'} A ${rango_fin || 'fin'}
-   Resume los eventos de esta sección en orden, indicando qué ocurre en cada bloque de 10 páginas aproximadamente.`;
+    resumenInstruction = `El campo "resumen" debe cubrir las páginas ${rango_inicio || '1'} a ${rango_fin || 'fin'}, describiendo los eventos en orden, en bloques de aproximadamente 10 páginas.`;
   } else if (granularidad === 'fragmento') {
-    resumenSection = `2. RESUMEN DEL FRAGMENTO SELECCIONADO
-   Resume detalladamente los acontecimientos narrados en el fragmento proporcionado.`;
+    resumenInstruction = `El campo "resumen" debe ser un resumen detallado del fragmento seleccionado.`;
   } else {
-    resumenSection = `2. RESUMEN GENERAL COMPLETO
-   Escribe una sinopsis general de la obra y un resumen de las partes principales (Inicio, Nudo/Conflicto y Desenlace).`;
+    resumenInstruction = `El campo "resumen" debe contener una sinopsis general y un resumen de las partes principales (Inicio, Nudo/Conflicto y Desenlace).`;
   }
 
-  const promptText = `Analiza el libro "${titulo}" de ${autor} y responde en formato estructurado bajo el siguiente expediente:
+  const promptText = `Analiza el libro "${titulo}" de ${autor} y responde ÚNICAMENTE con un objeto JSON válido con la siguiente estructura exacta. No escribas explicaciones antes ni después. No uses bloques Markdown (no pongas \`\`\`json). Solo el JSON limpio.
 
-1. DATOS BÁSICOS
-   - Título de la obra: ${titulo}
-   - Autor: ${autor}
-   - Género literario
-   - Cursos chilenos sugeridos para su lectura
+{
+  "titulo": "título exacto de la obra",
+  "autor": "nombre completo del autor",
+  "genero": "género literario",
+  "resumen": "...",
+  "personajes": [
+    {
+      "nombre": "...",
+      "descripcion": "personalidad y rasgos físicos",
+      "rol": "protagonista | antagonista | secundario | mentor | aliado",
+      "relaciones": "vínculos con otros personajes"
+    }
+  ],
+  "temas": ["tema central", "tema secundario 1", "tema secundario 2"],
+  "conflictos": ["conflicto principal", "conflicto secundario 1"],
+  "simbolos": ["símbolo 1 y su significado", "símbolo 2 y su significado"],
+  "vocabulario": [
+    { "palabra": "...", "definicion": "definición contextualizada" }
+  ],
+  "estructura_narrativa": "tipo de narrador, punto de vista, estructura temporal",
+  "contexto_historico": "época, contexto social e histórico de la obra",
+  "valores_mensajes": ["valor o moraleja 1", "valor o moraleja 2"],
+  "fragmentos_clave": ["cita textual 1", "cita textual 2", "cita textual 3"]
+}
 
-${resumenSection}
-
-3. PERSONAJES
-   Proporciona una lista detallada de los personajes principales y secundarios en formato de array JSON o lista estructurada conteniendo para cada uno:
-   - nombre
-   - descripcion (personalidad y rasgos físicos)
-   - rol (ej: protagonista, antagonista, mentor, aliado, secundario)
-   - relaciones (vínculos con otros personajes del libro)
-
-4. TEMAS
-   Identifica y explica el tema central y al menos 3 temas secundarios abordados en la obra.
-
-5. CONFLICTOS
-   Describe el conflicto principal de la historia (ej: hombre vs naturaleza, hombre vs sociedad) y al menos 2 conflictos secundarios.
-
-6. SÍMBOLOS Y ELEMENTOS LITERARIOS
-   Explica al menos 3 símbolos o motivos literarios recurrentes en la lectura y su significado dentro de la obra.
-
-7. CONTEXTO HISTÓRICO Y CULTURAL
-   Describe la época en que fue escrita la obra o el contexto social e histórico en el que se ambienta, y cómo influye en el relato.
-
-8. ESTRUCTURA NARRATIVA
-   Indica el tipo de narrador (ej: protagonista, testigo, omnisciente), el punto de vista narrativo y si la estructura temporal es lineal o no lineal (racconto, flashforward, etc.).
-
-9. VOCABULARIO CLAVE
-   Extrae exactamente 15 palabras complejas o interesantes presentes en la lectura junto con su definición contextualizada.
-
-10. VALORES Y MENSAJES
-    Detalla los principales valores éticos o moralejas que se pueden extraer de la lectura de esta obra.
-
-11. FRAGMENTOS CLAVE
-    Proporciona exactamente 5 citas textuales importantes de la obra que sirvan para analizar o debatir en clases, junto con un breve comentario explicativo de cada una.
-
-IMPORTANTE: Responde cada sección de forma clara y separada.
-Usa el mismo encabezado numérico de este prompt para cada sección.`;
+INSTRUCCIONES ESPECÍFICAS:
+- ${resumenInstruction}
+- "personajes": incluye al menos los 3 personajes más importantes.
+- "temas": mínimo 3 temas.
+- "conflictos": mínimo el conflicto principal.
+- "simbolos": mínimo 2 símbolos o elementos literarios.
+- "vocabulario": exactamente 10 palabras complejas o interesantes de la obra con definición.
+- "fragmentos_clave": exactamente 3 citas textuales importantes.
+- No inventes información que no aparezca en la fuente.
+- Devuelve SOLO el JSON. Sin texto adicional.`;
 
   return NextResponse.json({ prompt: promptText });
 }
