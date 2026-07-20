@@ -226,6 +226,16 @@ function buildPlaySystemPrompt(motorId: string): string {
     "Respuesta corta 13", "Respuesta corta 14", "Respuesta corta 15", "Respuesta corta 16",
     "Respuesta corta 17", "Respuesta corta 18", "Respuesta corta 19", "Respuesta corta 20"
   ],
+  "escaleras": [
+    { "from": 4, "to": 14, "nombre": "Escalera basada en el contenido" },
+    { "from": 20, "to": 38, "nombre": "Segunda escalera" },
+    { "from": 45, "to": 60, "nombre": "Tercera escalera" }
+  ],
+  "serpientes": [
+    { "from": 17, "to": 7, "nombre": "Serpiente basada en el contenido" },
+    { "from": 35, "to": 15, "nombre": "Segunda serpiente" },
+    { "from": 55, "to": 30, "nombre": "Tercera serpiente" }
+  ],
   "casillas_especiales": [
     { "casilla": 4, "tipo": "escalera", "destino": 14 },
     { "casilla": 20, "tipo": "escalera", "destino": 38 },
@@ -234,7 +244,9 @@ function buildPlaySystemPrompt(motorId: string): string {
     { "casilla": 35, "tipo": "serpiente", "destino": 15 },
     { "casilla": 55, "tipo": "serpiente", "destino": 30 }
   ]
-}`;
+}
+Nota: Las posiciones from/to deben ser numeros 2-63. Escalera: to > from. Serpiente: to < from.
+`;
   } else if (motorId === 'ludo') {
     schemaDescription = `{
   "preguntas_faciles": [
@@ -519,6 +531,11 @@ Genera el contenido pedagógico completo y detallado para el juego siguiendo las
   try {
     const cleanText = sanitizeJson(rawText);
     const contentJson = JSON.parse(cleanText);
+
+    // Inject metadata so renderers can access nivel/tema/oa_codes via juego.*
+    contentJson.nivel = nivel;
+    contentJson.tema = effectiveTema;
+    contentJson.oa_codes = Array.isArray(oa_codes) ? oa_codes : [];
 
     // Guardar en la base de datos
     const recordPayload = {

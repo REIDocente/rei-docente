@@ -91,6 +91,23 @@ export function drawPlayPdf({
     });
   };
 
+  const pageHeight = doc.internal.pageSize.getHeight();
+
+  const measureLines = (text: string, fontSize: number, maxW: number): string[] => {
+    doc.setFontSize(fontSize);
+    return doc.splitTextToSize(text || '', maxW);
+  };
+
+  const lineH = (fontSize: number) => fontSize * 0.4 + 1.2;
+
+  const ensureSpace = (needed: number, hTitle: string) => {
+    if (y + needed > pageHeight - 18) {
+      doc.addPage();
+      drawHeader(hTitle);
+      y = 35;
+    }
+  };
+
   const drawDottedRect = (x: number, y: number, w: number, h: number) => {
     doc.setDrawColor(148, 163, 184);
     doc.setLineWidth(0.25);
@@ -791,8 +808,14 @@ export function drawPlayPdf({
       y = 35;
       addText(`DESAFÍO / PRUEBA ${p.id}`, 14, 'bold', colorHex);
       y += 5;
-      addText(p.text, 10, 'normal', '#334155');
-      y += 40;
+      const pruLines = measureLines(p.text || 'Descripcion de la prueba.', 10, pWidth - 10);
+      const pruH = pruLines.length * lineH(10) + 4;
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(51, 65, 85);
+      pruLines.forEach((l: string, i: number) => { doc.text(l, margin + 5, y + i * lineH(10)); });
+      y += pruH + 6;
+      ensureSpace(32, `Escape Room - Prueba ${p.id}`);
 
       // Dibujar caja de candado
       drawDottedRect(margin + 50, y, 80, 25);
@@ -835,6 +858,24 @@ export function drawPlayPdf({
     const conceptosList = Array.isArray(juego.conceptos) ? juego.conceptos : ['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10', 'C11', 'C12', 'C13', 'C14', 'C15', 'C16'];
     
     // Generar 6 cartones (2 por página, en total 3 páginas)
+    const shuffleSeed = (arr: string[], seed: number): string[] => {
+      const a = [...arr];
+      let s = (seed * 1664525 + 1013904223) & 0x7fffffff;
+      for (let i = a.length - 1; i > 0; i--) {
+        s = (s * 1664525 + 1013904223) & 0x7fffffff;
+        const j = s % (i + 1);
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    };
+
+    const getCardConcepts = (concepts: string[], cardIdx: number): string[] => {
+      const base = concepts.length > 0 ? concepts : ['C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12','C13','C14','C15','C16'];
+      const pool: string[] = [];
+      while (pool.length < 16) pool.push(...base);
+      return shuffleSeed(pool.slice(0, Math.max(base.length, 16)), cardIdx * 31 + 17).slice(0, 16);
+    };
+
     let isFirstPage = true;
     for (let cNum = 0; cNum < 6; cNum += 2) {
       if (!isFirstPage) {
@@ -861,10 +902,9 @@ export function drawPlayPdf({
       }
       doc.setLineDashPattern([], 0);
 
-      let cIndex = cNum * 4;
       for (let r = 0; r < 4; r++) {
         for (let c = 0; c < 4; c++) {
-          const concept = conceptosList[(cIndex + r * 4 + c) % conceptosList.length] || 'Didakta';
+          const concept = getCardConcepts(conceptosList, cNum)[r * 4 + c] || 'Didakta';
           doc.setFontSize(7.5);
           doc.setFont('helvetica', 'normal');
           doc.setTextColor(15, 23, 42);
@@ -894,10 +934,9 @@ export function drawPlayPdf({
       }
       doc.setLineDashPattern([], 0);
 
-      cIndex = (cNum + 1) * 4;
       for (let r = 0; r < 4; r++) {
         for (let c = 0; c < 4; c++) {
-          const concept = conceptosList[(cIndex + r * 4 + c) % conceptosList.length] || 'Didakta';
+          const concept = getCardConcepts(conceptosList, cNum + 1)[r * 4 + c] || 'Didakta';
           doc.setFontSize(7.5);
           doc.setFont('helvetica', 'normal');
           doc.setTextColor(15, 23, 42);
@@ -948,12 +987,15 @@ export function drawPlayPdf({
         const cardNum = cIdx + offsetIdx;
         if (cardNum >= numCards) break;
 
+        const qLines = measureLines(`Pregunta: ${preguntasList[cardNum] || ''}`, 9.5, width - 10);
+        const cardH = Math.max(48, qLines.length * lineH(9.5) + 26);
+        if (y + cardH > pageHeight - 18) { doc.addPage(); drawHeader('Trivia - continuacion'); y = 35; }
         const cardY = y;
-        drawDottedRect(margin, cardY, width, 55);
+        drawDottedRect(margin, cardY, width, cardH);
 
         y = cardY + 5;
         const category = categoriasList[cardNum] || 'General';
-        addText(`PREGUNTA N° ${cardNum + 1} · Categoría: ${category}`, 9, 'bold', colorHex, margin + 5);
+        addText(`PREGUNTA N${String.fromCharCode(176)} ${cardNum + 1} - Categoria: ${category}`, 9, 'bold', colorHex, margin + 5);
         y += 2;
         addText(`Pregunta: ${preguntasList[cardNum]}`, 9.5, 'normal', '#0f172a', margin + 5);
 
@@ -967,9 +1009,9 @@ export function drawPlayPdf({
         doc.line(margin + 5, cardY + 36, margin + width - 5, cardY + 36);
 
         y = cardY + 39;
-        addText(`Respuesta (al dorso): ${respuestasList[cardNum] || '________________'}`, 9, 'bold', '#475569', margin + 5);
+        addText(`Respuesta: ${respuestasList[cardNum] || '________________'}`, 9, 'bold', '#16a34a', margin + 5);
 
-        y = cardY + 60;
+        y = cardY + cardH + 4;
       }
     }
 
@@ -1249,11 +1291,15 @@ export function drawPlayPdf({
         doc.setFillColor(rAccent, gAccent, bAccent);
         doc.rect(rx, ry, roomW, 11, 'F');
 
-        // Nombre de habitación
-        doc.setFontSize(8);
+        // Nombre de habitacion (con ajuste de texto)
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(255, 255, 255);
-        doc.text(roomName, rx + 4, ry + 8);
+        const rnLines = doc.splitTextToSize(roomName.length > 18 ? roomName.slice(0,17)+'.' : roomName, roomW - 8);
+        const rnFs = rnLines.length > 1 ? 6.5 : 8;
+        doc.setFontSize(rnFs);
+        rnLines.slice(0, 2).forEach((rl: string, ri: number) => {
+          doc.text(rl, rx + 4, ry + 7 + ri * (rnFs * 0.45 + 1));
+        });
 
         // Numero de habitacion
         doc.setFontSize(22);
@@ -1967,16 +2013,8 @@ export function drawPlayPdf({
         if (cellNum === 1) doc.text("INICIO", cx + 2, cy + 14);
         if (cellNum === 64) doc.text("META", cx + 1, cy + 14);
 
-        // Pequeño indicador dentro de la celda
-        if (cellNum === 4 || cellNum === 20 || cellNum === 45) {
-          doc.setFontSize(6);
-          doc.setTextColor(16, 185, 129);
-          doc.text("^ ESC", cx + sqSize - 8, cy + sqSize - 2);
-        } else if (cellNum === 17 || cellNum === 35 || cellNum === 55) {
-          doc.setFontSize(6);
-          doc.setTextColor(239, 68, 68);
-          doc.text("v SERP", cx + sqSize - 9, cy + sqSize - 2);
-        }
+        // Pequeño indicador dentro de la celda (se actualiza tras definir escaleras/serpientes)
+        // Los indicadores se dibujan despues de definir escaleras y serpientes
       }
     }
 
@@ -1996,11 +2034,40 @@ export function drawPlayPdf({
       };
     };
 
-    const escaleras = [
-      { from: 4, to: 14 },
-      { from: 20, to: 38 },
-      { from: 45, to: 60 }
-    ];
+    const defEsc = [{from:4,to:14},{from:20,to:38},{from:45,to:60}];
+    const defSerp = [{from:17,to:7},{from:35,to:15},{from:55,to:30}];
+
+    const validatePairs = (arr: any[], isEsc: boolean): {from:number,to:number}[] | null => {
+      if (!Array.isArray(arr) || arr.length === 0) return null;
+      const valid = arr.filter((x: any) => {
+        const f = Number(x.from||x.origen), t = Number(x.to||x.destino);
+        return !isNaN(f) && !isNaN(t) && f>=2 && t>=2 && f<=63 && t<=63 && f!==1 && t!==64 && (isEsc ? t>f : t<f);
+      }).map((x: any) => ({from:Number(x.from||x.origen),to:Number(x.to||x.destino)}));
+      return valid.length > 0 ? valid : null;
+    };
+
+    const escaleras: {from:number,to:number}[] = validatePairs(juego.escaleras, true) || defEsc;
+    const serpientes: {from:number,to:number}[] = validatePairs(juego.serpientes, false) || defSerp;
+
+    // Draw indicators on board cells using dynamic escaleras/serpientes
+    // (done via second pass after board is drawn)
+    // Re-draw cell indicators for escaleras/serpientes
+    for (let row2 = 0; row2 < 8; row2++) {
+      for (let col2 = 0; col2 < 8; col2++) {
+        const isRowEven2 = row2 % 2 === 0;
+        const colIndex2 = isRowEven2 ? col2 : 7 - col2;
+        const cellNum2 = (7 - row2) * 8 + colIndex2 + 1;
+        const cx2 = bx + col2 * sqSize;
+        const cy2 = by + row2 * sqSize;
+        if (escaleras.some((e: {from:number,to:number}) => e.from === cellNum2)) {
+          doc.setFontSize(6); doc.setTextColor(16,185,129);
+          doc.text('^ ESC', cx2 + sqSize - 8, cy2 + sqSize - 2);
+        } else if (serpientes.some((s: {from:number,to:number}) => s.from === cellNum2)) {
+          doc.setFontSize(6); doc.setTextColor(239,68,68);
+          doc.text('v SERP', cx2 + sqSize - 9, cy2 + sqSize - 2);
+        }
+      }
+    }
     escaleras.forEach((esc) => {
       const pFrom = getCellCoords(esc.from);
       const pTo = getCellCoords(esc.to);
@@ -2017,11 +2084,7 @@ export function drawPlayPdf({
     // Serpientes: 17->7, 35->15, 55->30
     doc.setDrawColor(239, 68, 68); // rojo
     doc.setLineWidth(2);
-    const serpientes = [
-      { from: 17, to: 7 },
-      { from: 35, to: 15 },
-      { from: 55, to: 30 }
-    ];
+
     serpientes.forEach((serp) => {
       const pFrom = getCellCoords(serp.from); // Cabeza
       const pTo = getCellCoords(serp.to);     // Cola
@@ -2099,85 +2162,157 @@ export function drawPlayPdf({
     });
 
   } else if (motorId === 'ludo') {
-    // ---- PÁGINA 1: Tablero Ludo ----
+    // ---- PAGINA 1: Tablero Ludo ----
     const lWidth = getPageWidth();
-    drawHeader('Ludo - Tablero');
+    drawHeader('Ludo Pedagogico');
+    y = 28;
 
-    doc.setFontSize(14);
+    doc.setFontSize(13);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(rAccent, gAccent, bAccent);
-    doc.text("LUDO PEDAGÓGICO", lWidth / 2 + margin, 35, { align: 'center' });
-    y = 40;
+    doc.text('LUDO PEDAGOGICO', margin + lWidth / 2, y, { align: 'center' });
+    y += 7;
 
-    // Dibujar Ludo de 135x135 en el centro
-    const boardSize = 130;
-    const bx = margin + (lWidth - boardSize) / 2;
-    const by = y + 5;
+    // Board: 135x135 mm, 15x15 grid
+    const BS = 135;
+    const bx0 = margin + (lWidth - BS) / 2;
+    const by0 = y;
+    const N = 15;
+    const cs = BS / N; // cell size ~9mm
 
-    doc.setDrawColor(30, 41, 59);
-    doc.setLineWidth(0.8);
-    doc.rect(bx, by, boardSize, boardSize, 'S');
+    const gc = (col: number) => bx0 + col * cs;
+    const gr = (row: number) => by0 + row * cs;
 
-    // 4 Zonas de las esquinas (patios de salida)
-    const yardSize = 50;
+    const fillR = (c: number, r: number, w: number, h: number, fill: [number,number,number], strok?: [number,number,number]) => {
+      doc.setFillColor(...fill);
+      if (strok) { doc.setDrawColor(...strok); doc.setLineWidth(0.25); doc.rect(gc(c), gr(r), w*cs, h*cs, 'FD'); }
+      else doc.rect(gc(c), gr(r), w*cs, h*cs, 'F');
+    };
 
-    // Rojo (Arriba Izquierda)
-    doc.setFillColor(254, 226, 226);
-    doc.rect(bx, by, yardSize, yardSize, 'F');
-    doc.setFillColor(239, 68, 68);
-    doc.rect(bx + 15, by + 15, 20, 20, 'F');
-    doc.setFontSize(9);
-    doc.setTextColor(255, 255, 255);
-    doc.text("ROJO", bx + 21, by + 27);
+    // Background
+    fillR(0, 0, 15, 15, [241,245,249]);
 
-    // Azul (Arriba Derecha)
-    doc.setFillColor(219, 234, 254);
-    doc.rect(bx + boardSize - yardSize, by, yardSize, yardSize, 'F');
-    doc.setFillColor(59, 130, 246);
-    doc.rect(bx + boardSize - yardSize + 15, by + 15, 20, 20, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.text("AZUL", bx + boardSize - yardSize + 22, by + 27);
+    // Home zones (6x6 corners with inner 4x4 colored)
+    fillR(0,0,6,6,[254,226,226]);  fillR(1,1,4,4,[239,68,68]);   // RED top-left
+    fillR(9,0,6,6,[219,234,254]);  fillR(10,1,4,4,[59,130,246]); // BLUE top-right
+    fillR(0,9,6,6,[220,252,231]);  fillR(1,10,4,4,[22,163,74]);  // GREEN bot-left
+    fillR(9,9,6,6,[254,249,195]);  fillR(10,10,4,4,[234,179,8]); // YELLOW bot-right
 
-    // Verde (Abajo Izquierda)
-    doc.setFillColor(209, 250, 229);
-    doc.rect(bx, by + boardSize - yardSize, yardSize, yardSize, 'F');
-    doc.setFillColor(16, 185, 129);
-    doc.rect(bx + 15, by + boardSize - yardSize + 15, 20, 20, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.text("VERDE", bx + 19, by + boardSize - yardSize + 27);
+    // White corridors (the cross)
+    fillR(6,0,3,6,[255,255,255]); fillR(6,9,3,6,[255,255,255]); // vertical top/bot
+    fillR(0,6,6,3,[255,255,255]); fillR(9,6,6,3,[255,255,255]); // horizontal left/right
 
-    // Amarillo (Abajo Derecha)
-    doc.setFillColor(254, 243, 199);
-    doc.rect(bx + boardSize - yardSize, by + boardSize - yardSize, yardSize, yardSize, 'F');
-    doc.setFillColor(245, 158, 11);
-    doc.rect(bx + boardSize - yardSize + 15, by + boardSize - yardSize + 15, 20, 20, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.text("AMAR", bx + boardSize - yardSize + 21, by + boardSize - yardSize + 27);
+    // Colored home stretches (leading to center)
+    for (let i=1;i<=5;i++) fillR(i,7,1,1,[220,252,231],[22,163,74]);   // GREEN row 7, cols 1-5
+    for (let i=1;i<=5;i++) fillR(7,i,1,1,[254,249,195],[234,179,8]);   // YELLOW col 7, rows 1-5
+    for (let i=9;i<=13;i++) fillR(i,7,1,1,[219,234,254],[59,130,246]); // BLUE row 7, cols 9-13
+    for (let i=9;i<=13;i++) fillR(7,i,1,1,[254,226,226],[239,68,68]);  // RED col 7, rows 9-13
 
-    // Centro (Meta)
-    doc.setFillColor(241, 245, 249);
-    doc.rect(bx + yardSize, by + yardSize, boardSize - 2 * yardSize, boardSize - 2 * yardSize, 'F');
-    doc.setFontSize(8);
-    doc.setTextColor(30, 41, 59);
-    doc.text("META", bx + yardSize + 7, by + yardSize + 17);
+    // Start squares (entry to each player's path)
+    fillR(8,13,1,1,[239,68,68],[180,30,30]);    // RED start
+    fillR(13,6,1,1,[59,130,246],[20,80,200]);   // BLUE start
+    fillR(6,1,1,1,[234,179,8],[180,120,0]);     // YELLOW start
+    fillR(1,8,1,1,[22,163,74],[10,100,40]);     // GREEN start
 
-    // Caminos y casillas
-    doc.setLineWidth(0.4);
-    doc.setDrawColor(148, 163, 184);
+    // Center META - 4 colored triangles
+    const cx0 = gc(6), cy0L = gr(6), cx3 = gc(9), cy3 = gr(9);
+    const midX = (cx0 + cx3) / 2, midY = (cy0L + cy3) / 2;
+    doc.setFillColor(239,68,68);   doc.triangle(cx0,cy0L, cx3,cy0L, midX,midY, 'F'); // top
+    doc.setFillColor(59,130,246);  doc.triangle(cx3,cy0L, cx3,cy3, midX,midY, 'F'); // right
+    doc.setFillColor(22,163,74);   doc.triangle(cx0,cy0L, cx0,cy3, midX,midY, 'F'); // left
+    doc.setFillColor(234,179,8);   doc.triangle(cx0,cy3, cx3,cy3, midX,midY, 'F'); // bottom
+    doc.setFontSize(6); doc.setFont('helvetica','bold');
+    doc.setTextColor(255,255,255);
+    doc.text('META', midX, midY + 1.5, {align:'center'});
 
-    // Eje horizontal de casillas
-    const pathSq = (boardSize - 2 * yardSize) / 3;
-    doc.rect(bx + yardSize, by, pathSq, yardSize);
-    doc.rect(bx + yardSize + pathSq, by, pathSq, yardSize);
-    doc.rect(bx + yardSize + 2 * pathSq, by, pathSq, yardSize);
-    
-    // Dibujar algunas casillas "?"
-    doc.setFontSize(10);
-    doc.setTextColor(148, 163, 184);
-    doc.text("?", bx + yardSize + 12, by + 15);
-    doc.text("?", bx + yardSize + 12, by + 120);
+    // Grid lines over the cross paths only
+    doc.setDrawColor(180,180,180); doc.setLineWidth(0.2);
+    for (let r=0;r<=15;r++) {
+      if (r>=6 && r<=9) { doc.line(bx0, gr(r), bx0+BS, gr(r)); }
+      else {
+        doc.line(gc(6), gr(r), gc(9), gr(r));
+        if (r>=0 && r<=6) doc.line(bx0, gr(r), bx0+BS, gr(r));
+        if (r>=9 && r<=15) doc.line(bx0, gr(r), bx0+BS, gr(r));
+      }
+    }
+    for (let c=0;c<=15;c++) {
+      if (c>=6 && c<=9) { doc.line(gc(c), by0, gc(c), by0+BS); }
+      else {
+        doc.line(gc(c), gr(6), gc(c), gr(9));
+        if (c>=0 && c<=6) doc.line(gc(c), by0, gc(c), by0+BS);
+        if (c>=9 && c<=15) doc.line(gc(c), by0, gc(c), by0+BS);
+      }
+    }
 
-    // ---- PÁGINAS 2-3: Tarjetas (24 en total, 8 por nivel) ----
+    // Number the path cells
+    const luPath52: [number,number][] = [
+      [8,14],[8,13],[8,12],[8,11],[8,10],[8,9],
+      [7,8],[6,8],[5,8],[4,8],[3,8],[2,8],[1,8],
+      [0,8],[0,7],[0,6],
+      [1,6],[2,6],[3,6],[4,6],[5,6],
+      [6,5],[6,4],[6,3],[6,2],[6,1],[6,0],
+      [7,0],[8,0],
+      [8,1],[8,2],[8,3],[8,4],[8,5],
+      [9,6],[10,6],[11,6],[12,6],[13,6],[14,6],
+      [14,7],[14,8],
+      [13,8],[12,8],[11,8],[10,8],[9,8],
+      [8,9],[8,10],[8,11],[8,12],[8,13],[8,14],
+      [7,14],
+    ];
+    doc.setFontSize(4.5); doc.setFont('helvetica','normal');
+    luPath52.slice(0,52).forEach(([col,row],idx) => {
+      doc.setTextColor(80,80,80);
+      doc.text(String(idx+1), gc(col)+0.8, gr(row)+cs-0.8);
+    });
+
+    // Outer border
+    doc.setDrawColor(30,41,59); doc.setLineWidth(0.8);
+    doc.rect(bx0, by0, BS, BS, 'S');
+    // Home area borders
+    doc.setLineWidth(0.5);
+    [[0,0],[9,0],[0,9],[9,9]].forEach(([hc,hr]) => {
+      doc.setDrawColor(rAccent,gAccent,bAccent);
+      doc.rect(gc(hc), gr(hr), cs*6, cs*6, 'S');
+    });
+
+    // Labels inside home areas
+    const homeLabels = [
+      {col:3,row:3,label:'ROJO'},{col:12,row:3,label:'AZUL'},
+      {col:3,row:12,label:'VERDE'},{col:12,row:12,label:'AMAR'}
+    ];
+    doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(255,255,255);
+    homeLabels.forEach(({col,row,label}) => {
+      doc.text(label, gc(col)+cs/2, gr(row)+cs/2+1, {align:'center'});
+    });
+
+    y = by0 + BS + 3;
+
+    // Instructions
+    doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(71,85,105);
+    const luInstr = doc.splitTextToSize(
+      'Reglas: Saca un 6 para sacar ficha de casa. Avanza segun el dado. Responde una tarjeta al caer en casilla con pregunta. Si aciertas, avanza 2 casillas extra. Primer jugador en llegar a META gana.',
+      lWidth
+    );
+    luInstr.forEach((l: string, i: number) => doc.text(l, margin, y + i * 3.2));
+    y += luInstr.length * 3.2 + 3;
+
+    // Legend
+    doc.setFontSize(6.5);
+    const legends = [
+      {fill:[239,68,68] as [number,number,number], label:'ROJO (jugador 1) - sale de col 8, fila 13'},
+      {fill:[59,130,246] as [number,number,number], label:'AZUL (jugador 2) - sale de col 13, fila 6'},
+      {fill:[22,163,74] as [number,number,number], label:'VERDE (jugador 3) - sale de col 1, fila 8'},
+      {fill:[234,179,8] as [number,number,number], label:'AMARILLO (jugador 4) - sale de col 6, fila 1'}
+    ];
+    legends.forEach(({fill, label}, i) => {
+      doc.setFillColor(...fill);
+      doc.rect(margin + (i%2)*90, y + Math.floor(i/2)*5, 3, 3, 'F');
+      doc.setTextColor(30,41,59);
+      doc.text(label, margin + (i%2)*90 + 5, y + Math.floor(i/2)*5 + 2.5);
+    });
+    y += 12;
+
+    // ---- PAGINAS 2-3: Tarjetas (24 en total, 8 por nivel) ----
     doc.addPage('a4', 'portrait');
     const pWidth = getPageWidth();
     
