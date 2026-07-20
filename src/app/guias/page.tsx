@@ -991,8 +991,8 @@ export default function GuiasPage() {
     if (sections.length === 0) return;
     const _cjCtx = result.contenido_json || result;
     const _ctx = {
-      establecimiento: establecimientoGuia || _cjCtx.establecimiento || '',
-      docente: docenteNombre || _cjCtx.docente || '',
+      establecimiento: establecimientoGuia || '',
+      docente: docenteNombre || '',
       asignatura: String(_cjCtx.asignatura || 'Lenguaje y Comunicacion'),
       curso: String(_cjCtx.nivel || _cjCtx.curso || ''),
       oas: String((_cjCtx.oa_codes || []).join(', ') || _cjCtx.oa || ''),
