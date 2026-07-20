@@ -47,7 +47,7 @@ export const TRIAL_LIMITS: Record<string, number> = {
   gamified_activities_generated: 999999,
   visual_resources_generated:    999999,
   juegos_generated:              999999,
-  lecturas_generated:            999999,
+  lecturas_generated:            1,
   rei_play_count:                2,
   rei_lecturas_count:            1,
   experiencias_rei_count:        1,
