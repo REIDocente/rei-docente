@@ -262,6 +262,9 @@ export default function LecturasPage() {
   const [generatingModal, setGeneratingModal]     = useState(false);
   const [generatedModal, setGeneratedModal]       = useState('');
   const [modalError, setModalError]               = useState<string | null>(null);
+  const [modalDificultad, setModalDificultad]     = useState<'Fácil' | 'Mixto' | 'Difícil'>('Mixto');
+  const [modalNumAlt, setModalNumAlt]             = useState(15);
+  const [modalNumDes, setModalNumDes]             = useState(3);
   const [exportingModalPdf, setExportingModalPdf] = useState(false);
   const [exportingModalWord, setExportingModalWord] = useState(false);
 
@@ -829,116 +832,6 @@ export default function LecturasPage() {
                 </div>
               </CollapsibleSection>
 
-              <CollapsibleSection id="evaluaciones" label="📝 Evaluaciones y Rúbrica" open={openSection === 'evaluaciones'} onToggle={() => toggleSection('evaluaciones')}>
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    { label: 'Evaluación + Rúbrica', tipo: 'evaluacion' as TipoRecurso, subtipo: 'mixta' },
-                    { label: 'Tabla de Especificaciones', tipo: 'banco_preguntas' as TipoRecurso, subtipo: undefined },
-                    { label: 'Autoevaluación', tipo: 'evaluacion' as TipoRecurso, subtipo: 'desarrollo' },
-                  ].map(item => (
-                    <ModuleBtn
-                      key={item.label}
-                      label={item.label}
-                      generated={!!recursosGenerados[`${item.tipo}_${item.subtipo || 'default'}`]}
-                      onClick={() => handleOpenModal({ tipo: item.tipo, subtipo: item.subtipo, label: item.label })}
-                    />
-                  ))}
-                </div>
-              </CollapsibleSection>
-
-              <CollapsibleSection id="guias" label="📖 Guías de Aprendizaje" open={openSection === 'guias'} onToggle={() => toggleSection('guias')}>
-                <div className="grid grid-cols-2 gap-2">
-                  <ModuleBtn label="Guía de Aprendizaje" generated={!!recursosGenerados['guia_default']} onClick={() => handleOpenModal({ tipo: 'guia', label: 'Guía de Aprendizaje' })} />
-                </div>
-              </CollapsibleSection>
-
-              <CollapsibleSection id="rei_play" label="🎮 REI PLAY" open={openSection === 'rei_play'} onToggle={() => toggleSection('rei_play')}>
-                <p className="text-[10px] text-slate-400 mb-3">Redirige a REI PLAY con este libro ya seleccionado.</p>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                  {PLAY_MOTORS.map(motor => (
-                    <button
-                      key={motor.id}
-                      type="button"
-                      onClick={() => router.push(`/play?fuente=lectura_domiciliaria&libro_id=${libroId}&motor=${motor.id}`)}
-                      className="flex flex-col items-center gap-1.5 p-3 bg-white border border-slate-200 hover:border-emerald-400 hover:bg-emerald-50/30 rounded-xl text-center transition-all cursor-pointer group"
-                    >
-                      <span className="text-xl">{motor.emoji}</span>
-                      <span className="text-[10px] font-bold text-slate-600 group-hover:text-emerald-700">{motor.label}</span>
-                      <ExternalLink className="w-3 h-3 text-slate-300 group-hover:text-emerald-500" />
-                    </button>
-                  ))}
-                </div>
-              </CollapsibleSection>
-
-              <CollapsibleSection id="experiencias" label="🎭 Experiencias REI" open={openSection === 'experiencias'} onToggle={() => toggleSection('experiencias')}>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                  {EXPERIENCIAS_LIST.map(exp => (
-                    <div key={exp.id} className="relative">
-                      {exp.proximamente && (
-                        <span className="absolute -top-1.5 -right-1.5 px-1.5 py-0.5 bg-amber-400 text-amber-950 text-[8px] font-black rounded-full z-10 shadow-sm">PRONTO</span>
-                      )}
-                      <button
-                        type="button"
-                        disabled={exp.proximamente}
-                        onClick={() => !exp.proximamente && handleOpenModal({ tipo: 'experiencia', subtipo: exp.id, label: exp.label })}
-                        className={`w-full flex flex-col items-center gap-1.5 p-3 border rounded-xl text-center transition-all ${exp.proximamente ? 'bg-slate-50 border-slate-100 opacity-60 cursor-not-allowed' : !!recursosGenerados[`experiencia_${exp.id}`] ? 'bg-emerald-50 border-emerald-200 cursor-pointer' : 'bg-white border-slate-200 hover:border-emerald-400 hover:bg-emerald-50/30 cursor-pointer'}`}
-                      >
-                        <span className="text-xl">{exp.emoji}</span>
-                        <span className="text-[10px] font-bold text-slate-600">{exp.label}</span>
-                        {!!recursosGenerados[`experiencia_${exp.id}`] && <span className="text-[9px] text-emerald-600 font-bold">✓ Generado</span>}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </CollapsibleSection>
-
-              <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-5 shadow-sm space-y-4">
-                <div className="flex items-center gap-2">
-                  <Star className="w-5 h-5 text-amber-500" />
-                  <h3 className="text-sm font-black text-slate-800">Kit Completo de &ldquo;{libroExpediente.titulo}&rdquo;</h3>
-                </div>
-                <p className="text-xs text-slate-500">Marca los módulos que quieres incluir (mínimo 2). Se generarán secuencialmente.</p>
-                <div className="space-y-2">
-                  {[
-                    { key: 'planificacion', label: '📅 Kit de Planificación' },
-                    { key: 'evaluacion', label: '📝 Evaluaciones y Rúbrica' },
-                    { key: 'guia', label: '📖 Guías de Aprendizaje' },
-                  ].map(item => (
-                    <label key={item.key} className="flex items-center gap-3 cursor-pointer">
-                      <input type="checkbox" checked={kitSeleccionado[item.key]} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setKitSeleccionado((prev: Record<string, boolean>) => ({ ...prev, [item.key]: e.target.checked }))} className="w-4 h-4 rounded border-slate-300 accent-emerald-600" />
-                      <span className="text-xs font-medium text-slate-700">{item.label}</span>
-                    </label>
-                  ))}
-                  <label className="flex items-center gap-3 cursor-pointer flex-wrap">
-                    <input type="checkbox" checked={kitSeleccionado.play} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setKitSeleccionado((prev: Record<string, boolean>) => ({ ...prev, play: e.target.checked }))} className="w-4 h-4 rounded border-slate-300 accent-emerald-600" />
-                    <span className="text-xs font-medium text-slate-700">🎮 REI PLAY →</span>
-                    <select value={kitMotor} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setKitMotor(e.target.value)} disabled={!kitSeleccionado.play} className="text-xs px-2 py-1 rounded-lg border border-slate-200 bg-white focus:outline-none disabled:opacity-40">
-                      {PLAY_MOTORS.map(m => <option key={m.id} value={m.id}>{m.emoji} {m.label}</option>)}
-                    </select>
-                  </label>
-                  <label className="flex items-center gap-3 cursor-pointer flex-wrap">
-                    <input type="checkbox" checked={kitSeleccionado.experiencia} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setKitSeleccionado((prev: Record<string, boolean>) => ({ ...prev, experiencia: e.target.checked }))} className="w-4 h-4 rounded border-slate-300 accent-emerald-600" />
-                    <span className="text-xs font-medium text-slate-700">🎭 Experiencia →</span>
-                    <select value={kitExperiencia} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setKitExperiencia(e.target.value)} disabled={!kitSeleccionado.experiencia} className="text-xs px-2 py-1 rounded-lg border border-slate-200 bg-white focus:outline-none disabled:opacity-40">
-                      {EXPERIENCIAS_LIST.filter(e => !e.proximamente).map(e => <option key={e.id} value={e.id}>{e.emoji} {e.label}</option>)}
-                    </select>
-                  </label>
-                </div>
-                {kitProgreso.length > 0 && (
-                  <div className="bg-white rounded-xl border border-amber-100 p-3 space-y-1">
-                    {kitProgreso.map((p: string, i: number) => <p key={i} className="text-xs text-slate-600">{p}</p>)}
-                  </div>
-                )}
-                <button
-                  type="button"
-                  onClick={handleGenerarKit}
-                  disabled={kitCount < 2 || kitGenerando}
-                  className="w-full flex items-center justify-center gap-2 py-3 bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-white rounded-xl text-sm font-bold transition-all cursor-pointer shadow-sm"
-                >
-                  {kitGenerando ? <span><Loader2 className="w-4 h-4 animate-spin" /></span> : <span><Star className="w-4 h-4" /></span>}
-                  {kitGenerando ? 'Generando...' : `Generar Kit (${kitCount} seleccionados) →`}
-                </button>
-              </div>
 
             </main>
 

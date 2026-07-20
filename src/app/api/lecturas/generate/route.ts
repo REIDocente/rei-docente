@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Body JSON inválido' }, { status: 400 });
   }
 
-  const { libro_id, tipo, subtipo, nivel, oa = [], sesiones = 4 } = body;
+  const { libro_id, tipo, subtipo, nivel, oa = [], sesiones = 4, dificultad = 'Mixto', numAlternativas = 15, numDesarrollo = 3 } = body;
 
   if (!libro_id) return NextResponse.json({ error: 'El campo "libro_id" es obligatorio' }, { status: 400 });
   if (!tipo) return NextResponse.json({ error: 'El campo "tipo" es obligatorio' }, { status: 400 });
@@ -132,10 +132,51 @@ Genera exactamente:
 Todas relacionadas directamente con la trama, personajes y temas del libro.
 Al final, detalla el solucionario con las respuestas correspondientes en la sección "CLAVE DE RESPUESTAS".`;
   } else if (tipo === 'evaluacion') {
-    const sType = (subtipo as AssessmentType) || 'seleccion_multiple';
-    templateText = ASSESSMENT_TEMPLATES[sType] || ASSESSMENT_TEMPLATES.seleccion_multiple;
-    generationInstruction = `Genera una evaluación de tipo "${subtipo || 'seleccion_multiple'}" basada en la plantilla adjunta.
-Incluye preguntas de alta calidad y su correspondiente solucionario o pauta docente al final.`;
+    const rubricas: Record<string, string> = {
+      holistica:             'Holística — evaluación global del desempeño general en una escala descriptiva.',
+      lista_cotejo:          'Lista de cotejo — indicadores dicotómicos (Logrado / No logrado).',
+      analitica_descriptiva: 'Analítica descriptiva — tabla con criterios y descriptores cualitativos por nivel.',
+      analitica_cuantitativa:'Analítica cuantitativa — tabla con criterios, niveles de logro y puntaje numérico.',
+      pauta_correccion:      'Pauta de corrección — respuestas modelo y criterios detallados para preguntas de desarrollo.',
+    };
+    const tipoRubrica = rubricas[subtipo || 'holistica'] || rubricas.holistica;
+    templateText = `
+EVALUACIÓN DE LECTURA DOMICILIARIA
+Libro: {titulo} — {autor}
+Curso: {nivel} | OA: {oa} | Dificultad: ${dificultad}
+
+════════════════════════════════════════
+SECCIÓN 1 — TABLA DE ESPECIFICACIONES
+════════════════════════════════════════
+Tabla con columnas: N° pregunta | Objetivo de Aprendizaje | Habilidad (Literal / Inferencial / Crítico-valorativo) | Tipo (Alternativa / Desarrollo) | Puntaje
+Total alternativas: ${numAlternativas} | Total desarrollo: ${numDesarrollo}
+
+════════════════════════════════════════
+SECCIÓN 2 — INSTRUMENTO DE EVALUACIÓN
+════════════════════════════════════════
+${numAlternativas > 0 ? `PARTE I: Selección Múltiple (${numAlternativas} preguntas, 4 alternativas A–D cada una)
+{preguntas_alternativas}
+
+CLAVE DE RESPUESTAS (Docente):
+{clave_alternativas}` : ''}
+
+${numDesarrollo > 0 ? `PARTE II: Desarrollo (${numDesarrollo} preguntas)
+{preguntas_desarrollo}
+
+PAUTA DE CORRECCIÓN DESARROLLO (Docente):
+{pauta_desarrollo}` : ''}
+
+════════════════════════════════════════
+SECCIÓN 3 — RÚBRICA DE EVALUACIÓN
+Tipo: ${tipoRubrica}
+════════════════════════════════════════
+{rubrica_completa}
+`;
+    generationInstruction = `Completa el instrumento de evaluación de lectura domiciliaria siguiendo la plantilla.
+Genera exactamente ${numAlternativas} preguntas de selección múltiple (dificultad: ${dificultad}) y ${numDesarrollo} preguntas de desarrollo, todas relacionadas directamente con el libro.
+Para la Sección 1, completa la tabla de especificaciones con TODAS las preguntas.
+Para la Sección 3, genera la rúbrica del tipo indicado con al menos 4 criterios de evaluación.
+Las alternativas de selección múltiple deben tener extensión similar entre sí para evitar que el alumno identifique la respuesta por longitud.`;
   } else if (tipo === 'rubrica') {
     templateText = `
 RÚBRICA DE EVALUACIÓN DE LECTURA DOMICILIARIA
