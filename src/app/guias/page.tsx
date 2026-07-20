@@ -809,7 +809,7 @@ export default function GuiasPage() {
     const lines = [];
     lines.push('Actua como ilustrador editorial, disenador grafico educativo y especialista en Diseno Universal para el Aprendizaje (DUA), con experiencia en editoriales como Santillana, SM, Zig-Zag, Oxford y Pearson.');
     lines.push('');
-    lines.push('La guia completa se encuentra adjunta en formato PDF. Analiza el documento completo antes de comenzar para mantener continuidad visual entre paginas.');
+    lines.push('El contenido de cada pagina esta incluido al final de este prompt bajo "CONTENIDO DE ESTA PAGINA". Basate unicamente en ese contenido.');
     lines.push('');
     lines.push('==================================================');
     lines.push('DATOS DE CONTEXTO (referencia interna)');
@@ -2668,7 +2668,7 @@ export default function GuiasPage() {
             <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
               <div className="bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3">
                 <p className="text-[10px] text-indigo-700">
-                  Adjunta el PDF de la guía en ChatGPT o Gemini y pega el prompt de <strong>cada página por separado</strong>. La IA generará una versión DUA condensada con los 3 principios aplicados.
+                  Pega el prompt de <strong>cada página por separado</strong> en ChatGPT o Gemini. El contenido ya está incluido — no necesitas adjuntar el PDF.
                 </p>
               </div>
               {/* Tabs */}
@@ -2738,7 +2738,7 @@ export default function GuiasPage() {
                 </button>
               </div>
               <p className="text-center text-[9px] text-slate-400">
-                Pega cada prompt en ChatGPT o Gemini con el PDF adjunto para generar la versión DUA
+                Pega cada prompt en ChatGPT o Gemini — el contenido ya está incluido en el prompt
               </p>
             </div>
           </div>
