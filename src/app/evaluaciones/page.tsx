@@ -456,26 +456,31 @@ export default function EvaluacionesPage() {
           .select('id, libro_id, nivel_docente, oa_docente, biblioteca_libros(id, titulo, autor, cursos_sugeridos, oa_sugeridos)')
           .order('created_at', { ascending: false });
 
-        // Deduplicar por título: preferir el registro que tenga nivel_docente definido
-        const seenTitulos = new Map<string, any>();
+        // Deduplicar por (título + nivel_docente): un libro puede usarse en varios cursos.
+        // Ej: "El Principito (7° Básico)" y "El Principito (8° Básico)" son entradas distintas.
+        const seenMap = new Map<string, any>();
         (lecturasData || []).forEach((ld: any) => {
           const titulo = ld.biblioteca_libros?.titulo;
           if (!titulo) return;
-          const existing = seenTitulos.get(titulo);
-          if (!existing || (ld.nivel_docente && !existing.nivel_docente)) {
-            seenTitulos.set(titulo, ld);
-          }
+          const nivel = ld.nivel_docente || '__sin_nivel__';
+          const key = `${titulo}|||${nivel}`;
+          if (!seenMap.has(key)) seenMap.set(key, ld);
         });
-        const flattened = Array.from(seenTitulos.values()).map((ld: any) => ({
-          id: ld.id,
-          libro_id: ld.libro_id,
-          titulo: ld.biblioteca_libros?.titulo,
-          autor: ld.biblioteca_libros?.autor,
-          nivel_docente: ld.nivel_docente,
-          oa_docente: ld.oa_docente,
-          cursos_sugeridos: ld.biblioteca_libros?.cursos_sugeridos,
-          oa_sugeridos: ld.biblioteca_libros?.oa_sugeridos
-        }));
+        // Ocultar entradas sin nivel si el mismo título ya tiene al menos una con nivel
+        const titulosConNivel = new Set<string>();
+        seenMap.forEach((ld) => { if (ld.nivel_docente) titulosConNivel.add(ld.biblioteca_libros?.titulo); });
+        const flattened = Array.from(seenMap.values())
+          .filter((ld: any) => !((!ld.nivel_docente) && titulosConNivel.has(ld.biblioteca_libros?.titulo)))
+          .map((ld: any) => ({
+            id: ld.id,
+            libro_id: ld.libro_id,
+            titulo: ld.biblioteca_libros?.titulo,
+            autor: ld.biblioteca_libros?.autor,
+            nivel_docente: ld.nivel_docente,
+            oa_docente: ld.oa_docente,
+            cursos_sugeridos: ld.biblioteca_libros?.cursos_sugeridos,
+            oa_sugeridos: ld.biblioteca_libros?.oa_sugeridos
+          }));
 
         setLecturas(flattened);
         if (flattened.length > 0) {
@@ -2969,8 +2974,8 @@ Genera la Página ${pagina} de ${total} como imagen A4 ilustrada y lista para im
                               className="w-full bg-white border border-slate-200 rounded-lg p-1.5 text-[11px] font-semibold focus:outline-none cursor-pointer"
                             >
                               {lecturas.map((l) => (
-                                <option key={l.libro_id} value={l.libro_id}>
-                                  {l.titulo} — {l.autor}
+                                <option key={`${l.libro_id}-${l.nivel_docente || 'sin'}`} value={l.libro_id}>
+                                  {l.titulo}{l.nivel_docente ? ` (${l.nivel_docente})` : ''} — {l.autor}
                                 </option>
                               ))}
                             </select>

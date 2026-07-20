@@ -255,7 +255,10 @@ Responde SIEMPRE con el contenido completo de la plantilla hasta el final, inclu
     const generatedContent = response.content[0].type === 'text' ? response.content[0].text.trim() : '';
 
     // Guardar nivel y oa en lecturas_docente para que Evaluaciones los pueda leer.
-    // Actualizamos TODOS los registros del mismo título (hay libros duplicados en biblioteca_libros).
+    // Reglas:
+    // 1. Actualizar registros SIN nivel (duplicados vacíos del mismo título) → se asignan a este curso.
+    // 2. Actualizar registros que YA tienen ESTE mismo nivel → actualizar OA si cambió.
+    // 3. NO tocar registros de otro nivel (ej: el mismo libro para 7° y 8° son entradas distintas).
     if (nivel || (oa && oa.length > 0)) {
       const { data: librosConMismoTitulo } = await supabase
         .from('biblioteca_libros')
@@ -263,11 +266,22 @@ Responde SIEMPRE con el contenido completo de la plantilla hasta el final, inclu
         .ilike('titulo', libro.titulo);
       const todosLibroIds = (librosConMismoTitulo || []).map((l: any) => l.id);
       if (todosLibroIds.length > 0) {
+        // Paso 1: registros sin nivel → asignar este curso y OA
         await supabase
           .from('lecturas_docente')
           .update({ nivel_docente: nivel || null, oa_docente: oa.length > 0 ? oa : null })
           .eq('user_id', userId)
-          .in('libro_id', todosLibroIds);
+          .in('libro_id', todosLibroIds)
+          .is('nivel_docente', null);
+        // Paso 2: registros con ESTE mismo nivel → actualizar OA
+        if (nivel) {
+          await supabase
+            .from('lecturas_docente')
+            .update({ oa_docente: oa.length > 0 ? oa : null })
+            .eq('user_id', userId)
+            .in('libro_id', todosLibroIds)
+            .eq('nivel_docente', nivel);
+        }
       }
     }
 
