@@ -608,14 +608,14 @@ export function drawPlayPdf({
       dLines.forEach((l: string) => { doc.text(l, margin, y); y += size * 0.38 + 3.5; });
     };
 
-    addDocText('GUIA DOCENTE — USO EXCLUSIVO', 13, 'bold', '#dc2626');
+    addDocText('GUIA DOCENTE - USO EXCLUSIVO', 13, 'bold', '#dc2626');
     y += 4;
 
     // OA section
     if (oaListDet.length > 0) {
       addDocText('OBJETIVOS DE APRENDIZAJE VINCULADOS', 10, 'bold', colorHex);
       oaListDet.forEach((oa: any) => {
-        const origenLblDoc = oa.origen === 'sugerido_ia' ? ' [OA sugerido — verificar]' : oa.origen === 'planificacion' ? ' [de planificacion]' : ' [seleccionado]';
+        const origenLblDoc = oa.origen === 'sugerido_ia' ? ' [OA sugerido - verificar]' : oa.origen === 'planificacion' ? ' [de planificacion]' : ' [seleccionado]';
         addDocText(`${oa.codigo}${origenLblDoc}:`, 9, 'bold', '#dc2626');
         addDocText(oa.descripcion || '', 9, 'normal', '#334155');
         y += 2;
@@ -630,7 +630,7 @@ export function drawPlayPdf({
     addDocText('RESPUESTAS ESPERADAS POR ESTACION', 10, 'bold', colorHex);
     y += 2;
     respEstaciones.forEach((re: any) => {
-      addDocText(`ESTACION ${re.estacion} — Codigo: [${re.codigo_letra || '_'}]`, 9, 'bold', '#1e293b');
+      addDocText(`ESTACION ${re.estacion} - Codigo: [${re.codigo_letra || '_'}]`, 9, 'bold', '#1e293b');
       addDocText(`Respuesta esperada: ${re.respuesta_esperada || ''}`, 9, 'normal', '#334155');
       addDocText(`Criterio de aceptacion: ${re.criterio_aceptacion || ''}`, 8.5, 'italic', '#64748b');
       y += 3;
@@ -663,13 +663,13 @@ export function drawPlayPdf({
     addDocText('RUBRICA DE EVALUACION DEL EXPEDIENTE FINAL', 10, 'bold', colorHex);
     y += 2;
     if (sol.rubrica) {
-      addDocText('NIVEL 3 — Logrado:', 9, 'bold', '#166534');
+      addDocText('NIVEL 3 - Logrado:', 9, 'bold', '#166534');
       addDocText(sol.rubrica.nivel3 || '', 9, 'normal', '#334155');
       y += 2;
-      addDocText('NIVEL 2 — En proceso:', 9, 'bold', '#92400e');
+      addDocText('NIVEL 2 - En proceso:', 9, 'bold', '#92400e');
       addDocText(sol.rubrica.nivel2 || '', 9, 'normal', '#334155');
       y += 2;
-      addDocText('NIVEL 1 — Inicial:', 9, 'bold', '#dc2626');
+      addDocText('NIVEL 1 - Inicial:', 9, 'bold', '#dc2626');
       addDocText(sol.rubrica.nivel1 || '', 9, 'normal', '#334155');
     }
 
@@ -678,7 +678,7 @@ export function drawPlayPdf({
     // ---- PÁGINA 1: Misión ----
     drawHeader('Escape Room - Misión');
     y = 45;
-    addText('🔐 INSTRUCCIONES DE ESCAPE ROOM', 16, 'bold', colorHex);
+    addText('INSTRUCCIONES DE ESCAPE ROOM', 16, 'bold', colorHex);
     y += 10;
     addText(juego.mision || 'Resolver las pruebas antes de que se agote el tiempo.', 10.5, 'normal', '#1e293b');
     y += 30;
@@ -701,7 +701,7 @@ export function drawPlayPdf({
     doc.text("MAPA DE LA MISIÓN DE ESCAPE", elWidth / 2 + margin, 35, { align: 'center' });
     doc.setFontSize(9);
     doc.setTextColor(71, 85, 105);
-    const duracionText = `⏱ Tiempo estimado: ${juego.duracion || 45} minutos`;
+    const duracionText = `Tiempo estimado: ${juego.duracion || 45} minutos`;
     doc.text(duracionText, elWidth / 2 + margin, 41, { align: 'center' });
 
     const roomW = 55;
@@ -798,7 +798,7 @@ export function drawPlayPdf({
       drawDottedRect(margin + 50, y, 80, 25);
       const prevY = y;
       y += 8;
-      addText(`🔑 CÓDIGO DE ACCESO PRUEBA ${p.id}`, 8, 'bold', '#64748b', margin + 55);
+      addText(`CÓDIGO DE ACCESO PRUEBA ${p.id}`, 8, 'bold', '#64748b', margin + 55);
       addText('   [   _   _   _   _   _   ]', 11, 'bold', '#0f172a', margin + 55);
       y = prevY + 35;
     });
@@ -1073,7 +1073,7 @@ export function drawPlayPdf({
         doc.setFontSize(7);
         doc.setTextColor(148, 163, 184);
         doc.setFont('helvetica', 'normal');
-        doc.text("✏️ Dibuja y colorea", cX + 16, cY + 34);
+        doc.text("Dibuja y colorea", cX + 16, cY + 34);
         doc.text("al personaje aquí", cX + 17, cY + 41);
 
         // BUG 2 FIX: Evitar overflow de texto y letter-spacing forzado
@@ -1871,7 +1871,7 @@ export function drawPlayPdf({
       addText('OBJETIVOS DE APRENDIZAJE VINCULADOS:', 9.5, 'bold', '#dc2626');
       y += 2;
       oaListDoc.forEach((oa: any) => {
-        const origenLabel = oa.origen === 'sugerido_ia' ? ' [OA sugerido por IA — verificar]'
+        const origenLabel = oa.origen === 'sugerido_ia' ? ' [OA sugerido por IA - verificar]'
           : oa.origen === 'planificacion' ? ' [de planificacion]'
           : oa.origen === 'seleccion_docente' ? ' [seleccionado por docente]'
           : '';
@@ -1894,9 +1894,9 @@ export function drawPlayPdf({
       y += 2;
 
       const rubRects: Array<{ nivel: string; desc: string; color: [number, number, number] }> = [
-        { nivel: 'NIVEL 3 — Logrado', desc: sol.rubrica.nivel3 || '', color: [22, 101, 52] },
-        { nivel: 'NIVEL 2 — En proceso', desc: sol.rubrica.nivel2 || '', color: [146, 64, 14] },
-        { nivel: 'NIVEL 1 — Inicial', desc: sol.rubrica.nivel1 || '', color: [185, 28, 28] },
+        { nivel: 'NIVEL 3 - Logrado', desc: sol.rubrica.nivel3 || '', color: [22, 101, 52] },
+        { nivel: 'NIVEL 2 - En proceso', desc: sol.rubrica.nivel2 || '', color: [146, 64, 14] },
+        { nivel: 'NIVEL 1 - Inicial', desc: sol.rubrica.nivel1 || '', color: [185, 28, 28] },
       ];
 
       rubRects.forEach(rr => {
@@ -1965,17 +1965,17 @@ export function drawPlayPdf({
 
         // Mensaje especial en casillas críticas
         if (cellNum === 1) doc.text("INICIO", cx + 2, cy + 14);
-        if (cellNum === 64) doc.text("🌟 META", cx + 1, cy + 14);
+        if (cellNum === 64) doc.text("META", cx + 1, cy + 14);
 
         // Pequeño indicador dentro de la celda
         if (cellNum === 4 || cellNum === 20 || cellNum === 45) {
           doc.setFontSize(6);
           doc.setTextColor(16, 185, 129);
-          doc.text("▲ ESC", cx + sqSize - 8, cy + sqSize - 2);
+          doc.text("^ ESC", cx + sqSize - 8, cy + sqSize - 2);
         } else if (cellNum === 17 || cellNum === 35 || cellNum === 55) {
           doc.setFontSize(6);
           doc.setTextColor(239, 68, 68);
-          doc.text("▼ SERP", cx + sqSize - 9, cy + sqSize - 2);
+          doc.text("v SERP", cx + sqSize - 9, cy + sqSize - 2);
         }
       }
     }
@@ -2010,7 +2010,7 @@ export function drawPlayPdf({
       // Indicador
       doc.setFontSize(6.5);
       doc.setTextColor(16, 185, 129);
-      doc.text(`⬆️${esc.to}`, pFrom.x - 4, pFrom.y + 6);
+      doc.text(`^${esc.to}`, pFrom.x - 4, pFrom.y + 6);
     });
 
     // Dibujar Serpientes (Líneas rojas onduladas)
@@ -2031,14 +2031,14 @@ export function drawPlayPdf({
 
       doc.setFontSize(6.5);
       doc.setTextColor(239, 68, 68);
-      doc.text(`⬇️${serp.to}`, pFrom.x - 4, pFrom.y + 6);
+      doc.text(`v${serp.to}`, pFrom.x - 4, pFrom.y + 6);
     });
 
     y = by + boardSize + 8;
     doc.setFontSize(8.5);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(100, 116, 139);
-    doc.text("Instrucciones: Lanza un dado para avanzar. Si caes en casilla con ⬆️ subes. Si es ⬇️ bajas.", margin, y);
+    doc.text("Instrucciones: Lanza un dado para avanzar. Si caes en casilla con (^) subes por escalera. Si es (v) bajas por serpiente.", margin, y);
 
     // ---- PÁGINAS 2-3: Tarjetas de Preguntas (20 tarjetas, 6 por página) ----
     const preguntas = Array.isArray(juego.preguntas) ? juego.preguntas : [];
@@ -2099,8 +2099,7 @@ export function drawPlayPdf({
     });
 
   } else if (motorId === 'ludo') {
-    // ---- PÁGINA 1: Tablero Ludo (Landscape) ----
-    doc.addPage('a4', 'landscape');
+    // ---- PÁGINA 1: Tablero Ludo ----
     const lWidth = getPageWidth();
     drawHeader('Ludo - Tablero');
 
@@ -2172,11 +2171,11 @@ export function drawPlayPdf({
     doc.rect(bx + yardSize + pathSq, by, pathSq, yardSize);
     doc.rect(bx + yardSize + 2 * pathSq, by, pathSq, yardSize);
     
-    // Dibujar algunas casillas "❓"
+    // Dibujar algunas casillas "?"
     doc.setFontSize(10);
     doc.setTextColor(148, 163, 184);
-    doc.text("❓", bx + yardSize + 12, by + 15);
-    doc.text("❓", bx + yardSize + 12, by + 120);
+    doc.text("?", bx + yardSize + 12, by + 15);
+    doc.text("?", bx + yardSize + 12, by + 120);
 
     // ---- PÁGINAS 2-3: Tarjetas (24 en total, 8 por nivel) ----
     doc.addPage('a4', 'portrait');
