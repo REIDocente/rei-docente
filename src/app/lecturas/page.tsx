@@ -649,7 +649,7 @@ export default function LecturasPage() {
                   <div>
                     <p className="text-xs font-bold text-amber-700 uppercase tracking-wider">Obra sin analizar</p>
                     <h3 className="text-sm font-bold text-amber-950 mt-0.5">&ldquo;{searchTitle}&rdquo; no está en la Biblioteca</h3>
-                    <p className="text-xs text-amber-800 mt-1">Crearemos el expediente con NotebookLM de Google.<br /><span className="font-bold">Tiempo: ~4 min · Costo: 0 créditos REI</span></p>
+                    <p className="text-xs text-amber-800 mt-1">Crearemos el expediente con NotebookLM de Google.</p>
                   </div>
                 </div>
 
