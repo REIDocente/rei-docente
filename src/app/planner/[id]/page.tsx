@@ -3081,7 +3081,7 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
                       <span className="text-[9px] font-bold text-indigo-600 uppercase">Registro de Libro</span>
                       <button
                         onClick={() => {
-                          navigator.clipboard.writeText(briefLogText);
+                          navigator.clipboard.writeText(briefLogText ?? '');
                           alert('¡Copiado al portapapeles!');
                         }}
                         className="text-[8px] font-extrabold text-indigo-600 hover:text-indigo-700 underline"
@@ -3120,7 +3120,7 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
                   <div className="space-y-1">
                     <h4 className="text-[10px] font-bold text-amber-300">Riesgo de desalineación curricular</h4>
                     <p className="text-[9.5px] text-slate-700 leading-relaxed whitespace-pre-line">
-                      {pendingConfirmation.warning}
+                      {pendingConfirmation?.warning}
                     </p>
                   </div>
                 </div>
@@ -3135,7 +3135,7 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
                   </button>
                   <button
                     onClick={() => {
-                      handleSendInstruction(pendingConfirmation.instruction, true);
+                      handleSendInstruction(pendingConfirmation?.instruction || '', true);
                     }}
                     className="px-2.5 py-1 bg-amber-600 hover:bg-amber-550 text-white rounded text-[9px] font-bold transition-colors shadow-lg shadow-amber-600/10"
                   >
@@ -3207,7 +3207,7 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
             </div>
 
           </div>
-        </aside>
+        </aside>}
 
       </div>
 
