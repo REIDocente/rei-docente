@@ -1480,10 +1480,15 @@ Cierre: Compartir fragmentos en parejas y ticket de salida ${writingTechnique.to
           );
           // Selección explícita: solo los 4 campos autorizados de Claude.
           // Cualquier campo extra que Claude pudiera generar queda excluido.
+          // El nivel lector siempre se fija en "avanzado": las adecuaciones DUA/RTI
+          // ya gestionan la diversidad; no es necesario bajar el nivel del texto base.
           const step4Fields = {
             nlp_technique: step4Json.nlp_technique,
             rubric: step4Json.rubric,
-            reading_level_eval: step4Json.reading_level_eval,
+            reading_level_eval: {
+              ...step4Json.reading_level_eval,
+              estimated_level: 'Lector avanzado',
+            },
             curricular_summary: step4Json.curricular_summary,
           };
           // Fusión: step3Json aporta backward_design, dua_adaptations, rti_supports.
