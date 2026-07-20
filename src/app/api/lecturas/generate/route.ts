@@ -242,12 +242,13 @@ ${generationInstruction}
   try {
     const response = await anthropic.messages.create({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 3000,
+      max_tokens: 4500,
       system: `Eres un experto en didáctica de la lengua y literatura chilena (MINEDUC) y Didakta.
 Recibirás el expediente completo de un libro y una plantilla de ${tipo}. Tu trabajo es completar la plantilla con contenido pedagógico de alta calidad, alineado al currículum chileno.
 NO inventes información que no esté en el expediente del libro.
 NO busques información externa.
-Responde SIEMPRE con el contenido completo de la plantilla, listo para usar en clases.`,
+NO uses formato Markdown: no uses asteriscos (**), almohadillas (##), guiones de lista (- item), ni ningún símbolo de formato. Usa solo texto plano.
+Responde SIEMPRE con el contenido completo de la plantilla hasta el final, incluyendo la tarea domiciliaria y las notas docente. No dejes secciones incompletas.`,
       messages: [{ role: 'user', content: userPrompt }]
     });
 
