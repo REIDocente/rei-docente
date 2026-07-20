@@ -356,6 +356,17 @@ export default function LoginPage() {
                   </div>
                 </div>
               )}
+              {/* Aviso de privacidad — solo en registro */}
+              {mode === 'signup' && (
+                <div className="rounded-xl p-3 flex gap-2.5" style={{ backgroundColor: '#F0EBFF', border: '1px solid #DDD6FE' }}>
+                  <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5" style={{ color: '#6A1BFA' }} />
+                  <p className="text-[10px] leading-relaxed font-medium" style={{ color: '#4C1D95' }}>
+                    <span className="font-bold block mb-0.5">Tus datos están protegidos 🔒</span>
+                    Tu nombre y correo se usan únicamente para que puedas acceder a REI Docente y generar tus materiales. No compartimos tu información con terceros. Usamos Supabase como plataforma de autenticación, con bases de datos cifradas, control de acceso y conexiones seguras.
+                  </p>
+                </div>
+              )}
+
               <button type="submit" disabled={loading}
                 className="w-full py-3 rounded-xl text-white font-bold text-sm shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
                 style={{ background: 'linear-gradient(135deg, #6A1BFA, #8B5CF6)' }}>
