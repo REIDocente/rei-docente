@@ -2553,19 +2553,6 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
 
         {/* Action buttons */}
         <div className="flex items-center gap-3">
-          {/* Sidebar Toggle Button */}
-          <button
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className={`inline-flex items-center gap-2 px-3 py-2 bg-white border rounded-xl text-xs font-semibold transition-all duration-300 ${
-              isSidebarOpen 
-                ? 'border-indigo-500/40 text-indigo-600 bg-indigo-900/5' 
-                : 'border-[#E2E8F0]/70 text-slate-600 hover:text-slate-800 hover:border-[#E2E8F0]/70'
-            }`}
-          >
-            <MessageSquare className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Ajustar Planificación</span>
-          </button>
-
           {/* Word Download */}
           <button
             onClick={exportToWord}
@@ -2987,17 +2974,7 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
         </main>
 
         {/* Right Side: Chat Panel / Sidebar */}
-        <aside
-          className={`
-            fixed lg:relative inset-y-0 right-0 z-50 lg:z-0
-            w-[85vw] max-w-[380px] lg:w-[380px]
-            bg-white/95 lg:bg-white backdrop-blur-xl lg:backdrop-blur-sm
-            border-l lg:border border-[#E2E8F0]/70 lg:border-[#E2E8F0]/60 rounded-l-3xl lg:rounded-3xl
-            p-5 flex flex-col gap-5 shadow-md lg:shadow-none
-            transition-transform duration-300 ease-in-out
-            ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full lg:hidden'}
-          `}
-        >
+        {false && <aside className="hidden">
           {/* Sidebar Header */}
           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
             <div className="flex items-center gap-2.5">
@@ -3214,16 +3191,7 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
 
       </div>
 
-      {/* Floating Action Button (FAB) on mobile when sidebar is closed */}
-      {!isSidebarOpen && (
-        <button
-          onClick={() => setIsSidebarOpen(true)}
-          className="fixed bottom-6 right-6 p-4 bg-indigo-600 hover:bg-indigo-550 rounded-full shadow-md border border-indigo-400/20 z-40 text-white flex items-center justify-center transition-all duration-300 hover:scale-105"
-          title="Abrir panel de ajustes"
-        >
-          <MessageSquare className="w-6 h-6 animate-pulse" />
-        </button>
-      )}
+      {/* FAB removido — sidebar de ajustes eliminado */}
 
       {/* Visual Resource Prompt Generator Modal */}
       {isPromptModalOpen && (
