@@ -203,7 +203,10 @@ export default function GuiasPage() {
         ? fullName.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase()
         : (email ? email[0].toUpperCase() : 'U');
       setInitials(initLetters);
-      setDocenteNombre(fullName || '');
+      // Solo usar el nombre del perfil si es un nombre real (no placeholder genérico)
+      const genericNames = ['docente', 'docente invitado', 'teacher', 'profesor', 'user'];
+      const isGeneric = !fullName || genericNames.includes(fullName.toLowerCase().trim());
+      setDocenteNombre(isGeneric ? '' : fullName);
 
       // Fetch actual plannings from Supabase
       try {
