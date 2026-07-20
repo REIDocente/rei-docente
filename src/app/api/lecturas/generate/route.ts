@@ -254,6 +254,15 @@ Responde SIEMPRE con el contenido completo de la plantilla hasta el final, inclu
 
     const generatedContent = response.content[0].type === 'text' ? response.content[0].text.trim() : '';
 
+    // Guardar nivel y oa en lecturas_docente para que Evaluaciones los pueda leer
+    if (nivel || (oa && oa.length > 0)) {
+      await supabase
+        .from('lecturas_docente')
+        .update({ nivel_docente: nivel || null, oa_docente: oa.length > 0 ? oa : null })
+        .eq('user_id', userId)
+        .eq('libro_id', libro_id);
+    }
+
     // Incrementar contador de uso
     await incrementCounter(supabase, userId, 'lecturas_generated');
 

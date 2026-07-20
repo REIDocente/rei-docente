@@ -453,7 +453,7 @@ export default function EvaluacionesPage() {
       try {
         const { data: lecturasData } = await supabase
           .from('lecturas_docente')
-          .select('id, libro_id, biblioteca_libros(id, titulo, autor, cursos_sugeridos, oa_sugeridos)')
+          .select('id, libro_id, nivel_docente, oa_docente, biblioteca_libros(id, titulo, autor, cursos_sugeridos, oa_sugeridos)')
           .order('created_at', { ascending: false });
 
         const flattened = (lecturasData || []).map((ld: any) => ({
@@ -461,6 +461,8 @@ export default function EvaluacionesPage() {
           libro_id: ld.libro_id,
           titulo: ld.biblioteca_libros?.titulo,
           autor: ld.biblioteca_libros?.autor,
+          nivel_docente: ld.nivel_docente,
+          oa_docente: ld.oa_docente,
           cursos_sugeridos: ld.biblioteca_libros?.cursos_sugeridos,
           oa_sugeridos: ld.biblioteca_libros?.oa_sugeridos
         })).filter(l => l.titulo);
@@ -538,10 +540,15 @@ export default function EvaluacionesPage() {
     } else if (origen === 'lectura' && selectedLibroId && lecturas.length > 0) {
       const selectedLibro = lecturas.find(l => l.libro_id === selectedLibroId);
       if (selectedLibro) {
-        if (selectedLibro.cursos_sugeridos && selectedLibro.cursos_sugeridos.length > 0) {
+        // Priorizar nivel/OA que el docente configuró en REI Lecturas
+        if (selectedLibro.nivel_docente) {
+          setCurso(selectedLibro.nivel_docente);
+        } else if (selectedLibro.cursos_sugeridos && selectedLibro.cursos_sugeridos.length > 0) {
           setCurso(selectedLibro.cursos_sugeridos[0]);
         }
-        if (selectedLibro.oa_sugeridos && selectedLibro.oa_sugeridos.length > 0) {
+        if (selectedLibro.oa_docente && selectedLibro.oa_docente.length > 0) {
+          setOa(selectedLibro.oa_docente.join(', '));
+        } else if (selectedLibro.oa_sugeridos && selectedLibro.oa_sugeridos.length > 0) {
           setOa(selectedLibro.oa_sugeridos.join(', '));
         }
         setTema(`Evaluación basada en la Lectura Domiciliaria: ${selectedLibro.titulo} de ${selectedLibro.autor}`);
