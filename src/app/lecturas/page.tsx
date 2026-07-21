@@ -239,6 +239,8 @@ function copyToClipboard(text: string, onSuccess: () => void) {
   }
 }
 
+const SHOW_OTHER_RESOURCES = false;
+
 export default function LecturasPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
@@ -467,7 +469,7 @@ export default function LecturasPage() {
         })
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Error en la generación');
+      if (!res.ok) throw new Error(data.message || data.error || 'Error en la generación');
       setGeneratedModal(data.content);
       const key = `${openModal.tipo}_${openModal.subtipo || 'default'}`;
       const nuevoRecurso: RecursoGenerado = { content: data.content, tipo: openModal.tipo, subtipo: openModal.subtipo, label: openModal.label };
@@ -851,11 +853,13 @@ export default function LecturasPage() {
                     generated={!!recursosGenerados['planificacion_default']}
                     onClick={() => handleOpenModal({ tipo: 'planificacion', label: 'Sesión de clase', sesiones: 2 })}
                   />
-                  <ModuleBtn
-                    label="Recursos Visuales"
-                    generated={!!recursosGenerados['recursos_visuales_default']}
-                    onClick={() => handleOpenModal({ tipo: 'recursos_visuales', label: 'Recursos Visuales' })}
-                  />
+                  {SHOW_OTHER_RESOURCES && (
+                    <ModuleBtn
+                      label="Recursos Visuales"
+                      generated={!!recursosGenerados['recursos_visuales_default']}
+                      onClick={() => handleOpenModal({ tipo: 'recursos_visuales', label: 'Recursos Visuales' })}
+                    />
+                  )}
                 </div>
               </CollapsibleSection>
 
@@ -896,29 +900,38 @@ export default function LecturasPage() {
               <div className="p-5 space-y-4 overflow-y-auto flex-1">
                 {!generatedModal && (
                   <>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="text-[10px] font-bold text-slate-500 block mb-1">Nivel</label>
-                        <select value={nivel} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setNivel(e.target.value)} className="w-full text-xs px-3 py-2 rounded-lg border border-slate-200 bg-white focus:outline-none">
-                          {CHILEAN_COURSES.map(c => <option key={c} value={c}>{c}</option>)}
-                        </select>
+                    {recursosGenerados['planificacion_default'] && openModal.tipo === 'planificacion' ? (
+                      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-xs text-amber-800 space-y-2">
+                        <p className="font-bold">Planificación ya generada</p>
+                        <p>Ya generaste la planificación de lectura domiciliaria disponible para este libro durante la prueba piloto. Puedes verla y descargarla desde tus recursos generados en el panel lateral derecho.</p>
                       </div>
-                      <div>
-                        <label className="text-[10px] font-bold text-slate-500 block mb-1">OAs</label>
-                        <input type="text" value={oaCodes} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOaCodes(e.target.value)} placeholder="Ej: OA 3, OA 8" className="w-full text-xs px-3 py-2 rounded-lg border border-slate-200 focus:outline-none" />
-                      </div>
-                    </div>
-                    {openModal.tipo === 'planificacion' && (
-                      <div className="flex items-center gap-2 px-3 py-2 bg-emerald-50 border border-emerald-100 rounded-lg">
-                        <span className="text-[10px] font-bold text-emerald-700">📅 Sesión de clase</span>
-                        <span className="text-[10px] text-emerald-600">· 2 horas pedagógicas (45 + 45 min)</span>
-                      </div>
+                    ) : (
+                      <>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="text-[10px] font-bold text-slate-500 block mb-1">Nivel</label>
+                            <select value={nivel} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setNivel(e.target.value)} className="w-full text-xs px-3 py-2 rounded-lg border border-slate-200 bg-white focus:outline-none">
+                              {CHILEAN_COURSES.map(c => <option key={c} value={c}>{c}</option>)}
+                            </select>
+                          </div>
+                          <div>
+                            <label className="text-[10px] font-bold text-slate-500 block mb-1">OAs</label>
+                            <input type="text" value={oaCodes} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOaCodes(e.target.value)} placeholder="Ej: OA 3, OA 8" className="w-full text-xs px-3 py-2 rounded-lg border border-slate-200 focus:outline-none" />
+                          </div>
+                        </div>
+                        {openModal.tipo === 'planificacion' && (
+                          <div className="flex items-center gap-2 px-3 py-2 bg-emerald-50 border border-emerald-100 rounded-lg">
+                            <span className="text-[10px] font-bold text-emerald-700">📅 Sesión de clase</span>
+                            <span className="text-[10px] text-emerald-600">· 2 horas pedagógicas (45 + 45 min)</span>
+                          </div>
+                        )}
+                        {modalError && <div className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-xl p-3">{modalError}</div>}
+                        <button type="button" onClick={handleGenerateInModal} disabled={generatingModal} className="w-full flex items-center justify-center gap-2 py-3 bg-emerald-700 hover:bg-emerald-800 disabled:opacity-50 text-white rounded-xl text-sm font-bold transition-all cursor-pointer">
+                          {generatingModal ? <span><Loader2 className="w-4 h-4 animate-spin" /></span> : <span><Sparkles className="w-4 h-4" /></span>}
+                          {generatingModal ? 'Generando con IA...' : 'Generar con REI IA'}
+                        </button>
+                      </>
                     )}
-                    {modalError && <div className="text-xs text-red-600 bg-red-50 border border-red-100 rounded-xl p-3">{modalError}</div>}
-                    <button type="button" onClick={handleGenerateInModal} disabled={generatingModal} className="w-full flex items-center justify-center gap-2 py-3 bg-emerald-700 hover:bg-emerald-800 disabled:opacity-50 text-white rounded-xl text-sm font-bold transition-all cursor-pointer">
-                      {generatingModal ? <span><Loader2 className="w-4 h-4 animate-spin" /></span> : <span><Sparkles className="w-4 h-4" /></span>}
-                      {generatingModal ? 'Generando con IA...' : 'Generar con REI IA'}
-                    </button>
                   </>
                 )}
 

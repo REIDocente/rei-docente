@@ -61,16 +61,14 @@ export async function POST(req: NextRequest) {
   if (!libro_id) return NextResponse.json({ error: 'El campo "libro_id" es obligatorio' }, { status: 400 });
   if (!tipo) return NextResponse.json({ error: 'El campo "tipo" es obligatorio' }, { status: 400 });
 
-  // ── Block Experiencias REI during Pilot ──
-  if (tipo === 'experiencia') {
+  // ── Block non-planificacion generation at API level during Pilot ──
+  if (tipo !== 'planificacion') {
     return NextResponse.json(
       {
-        error: 'limite_alcanzado',
-        message: 'Alcanzaste el límite del plan piloto. Has utilizado todas las generaciones disponibles para este módulo.',
-        reason: 'limit_reached',
-        tipo: 'experiencias_rei_count',
-        limit: 0,
-        current: 0,
+        error: "feature_not_available",
+        message: "Durante la prueba piloto, el módulo Lectura domiciliaria permite generar únicamente una planificación. Para crear guías o evaluaciones basadas en la lectura, utiliza los módulos Guías de aprendizaje o Evaluaciones.",
+        reason: "pilot_module_restriction",
+        tipo: "lecturas_generated"
       },
       { status: 403 }
     );
@@ -84,6 +82,23 @@ export async function POST(req: NextRequest) {
 
   if (fetchErr) {
     return NextResponse.json({ error: 'Error al verificar límites' }, { status: 500 });
+  }
+
+  // ── Block second planification generation for same book during Pilot ──
+  const bookRow = (existingRows || []).find(row => row.libro_id === libro_id);
+  const currentRecs = bookRow?.recursos_generados;
+  if (currentRecs && typeof currentRecs === 'object' && currentRecs['planificacion_default']) {
+    return NextResponse.json(
+      {
+        error: "generation_already_used",
+        message: "Ya generaste la planificación de lectura domiciliaria disponible para este libro durante la prueba piloto. Puedes verla y descargarla desde tus recursos generados.",
+        reason: "pilot_generation_limit",
+        tipo: "lecturas_generated",
+        limit: 1,
+        current: 1
+      },
+      { status: 403 }
+    );
   }
 
   const booksWithResources = (existingRows || []).filter(row => {
