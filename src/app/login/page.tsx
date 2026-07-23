@@ -36,11 +36,14 @@ export default function LoginPage() {
     setSuccess(null);
     try {
       if (mode === 'login') {
-        const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
+        const { data, error: authError } = await supabase.auth.signInWithPassword({ email, password });
         if (authError) throw authError;
         setShowLoginModal(false);
-        router.push('/');
-        router.refresh();
+        if (data?.session) {
+          router.push('/');
+        } else {
+          router.push('/');
+        }
       } else if (mode === 'signup') {
         const { data: count, error: countError } = await supabase.rpc('get_user_profile_count');
         if (!countError && count !== null && count >= MAX_TRIAL_USERS) {

@@ -93,6 +93,7 @@ export default function DashboardPage() {
   const [evaluaciones, setEvaluaciones] = useState<any[]>([]);
   const [visuals, setVisuals] = useState<any[]>([]);
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -107,6 +108,7 @@ export default function DashboardPage() {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) { router.push('/login'); return; }
         setUser(user);
+        setCheckingAuth(false);
         const { data: planningsData } = await supabase
           .from('plannings')
           .select('id, created_at, subject, grade, learning_objective, unit')
@@ -277,6 +279,17 @@ export default function DashboardPage() {
     ...evaluaciones.map(ev => ({ id: ev.id, title: ev.titulo || 'Evaluación Escrita', type: 'Evaluación', typeKey: 'evaluaciones', date: ev.created_at, link: `/evaluaciones/${ev.id}`, meta: ev.nivel, subject: 'Lenguaje', estilo: null, paleta: null, formato: null })),
     ...visuals.map(v => ({ id: v.id, title: `Tema: ${v.tema}`, type: 'Recurso Visual', typeKey: 'recursos_visuales', date: v.created_at, link: `/visual`, meta: 'General', subject: v.tipo, estilo: v.contenido_json?.estilo, paleta: v.contenido_json?.paleta, formato: v.contenido_json?.formato }))
   ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#F8FAFC' }}>
+        <div className="text-center space-y-3">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto" style={{ color: '#6D28F5' }} />
+          <p className="text-xs font-bold uppercase tracking-wider" style={{ color: '#64748B' }}>Cargando tu cuenta...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
