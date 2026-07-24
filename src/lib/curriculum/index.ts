@@ -1901,122 +1901,36 @@ export const staticCurriculum = {
     "id": "c64a2427-7cc9-487e-bf60-f762f4948167",
     "nivel": "7° Básico",
     "unidad_numero": 1,
-    "titulo_tema": "El héroe en distintas épocas",
+    "titulo_tema": "¿Qué me hace sentir bien?",
     "oa_codes": [
-      "OA 1",
-      "OA 2",
-      "OA 3",
-      "OA 4",
-      "OA 7",
-      "OA 8",
-      "OA 11",
-      "OA 14",
-      "OA 15",
-      "OA 19",
-      "OA 21"
+      "OA 3","OA 4","OA 7","OA 9","OA 10","OA 11","OA 13","OA 14","OA 15","OA 16","OA 20","OA 21","OA 24","OA 25"
     ]
   },
   {
     "id": "589ddeba-f92e-4d60-a402-34ae48edbd1a",
     "nivel": "7° Básico",
     "unidad_numero": 2,
-    "titulo_tema": "La solidaridad y la amistad",
+    "titulo_tema": "¿Cómo construimos comunidad?",
     "oa_codes": [
-      "OA 1",
-      "OA 2",
-      "OA 3",
-      "OA 7",
-      "OA 10",
-      "OA 14",
-      "OA 15",
-      "OA 16",
-      "OA 21"
+      "OA 3","OA 7","OA 8","OA 9","OA 10","OA 11","OA 14","OA 15","OA 21","OA 24","OA 25"
     ]
   },
   {
     "id": "a54113c6-be66-4cf5-a92e-9e8dd3be73ce",
     "nivel": "7° Básico",
     "unidad_numero": 3,
-    "titulo_tema": "Mitología y relatos de creación",
+    "titulo_tema": "Somos naturaleza",
     "oa_codes": [
-      "OA 1",
-      "OA 2",
-      "OA 3",
-      "OA 6",
-      "OA 7",
-      "OA 13",
-      "OA 15",
-      "OA 22",
-      "OA 24",
-      "OA 25"
+      "OA 2","OA 3","OA 4","OA 7","OA 9","OA 10","OA 11","OA 14","OA 15","OA 17","OA 20","OA 21","OA 24","OA 25"
     ]
   },
   {
     "id": "fb04bd0f-a8af-42e5-8ac4-381e73b60fd6",
     "nivel": "7° Básico",
     "unidad_numero": 4,
-    "titulo_tema": "La identidad: quién soy, cómo me ven los demás",
+    "titulo_tema": "¿Qué nos cuenta el mundo?",
     "oa_codes": [
-      "OA 1",
-      "OA 2",
-      "OA 3",
-      "OA 7",
-      "OA 13",
-      "OA 15",
-      "OA 21",
-      "OA 23"
-    ]
-  },
-  {
-    "id": "d1b89b23-b975-495f-bf3c-b7db1065d748",
-    "nivel": "7° Básico",
-    "unidad_numero": 5,
-    "titulo_tema": "El romancero y la poesía popular",
-    "oa_codes": [
-      "OA 1",
-      "OA 2",
-      "OA 4",
-      "OA 5",
-      "OA 7",
-      "OA 10",
-      "OA 14",
-      "OA 15",
-      "OA 21"
-    ]
-  },
-  {
-    "id": "ae23bc9c-62fd-48e0-b233-daec5b429b0e",
-    "nivel": "7° Básico",
-    "unidad_numero": 6,
-    "titulo_tema": "El terror y lo extraño",
-    "oa_codes": [
-      "OA 1",
-      "OA 2",
-      "OA 3",
-      "OA 7",
-      "OA 11",
-      "OA 14",
-      "OA 15",
-      "OA 17",
-      "OA 21"
-    ]
-  },
-  {
-    "id": "39483b77-aa80-4750-b751-fb9274fdfd6c",
-    "nivel": "7° Básico",
-    "unidad_numero": 7,
-    "titulo_tema": "Medios de comunicación",
-    "oa_codes": [
-      "OA 1",
-      "OA 9",
-      "OA 12",
-      "OA 18",
-      "OA 19",
-      "OA 20",
-      "OA 22",
-      "OA 23",
-      "OA 24",
-      "OA 25"
+      "OA 2","OA 4","OA 5","OA 7","OA 8","OA 9","OA 10","OA 11","OA 17","OA 19","OA 20","OA 21","OA 22","OA 24","OA 25"
     ]
   },
   {
