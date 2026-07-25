@@ -1754,7 +1754,13 @@ export function drawPlayPdf({
       doc.setFontSize(7.5);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(30, 41, 59);
-      const desafioLines = doc.splitTextToSize(hab.desafio || 'Responde la pregunta del docente.', habW - 12);
+      const _sanD = (s: string) => (s || '')
+        .replace(/→/g, '->').replace(/←/g, '<-').replace(/↑/g, '^').replace(/↓/g, 'v')
+        .replace(/≥/g, '>=').replace(/≤/g, '<=').replace(/≠/g, '!=')
+        .replace(/['']/g, "'").replace(/[""]/g, '"')
+        .replace(/—/g, '--').replace(/–/g, '-').replace(/…/g, '...').replace(/•/g, '-')
+        .split('').map((c: string) => c.charCodeAt(0) > 255 ? '?' : c).join('');
+      const desafioLines = doc.splitTextToSize(_sanD(hab.desafio) || 'Responde la pregunta del docente.', habW - 12);
       desafioLines.slice(0, 6).forEach((l: string, li: number) => {
         doc.text(l, cX + 6, cY + 30 + li * 4.5);
       });
@@ -1776,7 +1782,7 @@ export function drawPlayPdf({
       doc.text('PISTA (si responde bien):', cX + 6, cY + 80);
       doc.setFont('helvetica', 'italic');
       doc.setTextColor(51, 65, 85);
-      const pistaLines = doc.splitTextToSize(hab.pista || '', habW - 12);
+      const pistaLines = doc.splitTextToSize(_sanD(hab.pista || ''), habW - 12);
       pistaLines.slice(0, 2).forEach((l: string, li: number) => {
         doc.text(l, cX + 6, cY + 86 + li * 4);
       });
