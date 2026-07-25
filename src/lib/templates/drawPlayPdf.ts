@@ -1189,7 +1189,11 @@ export function drawPlayPdf({
 
         // BUG 2 FIX: Evitar overflow de texto y letter-spacing forzado
         let fontSize = 7.5;
-        const _sanC = (s: string) => s.replace(/→/g, '->').replace(/←/g, '<-').replace(/↑/g, '^').replace(/↓/g, 'v').replace(/[^\x00-\xFF]/g, '?');
+        const _sanC = (s: string) => s
+          .replace(/→/g, '->').replace(/←/g, '<-').replace(/↑/g, '^').replace(/↓/g, 'v')
+          .replace(/['']/g, "'").replace(/[""]/g, '"')
+          .replace(/—/g, '--').replace(/–/g, '-').replace(/…/g, '...').replace(/•/g, '-')
+          .replace(/[^\x00-\xFF]/g, '?');
         let textToWrap = _sanC(activeCard.descripcion || activeCard.cita_habilidad || 'Habilidad de la carta descriptiva.');
         doc.setFontSize(fontSize);
         let wrapped = doc.splitTextToSize(textToWrap, cardW - 12);
@@ -1221,11 +1225,17 @@ export function drawPlayPdf({
     y += 5;
 
     // Render reglas line by line: strip markdown **, detect headers, paginate
+    const _sanR = (s: string) => s
+      .replace(/\*\*/g, '')
+      .replace(/→/g, '->').replace(/←/g, '<-').replace(/↑/g, '^').replace(/↓/g, 'v')
+      .replace(/['']/g, "'").replace(/[""]/g, '"')
+      .replace(/—/g, '--').replace(/–/g, '-').replace(/…/g, '...').replace(/•/g, '-')
+      .replace(/[^\x00-\xFF]/g, '?');
     const reglasRaw = juego.reglas || 'Instrucciones para jugar con el mazo de cartas.';
     const reglasWidth = getPageWidth();
     const reglasLines = reglasRaw.split('\n');
     reglasLines.forEach((rawLine: string) => {
-      const stripped = rawLine.replace(/\*\*/g, '').trim();
+      const stripped = _sanR(rawLine).trim();
       if (!stripped) { y += 3; return; }
       // Treat as header if original line contained ** markers or ends with colon
       const isBoldLine = /\*\*/.test(rawLine) || stripped.endsWith(':');
