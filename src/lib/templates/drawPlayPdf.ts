@@ -1701,9 +1701,28 @@ export function drawPlayPdf({
     const habW = width / 2 - 6;
     const habH = 95;
 
+    let habRowY = y;
+    let habRowTracked = -1;
+
     habitacionesData.forEach((hab: any, idx: number) => {
-      const cX = margin + (idx % 2) * (habW + 12);
-      const cY = y + Math.floor(idx / 2) * (habH + 6);
+      const colIdx = idx % 2;
+      const rowIdx = Math.floor(idx / 2);
+
+      // When starting a new row, check if it fits on the page
+      if (rowIdx !== habRowTracked) {
+        if (habRowTracked >= 0) {
+          habRowY += habH + 6;
+        }
+        habRowTracked = rowIdx;
+        if (habRowY + habH > pageHeight - 18) {
+          doc.addPage();
+          drawHeader('CLUE - Habitaciones');
+          habRowY = 35;
+        }
+      }
+
+      const cX = margin + colIdx * (habW + 12);
+      const cY = habRowY;
 
       drawDottedRect(cX, cY, habW, habH);
       doc.setFillColor(240, 253, 244);
@@ -2046,6 +2065,13 @@ export function drawPlayPdf({
           : oa.origen === 'planificacion' ? ' [de planificacion]'
           : oa.origen === 'seleccion_docente' ? ' [seleccionado por docente]'
           : '';
+        const dLines = doc.splitTextToSize(oa.descripcion || '', width - 10);
+        const oaEntryH = 5 + dLines.length * 4.2 + 4;
+        if (y + oaEntryH > pageHeight - 18) {
+          doc.addPage();
+          drawHeader('CLUE - Guia Docente', true);
+          y = 35;
+        }
         doc.setFontSize(8.5);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(30, 41, 59);
@@ -2053,7 +2079,6 @@ export function drawPlayPdf({
         y += 5;
         doc.setFont('helvetica', 'normal');
         doc.setTextColor(71, 85, 105);
-        const dLines = doc.splitTextToSize(oa.descripcion || '', width - 10);
         dLines.forEach((l: string) => { doc.text(l, margin + 8, y); y += 4.2; });
         y += 2;
       });
