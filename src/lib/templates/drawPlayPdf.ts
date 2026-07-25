@@ -1069,12 +1069,6 @@ export function drawPlayPdf({
         doc.setDrawColor(226, 232, 240);
         doc.line(margin + 5, cardY + 36, margin + width - 5, cardY + 36);
 
-        // Big "?" in light gray — rendered after the divider line, won't overlap text
-        doc.setFontSize(22);
-        doc.setFont('helvetica', 'bold');
-        doc.setTextColor(226, 232, 240);
-        doc.text("?", margin + width - 15, cardY + cardH - 5);
-
         y = cardY + 39;
         addText(`Respuesta: ${respuestasList[cardNum] || '________________'}`, 9, 'bold', '#16a34a', margin + 5);
 
