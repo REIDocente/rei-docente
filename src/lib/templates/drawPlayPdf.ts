@@ -1218,9 +1218,33 @@ export function drawPlayPdf({
     y = 35;
     addText('REGLAS DEL MAZO PEDAGÓGICO', 14, 'bold', colorHex);
     y += 5;
-    addText(juego.reglas || 'Instrucciones para jugar con el mazo de cartas.', 10, 'normal', '#334155');
-    y += 20;
 
+    // Render reglas line by line: strip markdown **, detect headers, paginate
+    const reglasRaw = juego.reglas || 'Instrucciones para jugar con el mazo de cartas.';
+    const reglasWidth = getPageWidth();
+    const reglasLines = reglasRaw.split('\n');
+    reglasLines.forEach((rawLine: string) => {
+      const stripped = rawLine.replace(/\*\*/g, '').trim();
+      if (!stripped) { y += 3; return; }
+      // Treat as header if original line contained ** markers or ends with colon
+      const isBoldLine = /\*\*/.test(rawLine) || stripped.endsWith(':');
+      const mLines = measureLines(stripped, 9.5, reglasWidth);
+      const entryH = mLines.length * lineH(9.5) + 2;
+      if (y + entryH > pageHeight - 18) {
+        doc.addPage();
+        drawHeader('Cartas - Reglas de Juego');
+        y = 35;
+      }
+      addText(stripped, 9.5, isBoldLine ? 'bold' : 'normal', isBoldLine ? colorHex : '#334155');
+    });
+    y += 5;
+
+    // Tabla de puntuación — nueva página si no cabe
+    if (y + 60 > pageHeight - 18) {
+      doc.addPage();
+      drawHeader('Cartas - Reglas de Juego');
+      y = 35;
+    }
     addText('TABLA DE PUNTUACIÓN DE COMBATES', 12, 'bold', colorHex);
     y += 5;
     doc.rect(margin, y, width, 40);
