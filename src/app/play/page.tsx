@@ -61,6 +61,32 @@ export default function REIPlayPage() {
   const [modalidad, setModalidad] = useState<string>('parejas');
   const [dificultad, setDificultad] = useState<string>('media');
 
+  // Paso 3: Personalización visual
+  const [estilo, setEstilo] = useState<string>('juvenil');
+  const [colores, setColores] = useState<string>('vibrantes');
+  const [ilustraciones, setIlustraciones] = useState<string>('equilibradas');
+  const [recortables, setRecortables] = useState<boolean>(true);
+  const [complementos, setComplementos] = useState<string[]>([]);
+  const [versionDescarga, setVersionDescarga] = useState<string>('color');
+  const [instruccionEspecial, setInstruccionEspecial] = useState<string>('');
+
+  // Complementos disponibles por motor
+  const COMPLEMENTOS_POR_MOTOR: Record<string, string[]> = {
+    detective:           ['Sobres de evidencia', 'Credenciales de investigador', 'Tarjetas de pistas'],
+    escape_room:         ['Sobres de pistas', 'Llaves recortables', 'Tarjetas de codigo'],
+    bingo:               ['Fichas para marcar'],
+    trivia:              ['Fichas de jugador', 'Marcador de puntaje', 'Tablero de puntuacion'],
+    cartas:              ['Caja armable', 'Reglamento imprimible'],
+    memoria:             ['Fichas para marcar pares'],
+    clue:                ['Hoja de deduccion adicional', 'Fichas de jugador', 'Sobre de acusacion'],
+    serpiente_escaleras: ['Dado armable', 'Fichas de jugador'],
+    ludo:                ['Dado armable', 'Fichas de jugador (4 colores)'],
+  };
+
+  const toggleComplemento = (c: string) => {
+    setComplementos(prev => prev.includes(c) ? prev.filter(x => x !== c) : [...prev, c]);
+  };
+
   // Generation status
   const [generating, setGenerating] = useState(false);
   const [generationError, setGenerationError] = useState<string | null>(null);
@@ -188,7 +214,14 @@ export default function REIPlayPage() {
       oa_codes: oaCodes ? oaCodes.split(',').map(s => s.trim()) : ['OA General'],
       duracion,
       modalidad,
-      dificultad
+      dificultad,
+      estilo_visual: estilo,
+      paleta_colores: colores,
+      ilustraciones,
+      recortables,
+      complementos: complementos.length > 0 ? complementos : undefined,
+      version_descarga: versionDescarga,
+      instruccion_especial: instruccionEspecial || undefined
     };
 
     try {
@@ -214,7 +247,7 @@ export default function REIPlayPage() {
         initialCollapseState[sec.id] = false;
       });
       setCollapsedSections(initialCollapseState);
-      setStep(5); // Go to results
+      setStep(6); // Go to results
 
     } catch (e: any) {
       setGenerationError(e.message);
@@ -298,7 +331,7 @@ export default function REIPlayPage() {
           {step > 1 && (
             <button
               onClick={() => {
-                if (step === 5) {
+                if (step === 6) {
                   setStep(1);
                   setGeneratedGame(null);
                 } else {
@@ -316,9 +349,9 @@ export default function REIPlayPage() {
         <main className="flex-1 p-8 max-w-4xl mx-auto w-full space-y-8">
           
           {/* Stepper Indicators */}
-          {step < 5 && (
+          {step < 6 && (
             <div className="flex items-center justify-between max-w-md mx-auto mb-8">
-              {[1, 2, 3, 4].map((s) => (
+              {[1, 2, 3, 4, 5].map((s) => (
                 <div key={s} className="flex items-center flex-1 last:flex-none">
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-all ${
@@ -329,7 +362,7 @@ export default function REIPlayPage() {
                   >
                     {s}
                   </div>
-                  {s < 4 && (
+                  {s < 5 && (
                     <div
                       className={`h-0.5 flex-1 mx-2 transition-all ${
                         step > s ? 'bg-violet-700' : 'bg-[#E2E8F0]'
@@ -615,11 +648,138 @@ export default function REIPlayPage() {
             </div>
           )}
 
-          {/* PASO 3: Configurar Parámetros */}
-          {step === 3 && activeEngine && (
+          {/* PASO 3: Personaliza el Diseño */}
+          {step === 3 && (
             <div className="bg-white rounded-2xl border border-[#E2E8F0]/70 p-6 space-y-6 shadow-sm">
               <div className="space-y-1">
-                <h2 className="text-lg font-bold text-slate-800">Paso 3: Configuración de la Sesión de Juego</h2>
+                <h2 className="text-lg font-bold text-slate-800">Paso 3: Personaliza el Diseño</h2>
+                <p className="text-xs text-slate-400">Indica cómo quieres que se vea tu juego imprimible. La IA ajustará la ambientación, los textos y los materiales al estilo elegido.</p>
+              </div>
+
+              <div className="space-y-6">
+                {/* Estilo visual */}
+                <div className="space-y-2.5">
+                  <label className="text-xs font-bold text-slate-500 block">🎨 Estilo Visual</label>
+                  <div className="flex flex-wrap gap-3">
+                    {['infantil', 'juvenil', 'misterio', 'aventura', 'minimalista'].map((e) => (
+                      <button key={e} type="button" onClick={() => setEstilo(e)}
+                        className={`px-4 py-2 rounded-xl text-xs font-bold border capitalize transition-all ${
+                          estilo === e ? 'bg-violet-700 border-violet-700 text-white' : 'bg-white border-[#E2E8F0] text-slate-500 hover:bg-slate-50'
+                        }`}>
+                        {e}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Paleta de colores */}
+                <div className="space-y-2.5">
+                  <label className="text-xs font-bold text-slate-500 block">🌈 Paleta de Colores</label>
+                  <div className="flex flex-wrap gap-3">
+                    {['vibrantes', 'pastel', 'institucionales'].map((c) => (
+                      <button key={c} type="button" onClick={() => setColores(c)}
+                        className={`px-4 py-2 rounded-xl text-xs font-bold border capitalize transition-all ${
+                          colores === c ? 'bg-violet-700 border-violet-700 text-white' : 'bg-white border-[#E2E8F0] text-slate-500 hover:bg-slate-50'
+                        }`}>
+                        {c}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Nivel de ilustraciones */}
+                <div className="space-y-2.5">
+                  <label className="text-xs font-bold text-slate-500 block">🖼️ Nivel de Ilustraciones</label>
+                  <div className="flex flex-wrap gap-3">
+                    {['pocas', 'equilibradas', 'abundantes'].map((il) => (
+                      <button key={il} type="button" onClick={() => setIlustraciones(il)}
+                        className={`px-4 py-2 rounded-xl text-xs font-bold border capitalize transition-all ${
+                          ilustraciones === il ? 'bg-violet-700 border-violet-700 text-white' : 'bg-white border-[#E2E8F0] text-slate-500 hover:bg-slate-50'
+                        }`}>
+                        {il}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Materiales recortables */}
+                <div className="space-y-2.5">
+                  <label className="text-xs font-bold text-slate-500 block">✂️ Materiales Recortables</label>
+                  <div className="flex gap-3">
+                    {[{ v: true, label: 'Incluir recortables' }, { v: false, label: 'Sin recortables' }].map(({ v, label }) => (
+                      <button key={String(v)} type="button" onClick={() => setRecortables(v)}
+                        className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all ${
+                          recortables === v ? 'bg-violet-700 border-violet-700 text-white' : 'bg-white border-[#E2E8F0] text-slate-500 hover:bg-slate-50'
+                        }`}>
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Complementos del juego (por motor) */}
+                {selectedEngineId && COMPLEMENTOS_POR_MOTOR[selectedEngineId] && COMPLEMENTOS_POR_MOTOR[selectedEngineId].length > 0 && (
+                  <div className="space-y-2.5">
+                    <label className="text-xs font-bold text-slate-500 block">🎲 Complementos del Juego <span className="font-normal text-slate-400">(opcional)</span></label>
+                    <div className="flex flex-wrap gap-3">
+                      {COMPLEMENTOS_POR_MOTOR[selectedEngineId].map((comp) => (
+                        <button key={comp} type="button" onClick={() => toggleComplemento(comp)}
+                          className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all ${
+                            complementos.includes(comp) ? 'bg-violet-700 border-violet-700 text-white' : 'bg-white border-[#E2E8F0] text-slate-500 hover:bg-slate-50'
+                          }`}>
+                          {comp}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Versión de descarga */}
+                <div className="space-y-2.5">
+                  <label className="text-xs font-bold text-slate-500 block">🖨️ Versión de Descarga</label>
+                  <div className="flex gap-3">
+                    {[{ v: 'color', label: '🌈 A color' }, { v: 'ahorro', label: '⬜ Ahorro de tinta' }].map(({ v, label }) => (
+                      <button key={v} type="button" onClick={() => setVersionDescarga(v)}
+                        className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all ${
+                          versionDescarga === v ? 'bg-violet-700 border-violet-700 text-white' : 'bg-white border-[#E2E8F0] text-slate-500 hover:bg-slate-50'
+                        }`}>
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* ¿Cómo te gustaría que se vea? */}
+                <div className="space-y-2.5">
+                  <label className="text-xs font-bold text-slate-500 block">📝 ¿Cómo te gustaría que se vea? <span className="font-normal text-slate-400">(opcional)</span></label>
+                  <textarea
+                    placeholder='Ej: "Quiero un juego de misterio ambientado en una biblioteca antigua, con colores azul oscuro y dorado."'
+                    value={instruccionEspecial}
+                    onChange={(e) => setInstruccionEspecial(e.target.value)}
+                    rows={3}
+                    className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] focus:border-violet-600 focus:outline-none resize-none"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-between pt-4 border-t border-slate-50">
+                <button type="button" onClick={() => setStep(2)}
+                  className="px-5 py-2.5 border border-[#E2E8F0] hover:bg-slate-50 rounded-xl text-xs font-bold transition-all">
+                  Atrás
+                </button>
+                <button type="button" onClick={() => setStep(4)}
+                  className="flex items-center gap-1.5 px-5 py-2.5 bg-violet-700 hover:bg-violet-800 text-white rounded-xl text-xs font-bold transition-all">
+                  Siguiente paso <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* PASO 4: Configurar Parámetros */}
+          {step === 4 && activeEngine && (
+            <div className="bg-white rounded-2xl border border-[#E2E8F0]/70 p-6 space-y-6 shadow-sm">
+              <div className="space-y-1">
+                <h2 className="text-lg font-bold text-slate-800">Paso 4: Configuración de la Sesión de Juego</h2>
                 <p className="text-xs text-slate-400">Ajusta los parámetros para adaptar la dinámica a los tiempos y modalidades de tu aula.</p>
               </div>
 
@@ -694,14 +854,14 @@ export default function REIPlayPage() {
               <div className="flex justify-between pt-4 border-t border-slate-50">
                 <button
                   type="button"
-                  onClick={() => setStep(2)}
+                  onClick={() => setStep(3)}
                   className="px-5 py-2.5 border border-[#E2E8F0] hover:bg-slate-50 rounded-xl text-xs font-bold transition-all"
                 >
                   Atrás
                 </button>
                 <button
                   type="button"
-                  onClick={() => setStep(4)}
+                  onClick={() => setStep(5)}
                   className="flex items-center gap-1.5 px-5 py-2.5 bg-violet-700 hover:bg-violet-800 text-white rounded-xl text-xs font-bold transition-all"
                 >
                   Siguiente paso <ArrowRight className="w-3.5 h-3.5" />
@@ -710,8 +870,8 @@ export default function REIPlayPage() {
             </div>
           )}
 
-          {/* PASO 4: Confirmación y Generación */}
-          {step === 4 && activeEngine && (
+          {/* PASO 5: Confirmación y Generación */}
+          {step === 5 && activeEngine && (
             <div className="bg-white rounded-2xl border border-[#E2E8F0]/70 p-6 space-y-6 shadow-sm text-center">
               <div className="max-w-md mx-auto space-y-4">
                 <div className="w-16 h-16 rounded-full bg-violet-50 text-violet-700 flex items-center justify-center mx-auto shadow-inner">
@@ -742,6 +902,20 @@ export default function REIPlayPage() {
                     <span className="text-slate-400 font-semibold">Configuración:</span>
                     <span className="font-bold text-slate-700 capitalize">{duracion} min · {modalidad} · {dificultad}</span>
                   </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400 font-semibold">Diseño:</span>
+                    <span className="font-bold text-slate-700 capitalize">{estilo} · {colores} · {ilustraciones}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400 font-semibold">Descarga:</span>
+                    <span className="font-bold text-slate-700">{versionDescarga === 'color' ? '🌈 A color' : '⬜ Ahorro de tinta'}{recortables ? ' · Con recortables' : ''}{complementos.length > 0 ? ` · ${complementos.join(', ')}` : ''}</span>
+                  </div>
+                  {instruccionEspecial && (
+                    <div className="flex justify-between gap-3">
+                      <span className="text-slate-400 font-semibold shrink-0">¿Cómo se ve?</span>
+                      <span className="font-bold text-slate-700 text-right">{instruccionEspecial}</span>
+                    </div>
+                  )}
                 </div>
 
                 {generationError && (
@@ -753,7 +927,7 @@ export default function REIPlayPage() {
                 <div className="flex gap-4 pt-4">
                   <button
                     type="button"
-                    onClick={() => setStep(3)}
+                    onClick={() => setStep(4)}
                     disabled={generating}
                     className="flex-1 px-5 py-3 border border-[#E2E8F0] hover:bg-slate-50 disabled:opacity-50 rounded-xl text-xs font-bold transition-all"
                   >
@@ -780,8 +954,8 @@ export default function REIPlayPage() {
             </div>
           )}
 
-          {/* PASO 5: Resultado / Preview del Juego Generado */}
-          {step === 5 && generatedGame && activeEngine && (
+          {/* PASO 6: Resultado / Preview del Juego Generado */}
+          {step === 6 && generatedGame && activeEngine && (
             <div className="space-y-6">
               {/* Box de exportaciones y metadata */}
               <div className="bg-white rounded-2xl border border-[#E2E8F0]/70 p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-sm">

@@ -428,7 +428,14 @@ export async function POST(req: NextRequest) {
     oa_codes = [],
     duracion,
     modalidad,
-    dificultad
+    dificultad,
+    estilo_visual,
+    paleta_colores,
+    ilustraciones,
+    recortables = true,
+    complementos = [],
+    version_descarga = 'color',
+    instruccion_especial
   } = body;
 
   if (!motor) return NextResponse.json({ error: 'El campo "motor" es obligatorio' }, { status: 400 });
@@ -493,6 +500,13 @@ CONTEXTO DEL LIBRO DOMICILIARIO:
 ORIGEN DE LOS OA: ${oaOrigen}`
     : `- OAs seleccionados: ${oa_codes.join(', ')}`;
 
+  const disenoBlock = `\nPREFERENCIAS DE DISEÑO VISUAL (aplica estas preferencias al redactar títulos, descripciones, ambientación y materiales del juego):
+- Estilo visual: ${estilo_visual || 'juvenil'}
+- Paleta de colores: ${paleta_colores || 'vibrantes'}
+- Nivel de ilustraciones: ${ilustraciones || 'equilibradas'}
+- Materiales recortables: ${recortables ? 'Sí — incluye instrucciones de recorte en los materiales que corresponda' : 'No — evita elementos recortables'}
+- Versión de descarga: ${version_descarga === 'ahorro' ? 'Ahorro de tinta — usa descripciones de iconos sencillos, evita fondos oscuros o áreas llenas de color' : 'A color — puedes usar colores vibrantes y fondos ilustrados'}${complementos && complementos.length > 0 ? `\n- Complementos adicionales solicitados: ${complementos.join(', ')}` : ''}${instruccion_especial ? `\n- Instrucción visual del docente: ${instruccion_especial}` : ''}`;
+
   const userPrompt = `
 DATOS DE CONFIGURACIÓN DEL JUEGO:
 - Motor de Juego: ${motor}
@@ -502,6 +516,7 @@ DATOS DE CONFIGURACIÓN DEL JUEGO:
 - Duración de la partida: ${duracion} minutos
 - Modalidad de juego: ${modalidad}
 - Dificultad: ${dificultad}
+${disenoBlock}
 
 ${textSourceContext}
 
