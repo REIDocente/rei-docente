@@ -2300,7 +2300,11 @@ export function drawPlayPdf({
         doc.setFontSize(7.5);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(148, 163, 184);
-        doc.text(`Respuesta: ${respuestas[idx] || ''}`, cX + 6, cY + 53);
+        const _respStr = `Respuesta: ${respuestas[idx] || ''}`;
+        const _respLines = doc.splitTextToSize(_respStr, cardW - 12);
+        _respLines.slice(0, 2).forEach((l: string, li: number) => {
+          doc.text(l, cX + 6, cY + 51 + li * 4);
+        });
       }
     }
 
@@ -2312,6 +2316,14 @@ export function drawPlayPdf({
     y += 10;
 
     preguntas.forEach((p: string, idx: number) => {
+      const _pLines = measureLines(`Pregunta ${idx + 1}: ${p}`, 8.5, width);
+      const _rLines = measureLines(`  R: ${respuestas[idx]}`, 8.5, width);
+      const _entryH = (_pLines.length + _rLines.length) * lineH(8.5) + 4;
+      if (y + _entryH > pageHeight - 18) {
+        doc.addPage();
+        drawHeader('Serpiente y Escaleras - Pauta', true);
+        y = 35;
+      }
       addText(`Pregunta ${idx + 1}: ${p}`, 8.5, 'bold', '#1e293b');
       addText(`  R: ${respuestas[idx]}`, 8.5, 'normal', '#16a34a');
       y += 2;
