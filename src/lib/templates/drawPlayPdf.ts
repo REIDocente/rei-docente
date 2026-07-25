@@ -2301,15 +2301,10 @@ export function drawPlayPdf({
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(148, 163, 184);
         const _seFull = `Respuesta: ${respuestas[idx] || ''}`;
-        const _seWords = _seFull.split(' ');
-        let _sel1 = '', _sel2 = '';
-        for (const _sew of _seWords) {
-          if (!_sel1 || _sel1.length + 1 + _sew.length <= 60) { _sel1 = _sel1 ? _sel1 + ' ' + _sew : _sew; }
-          else if (!_sel2 || _sel2.length + 1 + _sew.length <= 60) { _sel2 = _sel2 ? _sel2 + ' ' + _sew : _sew; }
-          else break;
-        }
-        if (_sel1) doc.text(_sel1, cX + 6, cY + 51);
-        if (_sel2) doc.text(_sel2, cX + 6, cY + 55);
+        const _seSan = _seFull.split('').map((c: string) => c.charCodeAt(0) > 255 ? '?' : c).join('');
+        const _seLines = doc.splitTextToSize(_seSan, cardW - 14);
+        if (_seLines[0]) doc.text(_seLines[0], cX + 6, cY + 51);
+        if (_seLines[1]) doc.text(_seLines[1], cX + 6, cY + 55);
       }
     }
 
@@ -2549,17 +2544,12 @@ export function drawPlayPdf({
         doc.setFontSize(7.5);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(148, 163, 184);
-        // Word-wrap manual para garantizar que cada línea no excede el ancho de la tarjeta
+        // Sanitizar chars no-Latin1 antes de medir con jsPDF (evita métricas erróneas y garbling)
         const _rFull = `R: ${item.r || ''}`;
-        const _rWords = _rFull.split(' ');
-        let _rl1 = '', _rl2 = '';
-        for (const _rw of _rWords) {
-          if (!_rl1 || _rl1.length + 1 + _rw.length <= 60) { _rl1 = _rl1 ? _rl1 + ' ' + _rw : _rw; }
-          else if (!_rl2 || _rl2.length + 1 + _rw.length <= 60) { _rl2 = _rl2 ? _rl2 + ' ' + _rw : _rw; }
-          else break;
-        }
-        if (_rl1) doc.text(_rl1, cX + 6, cY + 42);
-        if (_rl2) doc.text(_rl2, cX + 6, cY + 46);
+        const _rSan = _rFull.split('').map((c: string) => c.charCodeAt(0) > 255 ? '?' : c).join('');
+        const _rLines = doc.splitTextToSize(_rSan, cardW - 14);
+        if (_rLines[0]) doc.text(_rLines[0], cX + 6, cY + 42);
+        if (_rLines[1]) doc.text(_rLines[1], cX + 6, cY + 46);
       }
     }
 
