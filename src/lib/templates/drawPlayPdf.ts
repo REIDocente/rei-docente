@@ -1326,7 +1326,16 @@ export function drawPlayPdf({
     addText('PAUTA DOCENTE DE EMPAREJAMIENTOS', 14, 'bold', '#dc2626');
     y += 10;
 
+    const pWidth = getPageWidth();
     pares.forEach((p: any, idx: number) => {
+      const concLines = measureLines(`  Concepto: ${p.concepto}`, 9, pWidth);
+      const defLines = measureLines(`  Definición: ${p.definicion}`, 9, pWidth);
+      const entryH = lineH(9.5) + (concLines.length + defLines.length) * lineH(9) + 6;
+      if (y + entryH > pageHeight - 18) {
+        doc.addPage();
+        drawHeader('Memoria - Pauta de Pares', true);
+        y = 35;
+      }
       addText(`PAR N° ${idx + 1}:`, 9.5, 'bold', colorHex);
       addText(`  Concepto: ${p.concepto}`, 9, 'bold', '#1e293b');
       addText(`  Definición: ${p.definicion}`, 9, 'normal', '#334155');
