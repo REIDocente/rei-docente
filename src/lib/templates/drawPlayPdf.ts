@@ -1189,7 +1189,8 @@ export function drawPlayPdf({
 
         // BUG 2 FIX: Evitar overflow de texto y letter-spacing forzado
         let fontSize = 7.5;
-        let textToWrap = activeCard.descripcion || activeCard.cita_habilidad || 'Habilidad de la carta descriptiva.';
+        const _sanC = (s: string) => s.replace(/→/g, '->').replace(/←/g, '<-').replace(/↑/g, '^').replace(/↓/g, 'v').replace(/[^\x00-\xFF]/g, '?');
+        let textToWrap = _sanC(activeCard.descripcion || activeCard.cita_habilidad || 'Habilidad de la carta descriptiva.');
         doc.setFontSize(fontSize);
         let wrapped = doc.splitTextToSize(textToWrap, cardW - 12);
 
