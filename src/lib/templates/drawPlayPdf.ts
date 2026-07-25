@@ -1066,14 +1066,14 @@ export function drawPlayPdf({
         y += 2;
         addText(`Pregunta: ${preguntasList[cardNum]}`, 9.5, 'normal', '#0f172a', margin + 5);
 
-        // Big "?" in light gray in background of card
-        doc.setFontSize(28);
-        doc.setFont('helvetica', 'bold');
-        doc.setTextColor(226, 232, 240);
-        doc.text("?", margin + width - 20, cardY + 22);
-        
         doc.setDrawColor(226, 232, 240);
         doc.line(margin + 5, cardY + 36, margin + width - 5, cardY + 36);
+
+        // Big "?" in light gray — rendered after the divider line, won't overlap text
+        doc.setFontSize(22);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(226, 232, 240);
+        doc.text("?", margin + width - 15, cardY + cardH - 5);
 
         y = cardY + 39;
         addText(`Respuesta: ${respuestasList[cardNum] || '________________'}`, 9, 'bold', '#16a34a', margin + 5);
@@ -1106,6 +1106,14 @@ export function drawPlayPdf({
     addText('CLAVE DOCENTE DE RESPUESTAS', 12, 'bold', '#dc2626');
     y += 4;
     preguntasList.forEach((preg: string, idx: number) => {
+      const pregLines = measureLines(`Pregunta ${idx + 1}: ${preg}`, 8.5, width);
+      const respLines = measureLines(`  Respuesta: ${respuestasList[idx] || 'Sin definir.'}`, 8.5, width);
+      const entryH = (pregLines.length + respLines.length) * lineH(8.5) + 4;
+      if (y + entryH > pageHeight - 18) {
+        doc.addPage();
+        drawHeader('Trivia - Tabla y Clave', true);
+        y = 35;
+      }
       addText(`Pregunta ${idx + 1}: ${preg}`, 8.5, 'bold', '#1e293b');
       addText(`  Respuesta: ${respuestasList[idx] || 'Sin definir.'}`, 8.5, 'normal', '#16a34a');
       y += 2;
