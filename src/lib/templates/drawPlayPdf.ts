@@ -441,7 +441,11 @@ export function drawPlayPdf({
       y = boxStartY + pistaBoxH + 6;
 
       // Check if remaining components fit on current page; otherwise break page
-      const desafioLines = doc.splitTextToSize(est.desafio || '', pWidth);
+      // Sanitizar caracteres non-Latin1 del desafío antes de renderizar
+      const desafioRaw = (est.desafio || '')
+        .replace(/→/g, '->').replace(/←/g, '<-').replace(/↑/g, '^').replace(/↓/g, 'v')
+        .replace(/[^\x00-\xFF]/g, '?');
+      const desafioLines = doc.splitTextToSize(desafioRaw, pWidth);
       const spaceNeeded = (desafioLines.length * 5.5) + (tipoEv === 'recreacion_pedagogica' ? 112 : 97);
       if (y + spaceNeeded > pageHeight - 15) {
         doc.addPage('a4', 'portrait');
@@ -469,6 +473,7 @@ export function drawPlayPdf({
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(30, 41, 59);
       desafioLines.forEach((l: string) => { doc.text(l, margin, y); y += 5.5; });
+
       y += 4;
 
       // Espacio de respuesta
@@ -547,8 +552,10 @@ export function drawPlayPdf({
     doc.setFontSize(9.5);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(rAccent, gAccent, bAccent);
-    doc.text(ef.hipotesis_guia || 'Hipotesis del equipo:', margin + 4, y);
-    y += 6;
+    const hipGuia = (ef.hipotesis_guia || 'Hipotesis del equipo:').replace(/[^\x00-\xFF]/g, '?');
+    const hipGuiaLines = doc.splitTextToSize(hipGuia, pWidth - 8);
+    hipGuiaLines.slice(0, 2).forEach((l: string) => { doc.text(l, margin + 4, y); y += 5; });
+    y += 1;
     for (let li = 0; li < 3; li++) {
       doc.setDrawColor(180, 190, 210);
       doc.setLineWidth(0.25);
@@ -567,7 +574,9 @@ export function drawPlayPdf({
       doc.setFontSize(9);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(rAccent, gAccent, bAccent);
-      doc.text(fi === 1 ? (ef.fundamento_guia || `Fundamento ${fi} (cita, dato o episodio del material):`) : `Fundamento 2:`, margin + 4, y);
+      const fGuiaRaw = fi === 1 ? (ef.fundamento_guia || `Fundamento ${fi} (cita, dato o episodio del material):`) : `Fundamento 2:`;
+      const fGuiaLines = doc.splitTextToSize(fGuiaRaw.replace(/[^\x00-\xFF]/g, '?'), pWidth - 8);
+      fGuiaLines.slice(0, 1).forEach((l: string) => { doc.text(l, margin + 4, y); });
       y += 5;
       for (let li = 0; li < 2; li++) {
         doc.setDrawColor(180, 190, 210);
@@ -587,7 +596,9 @@ export function drawPlayPdf({
     doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(rAccent, gAccent, bAccent);
-    doc.text(ef.conclusion_guia || 'Conclusion: ¿como conecta tu hipotesis con los temas del material?', margin + 4, y);
+    const conGuiaRaw = (ef.conclusion_guia || 'Conclusion: ¿como conecta tu hipotesis con los temas del material?').replace(/[^\x00-\xFF]/g, '?');
+    const conGuiaLines = doc.splitTextToSize(conGuiaRaw, pWidth - 8);
+    conGuiaLines.slice(0, 1).forEach((l: string) => { doc.text(l, margin + 4, y); });
     y += 5;
     for (let li = 0; li < 2; li++) {
       doc.setDrawColor(180, 190, 210);
