@@ -669,6 +669,7 @@ export default function REIPlayPage() {
                 {/* Dificultad */}
                 <div className="space-y-2.5">
                   <label className="text-xs font-bold text-slate-500 block">Dificultad Pedagógica</label>
+                  {/* DEBUG TEMP */ console.log('[REI-DEBUG] engine:', activeEngine.id, 'dificultades:', JSON.stringify(activeEngine.dificultades))}
                   <div className="flex gap-3">
                     {activeEngine.dificultades.map((d) => (
                       <button
