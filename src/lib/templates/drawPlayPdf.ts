@@ -1368,7 +1368,7 @@ export function drawPlayPdf({
     const fichaLabels = ['ROJO', 'AZUL', 'VERDE', 'NARANJA'];
 
     // ---- PÁGINA 1: Tablero de la Mansión ----
-    drawHeader('CLUE - Tablero');
+    drawHeader('MISTERIO REI - Tablero');
     y = 35;
     addText(`TABLERO: ${juego.nombre_caso || 'Caso sin Titulo'}`, 13, 'bold', colorHex);
     y += 3;
@@ -1544,7 +1544,7 @@ export function drawPlayPdf({
 
     // ---- PÁGINA 2: Sospechosos ----
     doc.addPage();
-    drawHeader('CLUE - Sospechosos');
+    drawHeader('MISTERIO REI - Sospechosos');
     y = 35;
     addText('TARJETAS DE SOSPECHOSOS  (recorta por la linea punteada)', 13, 'bold', colorHex);
     y += 6;
@@ -1624,7 +1624,7 @@ export function drawPlayPdf({
 
     // ---- PÁGINA 3: Evidencias ----
     doc.addPage();
-    drawHeader('CLUE - Evidencias');
+    drawHeader('MISTERIO REI - Evidencias');
     y = 35;
     addText('TARJETAS DE EVIDENCIA  (recorta por la linea punteada)', 13, 'bold', colorHex);
     y += 3;
@@ -1691,7 +1691,7 @@ export function drawPlayPdf({
 
     // ---- PÁGINA 4: Tarjetas de Habitaciones (con desafíos) ----
     doc.addPage();
-    drawHeader('CLUE - Habitaciones');
+    drawHeader('MISTERIO REI - Habitaciones');
     y = 35;
     addText('TARJETAS DE HABITACIONES  (recorta por la linea punteada)', 13, 'bold', colorHex);
     y += 3;
@@ -1716,7 +1716,7 @@ export function drawPlayPdf({
         habRowTracked = rowIdx;
         if (habRowY + habH > pageHeight - 18) {
           doc.addPage();
-          drawHeader('CLUE - Habitaciones');
+          drawHeader('MISTERIO REI - Habitaciones');
           habRowY = 35;
         }
       }
@@ -1790,7 +1790,7 @@ export function drawPlayPdf({
 
     // ---- PÁGINA 5: Hoja de Investigación ----
     doc.addPage();
-    drawHeader('CLUE - Investigacion');
+    drawHeader('MISTERIO REI - Investigacion');
     y = 35;
     addText('HOJA DE INVESTIGACION  (una por equipo)', 13, 'bold', colorHex);
     y += 3;
@@ -1908,7 +1908,7 @@ export function drawPlayPdf({
 
     // ---- PÁGINA 6: Reglas ----
     doc.addPage();
-    drawHeader('CLUE - Reglas del Juego');
+    drawHeader('MISTERIO REI - Reglas del Juego');
     y = 35;
     addText('INSTRUCCIONES COMPLETAS', 13, 'bold', colorHex);
     y += 5;
@@ -2026,7 +2026,7 @@ export function drawPlayPdf({
 
     // ---- PÁGINA 7: Guía Docente / Sobre de Solución ----
     doc.addPage();
-    drawHeader('CLUE - Guia Docente', true);
+    drawHeader('MISTERIO REI - Guia Docente', true);
     y = 35;
     addText('GUIA DOCENTE  (USO EXCLUSIVO - NO DISTRIBUIR)', 13, 'bold', '#dc2626');
     y += 5;
@@ -2075,7 +2075,7 @@ export function drawPlayPdf({
         const oaEntryH = 5 + dLines.length * 4.2 + 4;
         if (y + oaEntryH > pageHeight - 18) {
           doc.addPage();
-          drawHeader('CLUE - Guia Docente', true);
+          drawHeader('MISTERIO REI - Guia Docente', true);
           y = 35;
         }
         doc.setFontSize(8.5);

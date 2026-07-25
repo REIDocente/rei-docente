@@ -133,7 +133,7 @@ export const gameEngines: GameEngine[] = [
   },
   {
     id: 'clue',
-    nombre: 'CLUE',
+    nombre: 'MISTERIO REI',
     emoji: '🎲',
     descripcion: 'Juego de deducción tipo Cluedo. Los alumnos identifican al culpable, el lugar y la evidencia usando pistas del texto o del OA.',
     ideal_para: 'Lectura domiciliaria, análisis de personajes, comprensión profunda',
