@@ -2544,7 +2544,10 @@ export function drawPlayPdf({
         doc.setFontSize(7.5);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(148, 163, 184);
-        doc.text(`R: ${item.r}`, cX + 6, cY + 44);
+        const _ludoRespLines = doc.splitTextToSize(`R: ${item.r}`, cardW - 12);
+        _ludoRespLines.slice(0, 2).forEach((l: string, li: number) => {
+          doc.text(l, cX + 6, cY + 42 + li * 4);
+        });
       }
     }
 
@@ -2555,21 +2558,32 @@ export function drawPlayPdf({
     addText('SOLUCIONARIO DE PREGUNTAS (LUDO)', 14, 'bold', '#dc2626');
     y += 10;
 
+    const _luAddEntry = (text: string, color: string) => {
+      const _eLines = measureLines(text, 8.5, lWidth);
+      const _eH = _eLines.length * lineH(8.5) + 2;
+      if (y + _eH > pageHeight - 18) {
+        doc.addPage();
+        drawHeader('Ludo - Pauta Docente', true);
+        y = 35;
+      }
+      addText(text, 8.5, 'normal', color);
+    };
+
     addText('FÁCILES:', 10.5, 'bold', '#16a34a');
     faciles.forEach((p: any, idx: number) => {
-      addText(`  ${idx + 1}. ${p} (R: ${respuestas.faciles ? respuestas.faciles[idx] : ''})`, 8.5, 'normal', '#334155');
+      _luAddEntry(`  ${idx + 1}. ${p} (R: ${respuestas.faciles ? respuestas.faciles[idx] : ''})`, '#334155');
     });
     y += 4;
 
     addText('MEDIAS:', 10.5, 'bold', '#eab308');
     medias.forEach((p: any, idx: number) => {
-      addText(`  ${idx + 1}. ${p} (R: ${respuestas.medias ? respuestas.medias[idx] : ''})`, 8.5, 'normal', '#334155');
+      _luAddEntry(`  ${idx + 1}. ${p} (R: ${respuestas.medias ? respuestas.medias[idx] : ''})`, '#334155');
     });
     y += 4;
 
     addText('DIFÍCILES:', 10.5, 'bold', '#dc2626');
     dificiles.forEach((p: any, idx: number) => {
-      addText(`  ${idx + 1}. ${p} (R: ${respuestas.dificiles ? respuestas.dificiles[idx] : ''})`, 8.5, 'normal', '#334155');
+      _luAddEntry(`  ${idx + 1}. ${p} (R: ${respuestas.dificiles ? respuestas.dificiles[idx] : ''})`, '#334155');
     });
   }
 
