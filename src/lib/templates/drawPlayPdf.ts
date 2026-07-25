@@ -114,6 +114,11 @@ export function drawPlayPdf({
     doc.setLineDashPattern([2, 2], 0);
     doc.rect(x, y, w, h, 'S');
     doc.setLineDashPattern([], 0); // reset
+    // Indicador de recorte universal (sobre la linea superior izquierda)
+    doc.setFontSize(5);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(148, 163, 184);
+    doc.text('- - Recorta por la linea punteada - -', x + 1, y - 0.8);
   };
 
   const getPageWidth = () => doc.internal.pageSize.getWidth() - 2 * margin;
