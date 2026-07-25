@@ -1018,9 +1018,17 @@ export function drawPlayPdf({
     y += 10;
 
     const defsList = Array.isArray(juego.definiciones) ? juego.definiciones : [];
+    const bPWidth = getPageWidth();
     defsList.forEach((def: any, idx: number) => {
       const cLabel = typeof def === 'object' ? (def.concepto || `Concepto ${idx+1}`) : `Definición ${idx+1}`;
       const dText = typeof def === 'object' ? (def.definicion || '') : def;
+      const defLines = measureLines(`Definición ${idx + 1}: ${dText}`, 9, bPWidth);
+      const entryH = defLines.length * lineH(9) + lineH(9) + 8;
+      if (y + entryH > pageHeight - 18) {
+        doc.addPage();
+        drawHeader('Bingo - Tarjetas de Llamada', true);
+        y = 35;
+      }
       addText(`Definición ${idx + 1}: ${dText}`, 9, 'normal', '#334155');
       addText(`[ Concepto clave: ${cLabel} ]`, 9, 'bold', colorHex);
       y += 4;
