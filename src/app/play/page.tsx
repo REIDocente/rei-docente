@@ -632,6 +632,7 @@ export default function REIPlayPage() {
                       <button
                         key={d}
                         type="button"
+                        translate="no"
                         onClick={() => setDuracion(d)}
                         className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all ${
                           duracion === d
@@ -653,6 +654,7 @@ export default function REIPlayPage() {
                       <button
                         key={m}
                         type="button"
+                        translate="no"
                         onClick={() => setModalidad(m)}
                         className={`px-4 py-2 rounded-xl text-xs font-bold border capitalize transition-all ${
                           modalidad === m
@@ -669,12 +671,12 @@ export default function REIPlayPage() {
                 {/* Dificultad */}
                 <div className="space-y-2.5">
                   <label className="text-xs font-bold text-slate-500 block">Dificultad Pedagógica</label>
-                  {/* DEBUG TEMP */ console.log('[REI-DEBUG] engine:', activeEngine.id, 'dificultades:', JSON.stringify(activeEngine.dificultades))}
-                  <div className="flex gap-3">
+                    <div className="flex gap-3">
                     {activeEngine.dificultades.map((d) => (
                       <button
                         key={d}
                         type="button"
+                        translate="no"
                         onClick={() => setDificultad(d)}
                         className={`px-4 py-2 rounded-xl text-xs font-bold border capitalize transition-all ${
                           dificultad === d

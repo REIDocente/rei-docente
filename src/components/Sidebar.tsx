@@ -77,7 +77,7 @@ export default function Sidebar({ sidebarOpen = false, setSidebarOpen }: Sidebar
     { href: '/evaluaciones', label: 'Evaluaciones y Rúbricas', icon: FileText, id: 'evaluaciones' },
     { href: '/guias', label: 'Guías de Aprendizaje', icon: BookOpen, id: 'guias' },
     { href: '/lecturas', label: 'REI Lecturas', icon: BookMarked, id: 'lecturas' },
-    { href: '/experiencias', label: 'Experiencias REI', icon: Layers, id: 'experiencias' },
+    { href: '/lecturas', label: 'Experiencias REI', icon: Layers, id: 'experiencias' },
   ];
 
   // Helper to determine if link is active
