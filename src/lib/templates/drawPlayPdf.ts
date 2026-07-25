@@ -1191,9 +1191,10 @@ export function drawPlayPdf({
         let fontSize = 7.5;
         const _sanC = (s: string) => s
           .replace(/→/g, '->').replace(/←/g, '<-').replace(/↑/g, '^').replace(/↓/g, 'v')
+          .replace(/≥/g, '>=').replace(/≤/g, '<=').replace(/≠/g, '!=')
           .replace(/['']/g, "'").replace(/[""]/g, '"')
           .replace(/—/g, '--').replace(/–/g, '-').replace(/…/g, '...').replace(/•/g, '-')
-          .replace(/[^\x00-\xFF]/g, '?');
+          .split('').map((c: string) => c.charCodeAt(0) > 255 ? '?' : c).join('');
         let textToWrap = _sanC(activeCard.descripcion || activeCard.cita_habilidad || 'Habilidad de la carta descriptiva.');
         doc.setFontSize(fontSize);
         let wrapped = doc.splitTextToSize(textToWrap, cardW - 12);
@@ -1228,9 +1229,10 @@ export function drawPlayPdf({
     const _sanR = (s: string) => s
       .replace(/\*\*/g, '')
       .replace(/→/g, '->').replace(/←/g, '<-').replace(/↑/g, '^').replace(/↓/g, 'v')
+      .replace(/≥/g, '>=').replace(/≤/g, '<=').replace(/≠/g, '!=')
       .replace(/['']/g, "'").replace(/[""]/g, '"')
       .replace(/—/g, '--').replace(/–/g, '-').replace(/…/g, '...').replace(/•/g, '-')
-      .replace(/[^\x00-\xFF]/g, '?');
+      .split('').map((c: string) => c.charCodeAt(0) > 255 ? '?' : c).join('');
     const reglasRaw = juego.reglas || 'Instrucciones para jugar con el mazo de cartas.';
     const reglasWidth = getPageWidth();
     const reglasLines = reglasRaw.split('\n');
