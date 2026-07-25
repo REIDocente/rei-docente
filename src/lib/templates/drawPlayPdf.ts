@@ -750,12 +750,13 @@ export function drawPlayPdf({
 
   } else if (motorId === 'escape_room') {
     const width = getPageWidth();
+    const _san = (s: string) => s.replace(/→/g, '->').replace(/←/g, '<-').replace(/↑/g, '^').replace(/↓/g, 'v').replace(/[^\x00-\xFF]/g, '?');
     // ---- PÁGINA 1: Misión ----
     drawHeader('Escape Room - Misión');
     y = 45;
     addText('INSTRUCCIONES DE ESCAPE ROOM', 16, 'bold', colorHex);
     y += 10;
-    addText(juego.mision || 'Resolver las pruebas antes de que se agote el tiempo.', 10.5, 'normal', '#1e293b');
+    addText(_san(juego.mision || 'Resolver las pruebas antes de que se agote el tiempo.'), 10.5, 'normal', '#1e293b');
     y += 30;
     drawDottedRect(margin, y, width, 50);
     y += 8;
@@ -853,9 +854,9 @@ export function drawPlayPdf({
     const pWidth = getPageWidth();
 
     const pruebas = [
-      { id: 1, text: juego.prueba1 || 'Prueba 1', code: juego.clave1 || 'Clave 1' },
-      { id: 2, text: juego.prueba2 || 'Prueba 2', code: juego.clave2 || 'Clave 2' },
-      { id: 3, text: juego.prueba3 || 'Prueba 3', code: juego.clave_final || 'Clave Final' }
+      { id: 1, text: _san(juego.prueba1 || 'Prueba 1'), code: _san(juego.clave1 || 'Clave 1') },
+      { id: 2, text: _san(juego.prueba2 || 'Prueba 2'), code: _san(juego.clave2 || 'Clave 2') },
+      { id: 3, text: _san(juego.prueba3 || 'Prueba 3'), code: _san(juego.clave_final || 'Clave Final') }
     ];
 
     pruebas.forEach((p) => {
@@ -890,7 +891,7 @@ export function drawPlayPdf({
     y = 35;
     addText('REGISTRO DE ESCAPE - REFLEXIÓN', 14, 'bold', colorHex);
     y += 10;
-    addText(juego.ticket || '¿Qué conceptos aplicaste hoy para resolver el escape?', 10.5, 'bold', '#1e293b');
+    addText(_san(juego.ticket || '¿Qué conceptos aplicaste hoy para resolver el escape?'), 10.5, 'bold', '#1e293b');
     y += 15;
     doc.line(margin, y, margin + pWidth, y);
     doc.line(margin, y + 8, margin + pWidth, y + 8);
@@ -902,14 +903,14 @@ export function drawPlayPdf({
     y = 35;
     addText('PAUTA DOCENTE - CLAVES DE ESCAPE', 14, 'bold', '#dc2626');
     y += 10;
-    addText(`Clave Prueba 1: ${juego.clave1 || 'A'}`, 10, 'bold', '#1e293b');
+    addText(`Clave Prueba 1: ${_san(juego.clave1 || 'A')}`, 10, 'bold', '#1e293b');
     y += 4;
-    addText(`Clave Prueba 2: ${juego.clave2 || 'B'}`, 10, 'bold', '#1e293b');
+    addText(`Clave Prueba 2: ${_san(juego.clave2 || 'B')}`, 10, 'bold', '#1e293b');
     y += 4;
-    addText(`Clave Prueba 3 (FINAL): ${juego.clave_final || 'C'}`, 10, 'bold', '#1e293b');
+    addText(`Clave Prueba 3 (FINAL): ${_san(juego.clave_final || 'C')}`, 10, 'bold', '#1e293b');
     y += 15;
     addText('Solución Detallada:', 10, 'bold', '#dc2626');
-    addText(juego.solucion || 'Detalle de la resolución pedagógica.', 9.5, 'normal', '#334155');
+    addText(_san(juego.solucion || 'Detalle de la resolución pedagógica.'), 9.5, 'normal', '#334155');
 
   } else if (motorId === 'bingo') {
     const width = getPageWidth();
