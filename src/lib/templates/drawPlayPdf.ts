@@ -1327,19 +1327,25 @@ export function drawPlayPdf({
     y += 10;
 
     const pWidth = getPageWidth();
+    const _sanP = (s: string) => (s || '')
+      .replace(/–/g, '-').replace(/—/g, '--').replace(/…/g, '...').replace(/•/g, '-')
+      .replace(/['']/g, "'").replace(/[""]/g, '"')
+      .split('').map((c: string) => c.charCodeAt(0) > 255 ? '?' : c).join('');
     pares.forEach((p: any, idx: number) => {
-      const concLines = measureLines(`  Concepto: ${p.concepto}`, 9, pWidth);
-      const defLines = measureLines(`  Definición: ${p.definicion}`, 9, pWidth);
-      const entryH = lineH(9.5) + (concLines.length + defLines.length) * lineH(9) + 6;
-      if (y + entryH > pageHeight - 18) {
+      const conc = _sanP(p.concepto);
+      const def = _sanP(p.definicion);
+      const concLines = measureLines(`  Concepto: ${conc}`, 9, pWidth);
+      const defLines = measureLines(`  Definición: ${def}`, 9, pWidth);
+      const entryH = lineH(9.5) + (concLines.length + defLines.length) * lineH(9) + 10;
+      if (y + entryH > pageHeight - 28) {
         doc.addPage();
         drawHeader('Memoria - Pauta de Pares', true);
         y = 35;
       }
       addText(`PAR N° ${idx + 1}:`, 9.5, 'bold', colorHex);
-      addText(`  Concepto: ${p.concepto}`, 9, 'bold', '#1e293b');
-      addText(`  Definición: ${p.definicion}`, 9, 'normal', '#334155');
-      y += 2;
+      addText(`  Concepto: ${conc}`, 9, 'bold', '#1e293b');
+      addText(`  Definición: ${def}`, 9, 'normal', '#334155');
+      y += 4;
     });
 
   } else if (motorId === 'clue') {
