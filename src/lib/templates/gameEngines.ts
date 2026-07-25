@@ -81,7 +81,7 @@ export const gameEngines: GameEngine[] = [
   },
   {
     id: 'trivia',
-    nombre: 'Trivia',
+    nombre: 'Trivial',
     emoji: '❓',
     descripcion: 'Preguntas por categorías con sistema de puntos por equipo.',
     ideal_para: 'Repaso rápido de contenidos',
