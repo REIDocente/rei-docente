@@ -70,7 +70,7 @@ export const gameEngines: GameEngine[] = [
     ideal_para: 'Vocabulario y conceptos clave',
     duraciones: [45, 90],
     modalidades: ['individual', 'parejas'],
-    dificultades: ['básica', 'media'],
+    dificultades: ['básica', 'media', 'desafiante'],
     estructura: [
       { id: 'cartones', nombre: 'Cartones de Bingo', descripcion: '6 cartones diferentes de 4x4 con conceptos', es_solo_docente: false },
       { id: 'instrucciones', nombre: 'Instrucciones', descripcion: 'Reglas del juego para alumnos', es_solo_docente: false },
