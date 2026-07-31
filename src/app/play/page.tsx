@@ -26,6 +26,7 @@ import {
   Library
 } from 'lucide-react';
 import { gameEngines, GameEngine, GameSection } from '@/lib/templates/gameEngines';
+import { programas, getUnidades, getTemas, getOAs, Programa, Unidad, Tema, OA } from '@/data/programas';
 import { drawPlayPdf } from '@/lib/templates/drawPlayPdf';
 import { drawPlayWord } from '@/lib/templates/drawPlayWord';
 import { jsPDF } from 'jspdf';
@@ -39,8 +40,6 @@ const CHILEAN_COURSES = [
 export default function REIPlayPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
-  const [plannings, setPlannings] = useState<any[]>([]);
-  const [loadingPlannings, setLoadingPlannings] = useState(true);
   const [lecturas, setLecturas] = useState<any[]>([]);
   const [loadingLecturas, setLoadingLecturas] = useState(true);
 
@@ -49,11 +48,48 @@ export default function REIPlayPage() {
 
   // Form states
   const [fuente, setFuente] = useState<'planificacion' | 'tema_manual' | 'lectura_domiciliaria'>('planificacion');
-  const [planificacionId, setPlanificacionId] = useState<string>('');
-  const [tema, setTema] = useState<string>('');
   const [libroId, setLibroId] = useState<string>('');
+  const [tema, setTema] = useState<string>('');
   const [nivel, setNivel] = useState<string>('2° Medio');
   const [oaCodes, setOaCodes] = useState<string>('');
+
+  // Estado para fuente 'planificacion' (selectores curriculares MINEDUC)
+  const [programaId, setProgramaId] = useState<string>('');
+  const [unidadId, setUnidadId] = useState<string>('');
+  const [temaId, setTemaId] = useState<string>('');
+  const [selectedOAs, setSelectedOAs] = useState<string[]>([]);
+
+  // Computados de programa
+  const selectedPrograma = programas.find(p => p.id === programaId) ?? null;
+  const unidadesDisponibles = programaId ? getUnidades(programaId) : [];
+  const temasDisponibles = (programaId && unidadId) ? getTemas(programaId, unidadId) : [];
+  const oasDisponibles = (programaId && unidadId && temaId) ? getOAs(programaId, unidadId, temaId) : [];
+
+  const toggleOA = (codigo: string) => {
+    setSelectedOAs(prev => prev.includes(codigo) ? prev.filter(c => c !== codigo) : [...prev, codigo]);
+  };
+
+  const handleSelectPrograma = (id: string) => {
+    setProgramaId(id);
+    setUnidadId('');
+    setTemaId('');
+    setSelectedOAs([]);
+    const p = programas.find(pr => pr.id === id);
+    if (p) setNivel(p.nivel_codigo);
+  };
+
+  const handleSelectUnidad = (id: string) => {
+    setUnidadId(id);
+    setTemaId('');
+    setSelectedOAs([]);
+  };
+
+  const handleSelectTema = (id: string) => {
+    setTemaId(id);
+    // Auto-seleccionar todos los OAs del tema
+    const oas = getOAs(programaId, unidadId, id);
+    setSelectedOAs(oas.map(o => o.codigo));
+  };
 
   // Selected engine & configs
   const [selectedEngineId, setSelectedEngineId] = useState<string>('detective');
@@ -107,23 +143,6 @@ export default function REIPlayPage() {
       }
       setUser(user);
 
-      // Fetch plannings
-      try {
-        const { data: planningsData } = await supabase
-          .from('plannings')
-          .select('id, created_at, subject, grade, learning_objective, unit')
-          .order('created_at', { ascending: false });
-        
-        setPlannings(planningsData || []);
-        if (planningsData && planningsData.length > 0) {
-          setPlanificacionId(planningsData[0].id);
-        }
-      } catch (e) {
-        console.error('Error fetching plannings:', e);
-      } finally {
-        setLoadingPlannings(false);
-      }
-
       // Fetch lecturas_docente
       try {
         const { data: lecturasData } = await supabase
@@ -152,19 +171,19 @@ export default function REIPlayPage() {
     });
   }, [router]);
 
-  // Read URL params for deep-link from REI Lecturas (/play?fuente=lectura_domiciliaria&libro_id=...&motor=...)
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const params = new URLSearchParams(window.location.search);
-    const fuenteParam = params.get('fuente');
-    const libroIdParam = params.get('libro_id');
-    const motorParam = params.get('motor');
-    if (fuenteParam === 'lectura_domiciliaria') {
-      setFuente('lectura_domiciliaria');
-      if (libroIdParam) setLibroId(libroIdParam);
-      if (motorParam) setSelectedEngineId(motorParam);
+
+  const handleSelectBook = (libId: string) => {
+    setLibroId(libId);
+    const selected = lecturas.find(l => l.libro_id === libId);
+    if (selected) {
+      if (selected.cursos_sugeridos && selected.cursos_sugeridos.length > 0) {
+        setNivel(selected.cursos_sugeridos[0]);
+      }
+      if (selected.oa_sugeridos && selected.oa_sugeridos.length > 0) {
+        setOaCodes(selected.oa_sugeridos.join(', '));
+      }
     }
-  }, []);
+  };
 
   const handleSelectEngine = (engineId: string) => {
     setSelectedEngineId(engineId);
@@ -183,18 +202,6 @@ export default function REIPlayPage() {
     }
   };
 
-  const handleSelectBook = (libId: string) => {
-    setLibroId(libId);
-    const selected = lecturas.find(l => l.libro_id === libId);
-    if (selected) {
-      if (selected.cursos_sugeridos && selected.cursos_sugeridos.length > 0) {
-        setNivel(selected.cursos_sugeridos[0]);
-      }
-      if (selected.oa_sugeridos && selected.oa_sugeridos.length > 0) {
-        setOaCodes(selected.oa_sugeridos.join(', '));
-      }
-    }
-  };
 
   const handleGenerate = async () => {
     setGenerating(true);
@@ -207,11 +214,22 @@ export default function REIPlayPage() {
     const payload = {
       motor: selectedEngineId,
       fuente,
-      planificacion_id: fuente === 'planificacion' ? planificacionId : undefined,
+      programa_info: fuente === 'planificacion' ? {
+        curso: selectedPrograma?.curso,
+        asignatura: selectedPrograma?.asignatura,
+        unidad: unidadesDisponibles.find(u => u.id === unidadId)?.nombre,
+        tema: temasDisponibles.find(t => t.id === temaId)?.nombre,
+        habilidades: temasDisponibles.find(t => t.id === temaId)?.habilidades,
+        conceptos_clave: temasDisponibles.find(t => t.id === temaId)?.conceptos_clave,
+        vocabulario: temasDisponibles.find(t => t.id === temaId)?.vocabulario,
+        oa_seleccionados: selectedOAs.length > 0 ? selectedOAs : undefined,
+      } : undefined,
       tema: fuente === 'tema_manual' ? tema : undefined,
       libro_id: fuente === 'lectura_domiciliaria' ? libroId : undefined,
       nivel,
-      oa_codes: oaCodes ? oaCodes.split(',').map(s => s.trim()) : ['OA General'],
+      oa_codes: fuente === 'planificacion'
+        ? (selectedOAs.length > 0 ? selectedOAs : ['OA General'])
+        : (oaCodes ? oaCodes.split(',').map(s => s.trim()) : ['OA General']),
       duracion,
       modalidad,
       dificultad,
@@ -427,29 +445,76 @@ export default function REIPlayPage() {
               </div>
 
               {fuente === 'planificacion' && (
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-500 block">Selecciona tu Planificación Reciente</label>
-                  {loadingPlannings ? (
-                    <div className="flex items-center gap-2 text-xs text-slate-400">
-                      <Loader2 className="w-4 h-4 animate-spin text-violet-700" />
-                      Cargando planificaciones...
-                    </div>
-                  ) : plannings.length === 0 ? (
-                    <div className="text-xs text-slate-500 p-4 bg-slate-50 border rounded-xl">
-                      No tienes planificaciones creadas. Crea una en el Kit de Clase o elige tema manual.
-                    </div>
-                  ) : (
+                <div className="space-y-4">
+                  {/* Selector de Curso */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-500 block">Curso</label>
                     <select
-                      value={planificacionId}
-                      onChange={(e) => setPlanificacionId(e.target.value)}
+                      value={programaId}
+                      onChange={(e) => handleSelectPrograma(e.target.value)}
                       className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] focus:border-violet-600 focus:outline-none bg-white"
                     >
-                      {plannings.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.unit} ({p.grade} - {p.subject})
-                        </option>
+                      <option value="">— Selecciona un curso —</option>
+                      {programas.map((p) => (
+                        <option key={p.id} value={p.id}>{p.curso} · {p.asignatura}</option>
                       ))}
                     </select>
+                  </div>
+
+                  {/* Selector de Unidad */}
+                  {programaId && (
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-500 block">Unidad</label>
+                      <select
+                        value={unidadId}
+                        onChange={(e) => handleSelectUnidad(e.target.value)}
+                        className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] focus:border-violet-600 focus:outline-none bg-white"
+                      >
+                        <option value="">— Selecciona una unidad —</option>
+                        {unidadesDisponibles.map((u) => (
+                          <option key={u.id} value={u.id}>{u.nombre}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  {/* Selector de Tema */}
+                  {unidadId && temasDisponibles.length > 0 && (
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-500 block">Tema / Contenido</label>
+                      <select
+                        value={temaId}
+                        onChange={(e) => handleSelectTema(e.target.value)}
+                        className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] focus:border-violet-600 focus:outline-none bg-white"
+                      >
+                        <option value="">— Selecciona un tema —</option>
+                        {temasDisponibles.map((t) => (
+                          <option key={t.id} value={t.id}>{t.nombre}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  {/* Checkboxes de OA */}
+                  {temaId && oasDisponibles.length > 0 && (
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-500 block">Objetivos de Aprendizaje <span className="font-normal text-slate-400">(seleccionados automáticamente)</span></label>
+                      <div className="space-y-2 p-3 bg-violet-50/30 rounded-xl border border-violet-100">
+                        {oasDisponibles.map((oa) => (
+                          <label key={oa.codigo} className="flex items-start gap-2 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={selectedOAs.includes(oa.codigo)}
+                              onChange={() => toggleOA(oa.codigo)}
+                              className="mt-0.5 accent-violet-700 shrink-0"
+                            />
+                            <span className="text-[11px] text-slate-700 leading-snug group-hover:text-violet-800">
+                              <span className="font-bold text-violet-700">{oa.codigo}:</span> {oa.descripcion}
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
                   )}
                 </div>
               )}
@@ -565,7 +630,7 @@ export default function REIPlayPage() {
                   type="button"
                   onClick={() => setStep(2)}
                   disabled={
-                    (fuente === 'planificacion' && !planificacionId) ||
+                    (fuente === 'planificacion' && (!programaId || !unidadId)) ||
                     (fuente === 'lectura_domiciliaria' && !libroId) ||
                     (fuente === 'tema_manual' && !tema.trim())
                   }
