@@ -2156,6 +2156,10 @@ export default function NewPlannerPage() {
                     onChange={(e) => setGrade(e.target.value)}
                     className="w-full bg-[#FAF9FC] border border-slate-200 rounded-2xl py-3.5 px-4 text-xs text-slate-800 font-semibold focus:outline-none focus:border-violet-500 appearance-none cursor-pointer"
                   >
+                    <option value="1° Básico">1° Básico</option>
+                    <option value="2° Básico">2° Básico</option>
+                    <option value="3° Básico">3° Básico</option>
+                    <option value="4° Básico">4° Básico</option>
                     <option value="5° Básico">5° Básico</option>
                     <option value="6° Básico">6° Básico</option>
                     <option value="7° Básico">7° Básico</option>
