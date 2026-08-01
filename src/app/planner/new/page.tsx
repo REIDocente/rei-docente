@@ -2195,6 +2195,13 @@ export default function NewPlannerPage() {
                         <option value="Unidad 2">{getFullUnitName(grade, 'Unidad 2') || 'Unidad 2'}</option>
                         <option value="Unidad 3">{getFullUnitName(grade, 'Unidad 3') || 'Unidad 3'}</option>
                         <option value="Unidad 4">{getFullUnitName(grade, 'Unidad 4') || 'Unidad 4'}</option>
+                        {(grade === '7° Básico' || grade === '8° Básico') && (
+                          <>
+                            <option value="Unidad 5">{getFullUnitName(grade, 'Unidad 5') || 'Unidad 5'}</option>
+                            <option value="Unidad 6">{getFullUnitName(grade, 'Unidad 6') || 'Unidad 6'}</option>
+                            <option value="Unidad 7">{getFullUnitName(grade, 'Unidad 7') || 'Unidad 7'}</option>
+                          </>
+                        )}
                       </>
                     )}
                   </select>
