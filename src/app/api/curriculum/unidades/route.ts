@@ -21,28 +21,28 @@ function mapNivelParam(nivelParam: string): string {
 
 const FALLBACK_UNIDADES: Record<string, { numero: number; titulo: string; descripcion: string }[]> = {
   '1° Básico': [
-    { numero: 1, titulo: 'Unidad 1', descripcion: 'Lectura, escritura y comunicación oral — 1° Básico.' },
-    { numero: 2, titulo: 'Unidad 2', descripcion: 'Lectura, escritura y comunicación oral — 1° Básico.' },
-    { numero: 3, titulo: 'Unidad 3', descripcion: 'Lectura, escritura y comunicación oral — 1° Básico.' },
-    { numero: 4, titulo: 'Unidad 4', descripcion: 'Lectura, escritura y comunicación oral — 1° Básico.' },
+    { numero: 1, titulo: 'Lectura inicial y código fonológico', descripcion: 'Conciencia fonológica, decodificación y comprensión lectora inicial.' },
+    { numero: 2, titulo: 'Comprensión y producción de textos simples', descripcion: 'Lectura de narraciones y escritura de oraciones.' },
+    { numero: 3, titulo: 'Lectura literaria y expresión escrita', descripcion: 'Poemas, cuentos y escritura expresiva.' },
+    { numero: 4, titulo: 'Comunicación oral y vocabulario', descripcion: 'Expresión oral, vocabulario y recitación.' },
   ],
   '2° Básico': [
-    { numero: 1, titulo: 'Unidad 1', descripcion: 'Lectura, escritura y comunicación oral — 2° Básico.' },
-    { numero: 2, titulo: 'Unidad 2', descripcion: 'Lectura, escritura y comunicación oral — 2° Básico.' },
-    { numero: 3, titulo: 'Unidad 3', descripcion: 'Lectura, escritura y comunicación oral — 2° Básico.' },
-    { numero: 4, titulo: 'Unidad 4', descripcion: 'Lectura, escritura y comunicación oral — 2° Básico.' },
+    { numero: 1, titulo: 'Fluidez lectora y comprensión de narraciones', descripcion: 'Lectura fluida, análisis de personajes y ambientes.' },
+    { numero: 2, titulo: 'Lectura de poemas y textos no literarios', descripcion: 'Poesía, textos informativos y evaluación crítica.' },
+    { numero: 3, titulo: 'Escritura creativa y producción de textos', descripcion: 'Narraciones, artículos y revisión de textos.' },
+    { numero: 4, titulo: 'Comunicación oral y vocabulario', descripcion: 'Exposiciones orales, diálogo y vocabulario.' },
   ],
   '3° Básico': [
-    { numero: 1, titulo: 'Unidad 1', descripcion: 'Lectura, escritura y comunicación oral — 3° Básico.' },
-    { numero: 2, titulo: 'Unidad 2', descripcion: 'Lectura, escritura y comunicación oral — 3° Básico.' },
-    { numero: 3, titulo: 'Unidad 3', descripcion: 'Lectura, escritura y comunicación oral — 3° Básico.' },
-    { numero: 4, titulo: 'Unidad 4', descripcion: 'Lectura, escritura y comunicación oral — 3° Básico.' },
+    { numero: 1, titulo: 'Literatura y comprensión lectora', descripcion: 'Narraciones, lenguaje figurado y estrategias de comprensión.' },
+    { numero: 2, titulo: 'Lectura informativa y búsqueda de información', descripcion: 'Textos no literarios, evaluación crítica e investigación.' },
+    { numero: 3, titulo: 'Escritura creativa y producción de textos', descripcion: 'Narraciones, artículos y ortografía.' },
+    { numero: 4, titulo: 'Comunicación oral y exposiciones', descripcion: 'Exposiciones orales, diálogo y vocabulario.' },
   ],
   '4° Básico': [
-    { numero: 1, titulo: 'Unidad 1', descripcion: 'Lectura, escritura y comunicación oral — 4° Básico.' },
-    { numero: 2, titulo: 'Unidad 2', descripcion: 'Lectura, escritura y comunicación oral — 4° Básico.' },
-    { numero: 3, titulo: 'Unidad 3', descripcion: 'Lectura, escritura y comunicación oral — 4° Básico.' },
-    { numero: 4, titulo: 'Unidad 4', descripcion: 'Lectura, escritura y comunicación oral — 4° Básico.' },
+    { numero: 1, titulo: 'Literatura y análisis de narraciones', descripcion: 'Cuentos, novelas, personajes y lenguaje figurado.' },
+    { numero: 2, titulo: 'Poesía y textos informativos', descripcion: 'Análisis poético y lectura de textos no literarios.' },
+    { numero: 3, titulo: 'Producción de textos escritos', descripcion: 'Escritura creativa, artículos y revisión.' },
+    { numero: 4, titulo: 'Comunicación oral y vocabulario', descripcion: 'Exposiciones, diálogo y vocabulario.' },
   ],
   '5° Básico': [
     { numero: 1, titulo: 'La unión hace la fuerza', descripcion: 'Trabajo en equipo, colaboración y perseverancia.' },
@@ -99,7 +99,19 @@ export async function GET(req: NextRequest) {
 
     const nivelNombre = mapNivelParam(nivelParam);
 
-    // Intentar consultar base de datos real
+    // 1. Datos estáticos oficiales tienen PRIORIDAD (son los correctos y completos)
+    const fallbackList = FALLBACK_UNIDADES[nivelNombre];
+    if (fallbackList) {
+      const result = fallbackList.map(u => ({
+        id: u.numero,
+        numero: u.numero,
+        titulo: u.titulo,
+        descripcion: u.descripcion
+      }));
+      return NextResponse.json(result);
+    }
+
+    // 2. Si no hay datos estáticos, intentar Supabase
     try {
       const { data: unidades, error: unidadesErr } = await supabase
         .from('curriculum_unidades')
@@ -117,22 +129,10 @@ export async function GET(req: NextRequest) {
         return NextResponse.json(result);
       }
     } catch (dbErr) {
-      console.warn('[API unidades] Error consultando Supabase, usando fallback estático:', dbErr);
+      console.warn('[API unidades] Error consultando Supabase:', dbErr);
     }
 
-    // Fallback estático
-    const fallbackList = FALLBACK_UNIDADES[nivelNombre];
-    if (fallbackList) {
-      const result = fallbackList.map(u => ({
-        id: u.numero,
-        numero: u.numero,
-        titulo: u.titulo,
-        descripcion: u.descripcion
-      }));
-      return NextResponse.json(result);
-    }
-
-    // Fallback genérico para otros cursos basado en staticCurriculum
+    // 3. Fallback genérico desde staticCurriculum
     const staticUnits = staticCurriculum.unidades.filter(u => u.nivel === nivelNombre);
     if (staticUnits.length > 0) {
       const result = staticUnits.map(u => ({

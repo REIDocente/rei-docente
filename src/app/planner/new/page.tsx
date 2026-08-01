@@ -72,16 +72,16 @@ const UNIT_TITLES: Record<string, Record<string, string>> = {
     'Unidad 7': 'Unidad 7: Medios de comunicación',
   },
   '1° Medio': {
-    'Unidad 1': 'Unidad 1: Libertad',
-    'Unidad 2': 'Unidad 2: Ciudadanos',
-    'Unidad 3': 'Unidad 3: Relaciones humanas',
-    'Unidad 4': 'Unidad 4: Sociedad',
+    'Unidad 1': 'Unidad 1: La libertad como tema literario',
+    'Unidad 2': 'Unidad 2: Ciudadanos y opinión',
+    'Unidad 3': 'Unidad 3: Relaciones humanas en el teatro y la literatura',
+    'Unidad 4': 'Unidad 4: Comunicación y sociedad',
   },
   '2° Medio': {
-    'Unidad 1': 'Unidad 1: Ausencia',
-    'Unidad 2': 'Unidad 2: Ciudadanía',
-    'Unidad 3': 'Unidad 3: Lo divino',
-    'Unidad 4': 'Unidad 4: Poder',
+    'Unidad 1': 'Unidad 1: Sobre la ausencia: exilio, migración e identidad',
+    'Unidad 2': 'Unidad 2: Ciudadanía y trabajo',
+    'Unidad 3': 'Unidad 3: Lo divino y lo humano',
+    'Unidad 4': 'Unidad 4: Poder y ambición',
   }
 };
 
