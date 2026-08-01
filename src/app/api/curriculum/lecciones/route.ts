@@ -4,16 +4,110 @@ import { staticCurriculum } from '@/lib/curriculum/index';
 
 function mapNivelParam(nivelParam: string): string {
   const norm = (nivelParam || '').toLowerCase().replace(/_/g, ' ');
-  if (norm.includes('5') || norm.includes('quinto')) return '5° Básico';
-  if (norm.includes('6') || norm.includes('sexto')) return '6° Básico';
-  if (norm.includes('7') || norm.includes('septimo') || norm.includes('séptimo')) return '7° Básico';
-  if (norm.includes('8') || norm.includes('octavo')) return '8° Básico';
-  if (norm.includes('1') || norm.includes('primero') || norm.includes('i°')) return '1° Medio';
-  if (norm.includes('2') || norm.includes('segundo') || norm.includes('ii°')) return '2° Medio';
+  const isBasico = norm.includes('bás') || norm.includes('bas') || norm.includes('básico') || norm.includes('basico');
+  const isMedio  = norm.includes('med') || norm.includes('medio');
+  if (norm.includes('1') && isBasico)  return '1° Básico';
+  if (norm.includes('2') && isBasico)  return '2° Básico';
+  if (norm.includes('3') && isBasico)  return '3° Básico';
+  if (norm.includes('4') && isBasico)  return '4° Básico';
+  if (norm.includes('5') || norm.includes('quinto'))  return '5° Básico';
+  if (norm.includes('6') || norm.includes('sexto'))   return '6° Básico';
+  if (norm.includes('7') || norm.includes('séptimo') || norm.includes('septimo')) return '7° Básico';
+  if (norm.includes('8') || norm.includes('octavo'))  return '8° Básico';
+  if ((norm.includes('1') && isMedio) || norm.includes('primero') || norm.includes('i°')) return '1° Medio';
+  if ((norm.includes('2') && isMedio) || norm.includes('segundo') || norm.includes('ii°')) return '2° Medio';
   return nivelParam;
 }
 
 const FALLBACK_LESSONS: Record<string, Record<number, { numero: number; titulo: string; oa_codes: string[] }[]>> = {
+  '1° Básico': {
+    1: [
+      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 3', 'OA 4', 'OA 5'] },
+      { numero: 2, titulo: 'Escritura inicial', oa_codes: ['OA 13', 'OA 14', 'OA 15'] },
+      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 17', 'OA 21', 'OA 22'] },
+    ],
+    2: [
+      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 3', 'OA 5', 'OA 8'] },
+      { numero: 2, titulo: 'Escritura inicial', oa_codes: ['OA 13', 'OA 14', 'OA 15'] },
+      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 17', 'OA 18', 'OA 21'] },
+    ],
+    3: [
+      { numero: 1, titulo: 'Lectura y comprensión', oa_codes: ['OA 4', 'OA 6', 'OA 7'] },
+      { numero: 2, titulo: 'Producción de textos', oa_codes: ['OA 13', 'OA 14', 'OA 15'] },
+      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 17', 'OA 21', 'OA 23'] },
+    ],
+    4: [
+      { numero: 1, titulo: 'Lectura y comprensión', oa_codes: ['OA 5', 'OA 6', 'OA 7'] },
+      { numero: 2, titulo: 'Producción de textos', oa_codes: ['OA 14', 'OA 15', 'OA 16'] },
+      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 17', 'OA 21', 'OA 25'] },
+    ],
+  },
+  '2° Básico': {
+    1: [
+      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 3', 'OA 4', 'OA 6'] },
+      { numero: 2, titulo: 'Producción de textos escritos', oa_codes: ['OA 12', 'OA 13', 'OA 15'] },
+      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 21', 'OA 22', 'OA 23'] },
+    ],
+    2: [
+      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 4', 'OA 5', 'OA 6'] },
+      { numero: 2, titulo: 'Producción de textos escritos', oa_codes: ['OA 12', 'OA 14', 'OA 15'] },
+      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 21', 'OA 23', 'OA 24'] },
+    ],
+    3: [
+      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 3', 'OA 5', 'OA 6'] },
+      { numero: 2, titulo: 'Producción de textos escritos', oa_codes: ['OA 13', 'OA 15', 'OA 16'] },
+      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 22', 'OA 23', 'OA 25'] },
+    ],
+    4: [
+      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 4', 'OA 5', 'OA 7'] },
+      { numero: 2, titulo: 'Producción de textos escritos', oa_codes: ['OA 13', 'OA 15', 'OA 17'] },
+      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 22', 'OA 24', 'OA 29'] },
+    ],
+  },
+  '3° Básico': {
+    1: [
+      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 2', 'OA 3', 'OA 4'] },
+      { numero: 2, titulo: 'Producción de textos escritos', oa_codes: ['OA 12', 'OA 14', 'OA 15'] },
+      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 21', 'OA 22', 'OA 26'] },
+    ],
+    2: [
+      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 3', 'OA 5', 'OA 9'] },
+      { numero: 2, titulo: 'Producción de textos escritos', oa_codes: ['OA 12', 'OA 14', 'OA 16'] },
+      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 21', 'OA 24', 'OA 28'] },
+    ],
+    3: [
+      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 2', 'OA 4', 'OA 5'] },
+      { numero: 2, titulo: 'Producción de textos escritos', oa_codes: ['OA 13', 'OA 15', 'OA 16'] },
+      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 22', 'OA 23', 'OA 26'] },
+    ],
+    4: [
+      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 3', 'OA 4', 'OA 6'] },
+      { numero: 2, titulo: 'Producción de textos escritos', oa_codes: ['OA 15', 'OA 16', 'OA 17'] },
+      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 22', 'OA 24', 'OA 25'] },
+    ],
+  },
+  '4° Básico': {
+    1: [
+      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 2', 'OA 3', 'OA 4'] },
+      { numero: 2, titulo: 'Producción de textos escritos', oa_codes: ['OA 12', 'OA 14', 'OA 15'] },
+      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 21', 'OA 22', 'OA 23'] },
+    ],
+    2: [
+      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 3', 'OA 4', 'OA 5'] },
+      { numero: 2, titulo: 'Producción de textos escritos', oa_codes: ['OA 14', 'OA 15', 'OA 16'] },
+      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 21', 'OA 23', 'OA 24'] },
+    ],
+    3: [
+      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 2', 'OA 3', 'OA 6'] },
+      { numero: 2, titulo: 'Producción de textos escritos', oa_codes: ['OA 13', 'OA 15', 'OA 16'] },
+      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 22', 'OA 23', 'OA 27'] },
+    ],
+    4: [
+      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 3', 'OA 4', 'OA 6'] },
+      { numero: 2, titulo: 'Producción de textos escritos', oa_codes: ['OA 12', 'OA 15', 'OA 17'] },
+      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 22', 'OA 24', 'OA 29'] },
+    ],
+  },
   '5° Básico': {
     1: [
       { numero: 1, titulo: 'Fútbol y trabajo en equipo', oa_codes: ['OA 1', 'OA 3', 'OA 9'] },
