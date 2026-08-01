@@ -843,8 +843,32 @@ ${oatActitudesFormatted}
 
     // Valida SOLO los 4 campos que Paso 4 genera (respuesta parcial de Claude).
     // validateStep4 original se conserva para validar el objeto completo post-merge.
+    function validateRubricContent(rubric: string): { valid: boolean; reason: string } {
+      if (!rubric || rubric.trim() === '') return { valid: false, reason: 'Rúbrica vacía.' };
+
+      // Contar filas de la tabla de heteroevaluación (filas con | excluyendo el separador ---)
+      const tableRows = rubric.split('\n').filter(l => l.includes('|') && !l.match(/^\s*\|?[-:]+\|/));
+      // Descontar la fila de encabezado → deben quedar al menos 4 criterios
+      const criteriaRows = tableRows.length - 1;
+      if (criteriaRows < 4) {
+        return { valid: false, reason: `Rúbrica con solo ${criteriaRows} criterio(s); se requieren mínimo 4.` };
+      }
+
+      // Verificar autoevaluación
+      if (!/autoevalua/i.test(rubric)) {
+        return { valid: false, reason: 'Falta sección de autoevaluación en la rúbrica.' };
+      }
+
+      // Verificar coevaluación
+      if (!/coevalua/i.test(rubric)) {
+        return { valid: false, reason: 'Falta sección de coevaluación en la rúbrica.' };
+      }
+
+      return { valid: true, reason: '' };
+    }
+
     function validateStep4Partial(json: any): boolean {
-      return (
+      if (!(
         json &&
         typeof json.nlp_technique === 'string' &&
         json.nlp_technique.trim() !== '' &&
@@ -858,7 +882,9 @@ ${oatActitudesFormatted}
         json.reading_level_eval.warning_alert.trim() !== '' &&
         typeof json.curricular_summary === 'string' &&
         json.curricular_summary.trim() !== ''
-      );
+      )) { return false; }
+
+      return true;
     }
     // Helper para realizar llamadas con reintentos automáticos
     // Helper to perform calls with stream delta tracking and parsing
@@ -973,6 +999,25 @@ REGLAS PARA EL TEXTO GENERADO:
 - Debe ser coherente con el nivel del curso (ej. 2° Medio), la unidad y el tema curricular sugerido.
 - Debe contener de manera explícita y clara los elementos que las actividades analizarán (ej. si el tema es individualismo/solidaridad y el foco es tesis/argumentos, el texto debe tener una tesis obvia y argumentos concretos; si es literario, debe tener personajes con nombres propios identificables y un conflicto central claro).
 - Debe tener un título y un autor ficticio creíble (ej. "Andrés Valenzuela", "Marta Urrutia", etc. - NUNCA uses "Autor: IA" o nombres artificiales de IA).
+
+REGLA CRÍTICA — EL GÉNERO Y TEMA DEL TEXTO DEBE COINCIDIR OBLIGATORIAMENTE CON EL NOMBRE DE LA UNIDAD:
+El texto que generes debe pertenecer al género literario y temático que corresponde exactamente al nombre de la unidad curricular. Esta regla es ABSOLUTA y no admite excepciones.
+Ejemplos de correspondencia obligatoria:
+- "El terror y lo extraño" / "Relatos de terror" / "El mundo fantástico" → texto de terror, suspenso, horror o fantástico (NO mitos, NO mitología, NO épica)
+- "Mitología y relatos de creación" → texto mítico, legendario o de creación (NO terror, NO comedia)
+- "El Romancero y la poesía popular" → romance, copla o poema de tradición oral/popular (NO narrativa en prosa)
+- "La solidaridad y la amistad" / "El héroe en distintas épocas" → cuento o relato centrado en ese valor o figura concreta
+- "Epopeya" / "Epopeya y relatos épicos" → relato épico o heroico de gran escala (NO mitología aislada)
+- "La comedia" / "El teatro cómico" → texto dramático o narrativo humorístico (NO terror, NO drama)
+- "El mundo descabellado" / "Lo absurdo" → texto absurdo, nonsense o humorístico-surrealista
+- "Experiencias del amor" / "El amor como tema literario" → texto lírico o narrativo centrado en el amor
+- "Relatos de misterio" / "El misterio y lo policial" → texto de misterio, policial o enigma
+- "La identidad" / "Quién soy" → cuento sobre autoconocimiento, transformación personal o choque de identidad
+- "Naturaleza" / "El ser humano y la naturaleza" → texto sobre el mundo natural o la relación humano-naturaleza
+- "Medios de comunicación" → columna de opinión, nota periodística o artículo de medios (NO cuento literario)
+- "La libertad como tema literario" → relato o poema sobre la libertad, resistencia o autonomía
+- "Ciudadanos y opinión" / "Ciudadanía y trabajo" → texto argumentativo o de opinión sobre temas ciudadanos
+Si el nombre de la unidad no aparece en estos ejemplos, infiere el género más coherente con ese nombre.
 
 Debes responder ÚNICAMENTE con un objeto JSON válido, sin texto introductorio, sin explicaciones ni etiquetas markdown de código (como \`\`\`json).
 
@@ -1110,7 +1155,7 @@ ${enrichmentBlock}`;
     // ─────────────────────────────────────────────────────────────────────────
     const systemPrompt4 = `Eres un experto diseñador curricular chileno y asesor pedagógico de la plataforma Didakta.
 Tu tarea es completar la planificación agregando las frases de anclaje, la rúbrica de evaluación, la evaluación de nivel de lectura y el resumen curricular compacto.
-INSTRUCCIÓN DE LONGITUD CRÍTICA: Sé extremadamente breve y conciso en los campos nuevos para asegurar que el JSON quepa en el límite de tokens y no se corte. La rúbrica debe ser sumamente compacta (criterios cortos en la tabla de heteroevaluación). El resumen curricular debe ser de un máximo de 2 líneas.
+INSTRUCCIÓN DE LONGITUD CRÍTICA: Sé conciso en los campos nuevos. El resumen curricular debe ser de máximo 3 líneas. La rúbrica debe tener EXACTAMENTE 4 criterios (ni más, ni menos) en la heteroevaluación.
 Debes responder ÚNICAMENTE con un objeto JSON válido, sin texto introductorio, sin explicaciones ni etiquetas markdown de código.
 Asegúrate de que todas las comillas dobles dentro de los valores de las cadenas JSON estén correctamente escapadas como \\" y que TODOS los saltos de línea dentro de los valores estén escapados como \\n. Queda estrictamente PROHIBIDO incluir saltos de línea físicos/reales (retornos de carro reales) dentro de los strings del JSON.
 
@@ -1129,7 +1174,27 @@ REGLAS DE DISEÑO DE LOS NUEVOS CAMPOS:
 1. TÉCNICAS DE ANCLAJE (nlp_technique):
    Escribe tres frases de anclaje emocional-cognitivo literales en estilo directo para el docente: (1) frase de apertura, (2) frase de reactivación en la pausa activa, (3) frase de cierre motivadora. NO uses la sigla PNL en el texto.
 2. RÚBRICA DE EVALUACIÓN SUGERIDA (rubric):
-   Incluye heteroevaluación docente en tabla Markdown (Criterio | Logrado | Medianamente Logrado | Por Lograr | Adaptación nivel 2 | Adaptación nivel 3). Incluye autoevaluación y coevaluación (en viñetas) únicamente de forma sugerida si corresponden según la actividad (autoevaluación para trabajo individual/reflexión, coevaluación para trabajo grupal/pares). No las forces si no aplican.
+   USA OBLIGATORIAMENTE ESTA PLANTILLA EXACTA. Solo reemplaza el contenido entre corchetes [así] con texto conciso (máximo 10 palabras por celda). NO modifiques la estructura, los encabezados ni las viñetas:
+
+• HETEROEVALUACIÓN DOCENTE — Ticket de salida
+
+| Criterio | Logrado | Medianamente Logrado | Por Lograr | Adaptación Nivel 2 | Adaptación Nivel 3 |
+|---|---|---|---|---|---|
+| [Criterio 1 relacionado al OA] | [descripción logrado] | [descripción med. logrado] | [descripción por lograr] | [apoyo N2] | [apoyo N3] |
+| [Criterio 2 relacionado al OA] | [descripción logrado] | [descripción med. logrado] | [descripción por lograr] | [apoyo N2] | [apoyo N3] |
+| [Criterio 3 relacionado al OA] | [descripción logrado] | [descripción med. logrado] | [descripción por lograr] | [apoyo N2] | [apoyo N3] |
+| [Criterio 4 relacionado al OA] | [descripción logrado] | [descripción med. logrado] | [descripción por lograr] | [apoyo N2] | [apoyo N3] |
+
+• AUTOEVALUACIÓN SUGERIDA (reflexión individual escrita)
+• [Pregunta autoevaluación 1 sobre el proceso de la sesión]
+• [Pregunta autoevaluación 2 sobre el producto del ticket]
+• [Pregunta autoevaluación 3 sobre una dificultad superada]
+• [Pregunta autoevaluación 4 sobre conexión con aprendizaje previo]
+
+• COEVALUACIÓN SUGERIDA (evaluación entre pares)
+• [Pregunta coevaluación 1 sobre claridad de la opinión del par]
+• [Pregunta coevaluación 2 sobre evidencia o ejemplo usado por el par]
+• [Pregunta coevaluación 3 sobre algo que destacarías del trabajo del par]
 3. EVALUACIÓN LECTORA (reading_level_eval):
    Nivel de lectura estimado y alerta de complejidad.
 4. RESUMEN CURRICULAR COMPACTO (curricular_summary):

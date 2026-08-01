@@ -2144,28 +2144,36 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
       const writeTablePdf = (rows: string[][]) => {
         const numCols = rows[0].length;
         let colWidths = Array(numCols).fill(maxLineWidth / numCols);
+        // Font size adapts to number of columns to avoid overflow
+        const tableFontSize = numCols >= 5 ? 7.5 : numCols === 4 ? 8 : 9;
         if (numCols === 3) {
           colWidths = [35, 130, 15];
         } else if (numCols === 2) {
           colWidths = [50, 130];
         } else if (numCols === 4) {
-          colWidths = [30, 50, 50, 50];
+          // DUA table: Nivel | Texto y materiales | Práctica autónoma | Ticket
+          colWidths = [32, 52, 52, 44];
+        } else if (numCols === 6) {
+          // Rúbrica: Criterio | Logrado | Med.Logrado | Por Lograr | N2 | N3
+          colWidths = [38, 28, 28, 28, 30, 28];
         }
-        const cellMargin = 2;
-        
+        const cellMargin = 2.5;
+
         for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
           const row = rows[rowIndex];
-          
+
           const colLines = row.map((cellText, colIdx) => {
             doc.setFont('Helvetica', rowIndex === 0 ? 'bold' : 'normal');
-            doc.setFontSize(9);
+            doc.setFontSize(tableFontSize);
             const sanitizedCell = sanitizeForPdf(cellText);
             const textToSplit = sanitizedCell.replace(/\*/g, '').replace(/__/g, '');
-            return doc.splitTextToSize(textToSplit, (colWidths[colIdx] ?? (maxLineWidth / numCols)) - cellMargin * 2) as string[];
+            const availWidth = (colWidths[colIdx] ?? (maxLineWidth / numCols)) - cellMargin * 2;
+            return doc.splitTextToSize(textToSplit, availWidth) as string[];
           });
           
           const maxLines = Math.max(...colLines.map(lines => lines.length));
-          const rowHeight = maxLines * 5 + 4;
+          const lineSpacingForHeight = tableFontSize <= 8 ? 4.5 : 5;
+          const rowHeight = maxLines * lineSpacingForHeight + 4;
           
           checkPageBreak(rowHeight);
           
@@ -2180,11 +2188,12 @@ Por favor, indica en qué partes del texto sería útil agregar una imagen y des
             const lines = colLines[colIdx];
             
             doc.setFont('Helvetica', rowIndex === 0 ? 'bold' : 'normal');
-            doc.setFontSize(9);
+            doc.setFontSize(tableFontSize);
             doc.setTextColor(51, 65, 85);
-            
+
+            const lineSpacing = tableFontSize <= 8 ? 4.5 : 5;
             lines.forEach((lineText, lineIdx) => {
-              doc.text(lineText, colX + cellMargin, cursorY + cellMargin + 3 + (lineIdx * 5));
+              doc.text(lineText, colX + cellMargin, cursorY + cellMargin + 3 + (lineIdx * lineSpacing));
             });
             
             doc.setDrawColor(203, 213, 225);
