@@ -131,6 +131,11 @@ export default function REIPlayPage() {
   // Preview UI collapsibles
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
 
+  // Planificaciones guardadas (para fuente 'planificacion')
+  const [plannings, setPlannings] = useState<any[]>([]);
+  const [loadingPlannings, setLoadingPlannings] = useState(false);
+  const [selectedPlanningId, setSelectedPlanningId] = useState<string>('');
+
   // Export statuses
   const [exportingPdf, setExportingPdf] = useState(false);
   const [exportingWord, setExportingWord] = useState(false);
@@ -140,13 +145,15 @@ export default function REIPlayPage() {
   const [copiadoPrompt, setCopiadoPrompt] = useState(false);
 
   const generarPromptIlustracion = () => {
-    const unidadNombre = unidadesDisponibles.find(u => u.id === unidadId)?.nombre || '';
+    const selectedPlanning = plannings.find(p => p.id === selectedPlanningId);
+    const unidadNombre = selectedPlanning?.unit || unidadesDisponibles.find(u => u.id === unidadId)?.nombre || '';
     const temaNombre = temasDisponibles.find(t => t.id === temaId)?.nombre || tema || '';
-    const asignatura = selectedPrograma?.asignatura || 'la asignatura';
+    const asignatura = selectedPlanning?.subject || selectedPrograma?.asignatura || 'la asignatura';
+    const nivelTexto = selectedPlanning?.grade || nivel;
     const motorNombre = activeEngine?.nombre || selectedEngineId;
     const contexto = unidadNombre ? `la unidad "${unidadNombre}"` : `el tema "${temaNombre}"`;
 
-    return `Soy docente de ${asignatura}, ${nivel}.
+    return `Soy docente de ${asignatura}, ${nivelTexto}.
 
 Acabo de crear un juego tipo "${motorNombre}" basado en ${contexto}.
 
@@ -154,7 +161,7 @@ El PDF adjunto contiene las tarjetas y fichas del juego con su texto completo.
 
 Por favor, genera una imagen ilustrativa para cada tarjeta que sea:
 - Temáticamente coherente con ${temaNombre || unidadNombre}
-- Apropiada para estudiantes de ${nivel}
+- Apropiada para estudiantes de ${nivelTexto}
 - Estilo gráfico educativo, colorido y atractivo
 - Con el texto de cada tarjeta integrado o destacado visualmente en la imagen
 - Con un diseño que invite a la participación y el juego
@@ -194,6 +201,22 @@ Adjunto el PDF con las fichas del juego.`;
         console.error('Error fetching lecturas:', e);
       } finally {
         setLoadingLecturas(false);
+      }
+
+      // Fetch planificaciones guardadas
+      setLoadingPlannings(true);
+      try {
+        const { data: planningsData } = await supabase
+          .from('plannings')
+          .select('id, unit, subject, grade, learning_objective, created_at')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
+
+        setPlannings(planningsData || []);
+      } catch (e) {
+        console.error('Error fetching plannings:', e);
+      } finally {
+        setLoadingPlannings(false);
       }
     });
   }, [router]);
@@ -238,24 +261,25 @@ Adjunto el PDF con las fichas del juego.`;
     const session = await supabase.auth.getSession();
     const token = session.data.session?.access_token;
 
+    const selectedPlanning = plannings.find(p => p.id === selectedPlanningId);
+
     const payload = {
       motor: selectedEngineId,
       fuente,
-      programa_info: fuente === 'planificacion' ? {
-        curso: selectedPrograma?.curso,
-        asignatura: selectedPrograma?.asignatura,
-        unidad: unidadesDisponibles.find(u => u.id === unidadId)?.nombre,
-        tema: temasDisponibles.find(t => t.id === temaId)?.nombre,
-        habilidades: temasDisponibles.find(t => t.id === temaId)?.habilidades,
-        conceptos_clave: temasDisponibles.find(t => t.id === temaId)?.conceptos_clave,
-        vocabulario: temasDisponibles.find(t => t.id === temaId)?.vocabulario,
-        oa_seleccionados: selectedOAs.length > 0 ? selectedOAs : undefined,
+      programa_info: fuente === 'planificacion' && selectedPlanning ? {
+        curso: selectedPlanning.grade,
+        asignatura: selectedPlanning.subject,
+        unidad: selectedPlanning.unit,
+        tema: selectedPlanning.unit,
+        oa_seleccionados: selectedPlanning.learning_objective
+          ? [selectedPlanning.learning_objective]
+          : undefined,
       } : undefined,
       tema: fuente === 'tema_manual' ? tema : undefined,
       libro_id: fuente === 'lectura_domiciliaria' ? libroId : undefined,
-      nivel,
+      nivel: fuente === 'planificacion' && selectedPlanning ? selectedPlanning.grade : nivel,
       oa_codes: fuente === 'planificacion'
-        ? (selectedOAs.length > 0 ? selectedOAs : ['OA General'])
+        ? ['OA General']
         : (oaCodes ? oaCodes.split(',').map(s => s.trim()) : ['OA General']),
       duracion,
       modalidad,
@@ -472,75 +496,62 @@ Adjunto el PDF con las fichas del juego.`;
               </div>
 
               {fuente === 'planificacion' && (
-                <div className="space-y-4">
-                  {/* Selector de Curso */}
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-500 block">Curso</label>
-                    <select
-                      value={programaId}
-                      onChange={(e) => handleSelectPrograma(e.target.value)}
-                      className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] focus:border-violet-600 focus:outline-none bg-white"
-                    >
-                      <option value="">— Selecciona un curso —</option>
-                      {programas.map((p) => (
-                        <option key={p.id} value={p.id}>{p.curso} · {p.asignatura}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Selector de Unidad */}
-                  {programaId && (
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-500 block">Unidad</label>
-                      <select
-                        value={unidadId}
-                        onChange={(e) => handleSelectUnidad(e.target.value)}
-                        className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] focus:border-violet-600 focus:outline-none bg-white"
-                      >
-                        <option value="">— Selecciona una unidad —</option>
-                        {unidadesDisponibles.map((u) => (
-                          <option key={u.id} value={u.id}>{u.nombre}</option>
-                        ))}
-                      </select>
+                <div className="space-y-3">
+                  <label className="text-xs font-bold text-slate-500 block">Selecciona una planificación guardada</label>
+                  {loadingPlannings ? (
+                    <div className="flex items-center gap-2 text-xs text-slate-400 py-3">
+                      <Loader2 className="w-4 h-4 animate-spin text-violet-700" />
+                      Cargando tus planificaciones...
                     </div>
-                  )}
-
-                  {/* Selector de Tema */}
-                  {unidadId && temasDisponibles.length > 0 && (
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-500 block">Tema / Contenido</label>
-                      <select
-                        value={temaId}
-                        onChange={(e) => handleSelectTema(e.target.value)}
-                        className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] focus:border-violet-600 focus:outline-none bg-white"
+                  ) : plannings.length === 0 ? (
+                    <div className="text-xs text-slate-500 p-5 bg-amber-50/20 border border-amber-100 rounded-xl space-y-3">
+                      <p>Aún no tienes planificaciones guardadas. Ve al Planificador IA para crear una.</p>
+                      <button
+                        type="button"
+                        onClick={() => router.push('/planner/new')}
+                        className="text-xs font-bold text-violet-700 underline underline-offset-2"
                       >
-                        <option value="">— Selecciona un tema —</option>
-                        {temasDisponibles.map((t) => (
-                          <option key={t.id} value={t.id}>{t.nombre}</option>
-                        ))}
-                      </select>
+                        Ir al Planificador IA →
+                      </button>
                     </div>
-                  )}
-
-                  {/* Checkboxes de OA */}
-                  {temaId && oasDisponibles.length > 0 && (
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-500 block">Objetivos de Aprendizaje <span className="font-normal text-slate-400">(seleccionados automáticamente)</span></label>
-                      <div className="space-y-2 p-3 bg-violet-50/30 rounded-xl border border-violet-100">
-                        {oasDisponibles.map((oa) => (
-                          <label key={oa.codigo} className="flex items-start gap-2 cursor-pointer group">
-                            <input
-                              type="checkbox"
-                              checked={selectedOAs.includes(oa.codigo)}
-                              onChange={() => toggleOA(oa.codigo)}
-                              className="mt-0.5 accent-violet-700 shrink-0"
-                            />
-                            <span className="text-[11px] text-slate-700 leading-snug group-hover:text-violet-800">
-                              <span className="font-bold text-violet-700">{oa.codigo}:</span> {oa.descripcion}
-                            </span>
-                          </label>
-                        ))}
-                      </div>
+                  ) : (
+                    <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
+                      {plannings.map((p) => {
+                        const isSelected = selectedPlanningId === p.id;
+                        const fecha = new Date(p.created_at).toLocaleDateString('es-CL', { day: 'numeric', month: 'short', year: 'numeric' });
+                        return (
+                          <button
+                            key={p.id}
+                            type="button"
+                            onClick={() => {
+                              setSelectedPlanningId(p.id);
+                              setNivel(p.grade || nivel);
+                            }}
+                            className={`w-full text-left px-4 py-3 rounded-xl border transition-all ${
+                              isSelected
+                                ? 'border-violet-600 bg-violet-50/30 shadow-sm'
+                                : 'border-[#E2E8F0] bg-white hover:border-violet-300'
+                            }`}
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="space-y-0.5 flex-1 min-w-0">
+                                <p className={`text-xs font-bold truncate ${isSelected ? 'text-violet-700' : 'text-slate-700'}`}>
+                                  {p.unit || 'Sin título'}
+                                </p>
+                                <p className="text-[10px] text-slate-400">
+                                  {p.grade} · {p.subject}
+                                </p>
+                              </div>
+                              <span className="text-[10px] text-slate-400 whitespace-nowrap shrink-0 pt-0.5">{fecha}</span>
+                            </div>
+                            {isSelected && p.learning_objective && (
+                              <p className="text-[10px] text-violet-600 mt-1.5 line-clamp-2 leading-snug">
+                                {p.learning_objective}
+                              </p>
+                            )}
+                          </button>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
@@ -657,7 +668,7 @@ Adjunto el PDF con las fichas del juego.`;
                   type="button"
                   onClick={() => setStep(2)}
                   disabled={
-                    (fuente === 'planificacion' && (!programaId || !unidadId)) ||
+                    (fuente === 'planificacion' && !selectedPlanningId) ||
                     (fuente === 'lectura_domiciliaria' && !libroId) ||
                     (fuente === 'tema_manual' && !tema.trim())
                   }
