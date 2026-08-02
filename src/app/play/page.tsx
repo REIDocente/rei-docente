@@ -135,6 +135,33 @@ export default function REIPlayPage() {
   const [exportingPdf, setExportingPdf] = useState(false);
   const [exportingWord, setExportingWord] = useState(false);
 
+  // Ilustrar con IA externa
+  const [showIlustrarPrompt, setShowIlustrarPrompt] = useState(false);
+  const [copiadoPrompt, setCopiadoPrompt] = useState(false);
+
+  const generarPromptIlustracion = () => {
+    const unidadNombre = unidadesDisponibles.find(u => u.id === unidadId)?.nombre || '';
+    const temaNombre = temasDisponibles.find(t => t.id === temaId)?.nombre || tema || '';
+    const asignatura = selectedPrograma?.asignatura || 'la asignatura';
+    const motorNombre = activeEngine?.nombre || selectedEngineId;
+    const contexto = unidadNombre ? `la unidad "${unidadNombre}"` : `el tema "${temaNombre}"`;
+
+    return `Soy docente de ${asignatura}, ${nivel}.
+
+Acabo de crear un juego tipo "${motorNombre}" basado en ${contexto}.
+
+El PDF adjunto contiene las tarjetas y fichas del juego con su texto completo.
+
+Por favor, genera una imagen ilustrativa para cada tarjeta que sea:
+- Temáticamente coherente con ${temaNombre || unidadNombre}
+- Apropiada para estudiantes de ${nivel}
+- Estilo gráfico educativo, colorido y atractivo
+- Con el texto de cada tarjeta integrado o destacado visualmente en la imagen
+- Con un diseño que invite a la participación y el juego
+
+Adjunto el PDF con las fichas del juego.`;
+  };
+
   useEffect(() => {
     supabase.auth.getUser().then(async ({ data: { user } }) => {
       if (!user) {
@@ -1057,8 +1084,49 @@ export default function REIPlayPage() {
                     {exportingWord ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileDown className="w-4 h-4" />}
                     Descargar Word
                   </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowIlustrarPrompt(prev => !prev)}
+                    className="flex items-center gap-1.5 px-4.5 py-2.5 border border-violet-200 hover:bg-violet-50 text-violet-600 rounded-xl text-xs font-bold transition-all cursor-pointer"
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    Ilustrar con IA
+                  </button>
                 </div>
               </div>
+
+              {/* Prompt para ilustrar con IA externa */}
+              {showIlustrarPrompt && (
+                <div className="bg-violet-50 border border-violet-200 rounded-2xl p-5 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-violet-600" />
+                      <h3 className="text-sm font-bold text-violet-800">Ilustrar con IA externa</h3>
+                    </div>
+                    <span className="text-[10px] text-violet-500 font-medium uppercase tracking-wide">ChatGPT · Gemini · Copilot</span>
+                  </div>
+                  <p className="text-xs text-violet-700">
+                    Copia este prompt, ve a ChatGPT o Gemini, adjunta el PDF que descargaste y pégalo. La IA generará imágenes ilustrativas para cada tarjeta.
+                  </p>
+                  <div className="bg-white border border-violet-200 rounded-xl p-4">
+                    <pre className="text-xs text-slate-700 whitespace-pre-wrap font-sans leading-relaxed">
+                      {generarPromptIlustracion()}
+                    </pre>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(generarPromptIlustracion());
+                      setCopiadoPrompt(true);
+                      setTimeout(() => setCopiadoPrompt(false), 2000);
+                    }}
+                    className="flex items-center gap-1.5 px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-xl text-xs font-bold transition-all cursor-pointer"
+                  >
+                    {copiadoPrompt ? '✓ ¡Copiado!' : '📋 Copiar prompt'}
+                  </button>
+                </div>
+              )}
 
               {/* Vista previa del contenido (Acordeones por Sección) */}
               <div className="space-y-3">
