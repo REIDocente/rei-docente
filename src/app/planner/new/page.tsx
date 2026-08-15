@@ -1057,12 +1057,13 @@ export default function NewPlannerPage() {
     }
   }, []);
 
-  const loadLecciones = useCallback(async (lvl: string, uni: string) => {
+  const loadLecciones = useCallback(async (lvl: string, uni: string, tipo?: string) => {
     try {
       setLeccionesList([]);
       setSelectedLeccionId('');
       setSelectedOaIds([]);
-      
+      setSuggestedOAs([]);
+
       const match = uni.match(/\d+/);
       const unitNum = match ? match[0] : uni;
 
@@ -1070,6 +1071,24 @@ export default function NewPlannerPage() {
       if (res.ok) {
         const data = await res.json();
         setLeccionesList(data || []);
+
+        // Mediano plazo: auto-cargar TODOS los OAs de TODAS las lecciones
+        if ((tipo ?? 'corto') === 'mediano' && data?.length > 0) {
+          const allOas = (data as any[]).flatMap(l => l.oas || []);
+          const seen = new Set<string>();
+          const uniqueOas = allOas.filter((oa: any) => {
+            if (seen.has(oa.codigo)) return false;
+            seen.add(oa.codigo);
+            return true;
+          });
+          setSuggestedOAs(uniqueOas);
+          setSelectedOaIds(uniqueOas.map((o: any) => o.id));
+          setOaBasales(uniqueOas.map((o: any) => o.codigo));
+          setManualTheme(uni);
+          setThemeMode('manual');
+          setIsRealLesson(true);
+          setValidatedOA(true);
+        }
       }
     } catch (err) {
       console.warn('Error loading lessons:', err);
@@ -1137,9 +1156,43 @@ export default function NewPlannerPage() {
       setOaBasales([]);
       setOaComplementarios([]);
       setIsRealLesson(false);
-      loadLecciones(grade, unit);
+      setSelectedLeccionId('');
+      setSelectedOaIds([]);
+      loadLecciones(grade, unit, planificationType);
     }
-  }, [grade, unit, loadLecciones]);
+  }, [grade, unit, planificationType, loadLecciones]);
+
+  // Al cambiar tipo, recargar OAs según el modo
+  useEffect(() => {
+    if (grade && unit && leccionesList.length > 0) {
+      if (planificationType === 'mediano') {
+        const allOas = leccionesList.flatMap((l: any) => l.oas || []);
+        const seen = new Set<string>();
+        const uniqueOas = allOas.filter((oa: any) => {
+          if (seen.has(oa.codigo)) return false;
+          seen.add(oa.codigo);
+          return true;
+        });
+        setSuggestedOAs(uniqueOas);
+        setSelectedOaIds(uniqueOas.map((o: any) => o.id));
+        setOaBasales(uniqueOas.map((o: any) => o.codigo));
+        setManualTheme(unit);
+        setThemeMode('manual');
+        setIsRealLesson(true);
+        setValidatedOA(true);
+        setSelectedLeccionId('');
+      } else {
+        // Corto: limpiar selección para que el docente elija lección
+        setSuggestedOAs([]);
+        setSelectedOaIds([]);
+        setOaBasales([]);
+        setSelectedLeccionId('');
+        setValidatedOA(true);
+      }
+      setSelectedIndicadorIds([]);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [planificationType]);
 
 
   // Auth check + fetch courses
@@ -2303,8 +2356,8 @@ export default function NewPlannerPage() {
                   </select>
                 </div>
 
-                {/* Lección Selector */}
-                <div className="space-y-2">
+                {/* Lección Selector — solo corto plazo */}
+                {planificationType === 'corto' && <div className="space-y-2">
                   <label htmlFor="leccion" className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">
                     3. Lección Curricular
                   </label>
@@ -2321,9 +2374,10 @@ export default function NewPlannerPage() {
                       </option>
                     ))}
                   </select>
-                </div>
+                </div>}
 
-                {/* Técnica de Escritura Selector */}
+                {/* Técnica de Escritura — solo corto plazo */}
+                {planificationType === 'corto' && (
                 <div className="space-y-2">
                   <label htmlFor="writing-technique" className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">
                     Técnica de Escritura
@@ -2338,8 +2392,10 @@ export default function NewPlannerPage() {
                     <option value="rice">Técnica RICE (Repetir, Incluir, Citar, Explicar)</option>
                   </select>
                 </div>
+                )}
 
-                {/* Tema de la Clase */}
+                {/* Tema de la Clase — solo corto plazo */}
+                {planificationType === 'corto' && (
                 <div className="space-y-2 bg-[#FAF9FC]/35 border border-slate-200/60 rounded-2xl p-4">
                   <label htmlFor="manual-theme-input" className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">
                     Tema o Foco de la Clase
@@ -2353,6 +2409,32 @@ export default function NewPlannerPage() {
                     className="w-full bg-white border border-slate-200 rounded-xl py-2 px-3 text-xs text-slate-800 font-semibold focus:outline-none focus:border-violet-500 shadow-xs"
                   />
                 </div>
+                )}
+
+                {/* Mediano plazo: resumen de OAs cargados automáticamente */}
+                {planificationType === 'mediano' && suggestedOAs.length > 0 && (
+                  <div className="border border-emerald-100 bg-emerald-50/40 rounded-2xl p-4 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                      <p className="text-[10px] text-emerald-700 font-black uppercase tracking-wider">
+                        OAs cargados para la unidad completa ({suggestedOAs.length} objetivos)
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      {suggestedOAs.map((oa) => (
+                        <div key={oa.codigo} className="flex items-start gap-2 text-[11px]">
+                          <span className="inline-flex items-center px-1.5 py-0.5 bg-violet-100 text-violet-700 font-black text-[8px] rounded-md flex-shrink-0 uppercase">{oa.codigo}</span>
+                          <span className="text-slate-700 leading-relaxed font-medium">{oa.texto}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {planificationType === 'mediano' && suggestedOAs.length === 0 && leccionesList.length === 0 && (
+                  <div className="text-center py-4 bg-slate-50/50 border border-dashed border-slate-200 rounded-2xl text-xs text-slate-400 font-semibold italic">
+                    Selecciona un nivel y unidad para cargar los OAs de la unidad completa.
+                  </div>
+                )}
 
                 {/* 4. Objetivo de Aprendizaje sugerido por IA */}
                 <div className="space-y-2 border-t border-slate-100 pt-4">
