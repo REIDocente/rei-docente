@@ -18,6 +18,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { readFileSync } from 'fs';
 import path from 'path';
+import { staticCurriculum } from '@/lib/curriculum/index';
 import {
   Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
   WidthType, BorderStyle, AlignmentType, ShadingType,
@@ -79,37 +80,60 @@ function cleanOAText(raw: string): string {
   return out;
 }
 
+/** Divide el string de indicadores de staticCurriculum en bullets individuales */
+function splitIndicadores(raw: string | null): string[] {
+  if (!raw) return [];
+  // Separar por salto de línea o por ". " seguido de mayúscula
+  const parts = raw
+    .split(/\n|(?<=\.)\s+(?=[A-ZÁÉÍÓÚÑ])/)
+    .map(s => s.trim())
+    .filter(s => s.length > 10);
+  // Asegurarse de que cada parte termina en punto
+  return parts.map(s => s.endsWith('.') ? s : s + '.');
+}
+
 function loadCurriculumData(grade: string, unitNum: number): CurriculumData {
+  // ── Mapa completo de indicadores limpios del nivel (desde staticCurriculum) ─
+  const allGradeInds: Record<string, string[]> = {};
+  for (const oa of staticCurriculum.oas) {
+    if (oa.nivel === grade && oa.indicadores) {
+      const bullets = splitIndicadores(oa.indicadores);
+      if (bullets.length > 0) allGradeInds[oa.codigo_oa] = bullets;
+    }
+  }
+
+  // ── Temas, textos OA y códigos de la unidad desde JSON ──────────────────────
   try {
     const code = gradeToCode(grade);
-    if (!code) return { temas: [], oaTexts: {}, oaIndicadores: {} };
+    if (!code) return { temas: [], oaTexts: {}, oaIndicadores: allGradeInds };
     const filePath = path.join(process.cwd(), 'public', 'curriculum', `curriculum_${code}.json`);
     const data = JSON.parse(readFileSync(filePath, 'utf-8'));
     const unidad = (data.unidades as any[])?.find(u => u.numero === unitNum);
     const temas = Array.isArray(unidad?.temas) && unidad.temas.length > 0 ? unidad.temas : [];
     const oaTexts: Record<string, string> = {};
+    // Solo incluir indicadores de OAs que pertenecen a esta unidad
     const oaIndicadores: Record<string, string[]> = {};
     for (const oa of (unidad?.oas ?? []) as any[]) {
       if (oa.codigo && oa.texto && oa.texto.length > 10) {
         oaTexts[oa.codigo] = cleanOAText(oa.texto);
       }
-      if (oa.codigo && Array.isArray(oa.indicadores)) {
-        const filtered = (oa.indicadores as string[])
-          .map((s: string) => s.trim())
-          .filter((s: string) => {
-            if (s.length < 15 || s.length > 350) return false;
-            if (GARBAGE_PATTERNS.some(re => re.test(s))) return false;
-            if (s.startsWith('¿') || s.endsWith('?')) return false;
-            if (s[0] && s[0] === s[0].toLowerCase() && s[0] !== s[0].toUpperCase()) return false;
-            if (IMPERATIVE_STARTS.test(s)) return false;
-            return true;
-          });
-        if (filtered.length > 0) oaIndicadores[oa.codigo] = filtered;
+      if (oa.codigo) {
+        if (allGradeInds[oa.codigo]) {
+          // Prioridad 1: staticCurriculum (datos limpios de Supabase)
+          oaIndicadores[oa.codigo] = allGradeInds[oa.codigo];
+        } else if (Array.isArray(oa.indicadores) && oa.indicadores.length > 0) {
+          // Prioridad 2: JSON ya limpiado por clean_indicators.py
+          const bullets = (oa.indicadores as string[])
+            .map((s: string) => s.trim())
+            .filter((s: string) => s.length > 10);
+          if (bullets.length > 0) oaIndicadores[oa.codigo] = bullets;
+        }
       }
     }
     return { temas, oaTexts, oaIndicadores };
   } catch {
-    return { temas: [], oaTexts: {}, oaIndicadores: {} };
+    // Si no hay JSON, devolver todos los indicadores del nivel
+    return { temas: [], oaTexts: {}, oaIndicadores: allGradeInds };
   }
 }
 
@@ -439,15 +463,21 @@ export async function POST(req: NextRequest) {
     if (!indsMapFrontend[ind.oaCodigo]) indsMapFrontend[ind.oaCodigo] = [];
     indsMapFrontend[ind.oaCodigo].push(ind.texto);
   }
+  // Unión de códigos: resolvedOAs primero, luego OAs del JSON que no estén incluidos
+  const resolvedCodes = new Set(resolvedOAs.map(o => o.codigo));
+  const allIndCodes: string[] = [
+    ...resolvedOAs.map(o => o.codigo),
+    ...Object.keys(currData.oaIndicadores).filter(c => !resolvedCodes.has(c)),
+  ];
   let anyIndicators = false;
-  for (const oa of resolvedOAs) {
+  for (const codigo of allIndCodes) {
     // Priorizar frontend; caer a JSON si no hay
-    const inds = indsMapFrontend[oa.codigo]?.length
-      ? indsMapFrontend[oa.codigo]
-      : (currData.oaIndicadores[oa.codigo] ?? []);
+    const inds = indsMapFrontend[codigo]?.length
+      ? indsMapFrontend[codigo]
+      : (currData.oaIndicadores[codigo] ?? []);
     if (inds.length === 0) continue;
     anyIndicators = true;
-    children.push(p(oa.codigo, true, 18, '4C1D95'));
+    children.push(p(codigo, true, 18, '4C1D95'));
     for (const t of inds) children.push(bullet(t));
   }
   if (!anyIndicators) {
