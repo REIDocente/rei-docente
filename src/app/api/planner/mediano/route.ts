@@ -37,20 +37,23 @@ function gradeToCode(grade: string): string {
 
 interface CurriculumData { temas: string[]; oaTexts: Record<string, string>; }
 
-/** Extrae el texto real de un OA quitando la basura del PDF (texto posterior a la primera oración) */
+/** Extrae el texto real de un OA quitando la basura del PDF */
 function cleanOAText(raw: string): string {
-  // El texto real termina cuando aparece una palabra de <5 letras seguida de más palabras sueltas
-  // Tomamos solo hasta el primer punto que cierra una oración con sentido
+  const GARBAGE_OA = /\b(recortes|peguen|logrado|alumnos\s+Leer|tiempo para|vide|mientras|MedianaMente|Observaciones|Escribir\s+hechos|Construir|Durante\s+ú)\b/i;
   const parts = raw.split(/\.\s+/);
   for (let i = 0; i < parts.length; i++) {
-    const s = parts[i];
-    // Detectar basura: muchas palabras cortas o palabras típicas de PDF extraído
-    if (/\b(recortes|peguen|logrado|alumnos\s+Leer|tiempo para|vide|mientras|MedianaMente)\b/i.test(s)) break;
-    if (i === 0) return s.trim() + '.';
+    if (GARBAGE_OA.test(parts[i])) break;
+    if (i === 0) {
+      let s = parts[i].trim();
+      // Capitalizar primera letra si viene en minúscula
+      if (s[0] && s[0] === s[0].toLowerCase()) s = s[0].toUpperCase() + s.slice(1);
+      return s + '.';
+    }
   }
-  // Fallback: primera oración hasta el primer punto
   const firstPeriod = raw.indexOf('.');
-  return firstPeriod > 20 ? raw.slice(0, firstPeriod + 1).trim() : raw.trim();
+  let out = firstPeriod > 20 ? raw.slice(0, firstPeriod + 1).trim() : raw.trim();
+  if (out[0] && out[0] === out[0].toLowerCase()) out = out[0].toUpperCase() + out.slice(1);
+  return out;
 }
 
 function loadCurriculumData(grade: string, unitNum: number): CurriculumData {
@@ -134,6 +137,7 @@ const GARBAGE_PATTERNS = [
   /Programa de Estudio/i,
   /Los estudiantes que han alcanzado/i,
   /Unidad \d+ de/i,        // "Unidad 3 de:" o "Unidad 3 de actividades"
+  /\bU\d+\b/,              // "U1 cuestiones" — código de unidad embebido en texto
   /Se espera que los estudiantes/i,
   /El docente/i,
   /^\s*\d+\s*$/,           // solo un número
@@ -142,23 +146,32 @@ const GARBAGE_PATTERNS = [
   /objetivo de aprendizaje oficial/i,
   /logrado\s+MedianaMente/i,
   /recortes recorten/i,
+  /\([^)]+,[^)]+\)/,       // fill-in-the-blank: "(botones, manchones)" o "(opción1, opción2)"
 ];
 
 /** Filtra indicadores reales:
  *  - máx 350 chars
  *  - no contiene patrones de basura
- *  - empieza con mayúscula (los indicadores reales del MINEDUC siempre lo hacen)
+ *  - no es pregunta (¿...? ni texto que termina en ?)
+ *  - no empieza con minúscula (instrucciones de actividad)
+ *  - no empieza con verbo imperativo singular (preguntas de guía al docente)
  */
+const IMPERATIVE_STARTS = /^(Describa|Explique|Comente|Compare|Analice|Discuta|Reflexione|Señale|Mencione|Identifique|Busca|Lee|Escribe|Observa|Responde|Piensa|Investiga)\b/i;
+
 function filterIndicadores(inds: Indicador[]): Indicador[] {
   const isReal = (t: string): boolean => {
     if (t.length === 0 || t.length > 350) return false;
     if (GARBAGE_PATTERNS.some(re => re.test(t))) return false;
-    // Indicadores reales empiezan con letra mayúscula
+    // Preguntas (de discusión/actividad) — no son indicadores
+    if (t.startsWith('¿') || t.endsWith('?')) return false;
+    // Empieza con minúscula → instrucción de actividad
     if (t[0] && t[0] === t[0].toLowerCase() && t[0] !== t[0].toUpperCase()) return false;
+    // Imperativo singular → pregunta guía al docente
+    if (IMPERATIVE_STARTS.test(t)) return false;
     return true;
   };
   const clean = inds.filter(i => isReal(i.texto.trim()));
-  return clean.length > 0 ? clean : inds.filter(i => i.texto.trim().length <= 350);
+  return clean.length > 0 ? clean : inds.filter(i => i.texto.trim().length <= 350 && !i.texto.startsWith('¿'));
 }
 
 /** Primera cláusula del texto (hasta primer punto, punto y coma o coma larga), máx max chars. */
@@ -297,9 +310,15 @@ export async function POST(req: NextRequest) {
     objetivo: string; producto: string;
   }
   const n = cleanInds.length || 1;
+  // Distribuir OAs equitativamente: cada OA cubre el mismo número de clases
+  const oaList = resolvedOAs.map(o => o.codigo);
+  function oaForClass(idx: number): string {
+    const block = Math.floor(idx / (TOTAL_CLASES / oaList.length));
+    return oaList[Math.min(block, oaList.length - 1)] ?? oaList[0] ?? '';
+  }
+
   const clases: ClaseData[] = [];
   for (let i = 0; i < TOTAL_CLASES; i++) {
-    const ind   = cleanInds[i % n] ?? { oaCodigo: resolvedOAs[0]?.codigo ?? '', texto: '' };
     const bloom = bloomForClass(i);
     const tema  = temaForClass(i);
     clases.push({
@@ -307,7 +326,7 @@ export async function POST(req: NextRequest) {
       semana:   Math.ceil((i + 1) / 2),
       bloom,
       tema,
-      oaCodigo: ind.oaCodigo || resolvedOAs[Math.floor(i / Math.ceil(TOTAL_CLASES / resolvedOAs.length))]?.codigo || '',
+      oaCodigo: oaForClass(i),
       objetivo: `${bloom.habilidades.split(',')[0].trim()}: ${tema.toLowerCase()}`,
       producto: bloom.producto,
     });
@@ -428,15 +447,19 @@ export async function POST(req: NextRequest) {
           hCell('Nivel Bloom'), hCell('Evidencia de aprendizaje'),
         ],
       }),
-      ...semanas.map((s, i) => new TableRow({
-        children: [
-          mkCell(String(s.semana), { align: AlignmentType.CENTER, bg: i % 2 ? undefined : ALT_BG }),
-          mkCell(s.tema, { bg: i % 2 ? undefined : ALT_BG }),
-          mkCell(s.oaCodigo, { bold: true, color: '4C1D95', align: AlignmentType.CENTER, bg: i % 2 ? undefined : ALT_BG }),
-          mkCell(s.bloom.nombre, { bold: true, align: AlignmentType.CENTER, bg: i % 2 ? undefined : ALT_BG }),
-          mkCell(s.bloom.evidencia, { bg: i % 2 ? undefined : ALT_BG }),
-        ],
-      })),
+      ...semanas.map((s, idx) => {
+        // OA de la semana: basado en la primera clase de esa semana
+        const claseIdx = (s.semana - 1) * 2; // índice 0-based
+        const oaSemana = oaForClass(claseIdx);
+        const alt = idx % 2 ? undefined : ALT_BG;
+        return new TableRow({ children: [
+          mkCell(String(s.semana), { align: AlignmentType.CENTER, bg: alt }),
+          mkCell(s.tema, { bg: alt }),
+          mkCell(oaSemana, { bold: true, color: '4C1D95', align: AlignmentType.CENTER, bg: alt }),
+          mkCell(s.bloom.nombre, { bold: true, align: AlignmentType.CENTER, bg: alt }),
+          mkCell(s.bloom.evidencia, { bg: alt }),
+        ]});
+      }),
     ],
   }));
   children.push(spacer());
