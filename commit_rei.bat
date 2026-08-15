@@ -3,7 +3,7 @@ cd /d "C:\Users\56940\Desktop\rei-docente"
 del /f /q ".git\HEAD.lock" 2>nul
 del /f /q ".git\index.lock" 2>nul
 git add -A
-git commit -m "fix: celdas blancas explicitas + celeste ALT_BG + 5 evaluaciones en plan"
+git commit -m "fix: ShadingType.CLEAR para colores reales en tablas + celeste + 5 evaluaciones"
 git pull --rebase
 git push
 echo.

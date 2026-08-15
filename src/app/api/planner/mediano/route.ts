@@ -255,7 +255,7 @@ function mkCell(text: string, opts: CellOpts = {}): TableCell {
   const { bold = false, color = '1E293B', bg, size = 18, align = AlignmentType.LEFT } = opts;
   return new TableCell({
     borders: { top: BORDER, bottom: BORDER, left: BORDER, right: BORDER },
-    shading: bg ? { fill: bg, type: ShadingType.SOLID } : undefined,
+    shading: bg ? { fill: bg, color: 'auto', type: ShadingType.CLEAR } : undefined,
     margins: { top: 60, bottom: 60, left: 80, right: 80 },
     children: [new Paragraph({
       alignment: align,
