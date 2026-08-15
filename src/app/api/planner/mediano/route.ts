@@ -39,16 +39,27 @@ function bloomForClass(idx: number) {
   return BLOOM_PHASES[5];
 }
 
+/** Indicadores "reales" = bullets breves. Descarta descripciones de actividades largas. */
+function cleanIndicadores(indicadores: Indicador[]): Indicador[] {
+  const CLEAN = indicadores.filter(ind => ind.texto.trim().length <= 350);
+  return CLEAN.length > 0 ? CLEAN : indicadores;
+}
+
+function truncate(text: string, max = 160): string {
+  return text.length > max ? text.slice(0, max).trimEnd() + '…' : text;
+}
+
 function buildDistribucion(indicadores: Indicador[], oas: OA[]) {
+  const clean = cleanIndicadores(indicadores);
   const clases: Array<{ numero: number; semana: number; bloom: typeof BLOOM_PHASES[0]; indicador: string; oaCodigo: string }> = [];
-  const n = indicadores.length || 1;
+  const n = clean.length || 1;
   for (let i = 0; i < TOTAL_CLASES; i++) {
-    const ind = indicadores[i % n] || { oaCodigo: oas[0]?.codigo || 'OA', texto: 'Indicador general de la unidad' };
+    const ind = clean[i % n] || { oaCodigo: oas[0]?.codigo || 'OA', texto: 'Indicador general de la unidad' };
     clases.push({
       numero: i + 1,
       semana: Math.ceil((i + 1) / 2),
       bloom: bloomForClass(i),
-      indicador: ind.texto,
+      indicador: truncate(ind.texto),
       oaCodigo: ind.oaCodigo,
     });
   }
@@ -139,8 +150,9 @@ export async function POST(req: NextRequest) {
   if (!indicadores || indicadores.length === 0) {
     indSection.push(p('No se registraron indicadores para los OA seleccionados.', false, 20, '94A3B8'));
   } else {
+    const indLimpios = cleanIndicadores(indicadores);
     let lastOa = '';
-    for (const ind of indicadores) {
+    for (const ind of indLimpios) {
       if (ind.oaCodigo !== lastOa) {
         indSection.push(p(`${ind.oaCodigo}`, true, 19, '4C1D95'));
         lastOa = ind.oaCodigo;
