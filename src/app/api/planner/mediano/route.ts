@@ -104,10 +104,27 @@ function bloomForClass(idx: number): BloomPhase {
 
 // ── Helpers de texto ─────────────────────────────────────────────────────────
 
-/** Filtra indicadores reales (bullets breves ≤350 chars). Excluye bloques de actividades del Programa. */
+/** Fragmentos de texto que delatan que no es un indicador real sino basura del PDF */
+const GARBAGE_PATTERNS = [
+  /Programa de Estudio/i,
+  /Los estudiantes que han alcanzado/i,
+  /Unidad \d+ de:/i,
+  /Se espera que los estudiantes/i,
+  /El docente/i,
+  /^\s*\d+\s*$/,           // solo un número
+  /isbn/i,
+  /ministerio de educación/i,
+];
+
+/** Filtra indicadores reales (bullets breves ≤350 chars, sin basura del PDF). */
 function filterIndicadores(inds: Indicador[]): Indicador[] {
-  const clean = inds.filter(i => i.texto.trim().length <= 350);
-  return clean.length > 0 ? clean : inds;
+  const clean = inds.filter(i => {
+    const t = i.texto.trim();
+    if (t.length === 0 || t.length > 350) return false;
+    if (GARBAGE_PATTERNS.some(re => re.test(t))) return false;
+    return true;
+  });
+  return clean.length > 0 ? clean : inds.filter(i => i.texto.trim().length <= 350);
 }
 
 /** Primera cláusula del texto (hasta primer punto, punto y coma o coma larga), máx max chars. */
