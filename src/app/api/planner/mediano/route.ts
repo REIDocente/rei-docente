@@ -35,16 +35,41 @@ function gradeToCode(grade: string): string {
   return `${m[1]}${m[2][0].toUpperCase()}`;
 }
 
-function loadTemas(grade: string, unitNum: number): string[] {
+interface CurriculumData { temas: string[]; oaTexts: Record<string, string>; }
+
+/** Extrae el texto real de un OA quitando la basura del PDF (texto posterior a la primera oración) */
+function cleanOAText(raw: string): string {
+  // El texto real termina cuando aparece una palabra de <5 letras seguida de más palabras sueltas
+  // Tomamos solo hasta el primer punto que cierra una oración con sentido
+  const parts = raw.split(/\.\s+/);
+  for (let i = 0; i < parts.length; i++) {
+    const s = parts[i];
+    // Detectar basura: muchas palabras cortas o palabras típicas de PDF extraído
+    if (/\b(recortes|peguen|logrado|alumnos\s+Leer|tiempo para|vide|mientras|MedianaMente)\b/i.test(s)) break;
+    if (i === 0) return s.trim() + '.';
+  }
+  // Fallback: primera oración hasta el primer punto
+  const firstPeriod = raw.indexOf('.');
+  return firstPeriod > 20 ? raw.slice(0, firstPeriod + 1).trim() : raw.trim();
+}
+
+function loadCurriculumData(grade: string, unitNum: number): CurriculumData {
   try {
     const code = gradeToCode(grade);
-    if (!code) return [];
+    if (!code) return { temas: [], oaTexts: {} };
     const filePath = path.join(process.cwd(), 'public', 'curriculum', `curriculum_${code}.json`);
     const data = JSON.parse(readFileSync(filePath, 'utf-8'));
     const unidad = (data.unidades as any[])?.find(u => u.numero === unitNum);
-    return Array.isArray(unidad?.temas) && unidad.temas.length > 0 ? unidad.temas : [];
+    const temas = Array.isArray(unidad?.temas) && unidad.temas.length > 0 ? unidad.temas : [];
+    const oaTexts: Record<string, string> = {};
+    for (const oa of (unidad?.oas ?? []) as any[]) {
+      if (oa.codigo && oa.texto && oa.texto.length > 10) {
+        oaTexts[oa.codigo] = cleanOAText(oa.texto);
+      }
+    }
+    return { temas, oaTexts };
   } catch {
-    return [];
+    return { temas: [], oaTexts: {} };
   }
 }
 
@@ -104,26 +129,35 @@ function bloomForClass(idx: number): BloomPhase {
 
 // ── Helpers de texto ─────────────────────────────────────────────────────────
 
-/** Fragmentos de texto que delatan que no es un indicador real sino basura del PDF */
+/** Fragmentos que delatan basura del PDF en lugar de un indicador real */
 const GARBAGE_PATTERNS = [
   /Programa de Estudio/i,
   /Los estudiantes que han alcanzado/i,
-  /Unidad \d+ de:/i,
+  /Unidad \d+ de/i,        // "Unidad 3 de:" o "Unidad 3 de actividades"
   /Se espera que los estudiantes/i,
   /El docente/i,
   /^\s*\d+\s*$/,           // solo un número
   /isbn/i,
   /ministerio de educación/i,
+  /objetivo de aprendizaje oficial/i,
+  /logrado\s+MedianaMente/i,
+  /recortes recorten/i,
 ];
 
-/** Filtra indicadores reales (bullets breves ≤350 chars, sin basura del PDF). */
+/** Filtra indicadores reales:
+ *  - máx 350 chars
+ *  - no contiene patrones de basura
+ *  - empieza con mayúscula (los indicadores reales del MINEDUC siempre lo hacen)
+ */
 function filterIndicadores(inds: Indicador[]): Indicador[] {
-  const clean = inds.filter(i => {
-    const t = i.texto.trim();
+  const isReal = (t: string): boolean => {
     if (t.length === 0 || t.length > 350) return false;
     if (GARBAGE_PATTERNS.some(re => re.test(t))) return false;
+    // Indicadores reales empiezan con letra mayúscula
+    if (t[0] && t[0] === t[0].toLowerCase() && t[0] !== t[0].toUpperCase()) return false;
     return true;
-  });
+  };
+  const clean = inds.filter(i => isReal(i.texto.trim()));
   return clean.length > 0 ? clean : inds.filter(i => i.texto.trim().length <= 350);
 }
 
@@ -216,15 +250,25 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Faltan campos requeridos' }, { status: 400 });
   }
 
-  const unitNum     = unitNumRaw ?? (parseInt((unit || '1').replace(/\D+/g, '')) || 1);
-  const temas       = loadTemas(grade, unitNum);
+  const unitNum    = unitNumRaw ?? (parseInt((unit || '1').replace(/\D+/g, '')) || 1);
+  const currData   = loadCurriculumData(grade, unitNum);
+  const temas      = currData.temas;
+
+  // Sustituir textos placeholder con la versión del JSON curricular
+  const PLACEHOLDER = 'Objetivo de aprendizaje oficial.';
+  const resolvedOAs: OA[] = oas.map(oa => ({
+    ...oa,
+    texto: oa.texto === PLACEHOLDER
+      ? (currData.oaTexts[oa.codigo] || oa.texto)
+      : oa.texto,
+  }));
   const cleanInds   = filterIndicadores(indicadores || []);
   const año         = new Date().getFullYear();
   const unidadLabel = unidadNombre || unit;
-  const oaCodes     = oas.map(o => o.codigo).join(', ');
+  const oaCodes     = resolvedOAs.map(o => o.codigo).join(', ');
 
   // ── Objetivo de la unidad ─────────────────────────────────────────────────
-  const verbosOA = oas.slice(0, 3).map(o => extractTheme(o.texto, 55).toLowerCase());
+  const verbosOA = resolvedOAs.slice(0, 3).map(o => extractTheme(o.texto, 55).toLowerCase());
   const objetivoTexto =
     `En esta unidad de ${grade}, los estudiantes desarrollarán competencias para ` +
     verbosOA.join('; ') +
@@ -255,7 +299,7 @@ export async function POST(req: NextRequest) {
   const n = cleanInds.length || 1;
   const clases: ClaseData[] = [];
   for (let i = 0; i < TOTAL_CLASES; i++) {
-    const ind   = cleanInds[i % n] ?? { oaCodigo: oas[0]?.codigo ?? '', texto: '' };
+    const ind   = cleanInds[i % n] ?? { oaCodigo: resolvedOAs[0]?.codigo ?? '', texto: '' };
     const bloom = bloomForClass(i);
     const tema  = temaForClass(i);
     clases.push({
@@ -263,7 +307,7 @@ export async function POST(req: NextRequest) {
       semana:   Math.ceil((i + 1) / 2),
       bloom,
       tema,
-      oaCodigo: ind.oaCodigo || oas[Math.floor(i / Math.ceil(TOTAL_CLASES / oas.length))]?.codigo || '',
+      oaCodigo: ind.oaCodigo || resolvedOAs[Math.floor(i / Math.ceil(TOTAL_CLASES / resolvedOAs.length))]?.codigo || '',
       objetivo: `${bloom.habilidades.split(',')[0].trim()}: ${tema.toLowerCase()}`,
       producto: bloom.producto,
     });
@@ -317,7 +361,7 @@ export async function POST(req: NextRequest) {
   // 3. OBJETIVOS DE APRENDIZAJE
   // ═══════════════════════════════════════
   children.push(h2('3. Objetivos de Aprendizaje (OA)'));
-  for (const oa of oas) {
+  for (const oa of resolvedOAs) {
     children.push(new Paragraph({
       spacing: { before: 60, after: 70 },
       children: [
