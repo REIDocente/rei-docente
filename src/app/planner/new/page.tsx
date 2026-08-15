@@ -42,16 +42,16 @@ import Sidebar from '@/components/Sidebar';
 
 const UNIT_TITLES: Record<string, Record<string, string>> = {
   '5° Básico': {
-    'Unidad 1': 'Unidad 1: La unión hace la fuerza',
-    'Unidad 2': 'Unidad 2: Emociones que sanan',
-    'Unidad 3': 'Unidad 3: Coexistir en armonía',
-    'Unidad 4': 'Unidad 4: Un mundo en movimiento',
+    'Unidad 1': 'Unidad 1',
+    'Unidad 2': 'Unidad 2',
+    'Unidad 3': 'Unidad 3',
+    'Unidad 4': 'Unidad 4',
   },
   '6° Básico': {
-    'Unidad 1': 'Unidad 1: El poder de la aventura, la imaginación y la creatividad',
-    'Unidad 2': 'Unidad 2: El medioambiente y su protección',
-    'Unidad 3': 'Unidad 3: El ser humano y su vínculo con el cosmos',
-    'Unidad 4': 'Unidad 4: Respetar las diferencias y la igualdad de derechos',
+    'Unidad 1': 'Unidad 1',
+    'Unidad 2': 'Unidad 2',
+    'Unidad 3': 'Unidad 3',
+    'Unidad 4': 'Unidad 4',
   },
   '7° Básico': {
     'Unidad 1': 'Unidad 1: El héroe en distintas épocas',
