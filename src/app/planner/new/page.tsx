@@ -926,6 +926,9 @@ export default function NewPlannerPage() {
   const [leccionesList, setLeccionesList] = useState<any[]>([]);
   const [selectedLeccionId, setSelectedLeccionId] = useState<string | number>('');
   const [selectedOaIds, setSelectedOaIds] = useState<(number | string)[]>([]);
+  const [planificationType, setPlanificationType] = useState<'corto' | 'mediano'>('corto');
+  const [selectedIndicadorIds, setSelectedIndicadorIds] = useState<number[]>([]);
+  const [medianoDownloading, setMedianoDownloading] = useState(false);
 
   const basalesOAs = suggestedOAs.filter(oa => oaBasales.includes(oa.codigo));
   const compOAs = suggestedOAs.filter(oa => oaComplementarios.includes(oa.codigo));
@@ -1411,9 +1414,64 @@ export default function NewPlannerPage() {
     }
   };
 
+  // ── Mediano plazo: genera Word sin Claude ──────────────────────────────────
+  const handleSubmitMediano = async () => {
+    if (!user) return;
+    if (suggestedOAs.length === 0) {
+      setError('Selecciona al menos un OA para la planificación de mediano plazo.');
+      return;
+    }
+    setError(null);
+    setMedianoDownloading(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      const unitNum = parseInt((unit || 'Unidad 1').replace(/\D+/g, '')) || 1;
+      const unidadNombreCompleto = getFullUnitName(grade, unit) || unit;
+      const allIndicadores = suggestedOAs.flatMap(oa =>
+        (oa.indicadores_evaluacion || []).map(ind => ({ oaCodigo: oa.codigo, texto: ind.texto }))
+      );
+      const resp = await fetch('/api/planner/mediano', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          grade,
+          unit,
+          unitNum,
+          unidadNombre: unidadNombreCompleto,
+          oas: suggestedOAs.map(oa => ({ codigo: oa.codigo, texto: oa.texto })),
+          indicadores: allIndicadores,
+        }),
+      });
+      if (!resp.ok) throw new Error('Error generando planificación de mediano plazo');
+      const blob = await resp.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Planificacion_Mediano_${grade.replace(/[°\s]/g, '')}_${unit.replace(/\s/g, '')}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err: any) {
+      setError(err.message || 'Error generando planificación de mediano plazo');
+    } finally {
+      setMedianoDownloading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
+
+    // Mediano plazo: ruta separada sin Claude
+    if (planificationType === 'mediano') {
+      await handleSubmitMediano();
+      return;
+    }
 
     const themeText = themeMode === 'select' ? selectedTheme : manualTheme;
     if (!themeText) {
@@ -1448,8 +1506,13 @@ export default function NewPlannerPage() {
       formData.append('oa_texto', oasTextos);
       formData.append('oa_eje', 'Lectura'); // Main default axis
       
+      // Corto plazo: usar solo los indicadores elegidos por el docente (máx 3)
       const allIndicators = suggestedOAs.flatMap(o => (o.indicadores_evaluacion || []).map(i => i.texto));
-      formData.append('indicadores_json', JSON.stringify(allIndicators));
+      const cortoPlazoIndicators = selectedIndicadorIds.length > 0
+        ? suggestedOAs.flatMap(o => (o.indicadores_evaluacion || []).filter(i => selectedIndicadorIds.includes(i.id)).map(i => i.texto))
+        : allIndicators.slice(0, 3);
+      formData.append('indicadores_json', JSON.stringify(cortoPlazoIndicators));
+      formData.append('planning_type', 'corto');
       formData.append('learningObjective', `${oasCodigos} — ${suggestedOAs.map(o => o.texto).join(' | ')}`);
 
       formData.append('planning_scope', planningScope);
@@ -2144,7 +2207,40 @@ export default function NewPlannerPage() {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                
+
+                {/* 0. Tipo de Planificación */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">
+                    Tipo de Planificación
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {([
+                      { key: 'corto' as const, label: 'Corto plazo', desc: '1 sesión de 90 min', icon: '📌' },
+                      { key: 'mediano' as const, label: 'Mediano plazo', desc: 'Unidad completa (~24–30 clases)', icon: '📅' },
+                    ] as const).map(opt => (
+                      <button
+                        key={opt.key}
+                        type="button"
+                        onClick={() => { setPlanificationType(opt.key); setSelectedIndicadorIds([]); }}
+                        className={`flex flex-col items-start gap-1 p-3.5 rounded-2xl border-2 text-left transition-all ${
+                          planificationType === opt.key
+                            ? 'border-violet-500 bg-violet-50'
+                            : 'border-slate-200 bg-white hover:border-slate-300'
+                        }`}
+                      >
+                        <span className="text-base">{opt.icon}</span>
+                        <span className={`text-xs font-extrabold ${planificationType === opt.key ? 'text-violet-700' : 'text-slate-700'}`}>{opt.label}</span>
+                        <span className="text-[10px] text-slate-500 leading-relaxed font-medium">{opt.desc}</span>
+                      </button>
+                    ))}
+                  </div>
+                  {planificationType === 'mediano' && (
+                    <p className="text-[10px] text-violet-600 font-semibold bg-violet-50 border border-violet-100 rounded-xl px-3 py-2 leading-relaxed">
+                      ✨ Se generará un documento Word con la distribución de clases, OAs, indicadores y progresión Bloom — sin llamado a IA.
+                    </p>
+                  )}
+                </div>
+
                 {/* 1. Curso Selector */}
                 <div className="space-y-2">
                   <label htmlFor="grade" className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">
@@ -2317,6 +2413,59 @@ export default function NewPlannerPage() {
                         })()}
                       </div>
 
+                      {/* Selector de indicadores — solo corto plazo */}
+                      {planificationType === 'corto' && suggestedOAs.length > 0 && (() => {
+                        const allInd = suggestedOAs.flatMap((oa, oaIdx) =>
+                          (oa.indicadores_evaluacion || []).map(ind => ({ ...ind, oaCodigo: oa.codigo, uid: `${oaIdx}-${ind.id}` }))
+                        );
+                        if (allInd.length === 0) return null;
+                        return (
+                          <div className="border border-violet-100 bg-violet-50/40 rounded-2xl p-4 space-y-3 mt-1">
+                            <div className="flex items-center justify-between">
+                              <p className="text-[10px] text-violet-700 font-black uppercase tracking-wider">
+                                Indicadores para esta clase (elige 1–3)
+                              </p>
+                              <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${selectedIndicadorIds.length > 3 ? 'bg-rose-100 text-rose-600' : 'bg-violet-100 text-violet-700'}`}>
+                                {selectedIndicadorIds.length}/3
+                              </span>
+                            </div>
+                            <div className="space-y-2 max-h-52 overflow-y-auto pr-1">
+                              {allInd.map(ind => {
+                                const isChecked = selectedIndicadorIds.includes(ind.id);
+                                const maxReached = selectedIndicadorIds.length >= 3 && !isChecked;
+                                return (
+                                  <label
+                                    key={ind.uid}
+                                    className={`flex items-start gap-2.5 p-2.5 bg-white border rounded-xl cursor-pointer transition-all select-none ${
+                                      maxReached ? 'opacity-40 cursor-not-allowed border-slate-100' :
+                                      isChecked ? 'border-violet-300 bg-violet-50 shadow-xs' : 'border-slate-150 hover:bg-slate-50'
+                                    }`}
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      disabled={maxReached}
+                                      checked={isChecked}
+                                      onChange={(e) => {
+                                        if (e.target.checked) {
+                                          if (selectedIndicadorIds.length < 3) setSelectedIndicadorIds(prev => [...prev, ind.id]);
+                                        } else {
+                                          setSelectedIndicadorIds(prev => prev.filter(id => id !== ind.id));
+                                        }
+                                      }}
+                                      className="mt-0.5 w-3.5 h-3.5 rounded text-violet-600 border-slate-300 flex-shrink-0"
+                                    />
+                                    <div className="text-[11px] min-w-0">
+                                      <span className="inline-flex items-center px-1.5 py-0.5 bg-slate-100 text-slate-600 font-black text-[8px] rounded-md mr-1 uppercase">{ind.oaCodigo}</span>
+                                      <span className="text-slate-700 leading-relaxed font-medium">{ind.texto}</span>
+                                    </div>
+                                  </label>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        );
+                      })()}
+
                       <div className="flex items-center gap-2 pt-3 border-t border-slate-100">
                         <input
                           type="checkbox"
@@ -2326,7 +2475,7 @@ export default function NewPlannerPage() {
                           className="w-4 h-4 rounded text-emerald-600 border-slate-300 focus:ring-emerald-500 focus:ring-offset-0"
                         />
                         <label htmlFor="validate-oa-check" className="text-[10px] font-extrabold cursor-pointer text-emerald-800 select-none">
-                          Confirmar y validar alineación para el Kit de Clase
+                          {planificationType === 'mediano' ? 'Confirmar OAs para la planificación de unidad' : 'Confirmar y validar alineación para el Kit de Clase'}
                         </label>
                       </div>
                     </div>
@@ -2400,11 +2549,16 @@ export default function NewPlannerPage() {
                   <button
                     type="submit"
                     id="generate-plan-btn"
-                    disabled={!validatedOA}
+                    disabled={!validatedOA || medianoDownloading}
                     className="inline-flex items-center gap-2 px-7 py-2.5 bg-gradient-to-r from-violet-600 via-purple-600 to-pink-500 hover:from-violet-700 hover:to-pink-600 text-white font-bold text-xs rounded-2xl shadow-md transition-all disabled:opacity-40"
                   >
-                    Generar Kit de Clase
-                    <ChevronRight className="w-4 h-4" />
+                    {medianoDownloading ? (
+                      <>Generando documento...</>
+                    ) : planificationType === 'mediano' ? (
+                      <>Generar Planificación de Unidad <ChevronRight className="w-4 h-4" /></>
+                    ) : (
+                      <>Generar Kit de Clase <ChevronRight className="w-4 h-4" /></>
+                    )}
                   </button>
                 </div>
 

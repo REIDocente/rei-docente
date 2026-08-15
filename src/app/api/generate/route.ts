@@ -513,6 +513,9 @@ export async function POST(req: NextRequest) {
     const curriculumMode = formData.get('curriculum_mode') === 'true';
     const oatActitudesJson = formData.get('oat_actitudes_json') as string | null;
 
+    // Tipo de planificación: 'corto' = 1 clase de 90 min
+    const planningType = (formData.get('planning_type') as string | null) ?? 'corto';
+
     // Real lesson fields (for MINEDUC textbook curriculum structure)
     const isRealLesson = formData.get('is_real_lesson') === 'true';
     const oaBasalesJson = formData.get('oa_basales_json') as string | null;
@@ -727,13 +730,23 @@ Debes centrar el tema y las actividades de la sesión en el título/foco temáti
         }
       }
 
+      const cortoPlazoBlock = planningType === 'corto' ? `
+🎯 TIPO DE PLANIFICACIÓN: CORTO PLAZO — UNA SESIÓN DE CLASE (90 MINUTOS)
+INSTRUCCIÓN CRÍTICA DE ALCANCE:
+- Esta planificación cubre EXACTAMENTE 1 bloque de 90 minutos.
+- Los indicadores listados abajo son los seleccionados por el docente para ESTA sesión (máximo 3).
+- NO incluyas más indicadores que los listados. El docente ya eligió cuáles trabajar hoy.
+- Diseña el Inicio (15 min), Desarrollo (60 min) y Cierre (15 min) para UNA sola clase.
+- Incluye nivel Bloom correspondiente a los indicadores seleccionados.
+` : '';
+
       officialOABlock = `
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ⚠️  OBJETIVO DE APRENDIZAJE OFICIAL MINEDUC — USO OBLIGATORIO
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 El docente ha seleccionado el siguiente OA oficial extraído directamente
 del Programa de Estudio del Ministerio de Educación de Chile.
-
+${cortoPlazoBlock}
 INSTRUCCIÓN CRÍTICA: Usa este OA EXACTAMENTE como está escrito.
 NO lo modifiques, NO lo resumas, NO lo reemplaces ni lo inventes.
 Toda la planificación debe estar alineada con este OA e indicadores.
@@ -743,7 +756,7 @@ Toda la planificación debe estar alineada con este OA e indicadores.
   Texto oficial:
   "${oaTexto}"
 
-  Indicadores de Evaluación oficiales que deben guiar la planificación:
+  Indicadores de Evaluación para esta sesión (elegidos por el docente):
 ${indicadoresFormatted}
 ${oatActitudesFormatted}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
