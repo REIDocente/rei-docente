@@ -35,7 +35,30 @@ function gradeToCode(grade: string): string {
   return `${m[1]}${m[2][0].toUpperCase()}`;
 }
 
-interface CurriculumData { temas: string[]; oaTexts: Record<string, string>; }
+interface CurriculumData {
+  temas: string[];
+  oaTexts: Record<string, string>;
+  oaIndicadores: Record<string, string[]>; // codigo → indicadores limpios
+}
+
+/** Fragmentos que delatan basura del PDF en lugar de un indicador real */
+const GARBAGE_PATTERNS = [
+  /Programa de Estudio/i,
+  /Los estudiantes que han alcanzado/i,
+  /Unidad \d+ de/i,        // "Unidad 3 de:" o "Unidad 3 de actividades"
+  /\bU\d+\b/,              // "U1 cuestiones" — código de unidad embebido en texto
+  /Se espera que los estudiantes/i,
+  /El docente/i,
+  /^\s*\d+\s*$/,           // solo un número
+  /isbn/i,
+  /ministerio de educación/i,
+  /objetivo de aprendizaje oficial/i,
+  /logrado\s+MedianaMente/i,
+  /recortes recorten/i,
+  /\([^)]+,[^)]+\)/,       // fill-in-the-blank: "(botones, manchones)" o "(opción1, opción2)"
+];
+
+const IMPERATIVE_STARTS = /^(Describa|Explique|Comente|Compare|Analice|Discuta|Reflexione|Señale|Mencione|Identifique|Busca|Lee|Escribe|Observa|Responde|Piensa|Investiga)\b/i;
 
 /** Extrae el texto real de un OA quitando la basura del PDF */
 function cleanOAText(raw: string): string {
@@ -59,20 +82,34 @@ function cleanOAText(raw: string): string {
 function loadCurriculumData(grade: string, unitNum: number): CurriculumData {
   try {
     const code = gradeToCode(grade);
-    if (!code) return { temas: [], oaTexts: {} };
+    if (!code) return { temas: [], oaTexts: {}, oaIndicadores: {} };
     const filePath = path.join(process.cwd(), 'public', 'curriculum', `curriculum_${code}.json`);
     const data = JSON.parse(readFileSync(filePath, 'utf-8'));
     const unidad = (data.unidades as any[])?.find(u => u.numero === unitNum);
     const temas = Array.isArray(unidad?.temas) && unidad.temas.length > 0 ? unidad.temas : [];
     const oaTexts: Record<string, string> = {};
+    const oaIndicadores: Record<string, string[]> = {};
     for (const oa of (unidad?.oas ?? []) as any[]) {
       if (oa.codigo && oa.texto && oa.texto.length > 10) {
         oaTexts[oa.codigo] = cleanOAText(oa.texto);
       }
+      if (oa.codigo && Array.isArray(oa.indicadores)) {
+        const filtered = (oa.indicadores as string[])
+          .map((s: string) => s.trim())
+          .filter((s: string) => {
+            if (s.length < 15 || s.length > 350) return false;
+            if (GARBAGE_PATTERNS.some(re => re.test(s))) return false;
+            if (s.startsWith('¿') || s.endsWith('?')) return false;
+            if (s[0] && s[0] === s[0].toLowerCase() && s[0] !== s[0].toUpperCase()) return false;
+            if (IMPERATIVE_STARTS.test(s)) return false;
+            return true;
+          });
+        if (filtered.length > 0) oaIndicadores[oa.codigo] = filtered;
+      }
     }
-    return { temas, oaTexts };
+    return { temas, oaTexts, oaIndicadores };
   } catch {
-    return { temas: [], oaTexts: {} };
+    return { temas: [], oaTexts: {}, oaIndicadores: {} };
   }
 }
 
@@ -132,23 +169,6 @@ function bloomForClass(idx: number): BloomPhase {
 
 // ── Helpers de texto ─────────────────────────────────────────────────────────
 
-/** Fragmentos que delatan basura del PDF en lugar de un indicador real */
-const GARBAGE_PATTERNS = [
-  /Programa de Estudio/i,
-  /Los estudiantes que han alcanzado/i,
-  /Unidad \d+ de/i,        // "Unidad 3 de:" o "Unidad 3 de actividades"
-  /\bU\d+\b/,              // "U1 cuestiones" — código de unidad embebido en texto
-  /Se espera que los estudiantes/i,
-  /El docente/i,
-  /^\s*\d+\s*$/,           // solo un número
-  /isbn/i,
-  /ministerio de educación/i,
-  /objetivo de aprendizaje oficial/i,
-  /logrado\s+MedianaMente/i,
-  /recortes recorten/i,
-  /\([^)]+,[^)]+\)/,       // fill-in-the-blank: "(botones, manchones)" o "(opción1, opción2)"
-];
-
 /** Filtra indicadores reales:
  *  - máx 350 chars
  *  - no contiene patrones de basura
@@ -156,7 +176,6 @@ const GARBAGE_PATTERNS = [
  *  - no empieza con minúscula (instrucciones de actividad)
  *  - no empieza con verbo imperativo singular (preguntas de guía al docente)
  */
-const IMPERATIVE_STARTS = /^(Describa|Explique|Comente|Compare|Analice|Discuta|Reflexione|Señale|Mencione|Identifique|Busca|Lee|Escribe|Observa|Responde|Piensa|Investiga)\b/i;
 
 function filterIndicadores(inds: Indicador[]): Indicador[] {
   const isReal = (t: string): boolean => {
@@ -187,7 +206,8 @@ function truncate(text: string, max = 150): string {
 // ── Estilos docx ─────────────────────────────────────────────────────────────
 const BORDER  = { style: BorderStyle.SINGLE, size: 1, color: 'CBD5E1' };
 const HDR_BG  = '1E3A5F';
-const ALT_BG  = 'F1F5F9';
+const ALT_BG  = 'E0F2FE';  // celeste claro
+const ROW_BG  = 'FFFFFF';  // blanco explícito (evita negro por defecto en Word)
 
 function title(text: string): Paragraph {
   return new Paragraph({
@@ -413,17 +433,25 @@ export async function POST(req: NextRequest) {
   // 5. INDICADORES DE EVALUACIÓN
   // ═══════════════════════════════════════
   children.push(h2('5. Indicadores de Evaluación (MINEDUC)'));
-  if (cleanInds.length === 0) {
-    children.push(p('No se registraron indicadores para los OA seleccionados.', false, 18, '94A3B8'));
-  } else {
-    let lastOa = '';
-    for (const ind of cleanInds) {
-      if (ind.oaCodigo !== lastOa) {
-        children.push(p(ind.oaCodigo, true, 18, '4C1D95'));
-        lastOa = ind.oaCodigo;
-      }
-      children.push(bullet(ind.texto));
-    }
+  // Agrupar indicadores del frontend por OA
+  const indsMapFrontend: Record<string, string[]> = {};
+  for (const ind of cleanInds) {
+    if (!indsMapFrontend[ind.oaCodigo]) indsMapFrontend[ind.oaCodigo] = [];
+    indsMapFrontend[ind.oaCodigo].push(ind.texto);
+  }
+  let anyIndicators = false;
+  for (const oa of resolvedOAs) {
+    // Priorizar frontend; caer a JSON si no hay
+    const inds = indsMapFrontend[oa.codigo]?.length
+      ? indsMapFrontend[oa.codigo]
+      : (currData.oaIndicadores[oa.codigo] ?? []);
+    if (inds.length === 0) continue;
+    anyIndicators = true;
+    children.push(p(oa.codigo, true, 18, '4C1D95'));
+    for (const t of inds) children.push(bullet(t));
+  }
+  if (!anyIndicators) {
+    children.push(p('No se encontraron indicadores para los OA de esta unidad.', false, 18, '94A3B8'));
   }
   children.push(spacer());
 
@@ -451,7 +479,7 @@ export async function POST(req: NextRequest) {
         // OA de la semana: basado en la primera clase de esa semana
         const claseIdx = (s.semana - 1) * 2; // índice 0-based
         const oaSemana = oaForClass(claseIdx);
-        const alt = idx % 2 ? undefined : ALT_BG;
+        const alt = idx % 2 ? ROW_BG : ALT_BG;
         return new TableRow({ children: [
           mkCell(String(s.semana), { align: AlignmentType.CENTER, bg: alt }),
           mkCell(s.tema, { bg: alt }),
@@ -482,11 +510,11 @@ export async function POST(req: NextRequest) {
       }),
       ...clases.map((c, i) => new TableRow({
         children: [
-          mkCell(String(c.numero), { align: AlignmentType.CENTER, bg: i % 2 ? undefined : ALT_BG }),
-          mkCell(String(c.semana), { align: AlignmentType.CENTER, bg: i % 2 ? undefined : ALT_BG }),
-          mkCell(c.oaCodigo, { bold: true, color: '4C1D95', align: AlignmentType.CENTER, bg: i % 2 ? undefined : ALT_BG }),
-          mkCell(c.objetivo, { bg: i % 2 ? undefined : ALT_BG }),
-          mkCell(c.producto, { bg: i % 2 ? undefined : ALT_BG }),
+          mkCell(String(c.numero), { align: AlignmentType.CENTER, bg: i % 2 ? ROW_BG : ALT_BG }),
+          mkCell(String(c.semana), { align: AlignmentType.CENTER, bg: i % 2 ? ROW_BG : ALT_BG }),
+          mkCell(c.oaCodigo, { bold: true, color: '4C1D95', align: AlignmentType.CENTER, bg: i % 2 ? ROW_BG : ALT_BG }),
+          mkCell(c.objetivo, { bg: i % 2 ? ROW_BG : ALT_BG }),
+          mkCell(c.producto, { bg: i % 2 ? ROW_BG : ALT_BG }),
         ],
       })),
 
@@ -499,29 +527,40 @@ export async function POST(req: NextRequest) {
   // ═══════════════════════════════════════
   children.push(h2('8. Plan de Evaluación'));
 
-  const claseFormativa = Math.round(TOTAL_CLASES / 2);
   children.push(new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
     columnWidths: [1600, 700, 3200, 4000],
     rows: [
       new TableRow({ tableHeader: true, children: [hCell('Tipo'), hCell('Clase'), hCell('Instrumento'), hCell('Propósito')] }),
       new TableRow({ children: [
-        mkCell('Diagnóstica', { bold: true }),
-        mkCell('1', { align: AlignmentType.CENTER }),
-        mkCell('Actividad exploratoria / Preguntas orales'),
-        mkCell('Identificar saberes previos de los estudiantes'),
+        mkCell('Diagnóstica', { bold: true, bg: ROW_BG }),
+        mkCell('1', { align: AlignmentType.CENTER, bg: ROW_BG }),
+        mkCell('Actividad exploratoria / Preguntas orales', { bg: ROW_BG }),
+        mkCell('Identificar saberes previos de los estudiantes', { bg: ROW_BG }),
       ]}),
       new TableRow({ children: [
-        mkCell('Formativa', { bold: true, bg: ALT_BG }),
-        mkCell(String(claseFormativa), { align: AlignmentType.CENTER, bg: ALT_BG }),
-        mkCell('Lista de cotejo / Rúbrica de proceso', { bg: ALT_BG }),
-        mkCell('Monitorear el avance y ajustar la enseñanza', { bg: ALT_BG }),
+        mkCell('Formativa 1', { bold: true, bg: ALT_BG }),
+        mkCell('7', { align: AlignmentType.CENTER, bg: ALT_BG }),
+        mkCell('Lista de cotejo oral / Pregunta de salida', { bg: ALT_BG }),
+        mkCell('Verificar comprensión al término de la primera fase', { bg: ALT_BG }),
       ]}),
       new TableRow({ children: [
-        mkCell('Sumativa', { bold: true }),
-        mkCell(String(TOTAL_CLASES), { align: AlignmentType.CENTER }),
-        mkCell('Prueba / Rúbrica de producción'),
-        mkCell('Verificar el logro de los OA de la unidad'),
+        mkCell('Formativa 2', { bold: true, bg: ROW_BG }),
+        mkCell('14', { align: AlignmentType.CENTER, bg: ROW_BG }),
+        mkCell('Rúbrica de proceso / Autoevaluación', { bg: ROW_BG }),
+        mkCell('Monitorear avance y ajustar la enseñanza a mitad de unidad', { bg: ROW_BG }),
+      ]}),
+      new TableRow({ children: [
+        mkCell('Formativa 3', { bold: true, bg: ALT_BG }),
+        mkCell('21', { align: AlignmentType.CENTER, bg: ALT_BG }),
+        mkCell('Coevaluación / Portafolio parcial', { bg: ALT_BG }),
+        mkCell('Retroalimentar antes de la evaluación sumativa', { bg: ALT_BG }),
+      ]}),
+      new TableRow({ children: [
+        mkCell('Sumativa', { bold: true, bg: ROW_BG }),
+        mkCell(String(TOTAL_CLASES), { align: AlignmentType.CENTER, bg: ROW_BG }),
+        mkCell('Prueba escrita / Rúbrica de producción', { bg: ROW_BG }),
+        mkCell('Verificar el logro de los OA de la unidad', { bg: ROW_BG }),
       ]}),
     ],
   }));
@@ -556,11 +595,11 @@ export async function POST(req: NextRequest) {
         mkCell('Ofrecer el contenido en formatos variados: texto, imagen, audio y video.'),
       ]}),
       new TableRow({ children: [
-        mkCell('DUA — Expresión', { bold: true, bg: ALT_BG }),
+        mkCell('DUA — Acción y Expresión', { bold: true, bg: ALT_BG }),
         mkCell('Permitir que los estudiantes demuestren aprendizaje de forma escrita, oral o gráfica.', { bg: ALT_BG }),
       ]}),
       new TableRow({ children: [
-        mkCell('DUA — Motivación', { bold: true }),
+        mkCell('DUA — Compromiso', { bold: true }),
         mkCell('Conectar los contenidos con experiencias e intereses de los estudiantes.'),
       ]}),
       new TableRow({ children: [
