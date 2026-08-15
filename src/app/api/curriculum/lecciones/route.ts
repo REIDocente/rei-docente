@@ -1,6 +1,51 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { staticCurriculum } from '@/lib/curriculum/index';
+import path from 'path';
+import fs from 'fs';
+
+const NIVEL_TO_CURRICULUM_FILE: Record<string, string> = {
+  '1° Básico':  'curriculum_1B.json',
+  '2° Básico':  'curriculum_2B.json',
+  '3° Básico':  'curriculum_3B.json',
+  '4° Básico':  'curriculum_4B.json',
+  '5° Básico':  'curriculum_5B.json',
+  '6° Básico':  'curriculum_6B.json',
+  '7° Básico':  'curriculum_7B.json',
+  '8° Básico':  'curriculum_8B.json',
+  '1° Medio':   'curriculum_1M.json',
+  '2° Medio':   'curriculum_2M.json',
+};
+
+// Carga indicadores MINEDUC desde JSON para un nivel y unidad dados.
+// Retorna mapa: { "OA 2": [{ id, texto }, ...], ... }
+function loadOfficialIndicadores(
+  nivel: string,
+  unitNum: number
+): Record<string, Array<{ id: number; texto: string }>> {
+  const fileName = NIVEL_TO_CURRICULUM_FILE[nivel];
+  if (!fileName) return {};
+  try {
+    const filePath = path.join(process.cwd(), 'public', 'curriculum', fileName);
+    if (!fs.existsSync(filePath)) return {};
+    const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    const unidadData = data.unidades?.find((u: any) => u.numero === unitNum);
+    if (!unidadData) return {};
+    const result: Record<string, Array<{ id: number; texto: string }>> = {};
+    for (const oa of (unidadData.oas || [])) {
+      const indicadores = (oa.indicadores as string[])
+        .map((s: string) => s.trim())
+        .filter((s: string) => s.length > 10)
+        .map((texto, idx) => ({ id: idx + 1, texto }));
+      if (indicadores.length > 0) {
+        result[oa.codigo] = indicadores;
+      }
+    }
+    return result;
+  } catch (_e) {
+    return {};
+  }
+}
 
 function mapNivelParam(nivelParam: string): string {
   const norm = (nivelParam || '').toLowerCase().replace(/_/g, ' ');
@@ -290,13 +335,15 @@ export async function GET(req: NextRequest) {
     // 1. Datos estáticos oficiales tienen PRIORIDAD (correctos y completos)
     const levelLessonsStatic = FALLBACK_LESSONS[nivelNombre]?.[unitNum];
     if (levelLessonsStatic) {
+      const indicadoresMap = loadOfficialIndicadores(nivelNombre, unitNum);
       const fallbackResult = levelLessonsStatic.map((l, idx) => {
         const oas = l.oa_codes.map((code, oaIdx) => {
           const found = staticCurriculum.oas.find(oa => oa.nivel === nivelNombre && oa.codigo_oa === code);
           return {
             id: oaIdx + idx * 10 + 10000,
             codigo: code,
-            texto: found?.texto_oa || 'Objetivo de aprendizaje oficial.'
+            texto: found?.texto_oa || 'Objetivo de aprendizaje oficial.',
+            indicadores_evaluacion: indicadoresMap[code] || []
           };
         });
         return {
@@ -355,18 +402,22 @@ export async function GET(req: NextRequest) {
           }
 
           // Mapear lecciones estructurando los OAs según espera el frontend
+          const indicadoresMap = loadOfficialIndicadores(nivelNombre, unitNum);
           const result = lecciones.map((l: any) => {
             const codes = (l.oa_basales || []).slice(0, 3);
             const oas = codes.map((code: string, idx: number) => {
-              if (oasMap[code]) {
-                return oasMap[code];
-              }
-              // Fallback estático en memoria
-              const found = staticCurriculum.oas.find(oa => oa.nivel === nivelNombre && oa.codigo_oa === code);
+              const baseOa = oasMap[code] || (() => {
+                // Fallback estático en memoria
+                const found = staticCurriculum.oas.find(oa => oa.nivel === nivelNombre && oa.codigo_oa === code);
+                return {
+                  id: `${l.id}-${code}-${idx}`,
+                  codigo: code,
+                  texto: found?.texto_oa || 'Objetivo de aprendizaje oficial.'
+                };
+              })();
               return {
-                id: `${l.id}-${code}-${idx}`,
-                codigo: code,
-                texto: found?.texto_oa || 'Objetivo de aprendizaje oficial.'
+                ...baseOa,
+                indicadores_evaluacion: indicadoresMap[code] || []
               };
             });
 
@@ -388,13 +439,15 @@ export async function GET(req: NextRequest) {
     // Fallback estático si la base de datos no está poblada o falla
     const levelLessons = FALLBACK_LESSONS[nivelNombre]?.[unitNum];
     if (levelLessons) {
+      const indicadoresMap = loadOfficialIndicadores(nivelNombre, unitNum);
       const fallbackResult = levelLessons.map((l, idx) => {
         const oas = l.oa_codes.map((code, oaIdx) => {
           const found = staticCurriculum.oas.find(oa => oa.nivel === nivelNombre && oa.codigo_oa === code);
           return {
             id: oaIdx + idx * 10 + 10000,
             codigo: code,
-            texto: found?.texto_oa || 'Objetivo de aprendizaje oficial.'
+            texto: found?.texto_oa || 'Objetivo de aprendizaje oficial.',
+            indicadores_evaluacion: indicadoresMap[code] || []
           };
         });
         return {
