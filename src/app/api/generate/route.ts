@@ -411,11 +411,16 @@ ${pedagogicalStructureInstructions}
   — **targeted (Nivel 2):** Versión con andamiajes, ayudas y pistas visuales o lingüísticas de forma muy compacta (2-3 líneas).
   — **intensive (Nivel 3):** Versión ultra reducida a lo esencial, con mediación directa o respuestas guiadas de forma muy compacta (2-3 líneas).
   
+▸ GAMIFICACIÓN (integrada en "activities_sequence")
+  El DESARROLLO de la sesión debe incluir OBLIGATORIAMENTE un elemento de gamificación activo. Debe ser concreto, nombrado y ejecutable (no decorativo):
+  Ejemplos válidos: equipos compiten por puntos al responder preguntas del texto, "misión" narrativa temática (los estudiantes son detectives/exploradores del texto), reto relámpago de 3 minutos entre grupos, dado de preguntas por turnos, tablero de progreso en la pizarra, "escape" de pregunta trampa.
+  El elemento debe: (a) estar integrado en una actividad concreta del Desarrollo, (b) incluir instrucción directa al docente de 1-2 oraciones, (c) ser coherente con el texto/tema de la sesión, (d) durar entre 5 y 15 minutos. Márcalo con el prefijo 🎮 en el texto de la actividad.
+
 ▸ EVALUACIÓN SUGERIDA SEGÚN ACTIVIDAD (campo "rubric" del JSON)
   Diseña las evaluaciones de forma flexible y sugerida. NO exijas autoevaluación, coevaluación y heteroevaluación de manera obligatoria en todas las clases:
-  1. **Heteroevaluación docente (RÚBRICA EN TABLA):** Esta siempre debe incluirse (tabla compacta con columnas: Criterio | Logrado | Medianamente Logrado | Por Lograr | Adaptación nivel 2 | Adaptación nivel 3). Máximo 2 criterios esenciales y descripciones cortas de 1 línea.
-  2. **Autoevaluación:** Inclúyela (2 viñetas cortas) ÚNICAMENTE si la clase es de trabajo individual complejo o reflexión profunda de cierre. Si la clase es muy corta o meramente expositiva, no la incluyas.
-  3. **Coevaluación:** Inclúyela (2 viñetas cortas) ÚNICAMENTE si en el desarrollo de la sesión hay trabajo colaborativo o en parejas. Si no hay trabajo grupal, no la incluyas.
+  1. **Heteroevaluación docente (RÚBRICA EN TABLA):** Esta siempre debe incluirse (tabla compacta con columnas: Criterio | Logrado | Medianamente Logrado | Por Lograr | Adaptación Nivel 2 | Adaptación Nivel 3). Exactamente 4 criterios esenciales con descripciones cortas de 1 línea.
+  2. **Autoevaluación:** Inclúyela (2-3 preguntas) ÚNICAMENTE si la clase es de trabajo individual complejo o reflexión profunda de cierre. Si la clase es muy corta o meramente expositiva, no la incluyas.
+  3. **Coevaluación:** Inclúyela ÚNICAMENTE si en el desarrollo de la sesión hay trabajo colaborativo o en parejas. Debe ser una TABLA estructurada (Criterio | ✓ Sí | △ Parcialmente | ✗ No) con 3 criterios observables entre pares y una línea de comentario al final. NO uses solo viñetas sueltas.
   La rúbrica resultante debe contener sugeridas solo las que apliquen según la sesión descrita, evitando relleno artificial.
 
 ▸ FIDELIDAD CURRICULAR
@@ -1193,9 +1198,17 @@ REGLAS DE DISEÑO DE LOS NUEVOS CAMPOS:
 2. RÚBRICA DE EVALUACIÓN SUGERIDA (rubric):
    USA OBLIGATORIAMENTE ESTA PLANTILLA EXACTA. Solo reemplaza el contenido entre corchetes [así] con texto conciso (máximo 10 palabras por celda). NO modifiques la estructura, los encabezados ni las viñetas:
 
+• APOYOS POR NIVEL
+
+| | Práctica autónoma | Ticket de salida |
+|---|---|---|
+| 🟢 **N1 — Universal** | [versión estándar sin andamios, máx. 10 palabras] | [ticket completo sin apoyos, máx. 10 palabras] |
+| 🟡 **N2 — Con apoyos** | [versión con pistas/organizador gráfico, máx. 10 palabras] | [ticket con líneas de inicio o conectores, máx. 10 palabras] |
+| 🔴 **N3 — Intensivo** | [versión simplificada con mediación directa, máx. 10 palabras] | [ticket oral o de completación, máx. 10 palabras] |
+
 • HETEROEVALUACIÓN DOCENTE — Ticket de salida
 
-| Criterio | Logrado | Medianamente Logrado | Por Lograr | Adaptación Nivel 2 | Adaptación Nivel 3 |
+| Criterio | Logrado | Medianamente Logrado | Por Lograr | Adaptación N2 | Adaptación N3 |
 |---|---|---|---|---|---|
 | [Criterio 1 relacionado al OA] | [descripción logrado] | [descripción med. logrado] | [descripción por lograr] | [apoyo N2] | [apoyo N3] |
 | [Criterio 2 relacionado al OA] | [descripción logrado] | [descripción med. logrado] | [descripción por lograr] | [apoyo N2] | [apoyo N3] |
@@ -1206,12 +1219,16 @@ REGLAS DE DISEÑO DE LOS NUEVOS CAMPOS:
 • [Pregunta autoevaluación 1 sobre el proceso de la sesión]
 • [Pregunta autoevaluación 2 sobre el producto del ticket]
 • [Pregunta autoevaluación 3 sobre una dificultad superada]
-• [Pregunta autoevaluación 4 sobre conexión con aprendizaje previo]
 
 • COEVALUACIÓN SUGERIDA (evaluación entre pares)
-• [Pregunta coevaluación 1 sobre claridad de la opinión del par]
-• [Pregunta coevaluación 2 sobre evidencia o ejemplo usado por el par]
-• [Pregunta coevaluación 3 sobre algo que destacarías del trabajo del par]
+
+| Criterio | ✓ Sí | △ Parcialmente | ✗ No |
+|---|---|---|---|
+| [Criterio 1: aspecto observable de la participación del par] | | | |
+| [Criterio 2: uso de evidencia o argumento del par] | | | |
+| [Criterio 3: algo que destacarías del trabajo del par] | | | |
+
+💬 Comentario al par: ___________________________
 3. EVALUACIÓN LECTORA (reading_level_eval):
    Nivel de lectura estimado y alerta de complejidad.
 4. RESUMEN CURRICULAR COMPACTO (curricular_summary):
