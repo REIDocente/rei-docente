@@ -420,7 +420,7 @@ ${pedagogicalStructureInstructions}
   Diseña las evaluaciones de forma flexible y sugerida. NO exijas autoevaluación, coevaluación y heteroevaluación de manera obligatoria en todas las clases:
   1. **Heteroevaluación docente (RÚBRICA EN TABLA):** Esta siempre debe incluirse (tabla compacta con columnas: Criterio | Logrado | Medianamente Logrado | Por Lograr | Adaptación Nivel 2 | Adaptación Nivel 3). Exactamente 4 criterios esenciales con descripciones cortas de 1 línea.
   2. **Autoevaluación:** Inclúyela (2-3 preguntas) ÚNICAMENTE si la clase es de trabajo individual complejo o reflexión profunda de cierre. Si la clase es muy corta o meramente expositiva, no la incluyas.
-  3. **Coevaluación:** Inclúyela ÚNICAMENTE si en el desarrollo de la sesión hay trabajo colaborativo o en parejas. Debe ser una TABLA estructurada (Criterio | ✓ Sí | △ Parcialmente | ✗ No) con 3 criterios observables entre pares y una línea de comentario al final. NO uses solo viñetas sueltas.
+  3. **Coevaluación:** Inclúyela ÚNICAMENTE si en el desarrollo de la sesión hay trabajo colaborativo o en parejas. Debe ser una TABLA estructurada (Criterio | Sí | Parcialmente | No) con 3 criterios observables entre pares y una línea de comentario al final. NO uses solo viñetas sueltas.
   La rúbrica resultante debe contener sugeridas solo las que apliquen según la sesión descrita, evitando relleno artificial.
 
 ▸ FIDELIDAD CURRICULAR
@@ -1198,14 +1198,6 @@ REGLAS DE DISEÑO DE LOS NUEVOS CAMPOS:
 2. RÚBRICA DE EVALUACIÓN SUGERIDA (rubric):
    USA OBLIGATORIAMENTE ESTA PLANTILLA EXACTA. Solo reemplaza el contenido entre corchetes [así] con texto conciso (máximo 10 palabras por celda). NO modifiques la estructura, los encabezados ni las viñetas:
 
-• APOYOS POR NIVEL
-
-| | Práctica autónoma | Ticket de salida |
-|---|---|---|
-| 🟢 **N1 — Universal** | [versión estándar sin andamios, máx. 10 palabras] | [ticket completo sin apoyos, máx. 10 palabras] |
-| 🟡 **N2 — Con apoyos** | [versión con pistas/organizador gráfico, máx. 10 palabras] | [ticket con líneas de inicio o conectores, máx. 10 palabras] |
-| 🔴 **N3 — Intensivo** | [versión simplificada con mediación directa, máx. 10 palabras] | [ticket oral o de completación, máx. 10 palabras] |
-
 • HETEROEVALUACIÓN DOCENTE — Ticket de salida
 
 | Criterio | Logrado | Medianamente Logrado | Por Lograr | Adaptación N2 | Adaptación N3 |
@@ -1222,13 +1214,13 @@ REGLAS DE DISEÑO DE LOS NUEVOS CAMPOS:
 
 • COEVALUACIÓN SUGERIDA (evaluación entre pares)
 
-| Criterio | ✓ Sí | △ Parcialmente | ✗ No |
+| Criterio | Sí | Parcialmente | No |
 |---|---|---|---|
 | [Criterio 1: aspecto observable de la participación del par] | | | |
 | [Criterio 2: uso de evidencia o argumento del par] | | | |
 | [Criterio 3: algo que destacarías del trabajo del par] | | | |
 
-💬 Comentario al par: ___________________________
+Comentario al par: ___________________________
 3. EVALUACIÓN LECTORA (reading_level_eval):
    Nivel de lectura estimado y alerta de complejidad.
 4. RESUMEN CURRICULAR COMPACTO (curricular_summary):
