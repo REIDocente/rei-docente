@@ -120,19 +120,6 @@
       "nombre": "Unidad 2",
       "oas": [
         {
-          "codigo": "OA 4",
-          "texto": "Leer independientemente y familiarizarse con un amplio repertorio de literatura para aumentar su conocimiento del mundo y desarrollar su imaginación; por ejemplo: ú poemas ú cuentos folclóricos y de autor ú fábulas ú otros",
-          "indicadores": [
-            "Mencionan personajes de las obras leídas.",
-            "Mencionan textos y autores que han leído.",
-            "Relacionan aspectos de un texto leído y comentado en clases con otros textos leídos previamente.",
-            "Releen los textos que conocen.",
-            "Seleccionan textos para leer por su cuenta.",
-            "Recomiendan textos a otros.",
-            "Manifiestan su preferencia por algún texto."
-          ]
-        },
-        {
           "codigo": "OA 6",
           "texto": "Leer habitualmente y dis2 frutar los mejores poemas Lectura de autor y de la tradición El pero oral adecuados a su edad. ritmo y el explicados ilustración poema ! Observaciones mente sonidos",
           "indicadores": [
@@ -146,32 +133,10 @@
           ]
         },
         {
-          "codigo": "OA 7",
-          "texto": "Leer independientemente y comprender textos no literarios (cartas, notas, instrucciones y artículos informativos) para entretenerse y ampliar su conocimiento del mundo: ú extrayendo información explícita e implícita ú comprendiendo la información que aportan las ilustraciones y los símbolos a un texto ú formulando una opinión sobre algún aspecto de la lectura diarios, instrucciones Vista bufanda derecha amarrado todo estudiante y otro cumplió Cada ! Observaciones Para guiar lectora esta para",
-          "indicadores": [
-            "Explican, oralmente o por escrito, información que han aprendido o descubierto en los textos que leen.",
-            "Contestan, oralmente o por escrito, preguntas que aluden a información explícita o implícita de un texto leído.",
-            "Mencionan información del texto leído que se relaciona con información que han aprendido en otras asignaturas u otros textos.",
-            "Describen las imágenes del texto.",
-            "Mencionan datos que aparecen en las ilustraciones de un texto.",
-            "Evalúan si la imagen de un texto corresponde a la información que aparece en él.",
-            "Cumplen exitosamente la tarea descrita en las instrucciones leídas.",
-            "Expresan opiniones y las justifican, mencionando información extraída de textos leídos."
-          ]
-        },
-        {
           "codigo": "OA 10",
           "texto": "Buscar información sobre 1 un tema en una fuente Buscar dada por el docente (página de internet, sección del sobre diario, capítulo de un libro, de etc.), para llevar a cabo una tamiento cómo investigación. Búsqueda fuentes revistas, lleva investiguen diferentes mente Cada",
           "indicadores": [
             "Escriben un párrafo para comunicar lo aprendido en la fuente leída."
-          ]
-        },
-        {
-          "codigo": "OA 14",
-          "texto": "Escribir artículos informativos para comunicar información sobre un tema.",
-          "indicadores": [
-            "Escriben un párrafo sobre un tema.",
-            "Incorporan en sus párrafos descripciones o datos sobre el tema."
           ]
         },
         {
@@ -239,41 +204,6 @@
           ]
         },
         {
-          "codigo": "OA 4",
-          "texto": "Leer independientemente y familiarizarse con Guía un amplio repertorio de El literatura para aumentar su conocimiento del mundo y clases. desarrollar su imaginación; por ejemplo: ú cuentos folclóricos y de ú autor ú",
-          "indicadores": [
-            "Mencionan personajes de las obras leídas.",
-            "Mencionan textos y autores que han leído.",
-            "Relacionan aspectos de un texto leído y comentado en clases con otros textos leídos previamente.",
-            "Releen los textos que conocen.",
-            "Seleccionan textos para leer por su cuenta.",
-            "Recomiendan textos a otros.",
-            "Manifiestan su preferencia por algún texto."
-          ]
-        },
-        {
-          "codigo": "OA 5",
-          "texto": "demostrar comprensión de las narraciones leídas: ú extrayendo información explícita e implícita álbum ú reconstruyendo la seA cuencia de las acciones crean incluir en la historia ú identificando y descritan biendo las caracterísen ticas físicas y los sentipuede tríptico mientos de los distintos personajes Esta ú recreando, por medio de distintas expresio3 nes (dibujos, modelos Acordeón tridimensionales u otras), A el ambiente en el que recuentan ocurre la acción cimientos ú estableciendo relaciones entre el texto y sus horizontal. propias experiencias ú emitiendo una opinión 4 sobre un aspecto de la Maqueta lectura Los cho) incluir están",
-          "indicadores": [
-            "Comparan a los personajes con personas que conocen.",
-            "Establecen si están de acuerdo o no con acciones realizadas por los personajes y explican por qué.",
-            "Explican por qué les gusta o no una narración."
-          ]
-        },
-        {
-          "codigo": "OA 6",
-          "texto": "Leer habitualmente y disfrutar los mejores poemas de autor y de la tradición oral adecuados a su edad.",
-          "indicadores": [
-            "Dibujan imágenes de poemas que les gusten.",
-            "Explican versos del poema.",
-            "Subrayan y leen en voz alta versos de los poemas leídos en clases que les gustan.",
-            "Recitan poemas seleccionados por ellos.",
-            "Nombran su poema favorito.",
-            "Nombran autores de poemas que les gustan.",
-            "Escogen poemas para leer a otros."
-          ]
-        },
-        {
           "codigo": "OA 13",
           "texto": "Escribir creativamente narraciones (experiencias personales, relatos de hechos, cuentos, etc.) que tengan inicio, desarrollo y desenlace. Narración toria sonaje (Historia, ! Observaciones",
           "indicadores": [
@@ -315,40 +245,6 @@
             "Luego les entrega un texto en el cual artículos no concuerdan con los sustantivos para que estudiantes los corrijan en sus cuadernos.",
             "Discuten sobre qué problemas de comunicación podrían tener si escriben frases como “mi tía lindo”."
           ]
-        },
-        {
-          "codigo": "OA 25",
-          "texto": "Participar activamente en conversaciones grupales sobre textos leídos o escuchados en clases o temas de su interés: ú manteniendo el foco de la conversación ú expresando sus ideas u opiniones ú formulando preguntas para aclarar dudas ú demostrando interés ante lo escuchado ú mostrando empatía frente a situaciones expresadas por otros ú respetando turnos otro”. personaje introducirse docente haría Invita tes,",
-          "indicadores": [
-            "Aportan información que se relaciona con el tema sobre el cual se conversa.",
-            "Hacen comentarios que demuestran empatía por lo que expresa un compañero.",
-            "Expresan desacuerdo frente a opiniones emitidas por otros sin descalificar las ideas ni al emisor."
-          ]
-        },
-        {
-          "codigo": "OA 27",
-          "texto": "Expresarse de manera coherente y articulada sobre Presentación temas de su interés: Cada ú presentando inforcon necesarias mación o narrando un evento relacionado con incluya: el tema ú incorporando frases descriptivas que ilustren ú lo dicho ú ú utilizando un vocabulario variado ú pronunciando adecuadamente y usando un 2 volumen audible Un ú manteniendo una postuA cente ra adecuada najes considerando Después galería (Historia,",
-          "indicadores": [
-            "Exponen sobre un tema.",
-            "Describen el objeto o el evento que presentan.",
-            "Expresan al menos dos ideas relacionadas con el tema elegido.",
-            "Expresan las ideas sobre el tema sin hacer digresiones.",
-            "Comunican sus ideas sin recurrir a gestos ni al contexto.",
-            "Incorporan un vocabulario variado en sus intervenciones.",
-            "Incorporan, si es pertinente, palabras aprendidas recientemente.",
-            "Pronuncian cada una de las palabras de manera que todos las comprenden fácilmente."
-          ]
-        },
-        {
-          "codigo": "OA 30",
-          "texto": "recitar con entonación y expresión poemas, rimas, canciones, trabalenguas y adivinanzas para fortalecer la confianza en sí mismos, aumentar el vocabulario y desarrollar su capacidad expresiva. adelante participar expresión Poemas paran guía propios tican aportar Ejemplos Ejemplo 1 OA_5 Demostrar comprensión de las narraciones extrayendo información explícita identificando y describiendo las personajes recreando, por medio de distintas el ambiente en el que ocurre estableciendo relaciones entre ú emitiendo una opinión sobre iNdiCAdOrES dE EVALUACióN Contestan preguntas que aluden ú Hacen un recuento de la historia Caracterizan a los personajes mediante Describen, dibujan o recrean el Establecen si están de acuerdo por qué. Explican por qué les gusta o no Actividad ficha de lectura partirlo con el curso. El objetivo del para dar a entender por qué lo eligieron, Para ayudarlos a estructurar la información, como el siguiente: NOmBrE dEL LiBrO: Yaga y el hombrecillo De qué se trata el libro Personajes Describa a los personajes de la narración Información sobre un episodio Dibuje el episodio que más le gustó Razones de la elección ¿Qué fue lo que le gustó del relato? CritEriOS dE EVALUACióN Para evaluar, el docente debe considerar ú demuestran que leyeron el libro elegido completan cada parte de la ficha incluyen información que concuerda Ejemplo 2 OA_27 Expresarse de manera coherente y articulada presentando información o narrando incorporando frases descriptivas que ú utilizando un vocabulario variado pronunciando adecuadamente y manteniendo una postura adecuada",
-          "indicadores": [
-            "Recitan poemas o versos de memoria.",
-            "Recitan poemas con entonación.",
-            "Pronuncian adecuadamente las palabras.",
-            "Para esto, en grupos de cinco crean un menú en el que aparecen las secciones de bebida, entrada, platos de fondo, postre y café.",
-            "Cada miembro del grupo aprende un poema de acuerdo con la sección del menú."
-          ]
         }
       ],
       "temas": [
@@ -365,77 +261,12 @@
       "nombre": "Unidad 4",
       "oas": [
         {
-          "codigo": "OA 4",
-          "texto": "Leer independientemente y familiarizarse con un amplio repertorio de literatura para aumentar su conocimiento del mundo y desarrollar su imaginación; por ejemplo: ú cuentos folclóricos y de autor ú leyendas ú otros",
-          "indicadores": [
-            "Mencionan personajes de las obras leídas.",
-            "Mencionan textos y autores que han leído.",
-            "Relacionan aspectos de un texto leído y comentado en clases con otros textos leídos previamente.",
-            "Releen los textos que conocen.",
-            "Seleccionan textos para leer por su cuenta.",
-            "Recomiendan textos a otros.",
-            "Manifiestan su preferencia por algún texto."
-          ]
-        },
-        {
-          "codigo": "OA 5",
-          "texto": "demostrar comprensión de las narraciones leídas: ú extrayendo información explícita e implícita ú reconstruyendo la secuencia de las acciones en la historia ú identificando y describiendo las características físicas y los sentimientos de los distintos personajes ú recreando, por medio de distintas expresiones (dibujos, modelos tridimensionales u otras), el ambiente en el que ocurre la acción ú estableciendo relaciones entre el texto y sus propias experiencias ú emitiendo una opinión sobre un aspecto de la lectura Preguntas Después explícitamente ayudar elementos mientos. ! Observaciones respuestas",
-          "indicadores": [
-            "Comparan a los personajes con personas que conocen.",
-            "Establecen si están de acuerdo o no con acciones realizadas por los personajes y explican por qué.",
-            "Explican por qué les gusta o no una narración."
-          ]
-        },
-        {
-          "codigo": "OA 7",
-          "texto": "Leer independientemente 1 y comprender textos no diferenciar literarios (cartas, notas, A docente instrucciones y artículos informativos) para entrete¿Qué nerse y ampliar su conocia miento del mundo: tes encontraron ú extrayendo información explícita e implícita que ú comprendiendo la inuna formación que aportan actividad literarios las ilustraciones y los símbolos a un texto ú formulando una opinión 2 sobre algún aspecto de Explicar la lectura grupo relacionado. Luego, nuevamente información ideas pase leído.",
-          "indicadores": [
-            "Explican, oralmente o por escrito, información que han aprendido o descubierto en los textos que leen.",
-            "Contestan, oralmente o por escrito, preguntas que aluden a información explícita o implícita de un texto leído.",
-            "Mencionan información del texto leído que se relaciona con información que han aprendido en otras asignaturas u otros textos.",
-            "Describen las imágenes del texto.",
-            "Mencionan datos que aparecen en las ilustraciones de un texto.",
-            "Evalúan si la imagen de un texto corresponde a la información que aparece en él.",
-            "Cumplen exitosamente la tarea descrita en las instrucciones leídas.",
-            "Expresan opiniones y las justifican, mencionando información extraída de textos leídos."
-          ]
-        },
-        {
-          "codigo": "OA 13",
-          "texto": "Escribir creativamente narraciones (experiencias personales, relatos de hechos, cuentos, etc.) que tengan inicio, desarrollo y desenlace. Escribir durante tener tapa alumnos ! Observaciones actividad tomar tiempo",
-          "indicadores": [
-            "Escriben uno o más párrafos para narrar una experiencia o un evento imaginado.",
-            "Escriben narraciones en las cuales se desarrolla la historia a través de varias acciones.",
-            "Escriben narraciones que tienen un desenlace.",
-            "Revisan sus textos, tomando en cuenta que el texto se comprenda y el uso de mayúsculas, puntación, variedad en el vocabulario y concordancia.",
-            "De manera colectiva, construyen una historia en la que se presenta el objeto, luego se cuenta el problema que vive y finalmente se explica cómo lo solucionó.",
-            "Posteriormente, cada estudiante escribe la historia en su cuaderno, la revisa y agrega ilustraciones."
-          ]
-        },
-        {
-          "codigo": "OA 23",
-          "texto": "Comprender textos orales 1 (explicaciones, instruccioLugares nes, relatos, anécdotas, El poco etc.) para obtener información y desarrollar su que curiosidad por el mundo: alumnos. ú estableciendo coneuna xiones con sus propias experiencias ú ú identificando el propósiú formulando preguntas ú para obtener información adicional y aclarar dudas Finaliza dibujo ú respondiendo preguntas sobre información explí(Historia, cita e implícita ú formulando una opinión 2 sobre lo escuchado Explicación funcionamiento Después Para senten",
-          "indicadores": [
-            "Responden preguntas, usando de manera pertinente la información escuchada.",
-            "Expresan una opinión sobre algún aspecto de un texto escuchado y dan una razón."
-          ]
-        },
-        {
           "codigo": "OA 24",
           "texto": "disfrutar de la experiencia 1 de asistir a obras de teatro Antes infantiles o representaAntes sación ciones para ampliar sus posibilidades de expreobra sión, desarrollar su creatiqué vidad y familiarizarse con En sible, el género. Conversar Después estudiantes prensión. y pide diferentes originales imitar nunciación, Actuar personaje. y los identificar ñeros Después y sus género,",
           "indicadores": [
             "Relatan una parte de la obra de teatro infantil vista.",
             "Describen, oralmente o por escrito, la parte que más les gustó de una obra de teatro o representación vista.",
             "Nombran personajes favoritos de una obra de teatro o representación vista."
-          ]
-        },
-        {
-          "codigo": "OA 25",
-          "texto": "Participar activamente en conversaciones grupales sobre textos leídos o escuchados en clases o temas de su interés: ú manteniendo el foco de la conversación ú expresando sus ideas u opiniones ú formulando preguntas para aclarar dudas ú demostrando interés ante lo escuchado ú mostrando empatía frente a situaciones expresadas por otros ! ú respetando turnos",
-          "indicadores": [
-            "Aportan información que se relaciona con el tema sobre el cual se conversa.",
-            "Hacen comentarios que demuestran empatía por lo que expresa un compañero.",
-            "Expresan desacuerdo frente a opiniones emitidas por otros sin descalificar las ideas ni al emisor."
           ]
         },
         {

@@ -65,139 +65,141 @@ function mapNivelParam(nivelParam: string): string {
 }
 
 const FALLBACK_LESSONS: Record<string, Record<number, { numero: number; titulo: string; oa_codes: string[] }[]>> = {
+  // 1° Básico — OAs por unidad según Bases Curriculares MINEDUC + NotebookLM
+  // U1: OA 1,2,3,4,5,13,18,22,26  U2: OA 4,5,8,10,14,18,23,26
+  // U3: OA 4,5,6,7,8,9,10,14,23   U4: OA 5,6,7,8,9,10,14,20,25
   '1° Básico': {
     1: [
-      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 3', 'OA 4', 'OA 5'] },
-      { numero: 2, titulo: 'Escritura inicial', oa_codes: ['OA 13', 'OA 14', 'OA 15'] },
-      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 17', 'OA 21', 'OA 22'] },
+      { numero: 1, titulo: 'Lectoescritura inicial y conciencia fonológica', oa_codes: ['OA 1', 'OA 2', 'OA 3'] },
+      { numero: 2, titulo: 'Decodificación, fluidez y escritura inicial',    oa_codes: ['OA 4', 'OA 5', 'OA 13'] },
+      { numero: 3, titulo: 'Comprensión oral, interacción y poesía',          oa_codes: ['OA 18', 'OA 22', 'OA 26'] },
     ],
     2: [
-      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 3', 'OA 5', 'OA 8'] },
-      { numero: 2, titulo: 'Escritura inicial', oa_codes: ['OA 13', 'OA 14', 'OA 15'] },
-      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 17', 'OA 18', 'OA 21'] },
+      { numero: 1, titulo: 'Fluidez lectora y comprensión narrativa',        oa_codes: ['OA 4', 'OA 5', 'OA 8'] },
+      { numero: 2, titulo: 'Textos no literarios y escritura de oraciones',   oa_codes: ['OA 10', 'OA 14', 'OA 18'] },
+      { numero: 3, titulo: 'Expresión oral y poesía',                         oa_codes: ['OA 23', 'OA 26'] },
     ],
     3: [
-      { numero: 1, titulo: 'Lectura y comprensión', oa_codes: ['OA 4', 'OA 6', 'OA 7'] },
-      { numero: 2, titulo: 'Producción de textos', oa_codes: ['OA 13', 'OA 14', 'OA 15'] },
-      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 17', 'OA 21', 'OA 23'] },
+      { numero: 1, titulo: 'Lectura comprensiva con estrategias',            oa_codes: ['OA 4', 'OA 5', 'OA 6'] },
+      { numero: 2, titulo: 'Literatura variada, poesía y comprensión',        oa_codes: ['OA 7', 'OA 8', 'OA 9'] },
+      { numero: 3, titulo: 'Textos no literarios, escritura y oralidad',      oa_codes: ['OA 10', 'OA 14', 'OA 23'] },
     ],
     4: [
-      { numero: 1, titulo: 'Lectura y comprensión', oa_codes: ['OA 5', 'OA 6', 'OA 7'] },
-      { numero: 2, titulo: 'Producción de textos', oa_codes: ['OA 14', 'OA 15', 'OA 16'] },
-      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 17', 'OA 21', 'OA 25'] },
+      { numero: 1, titulo: 'Consolidación de la lectura autónoma',           oa_codes: ['OA 5', 'OA 6', 'OA 7'] },
+      { numero: 2, titulo: 'Comprensión, poesía y textos no literarios',      oa_codes: ['OA 8', 'OA 9', 'OA 10'] },
+      { numero: 3, titulo: 'Escritura, teatro y dramatización',               oa_codes: ['OA 14', 'OA 20', 'OA 25'] },
     ],
   },
+  // 2° Básico — OAs por unidad según Bases Curriculares MINEDUC + NotebookLM
+  // U1: OA 1,3,4,5,7,11,14,21,25,26  U2: OA 6,10,21,23,27,30
+  // U3: OA 3,13,19,20                 U4: OA 24,29
   '2° Básico': {
     1: [
-      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 3', 'OA 4', 'OA 6'] },
-      { numero: 2, titulo: 'Producción de textos escritos', oa_codes: ['OA 12', 'OA 13', 'OA 15'] },
-      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 21', 'OA 22', 'OA 23'] },
+      { numero: 1, titulo: 'Consolidación lectora y comprensión',            oa_codes: ['OA 1', 'OA 3', 'OA 4'] },
+      { numero: 2, titulo: 'Comprensión, vocabulario y textos no literarios', oa_codes: ['OA 5', 'OA 7', 'OA 11'] },
+      { numero: 3, titulo: 'Escritura, ortografía y comunicación oral',       oa_codes: ['OA 14', 'OA 21', 'OA 25'] },
     ],
     2: [
-      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 4', 'OA 5', 'OA 6'] },
-      { numero: 2, titulo: 'Producción de textos escritos', oa_codes: ['OA 12', 'OA 14', 'OA 15'] },
-      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 21', 'OA 23', 'OA 24'] },
+      { numero: 1, titulo: 'Poesía, investigación y ortografía',             oa_codes: ['OA 6', 'OA 10', 'OA 21'] },
+      { numero: 2, titulo: 'Comprensión oral, expresión y recitación',        oa_codes: ['OA 23', 'OA 27', 'OA 30'] },
     ],
     3: [
-      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 3', 'OA 5', 'OA 6'] },
-      { numero: 2, titulo: 'Producción de textos escritos', oa_codes: ['OA 13', 'OA 15', 'OA 16'] },
-      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 22', 'OA 23', 'OA 25'] },
+      { numero: 1, titulo: 'Comprensión lectora y escritura creativa',       oa_codes: ['OA 3', 'OA 13'] },
+      { numero: 2, titulo: 'Gramática: género, número y concordancia',        oa_codes: ['OA 19', 'OA 20'] },
     ],
     4: [
-      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 4', 'OA 5', 'OA 7'] },
-      { numero: 2, titulo: 'Producción de textos escritos', oa_codes: ['OA 13', 'OA 15', 'OA 17'] },
-      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 22', 'OA 24', 'OA 29'] },
+      { numero: 1, titulo: 'Teatro, dramatización y trabajo en equipo',      oa_codes: ['OA 24', 'OA 29'] },
     ],
   },
+  // 3° Básico — OAs por unidad según Bases Curriculares MINEDUC + NotebookLM
+  // U1: OA 2,3,4,6,14,22,26  U2: OA 5,9,10,22,24,28
+  // U3: OA 2,13,21,31         U4: OA 15,25,30
   '3° Básico': {
     1: [
-      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 2', 'OA 3', 'OA 4'] },
-      { numero: 2, titulo: 'Producción de textos escritos', oa_codes: ['OA 12', 'OA 14', 'OA 15'] },
-      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 21', 'OA 22', 'OA 26'] },
+      { numero: 1, titulo: 'Estrategias lectoras y literatura narrativa',    oa_codes: ['OA 2', 'OA 3', 'OA 4'] },
+      { numero: 2, titulo: 'Textos informativos, escritura y ortografía',    oa_codes: ['OA 6', 'OA 14', 'OA 22'] },
+      { numero: 3, titulo: 'Comunicación oral y conversación grupal',        oa_codes: ['OA 26'] },
     ],
     2: [
-      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 3', 'OA 5', 'OA 9'] },
-      { numero: 2, titulo: 'Producción de textos escritos', oa_codes: ['OA 12', 'OA 14', 'OA 16'] },
-      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 21', 'OA 24', 'OA 28'] },
+      { numero: 1, titulo: 'Poesía, investigación y vocabulario',           oa_codes: ['OA 5', 'OA 9', 'OA 10'] },
+      { numero: 2, titulo: 'Ortografía avanzada, comprensión oral y oralidad', oa_codes: ['OA 22', 'OA 24', 'OA 28'] },
     ],
     3: [
-      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 2', 'OA 4', 'OA 5'] },
-      { numero: 2, titulo: 'Producción de textos escritos', oa_codes: ['OA 13', 'OA 15', 'OA 16'] },
-      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 22', 'OA 23', 'OA 26'] },
+      { numero: 1, titulo: 'Estrategias avanzadas y escritura creativa',    oa_codes: ['OA 2', 'OA 13'] },
+      { numero: 2, titulo: 'Gramática: pronombres y recitación',             oa_codes: ['OA 21', 'OA 31'] },
     ],
     4: [
-      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 3', 'OA 4', 'OA 6'] },
-      { numero: 2, titulo: 'Producción de textos escritos', oa_codes: ['OA 15', 'OA 16', 'OA 17'] },
-      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 22', 'OA 24', 'OA 25'] },
+      { numero: 1, titulo: 'Escritura variada, teatro y caracterización',   oa_codes: ['OA 15', 'OA 25', 'OA 30'] },
     ],
   },
+  // 4° Básico — OAs por unidad según Bases Curriculares MINEDUC + NotebookLM
+  // U1: OA 2,3,4,6,12,17,21,23   U2: OA 5,14,16,21,27,30
+  // U3: OA 2,9,13                 U4: OA 3,19,20,24,29
   '4° Básico': {
     1: [
-      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 2', 'OA 3', 'OA 4'] },
-      { numero: 2, titulo: 'Producción de textos escritos', oa_codes: ['OA 12', 'OA 14', 'OA 15'] },
-      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 21', 'OA 22', 'OA 23'] },
+      { numero: 1, titulo: 'Estrategias lectoras y literatura narrativa',      oa_codes: ['OA 2', 'OA 3', 'OA 4'] },
+      { numero: 2, titulo: 'Textos no literarios, escritura y edición',        oa_codes: ['OA 6', 'OA 12', 'OA 17'] },
+      { numero: 3, titulo: 'Ortografía y comprensión de textos orales',        oa_codes: ['OA 21', 'OA 23'] },
     ],
     2: [
-      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 3', 'OA 4', 'OA 5'] },
-      { numero: 2, titulo: 'Producción de textos escritos', oa_codes: ['OA 14', 'OA 15', 'OA 16'] },
-      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 21', 'OA 23', 'OA 24'] },
+      { numero: 1, titulo: 'Poesía, formatos de escritura y planificación',    oa_codes: ['OA 5', 'OA 14', 'OA 16'] },
+      { numero: 2, titulo: 'Ortografía, expresión oral y recitación',          oa_codes: ['OA 21', 'OA 27', 'OA 30'] },
     ],
     3: [
-      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 2', 'OA 3', 'OA 6'] },
-      { numero: 2, titulo: 'Producción de textos escritos', oa_codes: ['OA 13', 'OA 15', 'OA 16'] },
-      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 22', 'OA 23', 'OA 27'] },
+      { numero: 1, titulo: 'Investigación, búsqueda y escritura informativa',  oa_codes: ['OA 2', 'OA 9', 'OA 13'] },
     ],
     4: [
-      { numero: 1, titulo: 'Lectura y comprensión literaria', oa_codes: ['OA 3', 'OA 4', 'OA 6'] },
-      { numero: 2, titulo: 'Producción de textos escritos', oa_codes: ['OA 12', 'OA 15', 'OA 17'] },
-      { numero: 3, titulo: 'Comunicación oral', oa_codes: ['OA 22', 'OA 24', 'OA 29'] },
+      { numero: 1, titulo: 'Novela, gramática verbal y adverbial',             oa_codes: ['OA 3', 'OA 19', 'OA 20'] },
+      { numero: 2, titulo: 'Teatro y caracterización de personajes',           oa_codes: ['OA 24', 'OA 29'] },
     ],
   },
+  // 5° Básico — OAs por unidad según Bases Curriculares MINEDUC + NotebookLM
+  // U1: OA 2,3,4,6,7,8,11,15,17,18,24   U2: OA 3,4,5,14,18,20,21,22,26,30
+  // U3: OA 3,4,16,18,22,24,25,26,30      U4: OA 2,6,7,8,15,17,18,24,28
   '5° Básico': {
     1: [
-      { numero: 1, titulo: 'Fútbol y trabajo en equipo', oa_codes: ['OA 1', 'OA 3', 'OA 9'] },
-      { numero: 2, titulo: 'Jugar como niña', oa_codes: ['OA 6', 'OA 24', 'OA 26'] },
-      { numero: 3, titulo: 'Deporte y perseverancia', oa_codes: ['OA 11', 'OA 17', 'OA 18'] }
+      { numero: 1, titulo: 'Fútbol y trabajo en equipo',          oa_codes: ['OA 2', 'OA 3', 'OA 4'] },
+      { numero: 2, titulo: 'Jugar como niña',                     oa_codes: ['OA 6', 'OA 7', 'OA 24'] },
+      { numero: 3, titulo: 'Deporte y perseverancia',             oa_codes: ['OA 11', 'OA 17', 'OA 18'] }
     ],
     2: [
-      { numero: 4, titulo: 'Emociones en verso', oa_codes: ['OA 5', 'OA 9', 'OA 26'] },
-      { numero: 5, titulo: 'Narrar para no olvidar', oa_codes: ['OA 3', 'OA 14', 'OA 17'] },
-      { numero: 6, titulo: 'Vientos que arrasan', oa_codes: ['OA 2', 'OA 6', 'OA 7'] }
+      { numero: 4, titulo: 'Emociones en verso',                  oa_codes: ['OA 5', 'OA 26', 'OA 30'] },
+      { numero: 5, titulo: 'Narrar para no olvidar',              oa_codes: ['OA 3', 'OA 4', 'OA 14'] },
+      { numero: 6, titulo: 'Vientos que arrasan',                 oa_codes: ['OA 20', 'OA 21', 'OA 22'] }
     ],
     3: [
-      { numero: 7, titulo: 'Coexistir en armonía', oa_codes: ['OA 2', 'OA 5', 'OA 9'] },
-      { numero: 8, titulo: 'Guardianes de la naturaleza', oa_codes: ['OA 3', 'OA 24', 'OA 26'] },
-      { numero: 9, titulo: 'Pueblos Originarios: Espíritu Verde', oa_codes: ['OA 6', 'OA 14', 'OA 18'] }
+      { numero: 7, titulo: 'Coexistir en armonía',               oa_codes: ['OA 3', 'OA 4', 'OA 16'] },
+      { numero: 8, titulo: 'Guardianes de la naturaleza',         oa_codes: ['OA 18', 'OA 24', 'OA 25'] },
+      { numero: 9, titulo: 'Pueblos Originarios: Espíritu Verde', oa_codes: ['OA 22', 'OA 26', 'OA 30'] }
     ],
     4: [
-      { numero: 10, titulo: 'Viajar para volver a empezar', oa_codes: ['OA 3', 'OA 9', 'OA 17'] },
-      { numero: 11, titulo: 'Viajes migratorios', oa_codes: ['OA 6', 'OA 11', 'OA 28'] }
+      { numero: 10, titulo: 'Viajar para volver a empezar',      oa_codes: ['OA 2', 'OA 6', 'OA 7'] },
+      { numero: 11, titulo: 'Viajes migratorios',                 oa_codes: ['OA 8', 'OA 17', 'OA 28'] }
     ]
   },
-  // 6° Básico — OAs por unidad según curriculum_6B.json
-  // U1: OA 2,3,4,14,16,18,21,22,27,31
-  // U2: OA 2,3,5,6,8,15,17,18,24,31
-  // U3: OA 3,4,16,18,22,24,25,26,27,31
-  // U4: OA 2,6,7,8,11,15,17,18,27,29
+  // 6° Básico — OAs por unidad según Bases Curriculares MINEDUC + NotebookLM ✅ verificado
+  // U1: OA 2,3,4,14,16,18,21,22,27,31   U2: OA 2,3,5,6,8,15,17,18,24,31
+  // U3: OA 3,4,16,18,22,24,25,26,27,31  U4: OA 2,6,7,8,11,15,17,18,27,29
   '6° Básico': {
     1: [
-      { numero: 1, titulo: 'Literatura narrativa y comprensión lectora', oa_codes: ['OA 3', 'OA 4', 'OA 2'] },
-      { numero: 2, titulo: 'Escritura creativa y comentario lector',     oa_codes: ['OA 14', 'OA 16', 'OA 18'] },
-      { numero: 3, titulo: 'Gramática, ortografía y oralidad',           oa_codes: ['OA 21', 'OA 22', 'OA 27'] }
+      { numero: 1, titulo: 'Estrategias lectoras y literatura narrativa',  oa_codes: ['OA 2', 'OA 3', 'OA 4'] },
+      { numero: 2, titulo: 'Escritura creativa, comentario y edición',     oa_codes: ['OA 14', 'OA 16', 'OA 18'] },
+      { numero: 3, titulo: 'Gramática, ortografía y narración oral',       oa_codes: ['OA 21', 'OA 27', 'OA 31'] }
     ],
     2: [
-      { numero: 4, titulo: 'Literatura y análisis poético',              oa_codes: ['OA 3', 'OA 5', 'OA 2'] },
-      { numero: 5, titulo: 'Textos no literarios y síntesis',            oa_codes: ['OA 6', 'OA 8', 'OA 15'] },
-      { numero: 6, titulo: 'Producción de textos y comunicación oral',   oa_codes: ['OA 17', 'OA 18', 'OA 24'] }
+      { numero: 4, titulo: 'Poesía y análisis de recursos sonoros',        oa_codes: ['OA 3', 'OA 5', 'OA 2'] },
+      { numero: 5, titulo: 'Textos no literarios, síntesis e investigación', oa_codes: ['OA 6', 'OA 8', 'OA 15'] },
+      { numero: 6, titulo: 'Artículos informativos, oralidad y recitación', oa_codes: ['OA 17', 'OA 24', 'OA 31'] }
     ],
     3: [
-      { numero: 7, titulo: 'Literatura y análisis narrativo',            oa_codes: ['OA 3', 'OA 4', 'OA 16'] },
-      { numero: 8, titulo: 'Escritura, ortografía y comprensión oral',   oa_codes: ['OA 18', 'OA 22', 'OA 24'] },
-      { numero: 9, titulo: 'Publicidad, teatro y diálogo',               oa_codes: ['OA 25', 'OA 26', 'OA 27'] }
+      { numero: 7, titulo: 'Literatura narrativa: fábulas, mitos e historietas', oa_codes: ['OA 3', 'OA 4', 'OA 22'] },
+      { numero: 8, titulo: 'Comprensión oral, publicidad y apreciación teatral',  oa_codes: ['OA 24', 'OA 25', 'OA 26'] },
+      { numero: 9, titulo: 'Diálogo colaborativo y dramatización',                oa_codes: ['OA 27', 'OA 31'] }
     ],
     4: [
-      { numero: 10, titulo: 'Textos no literarios y evaluación crítica', oa_codes: ['OA 6', 'OA 7', 'OA 8'] },
-      { numero: 11, titulo: 'Investigación, escritura y oralidad',       oa_codes: ['OA 11', 'OA 15', 'OA 17'] }
+      { numero: 10, titulo: 'Comprensión crítica y búsqueda de información', oa_codes: ['OA 2', 'OA 6', 'OA 7'] },
+      { numero: 11, titulo: 'Síntesis, escritura de artículos y edición',    oa_codes: ['OA 8', 'OA 11', 'OA 15'] },
+      { numero: 12, titulo: 'Artículo de investigación, diálogo y exposición oral', oa_codes: ['OA 17', 'OA 27', 'OA 29'] }
     ]
   },
   // 7° Básico — 7 unidades, OAs según Programa MINEDUC Dec. 628/2016

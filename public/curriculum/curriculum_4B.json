@@ -7,6 +7,16 @@
       "nombre": "Unidad 1",
       "oas": [
         {
+          "codigo": "OA 2",
+          "texto": "Comprender textos aplicando estrategias de modelado comprensión lectora; por El ejemplo: para complejas ú releer lo que no fue comprendido esos ú recapitular texto ú formular preguntas sobre partes entender lo leído y responderlas ú subrayar información texto, relevante en un texto lo relevante. detengan tienen tos. importantes textos deben luarlos Esta",
+          "indicadores": [
+            "Marcan los párrafos que no comprenden y los releen.",
+            "Hacen una recapitulación, oralmente o por escrito, de un texto leído.",
+            "Escriben preguntas al margen del texto sobre lo que no comprenden o lo que quieren profundizar.",
+            "Subrayan la información más relevante de cada párrafo."
+          ]
+        },
+        {
           "codigo": "OA 3",
           "texto": "Leer y familiarizarse con un amplio repertorio de recapitulación literatura para aumentar su El dulada. conocimiento del mundo y desarrollar su imaginación; profesor por ejemplo: mación ú cuentos folclóricos y de Ryünosuke autor ú ú fábulas",
           "indicadores": [
@@ -27,31 +37,22 @@
           ]
         },
         {
-          "codigo": "OA 5",
-          "texto": "Comprender poemas adecuados al nivel e interpretar el lenguaje figurado presente en ellos. Versos otros descripción Después Rafael física nando texto. explican Usar cios estas significado y comprueban objetivo función Lectura docente elige Profundizar 6 Antología repartida por el CRA con el programa",
+          "codigo": "OA 6",
+          "texto": "Leer independientemente y comprender textos no literarios (cartas, biografías, relatos históricos, instrucciones, libros y artículos informativos, noticias, etc.) para ampliar su conocimiento del mundo y formarse una opinión: ú extrayendo información explícita e implícita ú utilizando los organizadores de textos expositivos (títulos, subtítulos, índice y glosario) para encontrar información específica ú comprendiendo la información entregada por textos discontinuos, como imágenes, gráficos, tablas, mapas o diagramas ú interpretando expresiones en lenguaje figurado ú comparando información ú respondiendo preguntas como ¿por qué sucede…?, ¿cuál es la consecuencia de…?, ¿qué sucedería si…? ú formulando una opinión sobre algún aspecto de la lectura ú fundamentando su opinión con información del texto o sus conocimientos previos para profesor estudiante nuevamente tas, correctamente Ubicar copia para texto independiente, glosario. buscando texto. elementos Comprender texto textos textos aportan",
           "indicadores": [
-            "Dibujan imágenes de poemas que les gusten.",
-            "Explican, oralmente o por escrito, qué les gustó o no de un poema."
+            "Relacionan información del texto con sus experiencias y conocimientos.",
+            "Explican, oralmente o por escrito, la información que han aprendido o descubierto en los textos que leen.",
+            "Aluden a información implícita o explícita de un texto leído al comentar o escribir."
           ]
         },
         {
-          "codigo": "OA 14",
-          "texto": "Escribir cartas, instrucciones, afiches, reportes de una experiencia o noticias, entre otros, para lograr diferentes propósitos: ú usando un formato adecuado ú transmitiendo el mensaje con claridad serven (Historia, Periódico Durante estudiante sante nuevas reseña Después pide letras deben contratapa. actividad busquen, tener Esta instrucciones cómo para ellos Esta Compartir persona haya despedida texto destinatarios Esta",
+          "codigo": "OA 12",
+          "texto": "Escribir creativamente 1 narraciones (experiencias Biografía personales, relatos de hechos, cuentos, etc.) que del incluyan: su ú una secuencia lógica de compañero editada eventos ú inicio, desarrollo y desy las enlace para ú conectores adecuados enseñarla ú descripciones ú un lenguaje expresivo 2 para desarrollar la acción Amigos para primer puede Cuento dola tiene deben Publicar historias este unidad, escuelas escribir, atractiva ! Observaciones Para aspectos:",
           "indicadores": [
-            "Eligen un formato adecuado a su propósito.",
-            "Comunican observaciones sobre una experiencia usando un formato elegido por ellos.",
-            "Escriben todos los pasos necesarios para llevar a cabo un procedimiento.",
-            "Secuencian cronológicamente los procedimientos necesarios para llevar a cabo una tarea.",
-            "Incluyen diagramas o dibujos para complementar información, si es pertinente."
-          ]
-        },
-        {
-          "codigo": "OA 16",
-          "texto": "Planificar la escritura: ú estableciendo propósito y destinatario ú generando ideas a partir de conversaciones, investigaciones, lluvia de ideas u otra estrategia ! Observaciones escritor Para fructífera conocen posible alumnos interesante",
-          "indicadores": [
-            "Explican sobre qué van a escribir.",
-            "Establecen el destinatario y el propósito de su texto.",
-            "Relatan a un compañero qué es lo que van a escribir."
+            "Eligen un tema que les interese para escribir un cuento.",
+            "Escriben experiencias personales.",
+            "Escriben una secuencia de acciones que se suceden de manera lógica.",
+            "Estructuran el relato en inicio, desarrollo y desenlace."
           ]
         },
         {
@@ -89,6 +90,60 @@
             "Comparan información proveniente de dos textos sobre un mismo tema.",
             "Responden preguntas sobre información explícita e implícita del texto escuchado."
           ]
+        }
+      ],
+      "temas": [
+        "Lectura de mitos, leyendas y narrativa: inquietudes humanas",
+        "Comprensión profunda de narraciones: información explícita e implícita",
+        "Lectura no literaria: artículos informativos, documentales y películas",
+        "Escritura de cartas formales e informales y noticias",
+        "Planificación y revisión del proceso de escritura",
+        "Comunicación oral: exposición organizada y recitación de poemas"
+      ]
+    },
+    {
+      "numero": 2,
+      "nombre": "Unidad 2",
+      "oas": [
+        {
+          "codigo": "OA 5",
+          "texto": "Comprender poemas adecuados al nivel e interpretar el lenguaje figurado presente en ellos. Versos otros descripción Después Rafael física nando texto. explican Usar cios estas significado y comprueban objetivo función Lectura docente elige Profundizar 6 Antología repartida por el CRA con el programa",
+          "indicadores": [
+            "Dibujan imágenes de poemas que les gusten.",
+            "Explican, oralmente o por escrito, qué les gustó o no de un poema."
+          ]
+        },
+        {
+          "codigo": "OA 14",
+          "texto": "Escribir cartas, instrucciones, afiches, reportes de una experiencia o noticias, entre otros, para lograr diferentes propósitos: ú usando un formato adecuado ú transmitiendo el mensaje con claridad serven (Historia, Periódico Durante estudiante sante nuevas reseña Después pide letras deben contratapa. actividad busquen, tener Esta instrucciones cómo para ellos Esta Compartir persona haya despedida texto destinatarios Esta",
+          "indicadores": [
+            "Eligen un formato adecuado a su propósito.",
+            "Comunican observaciones sobre una experiencia usando un formato elegido por ellos.",
+            "Escriben todos los pasos necesarios para llevar a cabo un procedimiento.",
+            "Secuencian cronológicamente los procedimientos necesarios para llevar a cabo una tarea.",
+            "Incluyen diagramas o dibujos para complementar información, si es pertinente."
+          ]
+        },
+        {
+          "codigo": "OA 16",
+          "texto": "Planificar la escritura: ú estableciendo propósito y destinatario ú generando ideas a partir de conversaciones, investigaciones, lluvia de ideas u otra estrategia ! Observaciones escritor Para fructífera conocen posible alumnos interesante",
+          "indicadores": [
+            "Explican sobre qué van a escribir.",
+            "Establecen el destinatario y el propósito de su texto.",
+            "Relatan a un compañero qué es lo que van a escribir."
+          ]
+        },
+        {
+          "codigo": "OA 21",
+          "texto": "Escribir correctamente 1 para facilitar la comprenguía sión por parte del lector, El diantes aplicando todas las reglas de ortografía literal y punEn tual aprendidas en años anteriores, además de: ú palabras con b-v ú ú palabras con h de uso Justifican frecuente go ú acentuación de palabras palabras agudas, graves, esdrújulas y sobreesdrújulas ave, polvo, invitar, ventana, guía diantes Justifican palabras arriba, buey, abrigo, tabla, llero, cabeza, Palabras hacia, hielo, mano, prohibido, adelante, palabras juegos como http://www.aplicacioneseducativas.net/ortograf-a-t-13.html http://apli.wordpress.com/ejercicios/ Observaciones Para revisen faltas ejercicio",
+          "indicadores": [
+            "Escriben correctamente las palabras que tienen b, v.",
+            "Escriben correctamente las palabras que comienzan con h, tales como hoy, ha habido, etc.",
+            "Escriben correctamente palabras con h como almohada, zanahoria, ahora, etc.",
+            "Tildan correctamente las palabras agudas, graves, esdrújulas y sobreesdrújulas en los textos que escriben.",
+            "Para practicar el uso de las palabras con h, los estudiantes escriben en grupos un texto en el que incluyen al menos cinco palabras de la lista anterior.",
+            "Pegan la cartulina en la pared de la sala para poder recurrir a ella cuando tengan dudas sobre esas palabras."
+          ]
         },
         {
           "codigo": "OA 27",
@@ -114,17 +169,17 @@
         }
       ],
       "temas": [
-        "Lectura de mitos, leyendas y narrativa: inquietudes humanas",
-        "Comprensión profunda de narraciones: información explícita e implícita",
-        "Lectura no literaria: artículos informativos, documentales y películas",
-        "Escritura de cartas formales e informales y noticias",
-        "Planificación y revisión del proceso de escritura",
-        "Comunicación oral: exposición organizada y recitación de poemas"
+        "Lectura de poesía: análisis e interpretación del lenguaje figurado",
+        "Lectura de narraciones: cuentos, fábulas y leyendas",
+        "Lectura no literaria: artículos informativos y reportes",
+        "Investigación: clasificar información de diversas fuentes",
+        "Escritura de textos con diversos propósitos comunicativos",
+        "Expresión oral coherente y organizada sobre temas de interés"
       ]
     },
     {
-      "numero": 2,
-      "nombre": "Unidad 2",
+      "numero": 3,
+      "nombre": "Unidad 3",
       "oas": [
         {
           "codigo": "OA 2",
@@ -134,35 +189,6 @@
             "Hacen una recapitulación, oralmente o por escrito, de un texto leído.",
             "Escriben preguntas al margen del texto sobre lo que no comprenden o lo que quieren profundizar.",
             "Subrayan la información más relevante de cada párrafo."
-          ]
-        },
-        {
-          "codigo": "OA 3",
-          "texto": "Leer y familiarizarse con un amplio repertorio de literatura para aumentar su conocimiento del mundo y desarrollar su imaginación; por ejemplo: ú cuentos de autor ú historietas",
-          "indicadores": [
-            "Mencionan textos y autores que han leído.",
-            "Relacionan aspectos de un texto leído y comentado en clases con otros textos leídos previamente.",
-            "Solicitan recomendaciones de textos similares a los leídos en clases.",
-            "Seleccionan textos para leer por su cuenta.",
-            "Recomiendan textos a otros."
-          ]
-        },
-        {
-          "codigo": "OA 4",
-          "texto": "Profundizar su comprensión de las narraciones leídas: ú extrayendo información explícita e implícita ú determinando las consecuencias de hechos o acciones ú describiendo y comparando a los personajes ú describiendo los diferentes ambientes que aparecen en un texto ú reconociendo el problema y la solución en una narración ú expresando opiniones fundamentadas sobre actitudes y acciones de los personajes ú comparando diferentes textos escritos por un mismo autor 7 Ilustrador argentino. Disponible en internet. guía agregando Opinión Después diante pone",
-          "indicadores": [
-            "Aluden, en sus comentarios orales y escritos, a información explícita de un texto.",
-            "Contestan, oralmente o por escrito, preguntas que aluden a información implícita del texto.",
-            "Explican las consecuencias que tienen las acciones de ciertos personajes."
-          ]
-        },
-        {
-          "codigo": "OA 6",
-          "texto": "Leer independientemente y comprender textos no literarios (cartas, biografías, relatos históricos, instrucciones, libros y artículos informativos, noticias, etc.) para ampliar su conocimiento del mundo y formarse una opinión: ú extrayendo información explícita e implícita ú utilizando los organizadores de textos expositivos (títulos, subtítulos, índice y glosario) para encontrar información específica ú comprendiendo la información entregada por textos discontinuos, como imágenes, gráficos, tablas, mapas o diagramas ú interpretando expresiones en lenguaje figurado ú comparando información ú respondiendo preguntas como ¿por qué sucede…?, ¿cuál es la consecuencia de…?, ¿qué sucedería si…? ú formulando una opinión sobre algún aspecto de la lectura ú fundamentando su opinión con información del texto o sus conocimientos previos para profesor estudiante nuevamente tas, correctamente Ubicar copia para texto independiente, glosario. buscando texto. elementos Comprender texto textos textos aportan",
-          "indicadores": [
-            "Relacionan información del texto con sus experiencias y conocimientos.",
-            "Explican, oralmente o por escrito, la información que han aprendido o descubierto en los textos que leen.",
-            "Aluden a información implícita o explícita de un texto leído al comentar o escribir."
           ]
         },
         {
@@ -183,85 +209,30 @@
             "Eligen un tema interesante para escribir.",
             "Buscan y registran información para desarrollarlo."
           ]
-        },
-        {
-          "codigo": "OA 16",
-          "texto": "Planificar la escritura: 1 ú estableciendo propósito Lluvia y destinatario El interés ú generando ideas a partir de conversaciones, leído investigaciones, lluvia de plantean ideas u otra estrategia el antiguo acotan ejemplo: alumnos información (Historia, gráfico tema pertinente escribir usando Luego, entrega mación docente escriban ! Observaciones útil mayor puede estudiantes comiencen organizadores",
-          "indicadores": [
-            "Explican sobre qué van a escribir.",
-            "Establecen el destinatario y el propósito de su texto.",
-            "Relatan a un compañero qué es lo que van a escribir."
-          ]
-        },
-        {
-          "codigo": "OA 17",
-          "texto": "Escribir, revisar y editar sus textos para satisfacer un propósito y transmitir sus ideas con claridad. durante este proceso: ú organizan las ideas en párrafos separados con punto aparte ú utilizan conectores apropiados ú emplean un vocabulario preciso y variado ú adecuan el registro al propósito del texto y al destinatario ú mejoran la redacción del texto a partir de sugerencias de los pares y el docente ú corrigen la ortografía y la presentación alumnos bras. Después repetidas nombres. ejerciten Leen Adaptado de la versión de los hermanos Grimm Pehuén. P 130.",
-          "indicadores": [
-            "Desarrollan ideas que tienen relación con el tema.",
-            "Separan las ideas en párrafos.",
-            "Utilizan conectores para relacionar las ideas del texto, como primero, luego, después, entonces, por eso, pero, así, porque, entre otros.",
-            "Reescriben sus textos corrigiendo la ortografía literal, acentual y puntual.",
-            "Adecuan el formato al propósito del texto para publicarlo."
-          ]
-        },
-        {
-          "codigo": "OA 27",
-          "texto": "Expresarse de manera coherente y articulada sobre temas de su interés: ú organizando las ideas en introducción, desarrollo y cierre ú incorporando descripciones y ejemplos que ilustren las ideas ú utilizando un vocabulario variado ú reemplazando los pronombres y algunos adverbios por construcciones sintácticas que expliciten o describan al referente ú usando gestos y posturas acordes a la situación ú usando material de apoyo (powerpoint, papelógrafo, objetos, etc.) si es pertinente Orientaciones didácticas para la unidad mEtACOgNiCióN Pensar metacognitivamente consiste en conciencia de cómo uno aprende y qué nismos pone en práctica para procesar información. La metacognición es una indispensable para que los alumnos puedan solucionar las dificultades y los desafíos presentan al leer, escribir, hablar y escuchar esta manera, puedan convertirse en comunicadores autónomos y competentes. Para esta habilidad, es necesario que el docente dele los procesos que lleva a cabo para procesar la información de un texto. El es importante porque, cuando el profesor liza sus propios procesos cognitivos y comparte con los estudiantes cómo llegó a una o cómo resolvió alguna dificultad, los amplían su repertorio de estrategias y den. Además, entienden que, para comprender o producir un texto, es necesario tener cia de cuándo se tiene una dificultad y puede solucionar. Una manera de fomentar la metacognición plantear preguntas o indicaciones que a los estudiantes a reflexionar sobre los que dan para resolver distintos desafíos: averiguar el significado de una palabra, llegar a una conclusión, cómo conectar informaciones para hacer una inferencia encontrar la idea central de un texto. preguntas tienen que ser contextualizadas no genéricas, de manera que el alumno reflexionar para luego solucionar un desafío concreto. Por ejemplo, no es conducente a los estudiantes que contesten una pregunta como “¿les costó entender el cuento?”, conscientes de los problemas de comprensión que tuvieron durante la lectura. Es más se parte de una situación específica, por plo: “¿Alguien tuvo problemas para comprender de quién se hablaba cuando…? ¿De quién habló en el párrafo anterior? Entonces, se refiere la frase «esa sucia rata»?”. Luego plantear estas preguntas y resolver el el profesor verbaliza la estrategia utilizada: como nos acaba de pasar, muchas veces selección y comprensión de las fuentes sultadas ú planificación de la escritura escritura y revisión del artículo informativo preparación y ensayo de la exposición oral elaboración del material de apoyo para sición oral Por último, es importante que los alumnos claro cuáles son las expectativas que tiene docente para cada una de las etapas del proyecto, para lo cual es útil contar con ejemplos escritos y en formato de video de trabajos destacados años anteriores. EsCritUrA dE ArtÍCULOs Poner por escrito las ideas es un proceso complejo y desafiante para los estudiantes y para facilitar esta tarea, el docente debe tener en consideración varios aspectos al momento de planificar: elegir temas interesantes y adecuados para edad Ejemplos",
-          "indicadores": [
-            "Se expresan sobre un tema: explicando claramente la idea que quieren transmitir usando ejemplos o fundamentos para extenderla usando un vocabulario preciso y variado adecuando su tono de voz, gestos y movimientos a la situación."
-          ]
         }
       ],
       "temas": [
-        "Lectura de poesía: análisis e interpretación del lenguaje figurado",
-        "Lectura de narraciones: cuentos, fábulas y leyendas",
-        "Lectura no literaria: artículos informativos y reportes",
-        "Investigación: clasificar información de diversas fuentes",
-        "Escritura de textos con diversos propósitos comunicativos",
-        "Expresión oral coherente y organizada sobre temas de interés"
+        "Lectura de cuentos de autor e historietas",
+        "Comprensión profunda: personajes, ambiente y consecuencias",
+        "Lectura no literaria: cartas, noticias y artículos",
+        "Escritura narrativa creativa: experiencias y relatos",
+        "Gramática: función de adverbios y verbos en textos",
+        "Teatro: asistir, caracterizar personajes y juego dramático"
       ]
     },
     {
-      "numero": 3,
-      "nombre": "Unidad 3",
+      "numero": 4,
+      "nombre": "Unidad 4",
       "oas": [
         {
           "codigo": "OA 3",
-          "texto": "Leer y familiarizarse con un amplio repertorio de literatura para aumentar su conocimiento del mundo y desarrollar su imaginación; por ejemplo: ú cuentos folclóricos y de autor ú novelas",
+          "texto": "Leer y familiarizarse con un amplio repertorio de recapitulación literatura para aumentar su El dulada. conocimiento del mundo y desarrollar su imaginación; profesor por ejemplo: mación ú cuentos folclóricos y de Ryünosuke autor ú ú fábulas",
           "indicadores": [
             "Mencionan textos y autores que han leído.",
             "Relacionan aspectos de un texto leído y comentado en clases con otros textos leídos previamente.",
             "Solicitan recomendaciones de textos similares a los leídos en clases.",
             "Seleccionan textos para leer por su cuenta.",
             "Recomiendan textos a otros."
-          ]
-        },
-        {
-          "codigo": "OA 4",
-          "texto": "Profundizar su comprensión de las narraciones leídas: ú extrayendo información explícita e implícita ú determinando las consecuencias de hechos o acciones ú describiendo y comparando a los personajes ú describiendo los diferentes ambientes que aparecen en un texto ú reconociendo el problema y la solución en una narración ú expresando opiniones fundamentadas sobre actitudes y acciones de los personajes ú comparando diferentes textos escritos por un mismo autor libro sación. y les lean Expresiones sobre interesa Comparación común; caperucita tres etcétera. contestan personajes. comparación versación diferencias. gustó descripción mismo todo comentan autor. desarrolla, bles",
-          "indicadores": [
-            "Aluden, en sus comentarios orales y escritos, a información explícita de un texto.",
-            "Contestan, oralmente o por escrito, preguntas que aluden a información implícita del texto.",
-            "Explican las consecuencias que tienen las acciones de ciertos personajes."
-          ]
-        },
-        {
-          "codigo": "OA 6",
-          "texto": "Leer independientemente y comprender textos no literarios (cartas, biografías, relatos históricos, instrucciones, libros y artículos informativos, noticias, etc.) para ampliar su conocimiento del mundo y formarse una opinión: ú extrayendo información explícita e implícita ú utilizando los organizadores de textos expositivos (títulos, subtítulos, índice y glosario) para encontrar información específica ú comprendiendo la información entregada por textos discontinuos, como imágenes, gráficos, tablas, mapas o diagramas ú interpretando expresiones en lenguaje figurado ú comparando información ú respondiendo preguntas como ¿por qué sucede…?, ¿cuál es la consecuencia de…?, ¿qué sucedería si…? ú formulando una opinión sobre algún aspecto de la lectura ú fundamentando su opinión con información del texto o sus conocimientos previos información recopilan Observaciones http://www.eduplace.com/graphicorganizer/spanish/ Búsqueda Luego sobre índices, hacen información",
-          "indicadores": [
-            "Relacionan información del texto con sus experiencias y conocimientos.",
-            "Explican, oralmente o por escrito, la información que han aprendido o descubierto en los textos que leen.",
-            "Aluden a información implícita o explícita de un texto leído al comentar o escribir."
-          ]
-        },
-        {
-          "codigo": "OA 12",
-          "texto": "Escribir creativamente 1 narraciones (experiencias Biografía personales, relatos de hechos, cuentos, etc.) que del incluyan: su ú una secuencia lógica de compañero editada eventos ú inicio, desarrollo y desy las enlace para ú conectores adecuados enseñarla ú descripciones ú un lenguaje expresivo 2 para desarrollar la acción Amigos para primer puede Cuento dola tiene deben Publicar historias este unidad, escuelas escribir, atractiva ! Observaciones Para aspectos:",
-          "indicadores": [
-            "Eligen un tema que les interese para escribir un cuento.",
-            "Escriben experiencias personales.",
-            "Escriben una secuencia de acciones que se suceden de manera lógica.",
-            "Estructuran el relato en inicio, desarrollo y desenlace."
           ]
         },
         {
@@ -283,39 +254,10 @@
           ]
         },
         {
-          "codigo": "OA 23",
-          "texto": "Comprender textos orales 1 (explicaciones, instruccioUna nes, noticias, documentaEl les, películas, testimonios, relatos, etc.) para obtener apoderado información y desarrodiantes llar su curiosidad por el a mundo: ú estableciendo conelas xiones con sus propias esta experiencias En agradecen ú identificando el propósito les ú formulando preguntas para obtener informa2 ción adicional, aclarar ideas dudas y profundizar la El comprensión idealmente ú estableciendo relaciones escuchen entre distintos textos ú respondiendo preguntas y les sobre información explísobre cita e implícita vayan ú formulando una opinión sobre lo escuchado do Escribe puestas cuenta ¿Quién seguir leyendo idea Conectar grupo argumentos Luego gumentos",
-          "indicadores": [
-            "Comparan lo escuchado con sus propias experiencias y conocimientos sobre el tema.",
-            "Conversan sobre los textos escuchados, destacando aspectos que les llamen la atención y fundamentando por qué.",
-            "Señalan qué aprendieron de los textos escuchados o vistos en clases.",
-            "Explican cuál es el propósito del emisor al elaborar el texto.",
-            "Formulan preguntas para aclarar o profundizar aspectos del texto escuchado en clases.",
-            "Comparan información proveniente de dos textos sobre un mismo tema.",
-            "Responden preguntas sobre información explícita e implícita del texto escuchado."
-          ]
-        },
-        {
           "codigo": "OA 24",
           "texto": "disfrutar de la experiencia 1 de asistir a obras de teatro representación infantiles o representaEl ciones para ampliar sus adecuada posibilidades de expreantes sión, desarrollar su creatividad y familiarizarse con preparar el género. iluminación momento convenciones teatro, ver, sobre actores comentan, Esta ! Observaciones miento, montada obra",
           "indicadores": [
             "Comentan qué aspectos de la historia les llamaron la atención y por qué."
-          ]
-        },
-        {
-          "codigo": "OA 25",
-          "texto": "Participar activamente en conversaciones grupales sobre textos leídos o escuchados en clases o temas de su interés: ú manteniendo el foco de la conversación ú expresando sus ideas u opiniones y fundamentándolas ú formulando preguntas para aclarar dudas y verificar la comprensión ú demostrando interés ante lo escuchado ú mostrando empatía frente a situaciones expresadas por otros ú respetando turnos",
-          "indicadores": [
-            "Comentan aspectos de los textos leídos o escuchados en clases.",
-            "Se ciñen al tema de la conversación.",
-            "Comparten conclusiones o inferencias extraídas del texto leído o escuchado en clases.",
-            "Fundamentan sus opiniones con ejemplos del texto.",
-            "Formulan preguntas para aclarar dudas.",
-            "Amplían lo dicho por otro con sus propios conocimientos sobre el tema.",
-            "Fundamentan sus opiniones con ejemplos del texto.",
-            "Hacen contacto visual con quien habla.",
-            "Hacen comentarios que demuestran empatía por lo que expresa un compañero.",
-            "Esperan que el interlocutor termine una idea para complementar lo dicho."
           ]
         },
         {
@@ -326,19 +268,6 @@
           ]
         }
       ],
-      "temas": [
-        "Lectura de cuentos de autor e historietas",
-        "Comprensión profunda: personajes, ambiente y consecuencias",
-        "Lectura no literaria: cartas, noticias y artículos",
-        "Escritura narrativa creativa: experiencias y relatos",
-        "Gramática: función de adverbios y verbos en textos",
-        "Teatro: asistir, caracterizar personajes y juego dramático"
-      ]
-    },
-    {
-      "numero": 4,
-      "nombre": "Unidad 4",
-      "oas": [],
       "temas": []
     }
   ]
