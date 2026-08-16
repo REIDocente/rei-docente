@@ -239,7 +239,12 @@ const FALLBACK_LESSONS: Record<string, Record<number, { numero: number; titulo: 
       { numero: 2, titulo: 'Tiempos verbales y textos audiovisuales',         oa_codes: ['OA 18', 'OA 20'] },
     ],
   },
-  // 8° Básico — 7 unidades, OAs según Programa MINEDUC Dec. 628/2016
+  // 8° Básico — 7 unidades, OAs según Programa MINEDUC + NotebookLM ✅ verificado
+  // OA 1 transversal. OA 2,3,8 se refuerzan en U2–U6.
+  // U1: OA 1,2,3,6,8,11,12,14,16,22     U2: OA 1,2,3,4,8,23,25,26
+  // U3: OA 1,2,3,8,12,13,17,18,22        U4: OA 1,2,3,4,8,15,16,19,21
+  // U5: OA 1,2,5,7,8,11,14,16,20,22      U6: OA 1,2,3,8,9,11,15,16,22
+  // U7: OA 1,9,10,15,16,21,22,23,24,25,26
   '8° Básico': {
     1: [ // Epopeya — OA 1,2,3,6,8,11,12,14,16,22
       { numero: 1, titulo: 'Lectura y análisis épico', oa_codes: ['OA 1', 'OA 2', 'OA 3'] },
