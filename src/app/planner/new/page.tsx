@@ -2550,13 +2550,30 @@ export default function NewPlannerPage() {
                         OAs cargados para la unidad completa ({suggestedOAs.length} objetivos)
                       </p>
                     </div>
-                    <div className="space-y-2">
-                      {suggestedOAs.map((oa) => (
-                        <div key={oa.codigo} className="flex items-start gap-2 text-[11px]">
-                          <span className="inline-flex items-center px-1.5 py-0.5 bg-violet-100 text-violet-700 font-black text-[8px] rounded-md flex-shrink-0 uppercase">{oa.codigo}</span>
-                          <span className="text-slate-700 leading-relaxed font-medium">{oa.texto}</span>
-                        </div>
-                      ))}
+                    <div className="space-y-3">
+                      {(['Lectura', 'Escritura', 'Comunicación oral'] as const).map(eje => {
+                        const ejeOas = suggestedOAs.filter(oa => (oa.eje || getEjeFromCodigo(oa.codigo, grade)) === eje);
+                        if (ejeOas.length === 0) return null;
+                        const EJE_M: Record<string, { border: string; header: string; badge: string }> = {
+                          'Lectura':           { border: 'border-violet-200', header: 'bg-violet-100 text-violet-700', badge: 'bg-violet-100 border-violet-200 text-violet-700' },
+                          'Escritura':         { border: 'border-emerald-200', header: 'bg-emerald-100 text-emerald-700', badge: 'bg-emerald-100 border-emerald-200 text-emerald-700' },
+                          'Comunicación oral': { border: 'border-amber-200', header: 'bg-amber-100 text-amber-700', badge: 'bg-amber-100 border-amber-200 text-amber-700' },
+                        };
+                        const s = EJE_M[eje];
+                        return (
+                          <div key={eje} className={`border ${s.border} rounded-xl overflow-hidden`}>
+                            <div className={`${s.header} px-3 py-1.5 text-[10px] font-black uppercase tracking-wider`}>{eje}</div>
+                            <div className="p-2 space-y-1.5">
+                              {ejeOas.map(oa => (
+                                <div key={oa.codigo} className="flex items-start gap-2 p-2 bg-white border border-slate-100 rounded-lg text-[11px]">
+                                  <span className={`inline-flex items-center px-1.5 py-0.5 border font-black text-[9px] rounded-md flex-shrink-0 uppercase ${s.badge}`}>{oa.codigo}</span>
+                                  <span className="text-slate-700 leading-relaxed font-medium">{oa.texto}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
