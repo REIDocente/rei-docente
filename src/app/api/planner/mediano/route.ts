@@ -24,7 +24,7 @@ import {
   WidthType, BorderStyle, AlignmentType, ShadingType,
 } from 'docx';
 
-interface OA { codigo: string; texto: string; }
+interface OA { codigo: string; texto: string; eje?: string; }
 interface Indicador { oaCodigo: string; texto: string; }
 
 // ── Carga de temas desde JSON curricular ─────────────────────────────────────
@@ -217,10 +217,27 @@ function filterIndicadores(inds: Indicador[]): Indicador[] {
   return clean.length > 0 ? clean : inds.filter(i => i.texto.trim().length <= 350 && !i.texto.startsWith('¿'));
 }
 
-/** Primera cláusula del texto (hasta primer punto, punto y coma o coma larga), máx max chars. */
+/** Primera cláusula del texto (hasta primer punto o punto y coma), sin truncar. */
 function extractTheme(text: string, max = 65): string {
   const first = text.split(/[.;]/)[0].trim();
-  return first.length > max ? first.slice(0, max - 1) + '…' : first;
+  // Sin elipsis: si la cláusula es larga se corta limpiamente en espacio
+  if (first.length <= max) return first;
+  const cut = first.slice(0, max).lastIndexOf(' ');
+  return first.slice(0, cut > 20 ? cut : max);
+}
+
+/** Determina el eje curricular a partir del código de OA y el nivel */
+function getEjeDoc(codigo: string, nivel: string): 'Lectura' | 'Escritura' | 'Comunicación oral' {
+  const num = parseInt(codigo.replace(/\D/g, '') || '0');
+  const isMedia = nivel.includes('Medio');
+  if (isMedia) {
+    if (num <= 9) return 'Lectura';
+    if (num <= 18) return 'Escritura';
+    return 'Comunicación oral';
+  }
+  if (num <= 13) return 'Lectura';
+  if (num <= 22) return 'Escritura';
+  return 'Comunicación oral';
 }
 
 function truncate(text: string, max = 150): string {
@@ -325,7 +342,7 @@ export async function POST(req: NextRequest) {
   const oaCodes     = resolvedOAs.map(o => o.codigo).join(', ');
 
   // ── Objetivo de la unidad ─────────────────────────────────────────────────
-  const verbosOA = resolvedOAs.slice(0, 3).map(o => extractTheme(o.texto, 55).toLowerCase());
+  const verbosOA = resolvedOAs.slice(0, 3).map(o => extractTheme(o.texto, 120).toLowerCase());
   const objetivoTexto =
     `En esta unidad de ${grade}, los estudiantes desarrollarán competencias para ` +
     verbosOA.join('; ') +
@@ -423,15 +440,32 @@ export async function POST(req: NextRequest) {
   // ═══════════════════════════════════════
   // 3. OBJETIVOS DE APRENDIZAJE
   // ═══════════════════════════════════════
-  children.push(h2('3. Objetivos de Aprendizaje (OA)'));
-  for (const oa of resolvedOAs) {
+  children.push(h2('3. Objetivos de Aprendizaje por Eje Curricular'));
+  const EJE_COLORS: Record<string, { label: string; code: string; bg: string }> = {
+    'Lectura':           { label: 'LECTURA',           code: '4C1D95', bg: 'EDE9FE' },
+    'Escritura':         { label: 'ESCRITURA',         code: '065F46', bg: 'D1FAE5' },
+    'Comunicación oral': { label: 'COMUNICACIÓN ORAL', code: '92400E', bg: 'FEF3C7' },
+  };
+  const EJES_ORDEN = ['Lectura', 'Escritura', 'Comunicación oral'] as const;
+  for (const eje of EJES_ORDEN) {
+    const ejeOAs = resolvedOAs.filter(oa => (oa.eje || getEjeDoc(oa.codigo, grade)) === eje);
+    if (ejeOAs.length === 0) continue;
+    const ec = EJE_COLORS[eje];
+    // Encabezado de eje
     children.push(new Paragraph({
-      spacing: { before: 60, after: 70 },
-      children: [
-        new TextRun({ text: `${oa.codigo}:  `, bold: true, size: 19, color: '4C1D95', font: 'Calibri' }),
-        new TextRun({ text: oa.texto, size: 18, color: '1E293B', font: 'Calibri' }),
-      ],
+      spacing: { before: 120, after: 60 },
+      children: [new TextRun({ text: `  ${ec.label}  `, bold: true, size: 17, color: ec.code, font: 'Calibri',
+        shading: { fill: ec.bg, color: 'auto', type: ShadingType.CLEAR } as any })],
     }));
+    for (const oa of ejeOAs) {
+      children.push(new Paragraph({
+        spacing: { before: 50, after: 70 },
+        children: [
+          new TextRun({ text: `${oa.codigo}:  `, bold: true, size: 19, color: ec.code, font: 'Calibri' }),
+          new TextRun({ text: oa.texto, size: 18, color: '1E293B', font: 'Calibri' }),
+        ],
+      }));
+    }
   }
   children.push(spacer());
 
