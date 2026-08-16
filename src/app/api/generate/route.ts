@@ -1479,6 +1479,22 @@ Cierre: Compartir fragmentos en parejas y ticket de salida ${writingTechnique.to
             }
           }
 
+          // Save planning so REI PLAY can find it
+          if (supabaseForTrial && trialUserId) {
+            try {
+              await supabaseForTrial.from('plannings').insert({
+                user_id: trialUserId,
+                grade,
+                subject,
+                unit,
+                learning_objective: learningObjective,
+                curso_id: cursoId || null,
+              });
+            } catch (e) {
+              console.warn('[generate] Error saving planning (mock):', e);
+            }
+          }
+
           // Complete
           sendEvent('complete', { json: mockSession });
         }
@@ -1590,6 +1606,22 @@ Cierre: Compartir fragmentos en parejas y ticket de salida ${writingTechnique.to
           // Save counter
           if (supabaseForTrial && trialUserId) {
             await incrementCounter(supabaseForTrial, trialUserId, 'planifications_generated');
+          }
+
+          // Save planning so REI PLAY can find it
+          if (supabaseForTrial && trialUserId) {
+            try {
+              await supabaseForTrial.from('plannings').insert({
+                user_id: trialUserId,
+                grade,
+                subject,
+                unit,
+                learning_objective: learningObjective,
+                curso_id: cursoId || null,
+              });
+            } catch (e) {
+              console.warn('[generate] Error saving planning:', e);
+            }
           }
 
           // Complete
