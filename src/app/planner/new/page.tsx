@@ -1672,12 +1672,13 @@ export default function NewPlannerPage() {
       formData.append('oa_basales_json', JSON.stringify(oaBasales));
       formData.append('oa_complementarios_json', JSON.stringify(oaComplementarios));
       
-      const oasCodigos = suggestedOAs.map((o) => o.codigo).join(', ');
-      const oasTextos = suggestedOAs.map((o) => `${o.codigo}: ${o.texto}`).join('\n');
+      // Solo los OAs que el docente marcó (no todos los de la unidad)
+      const selectedOasObjs = suggestedOAs.filter((o: any) => selectedOaIds.includes(o.id));
+      const oasCodigos = selectedOasObjs.map((o) => o.codigo).join(', ');
+      const oasTextos = selectedOasObjs.map((o) => `${o.codigo}: ${o.texto}`).join('\n');
       formData.append('oa_codigo', oasCodigos);
       formData.append('oa_texto', oasTextos);
       // Eje principal: primer eje entre los OAs seleccionados
-      const selectedOasObjs = suggestedOAs.filter((o: any) => selectedOaIds.includes(o.id));
       const firstEje = selectedOasObjs.length > 0
         ? (selectedOasObjs[0].eje || getEjeFromCodigo(selectedOasObjs[0].codigo, grade))
         : 'Lectura';
@@ -1685,18 +1686,18 @@ export default function NewPlannerPage() {
 
       // Corto plazo: indicadores elegidos por el docente (sin límite) + personalizados
       const selectedMineduc = selectedIndicadorIds.length > 0
-        ? suggestedOAs.flatMap((o: any) =>
+        ? selectedOasObjs.flatMap((o: any) =>
             (o.indicadores_evaluacion || [])
               .filter((i: any) => selectedIndicadorIds.includes(i.id))
               .map((i: any) => i.texto)
           )
-        : suggestedOAs.flatMap((o: any) =>
+        : selectedOasObjs.flatMap((o: any) =>
             (o.indicadores_evaluacion || []).slice(0, 1).map((i: any) => i.texto)
           );
       const cortoPlazoIndicators = [...selectedMineduc, ...customIndicadores];
       formData.append('indicadores_json', JSON.stringify(cortoPlazoIndicators));
       formData.append('planning_type', 'corto');
-      formData.append('learningObjective', `${oasCodigos} — ${suggestedOAs.map(o => o.texto).join(' | ')}`);
+      formData.append('learningObjective', `${oasCodigos} — ${selectedOasObjs.map(o => o.texto).join(' | ')}`);
 
       formData.append('planning_scope', planningScope);
       formData.append('duracion_bloque_min', '90');
@@ -1890,8 +1891,8 @@ export default function NewPlannerPage() {
           throw new Error('No se recibió la planificación completa.');
         }
 
-        // Save in Supabase
-        const learningObjectiveForDB = `${suggestedOAs.map(o => o.codigo).join(', ')} — ${suggestedOAs.map(o => o.texto).join(' | ')}`;
+        // Save in Supabase — solo los OAs que el docente marcó
+        const learningObjectiveForDB = `${selectedOasObjs.map((o: any) => o.codigo).join(', ')} — ${selectedOasObjs.map((o: any) => o.texto).join(' | ')}`;
         const { reading_level_eval, ...contentOnly } = finalPlanJson;
 
         const { data: savedData, error: dbError } = await supabase
