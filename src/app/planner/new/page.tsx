@@ -108,7 +108,22 @@ interface ObjetivoAprendizaje {
   codigo: string;
   texto: string;
   tipo: string;
+  eje?: string;
   indicadores_evaluacion: Indicador[];
+}
+
+/** Eje curricular desde código de OA y nivel */
+function getEjeFromCodigo(codigo: string, nivel: string): string {
+  const num = parseInt(codigo.replace(/\D/g, '') || '0');
+  const isMedia = nivel.includes('Medio');
+  if (isMedia) {
+    if (num <= 9) return 'Lectura';
+    if (num <= 18) return 'Escritura';
+    return 'Comunicación oral';
+  }
+  if (num <= 13) return 'Lectura';
+  if (num <= 22) return 'Escritura';
+  return 'Comunicación oral';
 }
 
 interface Eje {
@@ -928,6 +943,8 @@ export default function NewPlannerPage() {
   const [selectedOaIds, setSelectedOaIds] = useState<(number | string)[]>([]);
   const [planificationType, setPlanificationType] = useState<'corto' | 'mediano'>('corto');
   const [selectedIndicadorIds, setSelectedIndicadorIds] = useState<number[]>([]);
+  const [customIndicadores, setCustomIndicadores] = useState<string[]>([]);
+  const [customIndicadorInput, setCustomIndicadorInput] = useState('');
   const [medianoDownloading, setMedianoDownloading] = useState(false);
   // Temas/bloques de la unidad (desde JSON curricular)
   const [temasList, setTemasList] = useState<string[]>([]);
@@ -1119,11 +1136,21 @@ export default function NewPlannerPage() {
       setManualTheme(leccion.titulo);
       setThemeMode('manual');
       setIsRealLesson(true);
+      // Pre-seleccionar primer indicador de cada OA
+      const preIndIds: number[] = [];
+      for (const oa of oas) {
+        if (oa.indicadores_evaluacion?.length > 0) {
+          preIndIds.push(oa.indicadores_evaluacion[0].id);
+        }
+      }
+      setSelectedIndicadorIds(preIndIds);
+      setCustomIndicadores([]);
     } else {
       setSelectedOaIds([]);
       setSuggestedOAs([]);
       setOaBasales([]);
       setOaComplementarios([]);
+      setSelectedIndicadorIds([]);
     }
   };
 
@@ -1143,22 +1170,33 @@ export default function NewPlannerPage() {
       seen.add(oa.codigo);
       return true;
     });
-    // Pre-seleccionar 3 OAs según la posición del bloque en la secuencia de la unidad
-    const temaIdx = temasList.indexOf(tema);
-    const leccionForTema = leccionesList[temaIdx];
-    let preselectedIds: (number | string)[];
-    if (leccionForTema?.oas?.length > 0) {
-      // Usar los OAs asignados a la lección que corresponde a este bloque
-      preselectedIds = (leccionForTema.oas as any[]).slice(0, 3).map((o: any) => o.id);
-    } else {
-      // Fallback: distribuir OAs proporcionalmente entre los bloques
-      const N = uniqueOas.length;
-      const T = Math.max(temasList.length, 1);
-      const start = Math.min(Math.floor(temaIdx * N / T), Math.max(N - 1, 0));
-      preselectedIds = uniqueOas.slice(start, start + 3).map((o: any) => o.id);
+    // Pre-seleccionar 1 OA por eje (Lectura, Escritura, Comunicación oral)
+    const EJES_ORDEN = ['Lectura', 'Escritura', 'Comunicación oral'];
+    const preselectedIds: (number | string)[] = [];
+    for (const eje of EJES_ORDEN) {
+      const oaForEje = uniqueOas.find((o: any) =>
+        (o.eje || getEjeFromCodigo(o.codigo, grade)) === eje
+      );
+      if (oaForEje && !preselectedIds.includes(oaForEje.id)) {
+        preselectedIds.push(oaForEje.id);
+      }
+    }
+    // Fallback si no hay eje disponible: primeros 3
+    if (preselectedIds.length === 0) {
+      uniqueOas.slice(0, 3).forEach((o: any) => preselectedIds.push(o.id));
+    }
+    // Pre-seleccionar primer indicador de cada OA preseleccionado
+    const preIndIds: number[] = [];
+    for (const oaId of preselectedIds) {
+      const oa = uniqueOas.find((o: any) => o.id === oaId);
+      if (oa?.indicadores_evaluacion?.length > 0) {
+        preIndIds.push(oa.indicadores_evaluacion[0].id);
+      }
     }
     setSuggestedOAs(uniqueOas); // Todos los OAs de la unidad (para el display completo)
-    setSelectedOaIds(preselectedIds); // Solo 3 pre-seleccionados según el bloque
+    setSelectedOaIds(preselectedIds); // 1 pre-seleccionado por eje
+    setSelectedIndicadorIds(preIndIds);
+    setCustomIndicadores([]);
     setOaBasales(preselectedIds.map(id => {
       const oa = uniqueOas.find((o: any) => o.id === id);
       return oa?.codigo || '';
@@ -1175,9 +1213,27 @@ export default function NewPlannerPage() {
     if (checked) {
       if (!nextOaIds.includes(oaId)) {
         nextOaIds.push(oaId);
+        // Auto pre-seleccionar primer indicador del OA (corto plazo)
+        if (planificationType === 'corto') {
+          const oa = suggestedOAs.find((o: any) => o.id === oaId);
+          const inds: Indicador[] = oa?.indicadores_evaluacion ?? [];
+          if (inds.length > 0) {
+            const firstId = inds[0].id;
+            setSelectedIndicadorIds(prev => prev.includes(firstId) ? prev : [...prev, firstId]);
+          }
+        }
       }
     } else {
       nextOaIds = nextOaIds.filter(id => id !== oaId);
+      // Quitar los indicadores de este OA (corto plazo)
+      if (planificationType === 'corto') {
+        const oa = suggestedOAs.find((o: any) => o.id === oaId);
+        const inds: Indicador[] = oa?.indicadores_evaluacion ?? [];
+        if (inds.length > 0) {
+          const oaIndIds = new Set<number>(inds.map((i) => i.id));
+          setSelectedIndicadorIds(prev => prev.filter(id => !oaIndIds.has(id)));
+        }
+      }
     }
     setSelectedOaIds(nextOaIds);
 
@@ -1620,13 +1676,24 @@ export default function NewPlannerPage() {
       const oasTextos = suggestedOAs.map((o) => `${o.codigo}: ${o.texto}`).join('\n');
       formData.append('oa_codigo', oasCodigos);
       formData.append('oa_texto', oasTextos);
-      formData.append('oa_eje', 'Lectura'); // Main default axis
-      
-      // Corto plazo: usar solo los indicadores elegidos por el docente (máx 3)
-      const allIndicators = suggestedOAs.flatMap(o => (o.indicadores_evaluacion || []).map(i => i.texto));
-      const cortoPlazoIndicators = selectedIndicadorIds.length > 0
-        ? suggestedOAs.flatMap(o => (o.indicadores_evaluacion || []).filter(i => selectedIndicadorIds.includes(i.id)).map(i => i.texto))
-        : allIndicators.slice(0, 3);
+      // Eje principal: primer eje entre los OAs seleccionados
+      const selectedOasObjs = suggestedOAs.filter((o: any) => selectedOaIds.includes(o.id));
+      const firstEje = selectedOasObjs.length > 0
+        ? (selectedOasObjs[0].eje || getEjeFromCodigo(selectedOasObjs[0].codigo, grade))
+        : 'Lectura';
+      formData.append('oa_eje', firstEje);
+
+      // Corto plazo: indicadores elegidos por el docente (sin límite) + personalizados
+      const selectedMineduc = selectedIndicadorIds.length > 0
+        ? suggestedOAs.flatMap((o: any) =>
+            (o.indicadores_evaluacion || [])
+              .filter((i: any) => selectedIndicadorIds.includes(i.id))
+              .map((i: any) => i.texto)
+          )
+        : suggestedOAs.flatMap((o: any) =>
+            (o.indicadores_evaluacion || []).slice(0, 1).map((i: any) => i.texto)
+          );
+      const cortoPlazoIndicators = [...selectedMineduc, ...customIndicadores];
       formData.append('indicadores_json', JSON.stringify(cortoPlazoIndicators));
       formData.append('planning_type', 'corto');
       formData.append('learningObjective', `${oasCodigos} — ${suggestedOAs.map(o => o.texto).join(' | ')}`);
@@ -2536,32 +2603,53 @@ export default function NewPlannerPage() {
                           if (oas.length === 0) {
                             return <p className="text-xs text-slate-400 italic">No hay OAs pre-asignados a esta lección.</p>;
                           }
-                          return oas.map((oa: any) => {
-                            const isChecked = selectedOaIds.includes(oa.id);
+                          const EJE_STYLES: Record<string, { border: string; header: string; badge: string; checked: string }> = {
+                            'Lectura':            { border: 'border-violet-200', header: 'bg-violet-100 text-violet-700', badge: 'bg-violet-600 border-violet-600 text-white', checked: 'border-violet-300 bg-violet-50/50' },
+                            'Escritura':          { border: 'border-emerald-200', header: 'bg-emerald-100 text-emerald-700', badge: 'bg-emerald-600 border-emerald-600 text-white', checked: 'border-emerald-300 bg-emerald-50/50' },
+                            'Comunicación oral':  { border: 'border-amber-200', header: 'bg-amber-100 text-amber-700', badge: 'bg-amber-600 border-amber-600 text-white', checked: 'border-amber-300 bg-amber-50/50' },
+                          };
+                          const EJES_ORDEN = ['Lectura', 'Escritura', 'Comunicación oral'];
+                          return EJES_ORDEN.map(eje => {
+                            const ejeOas = oas.filter((oa: any) => (oa.eje || getEjeFromCodigo(oa.codigo, grade)) === eje);
+                            if (ejeOas.length === 0) return null;
+                            const styles = EJE_STYLES[eje] || EJE_STYLES['Lectura'];
                             return (
-                              <label
-                                key={oa.id}
-                                className={`flex items-start gap-2.5 p-3 bg-white border rounded-xl cursor-pointer transition-all duration-150 select-none shadow-xs ${
-                                  isChecked ? 'border-violet-300 bg-violet-50/40' : 'border-slate-150 hover:bg-slate-50'
-                                }`}
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={isChecked}
-                                  onChange={(e) => handleOaToggle(oa.id, e.target.checked)}
-                                  className="mt-0.5 w-4 h-4 rounded text-violet-600 border-slate-300 focus:ring-violet-500 focus:ring-offset-0"
-                                />
-                                <div className="text-xs min-w-0">
-                                  <span className={`inline-flex items-center px-1.5 py-0.5 border font-black text-[9px] rounded-md mr-1.5 uppercase ${
-                                    isChecked ? 'bg-violet-100 border-violet-200 text-violet-700' : 'bg-slate-50 border-slate-200 text-slate-500'
-                                  }`}>
-                                    {oa.codigo}
-                                  </span>
-                                  <span className="text-slate-700 leading-relaxed font-semibold">
-                                    {oa.texto}
-                                  </span>
+                              <div key={eje} className={`border ${styles.border} rounded-xl overflow-hidden`}>
+                                <div className={`${styles.header} px-3 py-1.5 text-[10px] font-black uppercase tracking-wider`}>
+                                  {eje}
+                                  {selectedTema && <span className="ml-2 font-normal normal-case opacity-70">— elige los que trabajarás</span>}
                                 </div>
-                              </label>
+                                <div className="p-2 space-y-1.5">
+                                  {ejeOas.map((oa: any) => {
+                                    const isChecked = selectedOaIds.includes(oa.id);
+                                    return (
+                                      <label
+                                        key={oa.id}
+                                        className={`flex items-start gap-2.5 p-2.5 bg-white border rounded-xl cursor-pointer transition-all duration-150 select-none shadow-xs ${
+                                          isChecked ? styles.checked : 'border-slate-150 hover:bg-slate-50'
+                                        }`}
+                                      >
+                                        <input
+                                          type="checkbox"
+                                          checked={isChecked}
+                                          onChange={(e) => handleOaToggle(oa.id, e.target.checked)}
+                                          className="mt-0.5 w-4 h-4 rounded text-violet-600 border-slate-300 focus:ring-violet-500 focus:ring-offset-0"
+                                        />
+                                        <div className="text-xs min-w-0">
+                                          <span className={`inline-flex items-center px-1.5 py-0.5 border font-black text-[9px] rounded-md mr-1.5 uppercase ${
+                                            isChecked ? styles.badge : 'bg-slate-50 border-slate-200 text-slate-500'
+                                          }`}>
+                                            {oa.codigo}
+                                          </span>
+                                          <span className="text-slate-700 leading-relaxed font-semibold">
+                                            {oa.texto}
+                                          </span>
+                                        </div>
+                                      </label>
+                                    );
+                                  })}
+                                </div>
+                              </div>
                             );
                           });
                         })()}
@@ -2569,52 +2657,119 @@ export default function NewPlannerPage() {
 
                       {/* Selector de indicadores — solo corto plazo */}
                       {planificationType === 'corto' && suggestedOAs.length > 0 && (() => {
-                        const allInd = suggestedOAs.flatMap((oa, oaIdx) =>
-                          (oa.indicadores_evaluacion || []).map(ind => ({ ...ind, oaCodigo: oa.codigo, uid: `${oaIdx}-${ind.id}` }))
-                        );
-                        if (allInd.length === 0) return null;
+                        const selectedOasObjs = suggestedOAs.filter((oa: any) => selectedOaIds.includes(oa.id));
+                        const hasInds = selectedOasObjs.some((oa: any) => (oa.indicadores_evaluacion || []).length > 0);
+                        if (!hasInds && customIndicadores.length === 0) return null;
+                        const IND_EJE_STYLES: Record<string, string> = {
+                          'Lectura':           'text-violet-700 bg-violet-100',
+                          'Escritura':         'text-emerald-700 bg-emerald-100',
+                          'Comunicación oral': 'text-amber-700 bg-amber-100',
+                        };
+                        const totalSel = selectedIndicadorIds.length + customIndicadores.length;
                         return (
                           <div className="border border-violet-100 bg-violet-50/40 rounded-2xl p-4 space-y-3 mt-1">
                             <div className="flex items-center justify-between">
                               <p className="text-[10px] text-violet-700 font-black uppercase tracking-wider">
-                                Indicadores para esta clase (elige 1–3)
+                                Indicadores para esta clase
                               </p>
-                              <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${selectedIndicadorIds.length > 3 ? 'bg-rose-100 text-rose-600' : 'bg-violet-100 text-violet-700'}`}>
-                                {selectedIndicadorIds.length}/3
+                              <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-violet-100 text-violet-700">
+                                {totalSel} seleccionados · sin límite
                               </span>
                             </div>
-                            <div className="space-y-2 max-h-52 overflow-y-auto pr-1">
-                              {allInd.map(ind => {
-                                const isChecked = selectedIndicadorIds.includes(ind.id);
-                                const maxReached = selectedIndicadorIds.length >= 3 && !isChecked;
+                            <div className="space-y-3">
+                              {selectedOasObjs.map((oa: any) => {
+                                const eje = oa.eje || getEjeFromCodigo(oa.codigo, grade);
+                                const ejeStyle = IND_EJE_STYLES[eje] || 'text-slate-700 bg-slate-100';
+                                if ((oa.indicadores_evaluacion || []).length === 0) return null;
                                 return (
-                                  <label
-                                    key={ind.uid}
-                                    className={`flex items-start gap-2.5 p-2.5 bg-white border rounded-xl cursor-pointer transition-all select-none ${
-                                      maxReached ? 'opacity-40 cursor-not-allowed border-slate-100' :
-                                      isChecked ? 'border-violet-300 bg-violet-50 shadow-xs' : 'border-slate-150 hover:bg-slate-50'
-                                    }`}
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      disabled={maxReached}
-                                      checked={isChecked}
-                                      onChange={(e) => {
-                                        if (e.target.checked) {
-                                          if (selectedIndicadorIds.length < 3) setSelectedIndicadorIds(prev => [...prev, ind.id]);
-                                        } else {
-                                          setSelectedIndicadorIds(prev => prev.filter(id => id !== ind.id));
-                                        }
-                                      }}
-                                      className="mt-0.5 w-3.5 h-3.5 rounded text-violet-600 border-slate-300 flex-shrink-0"
-                                    />
-                                    <div className="text-[11px] min-w-0">
-                                      <span className="inline-flex items-center px-1.5 py-0.5 bg-slate-100 text-slate-600 font-black text-[8px] rounded-md mr-1 uppercase">{ind.oaCodigo}</span>
-                                      <span className="text-slate-700 leading-relaxed font-medium">{ind.texto}</span>
+                                  <div key={oa.codigo}>
+                                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md inline-block mb-1.5 ${ejeStyle}`}>
+                                      {oa.codigo} · {eje}
+                                    </span>
+                                    <div className="space-y-1.5">
+                                      {(oa.indicadores_evaluacion || []).map((ind: any) => {
+                                        const isChecked = selectedIndicadorIds.includes(ind.id);
+                                        return (
+                                          <label
+                                            key={ind.id}
+                                            className={`flex items-start gap-2.5 p-2.5 bg-white border rounded-xl cursor-pointer transition-all select-none ${
+                                              isChecked ? 'border-violet-300 bg-violet-50 shadow-xs' : 'border-slate-150 hover:bg-slate-50'
+                                            }`}
+                                          >
+                                            <input
+                                              type="checkbox"
+                                              checked={isChecked}
+                                              onChange={(e) => {
+                                                if (e.target.checked) {
+                                                  setSelectedIndicadorIds(prev => [...prev, ind.id]);
+                                                } else {
+                                                  setSelectedIndicadorIds(prev => prev.filter(id => id !== ind.id));
+                                                }
+                                              }}
+                                              className="mt-0.5 w-3.5 h-3.5 rounded text-violet-600 border-slate-300 flex-shrink-0"
+                                            />
+                                            <span className="text-[11px] text-slate-700 leading-relaxed font-medium">{ind.texto}</span>
+                                          </label>
+                                        );
+                                      })}
                                     </div>
-                                  </label>
+                                  </div>
                                 );
                               })}
+
+                              {/* Indicadores personalizados */}
+                              {customIndicadores.length > 0 && (
+                                <div>
+                                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md inline-block mb-1.5 text-slate-600 bg-slate-100">
+                                    ✏️ Personalizados
+                                  </span>
+                                  <div className="space-y-1.5">
+                                    {customIndicadores.map((txt, idx) => (
+                                      <div key={idx} className="flex items-start gap-2.5 p-2.5 bg-white border border-dashed border-slate-300 rounded-xl">
+                                        <input type="checkbox" checked readOnly className="mt-0.5 w-3.5 h-3.5 rounded flex-shrink-0" />
+                                        <span className="text-[11px] text-slate-700 leading-relaxed font-medium flex-1">{txt}</span>
+                                        <button
+                                          type="button"
+                                          onClick={() => setCustomIndicadores(prev => prev.filter((_, i) => i !== idx))}
+                                          className="text-slate-400 hover:text-rose-500 text-xs ml-1 flex-shrink-0"
+                                        >✕</button>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Campo para agregar indicador propio */}
+                              <div className="flex gap-2 pt-1">
+                                <input
+                                  type="text"
+                                  placeholder="Agregar indicador propio..."
+                                  value={customIndicadorInput}
+                                  onChange={(e) => setCustomIndicadorInput(e.target.value)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                      e.preventDefault();
+                                      if (customIndicadorInput.trim()) {
+                                        setCustomIndicadores(prev => [...prev, customIndicadorInput.trim()]);
+                                        setCustomIndicadorInput('');
+                                      }
+                                    }
+                                  }}
+                                  className="flex-1 text-xs border border-slate-200 rounded-xl px-3 py-2 bg-white focus:outline-none focus:ring-1 focus:ring-violet-400"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (customIndicadorInput.trim()) {
+                                      setCustomIndicadores(prev => [...prev, customIndicadorInput.trim()]);
+                                      setCustomIndicadorInput('');
+                                    }
+                                  }}
+                                  className="px-3 py-2 text-xs font-bold text-violet-600 bg-violet-50 border border-violet-200 rounded-xl hover:bg-violet-100 transition-colors"
+                                >
+                                  + Agregar
+                                </button>
+                              </div>
                             </div>
                           </div>
                         );

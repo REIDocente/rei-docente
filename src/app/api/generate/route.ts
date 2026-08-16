@@ -759,6 +759,10 @@ Toda la planificación debe estar alineada con este OA e indicadores.
   Indicadores de Evaluación para esta sesión (elegidos por el docente):
 ${indicadoresFormatted}
 ${oatActitudesFormatted}
+  La planificación de clase DEBE incluir explícitamente:
+  1. Objetivo de clase concreto y medible (derivado del OA e indicadores seleccionados)
+  2. Experiencias de aprendizaje específicas (qué hará el estudiante en cada momento)
+  3. Al menos 1 indicador de evaluación por cada OA seleccionado
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 `;
 

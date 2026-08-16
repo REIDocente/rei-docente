@@ -47,6 +47,20 @@ function loadOfficialIndicadores(
   }
 }
 
+/** Determina el eje curricular (Lectura / Escritura / Comunicación oral) desde el código de OA */
+function getEjeFromCodigo(codigo: string, nivel: string): string {
+  const num = parseInt(codigo.replace(/\D/g, '') || '0');
+  const isMedia = nivel.includes('Medio');
+  if (isMedia) {
+    if (num <= 9) return 'Lectura';
+    if (num <= 18) return 'Escritura';
+    return 'Comunicación oral';
+  }
+  if (num <= 13) return 'Lectura';
+  if (num <= 22) return 'Escritura';
+  return 'Comunicación oral';
+}
+
 function mapNivelParam(nivelParam: string): string {
   const norm = (nivelParam || '').toLowerCase().replace(/_/g, ' ');
   const isBasico = norm.includes('bás') || norm.includes('bas') || norm.includes('básico') || norm.includes('basico');
@@ -360,6 +374,7 @@ export async function GET(req: NextRequest) {
             id: oaIdx + idx * 10 + 10000,
             codigo: code,
             texto: found?.texto_oa || 'Objetivo de aprendizaje oficial.',
+            eje: getEjeFromCodigo(code, nivelNombre),
             indicadores_evaluacion: indicadoresMap[code] || []
           };
         });
@@ -434,6 +449,7 @@ export async function GET(req: NextRequest) {
               })();
               return {
                 ...baseOa,
+                eje: getEjeFromCodigo(code, nivelNombre),
                 indicadores_evaluacion: indicadoresMap[code] || []
               };
             });
@@ -464,6 +480,7 @@ export async function GET(req: NextRequest) {
             id: oaIdx + idx * 10 + 10000,
             codigo: code,
             texto: found?.texto_oa || 'Objetivo de aprendizaje oficial.',
+            eje: getEjeFromCodigo(code, nivelNombre),
             indicadores_evaluacion: indicadoresMap[code] || []
           };
         });
