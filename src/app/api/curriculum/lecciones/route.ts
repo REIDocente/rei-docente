@@ -282,50 +282,56 @@ const FALLBACK_LESSONS: Record<string, Record<number, { numero: number; titulo: 
       { numero: 3, titulo: 'Producción escrita e investigación', oa_codes: ['OA 15', 'OA 24', 'OA 25'] },
     ],
   },
-  // 1° Medio — OAs según Programa MINEDUC Dec. 628/2016
+  // 1° Medio — OAs según Programa MINEDUC + NotebookLM ✅ verificado
+  // OA 1 transversal (todas las unidades)
+  // U1: OA 1,3,4,7,8,12,21        U2: OA 1,9,11,14,15,17,18,20,24
+  // U3: OA 1,2,5,6,16,23,24       U4: OA 1,10,13,15,19,21,22
   '1° Medio': {
-    1: [ // La libertad como tema literario — OA 1,3,4,7,8,12,21,24
-      { numero: 1, titulo: 'Lectura literaria: romanticismo y libertad', oa_codes: ['OA 1', 'OA 3', 'OA 4'] },
-      { numero: 2, titulo: 'Análisis crítico y argumentación', oa_codes: ['OA 7', 'OA 8', 'OA 12'] },
-      { numero: 3, titulo: 'Comunicación oral e investigación', oa_codes: ['OA 21', 'OA 24'] },
+    1: [ // La libertad como tema literario
+      { numero: 1, titulo: 'Lectura literaria: romanticismo, narrativa y lírica', oa_codes: ['OA 1', 'OA 3', 'OA 4'] },
+      { numero: 2, titulo: 'Análisis crítico, contexto histórico y argumentación',  oa_codes: ['OA 7', 'OA 8', 'OA 12'] },
+      { numero: 3, titulo: 'Comunicación oral y discusión de ideas',               oa_codes: ['OA 21'] },
     ],
-    2: [ // Ciudadanos y opinión — OA 1,9,11,14,15,17,18,20,24
+    2: [ // Ciudadanos y opinión
       { numero: 1, titulo: 'Lectura y análisis de textos argumentativos', oa_codes: ['OA 1', 'OA 9', 'OA 11'] },
-      { numero: 2, titulo: 'Producción de textos persuasivos', oa_codes: ['OA 14', 'OA 15', 'OA 17'] },
-      { numero: 3, titulo: 'Oralidad e investigación ciudadana', oa_codes: ['OA 18', 'OA 20', 'OA 24'] },
+      { numero: 2, titulo: 'Producción de textos persuasivos y figuras',   oa_codes: ['OA 14', 'OA 15', 'OA 17'] },
+      { numero: 3, titulo: 'Ortografía, oralidad e investigación',         oa_codes: ['OA 18', 'OA 20', 'OA 24'] },
     ],
-    3: [ // Relaciones humanas en el teatro — OA 1,2,5,6,16,21,23,24
-      { numero: 1, titulo: 'Lectura dramática y narrativa', oa_codes: ['OA 1', 'OA 2', 'OA 5'] },
-      { numero: 2, titulo: 'Análisis teatral y escritura', oa_codes: ['OA 6', 'OA 16', 'OA 21'] },
-      { numero: 3, titulo: 'Comunicación oral e investigación', oa_codes: ['OA 23', 'OA 24'] },
+    3: [ // Relaciones humanas en el teatro y la literatura
+      { numero: 1, titulo: 'Lectura dramática: tragedia y tópicos literarios', oa_codes: ['OA 2', 'OA 5', 'OA 6'] },
+      { numero: 2, titulo: 'Escritura dramática y estilo directo/indirecto',   oa_codes: ['OA 16', 'OA 23', 'OA 24'] },
     ],
-    4: [ // Comunicación y sociedad — OA 4,10,13,15,19,21,22,23
-      { numero: 1, titulo: 'Análisis de medios y discurso social', oa_codes: ['OA 4', 'OA 10', 'OA 13'] },
-      { numero: 2, titulo: 'Producción de textos escritos', oa_codes: ['OA 15', 'OA 19', 'OA 21'] },
-      { numero: 3, titulo: 'Comunicación oral y géneros discursivos', oa_codes: ['OA 22', 'OA 23'] },
+    4: [ // Comunicación y sociedad
+      { numero: 1, titulo: 'Análisis crítico de medios y persuasión', oa_codes: ['OA 10', 'OA 13', 'OA 19'] },
+      { numero: 2, titulo: 'Producción escrita y adecuación al receptor', oa_codes: ['OA 15', 'OA 22'] },
+      { numero: 3, titulo: 'Exposición oral con fuentes y debate',        oa_codes: ['OA 21'] },
     ],
   },
-  // 2° Medio — OAs según Programa MINEDUC Dec. 628/2016
+  // 2° Medio — OAs según Programa MINEDUC + NotebookLM ✅ verificado
+  // Permanentes (todas las unidades): OA 1,2,8,9,12,18,21,22,24
+  // U1: perm + OA 3,7,11,13,20          U2: perm + OA 3,10,13,16,17,20,23
+  // U3: perm + OA 4,6,11,13,23          U4: perm + OA 3,5,6,11,20,23
   '2° Medio': {
-    1: [ // Sobre la ausencia: exilio, migración e identidad — OA 1,2,3,7,8,9,11,12,13,14,15,18,19,20,21,22,23,24
-      { numero: 1, titulo: 'Lectura literaria: exilio e identidad', oa_codes: ['OA 1', 'OA 2', 'OA 3'] },
-      { numero: 2, titulo: 'Análisis crítico y argumentación', oa_codes: ['OA 7', 'OA 8', 'OA 9'] },
-      { numero: 3, titulo: 'Producción escrita y oralidad', oa_codes: ['OA 12', 'OA 14', 'OA 21'] },
+    1: [ // Sobre la ausencia: exilio, migración e identidad
+      { numero: 1, titulo: 'Narrativa: análisis de personajes y recursos narrativos', oa_codes: ['OA 2', 'OA 3', 'OA 7'] },
+      { numero: 2, titulo: 'No literario, argumentación y perspectiva del emisor',   oa_codes: ['OA 8', 'OA 9', 'OA 11'] },
+      { numero: 3, titulo: 'Escritura cohesiva, ortografía e investigación',          oa_codes: ['OA 12', 'OA 13', 'OA 18'] },
+      { numero: 4, titulo: 'Oralidad, diálogo y exposición',                         oa_codes: ['OA 20', 'OA 21', 'OA 22'] },
     ],
-    2: [ // Ciudadanía y trabajo — OA 1,2,3,8,9,10,12,13,14,15,16,17,18,19,20,21,22,23,24
-      { numero: 1, titulo: 'Lectura literaria y textos ciudadanos', oa_codes: ['OA 1', 'OA 2', 'OA 3'] },
-      { numero: 2, titulo: 'Análisis de medios y argumentación', oa_codes: ['OA 8', 'OA 9', 'OA 10'] },
-      { numero: 3, titulo: 'Producción de textos y oralidad', oa_codes: ['OA 14', 'OA 21', 'OA 24'] },
+    2: [ // Ciudadanía y trabajo — Medios de comunicación
+      { numero: 1, titulo: 'Análisis crítico de medios y persuasión',               oa_codes: ['OA 8', 'OA 9', 'OA 10'] },
+      { numero: 2, titulo: 'Estilo, correferencia y escritura académica',            oa_codes: ['OA 3', 'OA 13', 'OA 16'] },
+      { numero: 3, titulo: 'Frases nominales, oralidad e investigación',             oa_codes: ['OA 17', 'OA 20', 'OA 23'] },
     ],
-    3: [ // Lo divino y lo humano — OA 1,2,4,6,8,9,11,12,13,14,15,18,19,21,22,23,24
-      { numero: 1, titulo: 'Lectura literaria: lo sagrado y lo humano', oa_codes: ['OA 1', 'OA 2', 'OA 4'] },
-      { numero: 2, titulo: 'Análisis dramático y argumentación', oa_codes: ['OA 6', 'OA 8', 'OA 9'] },
-      { numero: 3, titulo: 'Producción escrita y oralidad', oa_codes: ['OA 14', 'OA 21', 'OA 22'] },
+    3: [ // Lo divino y lo humano — Género lírico
+      { numero: 1, titulo: 'Lírica: lenguaje figurado e intertextualidad',           oa_codes: ['OA 2', 'OA 4', 'OA 6'] },
+      { numero: 2, titulo: 'Escritura de ensayos comparativos y argumentación',      oa_codes: ['OA 8', 'OA 9', 'OA 13'] },
+      { numero: 3, titulo: 'Comprensión oral, exposición e investigación',           oa_codes: ['OA 11', 'OA 22', 'OA 23'] },
     ],
-    4: [ // Poder y ambición — OA 1,2,3,5,6,8,9,11,12,14,15,18,19,20,21,22,23,24
-      { numero: 1, titulo: 'Lectura literaria: poder y drama', oa_codes: ['OA 1', 'OA 2', 'OA 3'] },
-      { numero: 2, titulo: 'Análisis crítico y argumentación', oa_codes: ['OA 5', 'OA 6', 'OA 8'] },
-      { numero: 3, titulo: 'Producción de textos y oralidad', oa_codes: ['OA 14', 'OA 21', 'OA 22'] },
+    4: [ // Poder y ambición — Género dramático
+      { numero: 1, titulo: 'Drama: conflicto humano, personajes y puesta en escena', oa_codes: ['OA 2', 'OA 5', 'OA 6'] },
+      { numero: 2, titulo: 'Análisis crítico, argumentación y perspectiva',          oa_codes: ['OA 3', 'OA 8', 'OA 9'] },
+      { numero: 3, titulo: 'Oralidad, debate y exposición fundamentada',             oa_codes: ['OA 11', 'OA 20', 'OA 23'] },
     ],
   },
 };
