@@ -2937,7 +2937,7 @@ export default function NewPlannerPage() {
                   <div>Asignatura: <span className="text-slate-800">{CURRICULUM_SUBJECT}</span></div>
                 </div>
                 <div className="text-xs font-semibold text-slate-500">
-                  Objetivo: <span className="text-slate-800">{suggestedOAs.map(o => `${o.codigo}: ${o.texto}`).join(' | ')}</span>
+                  Objetivo: <span className="text-slate-800">{suggestedOAs.filter((o: any) => selectedOaIds.includes(o.id)).map(o => `${o.codigo}: ${o.texto}`).join(' | ')}</span>
                 </div>
               </div>
 
