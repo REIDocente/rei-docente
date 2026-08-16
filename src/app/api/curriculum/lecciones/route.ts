@@ -202,42 +202,41 @@ const FALLBACK_LESSONS: Record<string, Record<number, { numero: number; titulo: 
       { numero: 12, titulo: 'Artículo de investigación, diálogo y exposición oral', oa_codes: ['OA 17', 'OA 27', 'OA 29'] }
     ]
   },
-  // 7° Básico — 7 unidades, OAs según Programa MINEDUC Dec. 628/2016
+  // 7° Básico — 7 unidades, OAs según Programa MINEDUC + NotebookLM ✅ verificado
+  // OA 1 y OA 2 son transversales (todas las unidades)
+  // U1: OA 1,2,3,4,7,8,11,14,15,19,21   U2: OA 1,2,7,10,14,16
+  // U3: OA 1,2,6,13,22,24,25             U4: OA 1,2,15,21,23
+  // U5: OA 1,2,4,5,10,15                 U6: OA 1,2,11,17
+  // U7: OA 1,2,9,12,18,20
   '7° Básico': {
-    1: [ // El héroe en distintas épocas — OA 2,3,7,8,11,14,15,21
-      { numero: 1, titulo: 'Lectura y análisis literario', oa_codes: ['OA 2', 'OA 3', 'OA 7'] },
-      { numero: 2, titulo: 'Comprensión avanzada y argumentación', oa_codes: ['OA 8', 'OA 11', 'OA 14'] },
-      { numero: 3, titulo: 'Producción de textos y oralidad', oa_codes: ['OA 15', 'OA 21'] },
+    1: [ // El héroe en distintas épocas
+      { numero: 1, titulo: 'Literatura narrativa y poética del héroe',        oa_codes: ['OA 2', 'OA 3', 'OA 4'] },
+      { numero: 2, titulo: 'Interpretación, argumentación y estrategias',     oa_codes: ['OA 7', 'OA 8', 'OA 11'] },
+      { numero: 3, titulo: 'Escritura, proceso y ortografía',                 oa_codes: ['OA 14', 'OA 15', 'OA 19'] },
+      { numero: 4, titulo: 'Diálogo colaborativo y oralidad',                 oa_codes: ['OA 21'] },
     ],
-    2: [ // La solidaridad y la amistad — OA 2,3,4,7,10,14,15,16,21
-      { numero: 1, titulo: 'Lectura y análisis literario', oa_codes: ['OA 2', 'OA 3', 'OA 4'] },
-      { numero: 2, titulo: 'Lectura crítica y textos no literarios', oa_codes: ['OA 7', 'OA 10', 'OA 14'] },
-      { numero: 3, titulo: 'Producción de textos y oralidad', oa_codes: ['OA 15', 'OA 16', 'OA 21'] },
+    2: [ // La solidaridad y la amistad
+      { numero: 1, titulo: 'Reflexión literaria y perspectiva histórica',     oa_codes: ['OA 2', 'OA 7', 'OA 10'] },
+      { numero: 2, titulo: 'Escritura fundamentada y gramática oracional',    oa_codes: ['OA 14', 'OA 16'] },
     ],
-    3: [ // Mitología y relatos de creación — OA 1,3,6,7,13,15,22,24,25
-      { numero: 1, titulo: 'Lectura literaria y mitos', oa_codes: ['OA 1', 'OA 3', 'OA 6'] },
-      { numero: 2, titulo: 'Lectura crítica y escritura', oa_codes: ['OA 7', 'OA 13', 'OA 15'] },
-      { numero: 3, titulo: 'Oralidad e investigación', oa_codes: ['OA 22', 'OA 24', 'OA 25'] },
+    3: [ // Mitología y relatos de creación
+      { numero: 1, titulo: 'Lectura y análisis de mitos',                     oa_codes: ['OA 2', 'OA 6', 'OA 13'] },
+      { numero: 2, titulo: 'Exposición oral, investigación y síntesis',       oa_codes: ['OA 22', 'OA 24', 'OA 25'] },
     ],
-    4: [ // La identidad — OA 1,2,3,4,7,13,15,18,21,23
-      { numero: 1, titulo: 'Lectura literaria e identidad', oa_codes: ['OA 1', 'OA 2', 'OA 3'] },
-      { numero: 2, titulo: 'Lectura crítica y escritura creativa', oa_codes: ['OA 4', 'OA 7', 'OA 13'] },
-      { numero: 3, titulo: 'Producción de textos y comunicación oral', oa_codes: ['OA 15', 'OA 21', 'OA 23'] },
+    4: [ // La identidad: quién soy, cómo me ven los demás
+      { numero: 1, titulo: 'Escritura digital, interacción y oralidad',       oa_codes: ['OA 15', 'OA 21', 'OA 23'] },
     ],
-    5: [ // El Romancero y la poesía popular — OA 2,4,5,7,10,14,15,21
-      { numero: 1, titulo: 'Lectura y análisis poético', oa_codes: ['OA 2', 'OA 4', 'OA 5'] },
-      { numero: 2, titulo: 'Lectura crítica y textos no literarios', oa_codes: ['OA 7', 'OA 10', 'OA 14'] },
-      { numero: 3, titulo: 'Producción de textos y oralidad', oa_codes: ['OA 15', 'OA 21'] },
+    5: [ // El Romancero y la poesía popular
+      { numero: 1, titulo: 'Análisis lírico y tradición oral',                oa_codes: ['OA 2', 'OA 4', 'OA 5'] },
+      { numero: 2, titulo: 'Contexto histórico, síntesis y edición',          oa_codes: ['OA 10', 'OA 15'] },
     ],
-    6: [ // El terror y lo extraño — OA 1,2,3,6,7,11,14,15,17,21
-      { numero: 1, titulo: 'Lectura literaria de terror y fantasía', oa_codes: ['OA 1', 'OA 2', 'OA 3'] },
-      { numero: 2, titulo: 'Comprensión y análisis crítico', oa_codes: ['OA 6', 'OA 7', 'OA 11'] },
-      { numero: 3, titulo: 'Producción de textos y oralidad', oa_codes: ['OA 14', 'OA 15', 'OA 21'] },
+    6: [ // El terror y lo extraño
+      { numero: 1, titulo: 'Comprensión estratégica y correferencia',         oa_codes: ['OA 11', 'OA 17'] },
+      { numero: 2, titulo: 'Hábito lector e intereses literarios',            oa_codes: ['OA 1'] },
     ],
-    7: [ // Medios de comunicación — OA 1,9,10,12,13,18,19,20,22,23,24,25
-      { numero: 1, titulo: 'Análisis de textos mediáticos', oa_codes: ['OA 1', 'OA 9', 'OA 10'] },
-      { numero: 2, titulo: 'Escritura en contextos digitales', oa_codes: ['OA 12', 'OA 13', 'OA 19'] },
-      { numero: 3, titulo: 'Comunicación oral e investigación', oa_codes: ['OA 20', 'OA 22', 'OA 24'] },
+    7: [ // Medios de comunicación
+      { numero: 1, titulo: 'Reflexión crítica y análisis de medios',          oa_codes: ['OA 2', 'OA 9', 'OA 12'] },
+      { numero: 2, titulo: 'Tiempos verbales y textos audiovisuales',         oa_codes: ['OA 18', 'OA 20'] },
     ],
   },
   // 8° Básico — 7 unidades, OAs según Programa MINEDUC Dec. 628/2016
