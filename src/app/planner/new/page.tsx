@@ -929,6 +929,9 @@ export default function NewPlannerPage() {
   const [planificationType, setPlanificationType] = useState<'corto' | 'mediano'>('corto');
   const [selectedIndicadorIds, setSelectedIndicadorIds] = useState<number[]>([]);
   const [medianoDownloading, setMedianoDownloading] = useState(false);
+  // Temas/bloques de la unidad (desde JSON curricular)
+  const [temasList, setTemasList] = useState<string[]>([]);
+  const [selectedTema, setSelectedTema] = useState<string>('');
 
   const basalesOAs = suggestedOAs.filter(oa => oaBasales.includes(oa.codigo));
   const compOAs = suggestedOAs.filter(oa => oaComplementarios.includes(oa.codigo));
@@ -1063,9 +1066,18 @@ export default function NewPlannerPage() {
       setSelectedLeccionId('');
       setSelectedOaIds([]);
       setSuggestedOAs([]);
+      setTemasList([]);
+      setSelectedTema('');
 
       const match = uni.match(/\d+/);
       const unitNum = match ? match[0] : uni;
+
+      // Cargar temas del JSON curricular
+      const temasRes = await fetch(`/api/curriculum/temas?nivel=${encodeURIComponent(lvl)}&unidad=${encodeURIComponent(unitNum)}`);
+      if (temasRes.ok) {
+        const temasData = await temasRes.json();
+        setTemasList(temasData.temas || []);
+      }
 
       const res = await fetch(`/api/curriculum/lecciones?nivel=${encodeURIComponent(lvl)}&unidad=${encodeURIComponent(unitNum)}`);
       if (res.ok) {
@@ -1113,6 +1125,32 @@ export default function NewPlannerPage() {
       setOaBasales([]);
       setOaComplementarios([]);
     }
+  };
+
+  const handleTemaChange = (tema: string) => {
+    setSelectedTema(tema);
+    if (!tema) {
+      setSelectedOaIds([]);
+      setSuggestedOAs([]);
+      setOaBasales([]);
+      return;
+    }
+    // Cargar TODOS los OAs de la unidad (igual que mediano plazo)
+    const allOas = leccionesList.flatMap((l: any) => l.oas || []);
+    const seen = new Set<string>();
+    const uniqueOas = allOas.filter((oa: any) => {
+      if (seen.has(oa.codigo)) return false;
+      seen.add(oa.codigo);
+      return true;
+    });
+    setSelectedOaIds(uniqueOas.map((o: any) => o.id));
+    setSuggestedOAs(uniqueOas);
+    setOaBasales(uniqueOas.map((o: any) => o.codigo));
+    setOaComplementarios([]);
+    setManualTheme(tema);
+    setThemeMode('manual');
+    setIsRealLesson(true);
+    setValidatedOA(true);
   };
 
   const handleOaToggle = (oaId: number | string, checked: boolean) => {
@@ -2356,21 +2394,21 @@ export default function NewPlannerPage() {
                   </select>
                 </div>
 
-                {/* Lección Selector — solo corto plazo */}
+                {/* Bloque / Tema Selector — solo corto plazo */}
                 {planificationType === 'corto' && <div className="space-y-2">
-                  <label htmlFor="leccion" className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">
-                    3. Lección Curricular
+                  <label htmlFor="tema-selector" className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">
+                    3. Bloque / Tema de la Unidad
                   </label>
                   <select
-                    id="leccion"
-                    value={selectedLeccionId}
-                    onChange={(e) => handleLeccionChange(e.target.value)}
+                    id="tema-selector"
+                    value={selectedTema}
+                    onChange={(e) => handleTemaChange(e.target.value)}
                     className="w-full bg-[#FAF9FC] border border-slate-200 rounded-2xl py-3.5 px-4 text-xs text-slate-800 font-semibold focus:outline-none focus:border-violet-500 appearance-none cursor-pointer"
                   >
-                    <option value="">-- Elige una lección --</option>
-                    {leccionesList.map((l) => (
-                      <option key={l.id} value={l.id}>
-                        Lección {l.numero}: {l.titulo}
+                    <option value="">-- Elige un bloque --</option>
+                    {temasList.map((tema, idx) => (
+                      <option key={idx} value={tema}>
+                        Bloque {idx + 1}: {tema}
                       </option>
                     ))}
                   </select>
