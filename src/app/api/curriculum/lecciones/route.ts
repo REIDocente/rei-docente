@@ -174,25 +174,30 @@ const FALLBACK_LESSONS: Record<string, Record<number, { numero: number; titulo: 
       { numero: 11, titulo: 'Viajes migratorios', oa_codes: ['OA 6', 'OA 11', 'OA 28'] }
     ]
   },
+  // 6° Básico — OAs por unidad según curriculum_6B.json
+  // U1: OA 2,3,4,14,16,18,21,22,27,31
+  // U2: OA 2,3,5,6,8,15,17,18,24,31
+  // U3: OA 3,4,16,18,22,24,25,26,27,31
+  // U4: OA 2,6,7,8,11,15,17,18,27,29
   '6° Básico': {
     1: [
-      { numero: 1, titulo: 'Juegos e imaginación', oa_codes: ['OA 1', 'OA 3', 'OA 4'] },
-      { numero: 2, titulo: 'Creatividad e innovación', oa_codes: ['OA 6', 'OA 24', 'OA 27'] },
-      { numero: 3, titulo: 'Aventuras y viajes en el tiempo', oa_codes: ['OA 2', 'OA 7', 'OA 14'] }
+      { numero: 1, titulo: 'Literatura narrativa y comprensión lectora', oa_codes: ['OA 3', 'OA 4', 'OA 2'] },
+      { numero: 2, titulo: 'Escritura creativa y comentario lector',     oa_codes: ['OA 14', 'OA 16', 'OA 18'] },
+      { numero: 3, titulo: 'Gramática, ortografía y oralidad',           oa_codes: ['OA 21', 'OA 22', 'OA 27'] }
     ],
     2: [
-      { numero: 4, titulo: 'El ser humano y la naturaleza', oa_codes: ['OA 3', 'OA 4', 'OA 5'] },
-      { numero: 5, titulo: 'La conservación de la biodiversidad', oa_codes: ['OA 11', 'OA 24', 'OA 29'] },
-      { numero: 6, titulo: 'Conectándonos con la naturaleza', oa_codes: ['OA 6', 'OA 7', 'OA 15'] }
+      { numero: 4, titulo: 'Literatura y análisis poético',              oa_codes: ['OA 3', 'OA 5', 'OA 2'] },
+      { numero: 5, titulo: 'Textos no literarios y síntesis',            oa_codes: ['OA 6', 'OA 8', 'OA 15'] },
+      { numero: 6, titulo: 'Producción de textos y comunicación oral',   oa_codes: ['OA 17', 'OA 18', 'OA 24'] }
     ],
     3: [
-      { numero: 7, titulo: 'Investigando el universo', oa_codes: ['OA 3', 'OA 4', 'OA 6'] },
-      { numero: 8, titulo: 'Distintas creencias sobre el cielo', oa_codes: ['OA 7', 'OA 12', 'OA 24'] },
-      { numero: 9, titulo: 'Historias de vida', oa_codes: ['OA 2', 'OA 11', 'OA 14'] }
+      { numero: 7, titulo: 'Literatura y análisis narrativo',            oa_codes: ['OA 3', 'OA 4', 'OA 16'] },
+      { numero: 8, titulo: 'Escritura, ortografía y comprensión oral',   oa_codes: ['OA 18', 'OA 22', 'OA 24'] },
+      { numero: 9, titulo: 'Publicidad, teatro y diálogo',               oa_codes: ['OA 25', 'OA 26', 'OA 27'] }
     ],
     4: [
-      { numero: 10, titulo: 'Somos iguales', oa_codes: ['OA 3', 'OA 4', 'OA 7'] },
-      { numero: 11, titulo: 'Mujeres activistas', oa_codes: ['OA 6', 'OA 11', 'OA 18'] }
+      { numero: 10, titulo: 'Textos no literarios y evaluación crítica', oa_codes: ['OA 6', 'OA 7', 'OA 8'] },
+      { numero: 11, titulo: 'Investigación, escritura y oralidad',       oa_codes: ['OA 11', 'OA 15', 'OA 17'] }
     ]
   },
   // 7° Básico — 7 unidades, OAs según Programa MINEDUC Dec. 628/2016
