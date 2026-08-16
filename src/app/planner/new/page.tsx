@@ -1135,7 +1135,7 @@ export default function NewPlannerPage() {
       setOaBasales([]);
       return;
     }
-    // Cargar TODOS los OAs de la unidad (igual que mediano plazo)
+    // Obtener TODOS los OAs de la unidad (deduplicados) para mostrarlos en el selector
     const allOas = leccionesList.flatMap((l: any) => l.oas || []);
     const seen = new Set<string>();
     const uniqueOas = allOas.filter((oa: any) => {
@@ -1143,9 +1143,26 @@ export default function NewPlannerPage() {
       seen.add(oa.codigo);
       return true;
     });
-    setSelectedOaIds(uniqueOas.map((o: any) => o.id));
-    setSuggestedOAs(uniqueOas);
-    setOaBasales(uniqueOas.map((o: any) => o.codigo));
+    // Pre-seleccionar 3 OAs según la posición del bloque en la secuencia de la unidad
+    const temaIdx = temasList.indexOf(tema);
+    const leccionForTema = leccionesList[temaIdx];
+    let preselectedIds: (number | string)[];
+    if (leccionForTema?.oas?.length > 0) {
+      // Usar los OAs asignados a la lección que corresponde a este bloque
+      preselectedIds = (leccionForTema.oas as any[]).slice(0, 3).map((o: any) => o.id);
+    } else {
+      // Fallback: distribuir OAs proporcionalmente entre los bloques
+      const N = uniqueOas.length;
+      const T = Math.max(temasList.length, 1);
+      const start = Math.min(Math.floor(temaIdx * N / T), Math.max(N - 1, 0));
+      preselectedIds = uniqueOas.slice(start, start + 3).map((o: any) => o.id);
+    }
+    setSuggestedOAs(uniqueOas); // Todos los OAs de la unidad (para el display completo)
+    setSelectedOaIds(preselectedIds); // Solo 3 pre-seleccionados según el bloque
+    setOaBasales(preselectedIds.map(id => {
+      const oa = uniqueOas.find((o: any) => o.id === id);
+      return oa?.codigo || '';
+    }).filter(Boolean));
     setOaComplementarios([]);
     setManualTheme(tema);
     setThemeMode('manual');
@@ -1164,11 +1181,19 @@ export default function NewPlannerPage() {
     }
     setSelectedOaIds(nextOaIds);
 
-    const leccion = leccionesList.find(l => String(l.id) === String(selectedLeccionId));
-    if (leccion && leccion.oas) {
-      const matched = (leccion.oas as any[]).filter(oa => nextOaIds.includes(oa.id));
-      setSuggestedOAs(matched);
-      setOaBasales(matched.map(oa => oa.codigo));
+    if (selectedTema) {
+      // Modo bloque: suggestedOAs ya tiene TODOS los OAs de la unidad; solo actualizar basales
+      setOaBasales(nextOaIds.map(id => {
+        const oa = suggestedOAs.find((o: any) => o.id === id);
+        return oa?.codigo || '';
+      }).filter(Boolean));
+    } else {
+      const leccion = leccionesList.find(l => String(l.id) === String(selectedLeccionId));
+      if (leccion && leccion.oas) {
+        const matched = (leccion.oas as any[]).filter(oa => nextOaIds.includes(oa.id));
+        setSuggestedOAs(matched);
+        setOaBasales(matched.map(oa => oa.codigo));
+      }
     }
   };
 
@@ -2493,16 +2518,21 @@ export default function NewPlannerPage() {
                     )}
                   </div>
 
-                  {selectedLeccionId ? (
+                  {(selectedLeccionId || selectedTema) ? (
                     <div className="border border-slate-100 bg-[#FAF9FC]/30 rounded-2xl p-4 space-y-4">
                       <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-                        Objetivos de Aprendizaje de la Lección (Auto-seleccionados, editable, máx 3)
+                        {selectedTema
+                          ? `OAs de la unidad — 3 pre-seleccionados según el bloque (editable)`
+                          : `Objetivos de Aprendizaje de la Lección (Auto-seleccionados, editable, máx 3)`}
                       </p>
-                      
+
                       <div className="space-y-3">
                         {(() => {
-                          const leccion = leccionesList.find(l => String(l.id) === String(selectedLeccionId));
-                          const oas = leccion?.oas || [];
+                          // Modo bloque: mostrar TODOS los OAs de la unidad
+                          // Modo lección: mostrar solo los OAs de la lección
+                          const oas: any[] = selectedTema
+                            ? suggestedOAs
+                            : (leccionesList.find(l => String(l.id) === String(selectedLeccionId))?.oas || []);
                           if (oas.length === 0) {
                             return <p className="text-xs text-slate-400 italic">No hay OAs pre-asignados a esta lección.</p>;
                           }
@@ -2511,7 +2541,9 @@ export default function NewPlannerPage() {
                             return (
                               <label
                                 key={oa.id}
-                                className="flex items-start gap-2.5 p-3 bg-white border border-slate-150 rounded-xl cursor-pointer hover:bg-slate-50 transition-all duration-150 select-none shadow-xs"
+                                className={`flex items-start gap-2.5 p-3 bg-white border rounded-xl cursor-pointer transition-all duration-150 select-none shadow-xs ${
+                                  isChecked ? 'border-violet-300 bg-violet-50/40' : 'border-slate-150 hover:bg-slate-50'
+                                }`}
                               >
                                 <input
                                   type="checkbox"
@@ -2520,7 +2552,9 @@ export default function NewPlannerPage() {
                                   className="mt-0.5 w-4 h-4 rounded text-violet-600 border-slate-300 focus:ring-violet-500 focus:ring-offset-0"
                                 />
                                 <div className="text-xs min-w-0">
-                                  <span className="inline-flex items-center px-1.5 py-0.5 bg-violet-50 border border-violet-100 text-violet-750 font-black text-[9px] rounded-md mr-1.5 uppercase">
+                                  <span className={`inline-flex items-center px-1.5 py-0.5 border font-black text-[9px] rounded-md mr-1.5 uppercase ${
+                                    isChecked ? 'bg-violet-100 border-violet-200 text-violet-700' : 'bg-slate-50 border-slate-200 text-slate-500'
+                                  }`}>
                                     {oa.codigo}
                                   </span>
                                   <span className="text-slate-700 leading-relaxed font-semibold">
@@ -2601,7 +2635,9 @@ export default function NewPlannerPage() {
                     </div>
                   ) : (
                     <div className="text-center py-6 bg-slate-50/50 border border-dashed border-slate-200 rounded-2xl text-xs text-slate-450 font-semibold italic">
-                      Selecciona una lección curricular arriba para cargar y seleccionar sus OAs oficiales.
+                      {planificationType === 'corto'
+                        ? 'Selecciona un bloque arriba para ver y elegir los OAs de la unidad.'
+                        : 'Selecciona una lección curricular arriba para cargar y seleccionar sus OAs oficiales.'}
                     </div>
                   )}
 
