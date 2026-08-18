@@ -19,6 +19,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { readFileSync } from 'fs';
 import path from 'path';
 import { staticCurriculum } from '@/lib/curriculum/index';
+import { TEXTBOOK_STRUCTURE, type TextbookUnit } from '@/data/textbook_structure';
 import {
   Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
   WidthType, BorderStyle, AlignmentType, ShadingType,
@@ -699,6 +700,125 @@ export async function POST(req: NextRequest) {
     'sesiones, el orden de los indicadores y las estrategias según el ritmo real del grupo curso.',
     false, 16, '94A3B8',
   ));
+
+  // ═══════════════════════════════════════
+  // 12. CONEXIÓN TEXTO ESCOLAR MINEDUC
+  // ═══════════════════════════════════════
+  const textbookData = TEXTBOOK_STRUCTURE[grade];
+  if (textbookData) {
+    // Seleccionar unidades relevantes según la unidad curricular
+    let relevantUnits: TextbookUnit[] = textbookData.unidades;
+
+    // Para cursos con 4 unidades (5°B–2°M): mostrar solo las del tomo correspondiente
+    const totalUnits = textbookData.unidades.length;
+    if (totalUnits <= 6) {
+      // 4–6 unidades grandes → tomo 1 = unidades 1-2, tomo 2 = unidades 3-4
+      const tomoTarget: 1 | 2 = unitNum <= Math.ceil(totalUnits / 2) ? 1 : 2;
+      relevantUnits = textbookData.unidades.filter(u => u.tomo === tomoTarget);
+    } else {
+      // Muchas lecciones (1°–4° básico) → mostrar las del tomo aproximado
+      // unitNum 1-2 → tomo 1, unitNum 3-4 → tomo 2
+      const tomoTarget: 1 | 2 = unitNum <= 2 ? 1 : 2;
+      const tomoUnits = textbookData.unidades.filter(u => u.tomo === tomoTarget);
+      // Mostrar hasta 8 lecciones más relevantes
+      relevantUnits = tomoUnits.slice(0, 8);
+    }
+
+    children.push(h2('12. Conexión con el Texto Escolar MINEDUC'));
+    children.push(p(
+      `Lecciones del texto "${textbookData.nombre_texto}" sugeridas para trabajar durante esta unidad. ` +
+      'El docente puede usar los textos literarios listados como lectura de modelamiento, motivación o producción.',
+      false, 17, '64748B',
+    ));
+    children.push(spacer());
+
+    const TB_HDR = '0F4C75'; // azul oscuro para encabezado de sección textbook
+
+    children.push(new Table({
+      width: { size: 100, type: WidthType.PERCENTAGE },
+      columnWidths: [2600, 700, 2200, 4000],
+      rows: [
+        new TableRow({
+          tableHeader: true,
+          children: [
+            new TableCell({
+              borders: { top: BORDER, bottom: BORDER, left: BORDER, right: BORDER },
+              shading: { fill: TB_HDR, color: 'auto', type: ShadingType.CLEAR },
+              margins: { top: 60, bottom: 60, left: 80, right: 80 },
+              children: [new Paragraph({ children: [new TextRun({ text: 'Lección del libro', bold: true, size: 17, color: 'FFFFFF', font: 'Calibri' })] })],
+            }),
+            new TableCell({
+              borders: { top: BORDER, bottom: BORDER, left: BORDER, right: BORDER },
+              shading: { fill: TB_HDR, color: 'auto', type: ShadingType.CLEAR },
+              margins: { top: 60, bottom: 60, left: 80, right: 80 },
+              children: [new Paragraph({ children: [new TextRun({ text: 'Págs.', bold: true, size: 17, color: 'FFFFFF', font: 'Calibri' })] })],
+            }),
+            new TableCell({
+              borders: { top: BORDER, bottom: BORDER, left: BORDER, right: BORDER },
+              shading: { fill: TB_HDR, color: 'auto', type: ShadingType.CLEAR },
+              margins: { top: 60, bottom: 60, left: 80, right: 80 },
+              children: [new Paragraph({ children: [new TextRun({ text: 'Géneros / Tipos de texto', bold: true, size: 17, color: 'FFFFFF', font: 'Calibri' })] })],
+            }),
+            new TableCell({
+              borders: { top: BORDER, bottom: BORDER, left: BORDER, right: BORDER },
+              shading: { fill: TB_HDR, color: 'auto', type: ShadingType.CLEAR },
+              margins: { top: 60, bottom: 60, left: 80, right: 80 },
+              children: [new Paragraph({ children: [new TextRun({ text: 'Textos literarios sugeridos', bold: true, size: 17, color: 'FFFFFF', font: 'Calibri' })] })],
+            }),
+          ],
+        }),
+        ...relevantUnits.map((u, idx) => {
+          const bg = idx % 2 ? ROW_BG : 'E8F4FD'; // celeste muy suave
+          const generos = u.generos.slice(0, 3).join(', ');
+          const textos = u.textos_literarios.slice(0, 3).join(' · ');
+          return new TableRow({
+            children: [
+              new TableCell({
+                borders: { top: BORDER, bottom: BORDER, left: BORDER, right: BORDER },
+                shading: { fill: bg, color: 'auto', type: ShadingType.CLEAR },
+                margins: { top: 60, bottom: 60, left: 80, right: 80 },
+                children: [new Paragraph({ children: [
+                  new TextRun({ text: `L${u.numero}: `, bold: true, size: 17, color: '0F4C75', font: 'Calibri' }),
+                  new TextRun({ text: u.nombre, size: 17, color: '1E293B', font: 'Calibri' }),
+                ]})],
+              }),
+              new TableCell({
+                borders: { top: BORDER, bottom: BORDER, left: BORDER, right: BORDER },
+                shading: { fill: bg, color: 'auto', type: ShadingType.CLEAR },
+                margins: { top: 60, bottom: 60, left: 80, right: 80 },
+                children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [
+                  new TextRun({ text: `${u.paginas.inicio}–${u.paginas.fin}`, size: 16, color: '64748B', font: 'Calibri' }),
+                ]})],
+              }),
+              new TableCell({
+                borders: { top: BORDER, bottom: BORDER, left: BORDER, right: BORDER },
+                shading: { fill: bg, color: 'auto', type: ShadingType.CLEAR },
+                margins: { top: 60, bottom: 60, left: 80, right: 80 },
+                children: [new Paragraph({ children: [
+                  new TextRun({ text: generos, size: 16, color: '1E293B', font: 'Calibri' }),
+                ]})],
+              }),
+              new TableCell({
+                borders: { top: BORDER, bottom: BORDER, left: BORDER, right: BORDER },
+                shading: { fill: bg, color: 'auto', type: ShadingType.CLEAR },
+                margins: { top: 60, bottom: 60, left: 80, right: 80 },
+                children: [new Paragraph({ children: [
+                  new TextRun({ text: textos, size: 16, color: '1E293B', font: 'Calibri' }),
+                ]})],
+              }),
+            ],
+          });
+        }),
+      ],
+    }));
+    children.push(spacer());
+    children.push(p(
+      `Fuente: ${textbookData.nombre_texto} — ${textbookData.editorial}. ` +
+      'Uso exclusivo como referencia pedagógica. No reproducir actividades ni textos completos.',
+      false, 15, '94A3B8',
+    ));
+    children.push(spacer());
+  }
 
   // ── Ensamblar y retornar ──────────────────────────────────────────────────
   const doc = new Document({
