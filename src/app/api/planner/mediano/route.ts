@@ -45,24 +45,61 @@ interface CurriculumData {
 
 /** Fragmentos que delatan basura del PDF en lugar de un indicador real */
 const GARBAGE_PATTERNS = [
+  // ── Artefactos de extracción PDF ──────────────────────────────────────────
   /Programa de Estudio/i,
   /Los estudiantes que han alcanzado/i,
-  /Unidad \d+ de/i,        // "Unidad 3 de:" o "Unidad 3 de actividades"
-  /\bU\d+\b/,              // "U1 cuestiones" — código de unidad embebido en texto
+  /Unidad \d+ de/i,
+  /\bU\d+\b/,
   /Se espera que los estudiantes/i,
-  /El docente/i,
-  /^\s*\d+\s*$/,           // solo un número
   /isbn/i,
   /ministerio de educación/i,
   /objetivo de aprendizaje oficial/i,
   /logrado\s+MedianaMente/i,
   /recortes recorten/i,
-  /\([^)]+,[^)]+\)/,       // fill-in-the-blank: "(botones, manchones)" o "(opción1, opción2)"
-  /medio e identidad/i,    // basura PDF de programas de 2° Medio
-  /a todas las unidades/i, // "A tOdAs lAs unidAdes" — artefacto de extracción PDF
-  /^A\s+t[Oo]d[Aa]s/,     // variante con mayúsculas mezcladas
-  /^Por esto,/i,           // fragmento de explicación pedagógica del PDF
-  /^A modo de sugerencia/i, // instrucción al docente, no es indicador
+  /\([^)]+,[^)]+\)/,
+  /medio e identidad/i,
+  /a todas las unidades/i,
+  /^A\s+t[Oo]d[Aa]s/,
+  /^\s*\d+\s*$/,
+
+  // ── Referencias al docente ─────────────────────────────────────────────────
+  /^El docente/i,
+  /^La docente/i,
+  /^El profesor/i,
+  /^La profesora/i,
+  /^Les señala/i,
+  /^Les pide/i,
+  /^Les indica/i,
+  /^Les explica/i,
+
+  // ── Instrucciones de actividad (no son indicadores de logro) ──────────────
+  /^Para terminar/i,
+  /^Para esto/i,
+  /^Para ello/i,
+  /^Para comenzar/i,
+  /^A partir de\b/i,
+  /^A modo de sugerencia/i,
+  /^A continuación/i,
+  /^Por esto,/i,
+  /^Luego de\b/i,
+  /^Antes de leer/i,
+  /^Después de leer/i,
+  /^Durante la lectura/i,
+  /^En grupos/i,
+  /^En parejas/i,
+  /^Se lee\b/i,
+  /^Se pide\b/i,
+  /^Se solicita/i,
+  /^Noticia sobre/i,
+  /^Construir conocimientos/i,
+
+  // ── Fragmentos de actividades narradas con "Los estudiantes" ──────────────
+  /^Los estudiantes\b/i,
+
+  // ── Fragmentos sueltos de escenarios / contextos de actividad ─────────────
+  /^Una de ellas\b/i,
+  /^Es de noche\b/i,
+  /^Es de día\b/i,
 ];
 
 /** Patrones de basura que aparecen PEGADOS al final de un indicador real */
@@ -84,7 +121,7 @@ function cleanIndicatorText(text: string): string {
   return out;
 }
 
-const IMPERATIVE_STARTS = /^(Describa|Explique|Comente|Compare|Analice|Discuta|Reflexione|Señale|Mencione|Identifique|Busca|Lee|Escribe|Observa|Responde|Piensa|Investiga)\b/i;
+const IMPERATIVE_STARTS = /^(Describa|Explique|Comente|Comenta|Compare|Analice|Discuta|Reflexione|Señale|Mencione|Identifique|Busca|Lee|Escribe|Observa|Responde|Piensa|Investiga|Describe|Cuenta|Muestra|Comparte|Escucha|Presenta|Trabaja|Crea|Revisa|Conversa|Pide|Indica|Selecciona|Elige|Elabora)\b/i;
 
 /** Extrae el texto real de un OA quitando la basura del PDF */
 function cleanOAText(raw: string): string {
