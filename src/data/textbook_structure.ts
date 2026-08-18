@@ -16,6 +16,9 @@ export interface TextbookUnit {
   topicos_linguisticos: string[];     // contenidos gramaticales/lingüísticos
   textos_literarios: string[];        // solo títulos y autores, sin reproducir contenido
   tipo_evaluacion: string;
+  /** Referencia opcional: qué páginas del libro trabajar por OA específico.
+   *  Se carga curso por curso cuando se dispone del dato. */
+  paginas_por_oa?: Array<{ oa: string; paginas: number[]; tipo_recurso?: string }>;
 }
 
 export interface GradeTextbook {

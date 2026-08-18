@@ -873,6 +873,90 @@ export async function POST(req: NextRequest) {
       ],
     }));
     children.push(spacer());
+
+    // ── Tabla secundaria: referencias OA → páginas (solo si hay datos) ────────
+    const paginasRefs = relevantUnits.flatMap(u =>
+      (u.paginas_por_oa ?? []).map(ref => ({
+        leccion: u.numero,
+        oa: ref.oa,
+        paginas: ref.paginas,
+        tipo_recurso: ref.tipo_recurso ?? 'Texto Escolar',
+      }))
+    );
+    if (paginasRefs.length > 0) {
+      children.push(p('Referencias por OA en el Texto Escolar:', true, 17, '0F4C75'));
+      children.push(new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        columnWidths: [2200, 3000, 2200, 2100],
+        rows: [
+          new TableRow({
+            tableHeader: true,
+            children: [
+              new TableCell({
+                borders: { top: BORDER, bottom: BORDER, left: BORDER, right: BORDER },
+                shading: { fill: '1E3A5F', color: 'auto', type: ShadingType.CLEAR },
+                margins: { top: 50, bottom: 50, left: 80, right: 80 },
+                children: [new Paragraph({ children: [new TextRun({ text: 'OA', bold: true, size: 16, color: 'FFFFFF', font: 'Calibri' })] })],
+              }),
+              new TableCell({
+                borders: { top: BORDER, bottom: BORDER, left: BORDER, right: BORDER },
+                shading: { fill: '1E3A5F', color: 'auto', type: ShadingType.CLEAR },
+                margins: { top: 50, bottom: 50, left: 80, right: 80 },
+                children: [new Paragraph({ children: [new TextRun({ text: 'Páginas sugeridas', bold: true, size: 16, color: 'FFFFFF', font: 'Calibri' })] })],
+              }),
+              new TableCell({
+                borders: { top: BORDER, bottom: BORDER, left: BORDER, right: BORDER },
+                shading: { fill: '1E3A5F', color: 'auto', type: ShadingType.CLEAR },
+                margins: { top: 50, bottom: 50, left: 80, right: 80 },
+                children: [new Paragraph({ children: [new TextRun({ text: 'Lección', bold: true, size: 16, color: 'FFFFFF', font: 'Calibri' })] })],
+              }),
+              new TableCell({
+                borders: { top: BORDER, bottom: BORDER, left: BORDER, right: BORDER },
+                shading: { fill: '1E3A5F', color: 'auto', type: ShadingType.CLEAR },
+                margins: { top: 50, bottom: 50, left: 80, right: 80 },
+                children: [new Paragraph({ children: [new TextRun({ text: 'Recurso', bold: true, size: 16, color: 'FFFFFF', font: 'Calibri' })] })],
+              }),
+            ],
+          }),
+          ...paginasRefs.map((ref, idx) => {
+            const bg = idx % 2 ? ROW_BG : 'EFF6FF';
+            const paginasTxt = ref.paginas.length === 1
+              ? `Pág. ${ref.paginas[0]}`
+              : `Págs. ${ref.paginas[0]}–${ref.paginas[ref.paginas.length - 1]}`;
+            return new TableRow({
+              children: [
+                new TableCell({
+                  borders: { top: BORDER, bottom: BORDER, left: BORDER, right: BORDER },
+                  shading: { fill: bg, color: 'auto', type: ShadingType.CLEAR },
+                  margins: { top: 50, bottom: 50, left: 80, right: 80 },
+                  children: [new Paragraph({ children: [new TextRun({ text: ref.oa, size: 16, color: '0F4C75', font: 'Calibri', bold: true })] })],
+                }),
+                new TableCell({
+                  borders: { top: BORDER, bottom: BORDER, left: BORDER, right: BORDER },
+                  shading: { fill: bg, color: 'auto', type: ShadingType.CLEAR },
+                  margins: { top: 50, bottom: 50, left: 80, right: 80 },
+                  children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: paginasTxt, size: 16, color: '1E293B', font: 'Calibri' })] })],
+                }),
+                new TableCell({
+                  borders: { top: BORDER, bottom: BORDER, left: BORDER, right: BORDER },
+                  shading: { fill: bg, color: 'auto', type: ShadingType.CLEAR },
+                  margins: { top: 50, bottom: 50, left: 80, right: 80 },
+                  children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: `L${ref.leccion}`, size: 16, color: '64748B', font: 'Calibri' })] })],
+                }),
+                new TableCell({
+                  borders: { top: BORDER, bottom: BORDER, left: BORDER, right: BORDER },
+                  shading: { fill: bg, color: 'auto', type: ShadingType.CLEAR },
+                  margins: { top: 50, bottom: 50, left: 80, right: 80 },
+                  children: [new Paragraph({ children: [new TextRun({ text: ref.tipo_recurso, size: 16, color: '64748B', font: 'Calibri' })] })],
+                }),
+              ],
+            });
+          }),
+        ],
+      }));
+      children.push(spacer());
+    }
+
     children.push(p(
       `Fuente: ${textbookData.nombre_texto} — ${textbookData.editorial}. ` +
       'Uso exclusivo como referencia pedagógica. No reproducir actividades ni textos completos.',
