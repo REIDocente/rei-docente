@@ -16,14 +16,16 @@
             "Subrayan las palabras que no comprenden y que impiden entender el sentido del fragmento, y averiguan su significado.",
             "Escriben preguntas al margen del texto sobre lo que no comprenden o lo que quieren profundizar.",
             "Por esto, mientras más uno posee sobre el texto que va a leer, es más entenderlo y establecer relaciones."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 3",
           "texto": "Leer y familiarizarse con un amplio repertorio de literatura para aumentar su conocimiento del mundo, desarrollar su imaginación y reconocer su valor social y cultural; por ejemplo: ú cuentos folclóricos y de autor ú historietas ú otros",
           "indicadores": [
             "Relacionan situaciones de la vida cotidiana con versos de los textos leídos en clases o independientemente."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 4",
@@ -35,28 +37,32 @@
             "Explican qué consecuencia tiene determinada acción para un personaje.",
             "Describen o recrean visualmente el lugar donde ocurre el relato.",
             "Comparan sus costumbres con las de los personajes."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 6",
           "texto": "Leer independientemente 1 y comprender textos no liProfundizar terarios (cartas, biografías, El informativo relatos históricos, libros y artículos informativos, noen ticias, etc.) para ampliar su preguntas conocimiento del mundo y permiten previamente. formarse una opinión: ú extrayendo información docente explícita e implícita Posteriormente, ú haciendo inferencias a texto, relación partir de la información del texto y de sus expeque riencias y conocimientos responda. ú relacionando la información de imágenes, ú gráficos, tablas, mapas o ú diagramas, con el texto en el cual están insertos Una sobre ú interpretando expresiones en lenguaje figurado responder ú comparando informatodo ción leer opinión ú formulando una opinión sobre algún aspecto de la lectura 2 ú fundamentando su opiinterpretación nión con información del texto o sus conocimienuna tos previos detención. información cicio, fácil qué? describir (Historia, Ciencias",
           "indicadores": [
             "Identifican las ideas más importantes de acuerdo con el propósito del lector; organizan la información en esquemas o mapas conceptuales."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 7",
           "texto": "Evaluar críticamente la 1 información presente en Evaluar textos de diversa proceEl rentes dencia: ú determinando quién es tienen el emisor, cuál es su procumplir pósito y a quién dirige el y revistas, para mensaje ú evaluando si un texto entickets trega suficiente informamensajes ción para responder una comunicarse profesor determinada pregunta o cumplir un propósito cionados independiente Para sobre cente trados Evaluar aprendan tema, calidad información Luego siguientes: Esta",
           "indicadores": [
             "Identifican al autor y explican cuál es su intención al publicar ese texto; mencionan y fundamentan a qué público está dirigido el texto; explican si la información presente en un texto satisface su propósito de lectura o si necesitan consultar más fuentes."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 8",
           "texto": "Sintetizar y registrar las 1 ideas principales de textos modelado leídos para satisfacer propósitos como estudiar, los hacer una investigación, pide recordar detalles, etc. fo. Comparan pide realizar oportunamente. distinguir Analiza plos manera Elaboración lecturas para organizador expongan",
           "indicadores": [
             "Subrayan o registran la información relevante en un texto para distinguirla de la información accesoria; parafrasean con sus palabras un texto leído; completan organizadores gráficos dados por el docente con la información escuchada en clases."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 11",
@@ -68,14 +74,16 @@
             "Seleccionan los textos que son relevantes para su investigación.",
             "Registran la información que sirve al tema escogido por ellos.",
             "A modo de sugerencia, se ofrecen las siguientes tareas de búsqueda: Lugar de origen de Charles Darwin."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 15",
           "texto": "Escribir artículos informativos para comunicar información sobre un tema: ú presentando el tema en una oración ú desarrollando una idea central por párrafo ú agregando las fuentes utilizadas Elaboración informativo diferentes tema",
           "indicadores": [
             "Eligen un tema interesante sobre las lecturas realizadas en clases y registran información para desarrollarlo; elaboran una introducción para presentar el tema al lector; desarrollan el tema en al menos tres párrafos en los que: elaboran un subtema y lo ilustran con ejemplos, datos o explicaciones; incorporan datos, descripciones, ejemplos o reflexiones provenientes de los textos leídos; describen hechos relevantes y acordes con el tema elegido; incluyen palabras y expresiones específicas del tema tratado."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 17",
@@ -87,14 +95,16 @@
             "Explican cómo encontraron la información que incluirán en sus textos.",
             "Completan organizadores gráficos con la información que incluirán en sus textos.",
             "Ordenan la información siguiendo un criterio establecido, como orden cronológico o temas y subtemas."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 18",
           "texto": "Escribir, revisar y editar sus 1 textos para satisfacer un Escritura propósito y transmitir sus mación ideas con claridad. durante este proceso: ideas ú desarrollan las ideas gráfico. agregando información terminan siguientes ú emplean un vocabulario preciso y variado, y un ú registro adecuado ú releen a medida que escriben ú aseguran la coherencia y Agregan agregan conectores textos ú editan, en forma indemayor registro pendiente, aspectos de ortografía y presentación ú utilizan las herramientas 2 del procesador de textos modelado para buscar sinónimos, corregir ortografía y texto gramática, y dar formado. to (cuando escriben en escoge computador) puede muestra aspectos. texto demasiado escritura, diantes Edición razón reglas quedarse memoria Finalmente, corrijan mación texto",
           "indicadores": [
             "Desarrollan las ideas agregando información; emplean un vocabulario preciso y variado, y un registro adecuado; releen a medida que escriben; aseguran la coherencia y agregan conectores; editan, en forma independiente, aspectos de ortografía y presentación."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 24",
@@ -106,7 +116,8 @@
             "Señalan qué aprendieron de los textos escuchados o vistos en clases.",
             "Manifiestan una opinión frente a los textos escuchados.",
             "Completan organizadores gráficos con información del texto escuchado."
-          ]
+          ],
+          "eje": "Comunicación oral"
         }
       ],
       "temas": [
@@ -127,7 +138,8 @@
           "texto": "Leer y familiarizarse con un amplio repertorio de literatura para aumentar su conocimiento del mundo, desarrollar su imaginación y reconocer su valor social y cultural; por ejemplo: ú poemas intercambio comparten luego Caupolicán Ercilla y el gente vino estudiantes alta, alumnos dificultades denar caciques etc. Preguntas actividad esta Preguntas",
           "indicadores": [
             "Relacionan situaciones de la vida cotidiana con versos de los textos leídos en clases o independientemente."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 4",
@@ -139,7 +151,8 @@
             "Explican qué consecuencia tiene determinada acción para un personaje.",
             "Describen o recrean visualmente el lugar donde ocurre el relato.",
             "Comparan sus costumbres con las de los personajes."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 5",
@@ -151,7 +164,8 @@
             "Subrayan y explican versos en los cuales se usa lenguaje figurado o expresiones que salgan del uso común.",
             "Subrayan personificaciones y explican qué se quiere comunicar al dar características humanas a animales o a entes inanimados.",
             "Subrayan comparaciones y explican la relación de similitud entre sus elementos."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 14",
@@ -160,14 +174,16 @@
             "Siguiendo la estructura de la noticia, crean un titular y una bajada, y agregan una imagen que ilustre el hecho.",
             "Para motivar la escritura, les entrega un objeto y les pide que escriban un cuento en primera persona en el que cada uno es el protagonista y el objeto entregado les ayuda a realizar una proeza mágicamente.",
             "Observaciones al docente: Se recomienda que, para resaltar la dimensión comunicativa de la escritura, los estudiantes compartan sus textos con otras personas."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 18",
           "texto": "Escribir, revisar y editar sus textos para satisfacer un propósito y transmitir sus ideas con claridad. durante este proceso: ú desarrollan las ideas agregando información ú emplean un vocabulario preciso y variado, y un registro adecuado ú releen a medida que escriben ú aseguran la coherencia y agregan conectores ú editan, en forma independiente, aspectos de ortografía y presentación ú utilizan las herramientas del procesador de textos para buscar sinónimos, corregir ortografía y gramática, y dar formato (cuando escriben en computador)",
           "indicadores": [
             "Desarrollan las ideas agregando información; emplean un vocabulario preciso y variado, y un registro adecuado; releen a medida que escriben; aseguran la coherencia y agregan conectores; editan, en forma independiente, aspectos de ortografía y presentación."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 20",
@@ -179,7 +195,8 @@
             "Explican una diferencia de significado entre dos sinónimos.",
             "Luego explica que uno los aciertos de un cuento es la manera como se describe a personajes mediante la selección de palabras que hace el y otros recursos.",
             "En primer lugar, analiza las palabras que usan para describir a la serpiente pitón a la cual Kwaku Ananse enfrentarse: “¿Es mucho más larga que la cabaña del Jefe?preguntó Kwaku Ananse."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 21",
@@ -190,14 +207,16 @@
             "Luego los reemplaza por un esvacío y sus infinitivos entre paréntesis.",
             "Pide a los estudianque completen los espacios vacíos con el verbo conjugado en tiempo.",
             "Tras realizar el ejercicio, comentan la regularidad de terminación “aba” e “ía” y buscan y anotan otros verbos con el fenómeno."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 22",
           "texto": "Escribir correctamente para facilitar la comprenComa sión por parte del lecEl tor, aplicando las reglas ses alumnos ortográficas aprendidas en años anteriores, además de: de ú raya para indicar diálogo para ú coma en frases explicatiescriban cambia actividad, Puntuar comas sitan correspondientes, profesor facilitar miten",
           "indicadores": [
             "Escriben raya antes de cada intervención en un diálogo; escriben las frases explicativas entre comas; escriben aplicando las reglas de ortografía literal, acentual y de puntuación."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 26",
@@ -209,7 +228,8 @@
             "Contribuyen a la conversación con datos o ideas que amplían lo dicho por otro.",
             "Esperan a que el interlocutor termine una idea para complementar lo dicho.",
             "Reconocen cuando el interlocutor ha dicho algo con lo que están de acuerdo."
-          ]
+          ],
+          "eje": "Comunicación oral"
         },
         {
           "codigo": "OA 30",
@@ -221,7 +241,8 @@
             "Adecuan su lenguaje verbal, paraverbal y no verbal a la situación comunicativa.",
             "Por esta razón, antes de escribir un cuento o una noticia, conviene que lean leen varios ejemplos de textos similares a los que se cuales espera que escriban.",
             "La exposición a modelos es y importante, ya que aporta ideas y aclara la tarea de encomendada o elegida por los estudiantes."
-          ]
+          ],
+          "eje": "Comunicación oral"
         }
       ],
       "temas": [
@@ -242,7 +263,8 @@
           "texto": "Leer y familiarizarse con un amplio repertorio de literatura para aumentar su conocimiento del mundo, desarrollar su imaginación y reconocer su valor social y cultural; por ejemplo: ú novelas ú otros",
           "indicadores": [
             "Relacionan situaciones de la vida cotidiana con versos de los textos leídos en clases o independientemente."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 4",
@@ -254,7 +276,8 @@
             "Caracterizan a los personajes mediante dramatizaciones.",
             "Explican, oralmente o por escrito, cómo ayuda o perjudica a un personaje determinada característica.",
             "Explican, oralmente o por escrito, los problemas que enfrentan los personajes y cómo se resuelven."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 16",
@@ -265,21 +288,24 @@
             "Escritura de párrafos breves Luego de haber visto una obra de teatro, los estudiantes analizan el actuar de uno de los personajes y reflexionan si están de acuerdo o no con lo que hizo.",
             "Escriben en su cuaderno un texto de dos párrafos: en el primero presentan el personaje y describen su proceder y en el segundo párrafo expresan su opinión sobre las acciones y las decisiones del personaje.",
             "También indica el periódico para el cual escriben es formal, por lo que deben su registro y su vocabulario."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 18",
           "texto": "Escribir, revisar y editar sus 1 textos para satisfacer un Pauta propósito y transmitir sus El ideas con claridad. duranrevisar te este proceso: definitiva. redacción ú desarrollan las ideas agregando información Puede ú emplean un vocabulario por preciso y variado, y un registro adecuado ú releen a medida que ú escriben ú aseguran la coherencia y agregan conectores ú editan, en forma indeú pendiente, aspectos de ortografía y presentación ú utilizan las herramientas del procesador de textos ú para buscar sinónimos, corregir ortografía y gramática, y dar formato (cuando escriben en Edición computador) Los círculo anotar compañero correcta editar, Observaciones cialmente revisan",
           "indicadores": [
             "Desarrollan las ideas agregando información; emplean un vocabulario preciso y variado, y un registro adecuado; releen a medida que escriben; aseguran la coherencia y agregan conectores; editan, en forma independiente, aspectos de ortografía y presentación."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 22",
           "texto": "Escribir correctamente para facilitar la comprensión por parte del lector, aplicando las reglas ortográficas aprendidas en años anteriores, además de: ú uso de c-s-z ú acento diacrítico y dierético labos cado monosílabas comprendan preparo dictado. ciones ejemplos pizarrón, cuáles diantes palabras pide palabras corrijan",
           "indicadores": [
             "Escriben raya antes de cada intervención en un diálogo; escriben las frases explicativas entre comas; escriben aplicando las reglas de ortografía literal, acentual y de puntuación."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 24",
@@ -291,7 +317,8 @@
             "Manifiestan una opinión frente a los textos escuchados.",
             "Completan organizadores gráficos con información del texto escuchado.",
             "Registran información que les sirva para un determinado propósito."
-          ]
+          ],
+          "eje": "Comunicación oral"
         },
         {
           "codigo": "OA 25",
@@ -303,7 +330,8 @@
             "Explican qué sentirían ellos si estuviesen en el lugar de un personaje.",
             "Comentan qué elementos del vestuario y del sonido de la obra les llamaron la atención.",
             "Comparan una novela y una película, ejemplificando los aspectos comparados con ejemplos de los textos."
-          ]
+          ],
+          "eje": "Comunicación oral"
         },
         {
           "codigo": "OA 26",
@@ -315,7 +343,8 @@
             "Contribuyen a la conversación con datos o ideas que amplían lo dicho por otro.",
             "Esperan a que el interlocutor termine una idea para complementar lo dicho.",
             "Reconocen cuando el interlocutor ha dicho algo con lo que están de acuerdo."
-          ]
+          ],
+          "eje": "Comunicación oral"
         },
         {
           "codigo": "OA 30",
@@ -325,7 +354,8 @@
             "Luego reparten los roles para representar un juicio al personaje escogido: uno hace el rol del personaje, otro es el abogado defensor, otro el acusador y los otros pueden representar a los demás personajes de la novela que actúan como testigos.",
             "Preparan sus acusaciones respectivas y realizan el juicio.",
             "Elaboran las preguntas, las respuestas, los testimonios y la decisión del jurado."
-          ]
+          ],
+          "eje": "Comunicación oral"
         }
       ],
       "temas": [
@@ -351,35 +381,40 @@
             "Registran las ideas más relevantes según su propósito de lectura.",
             "Organizan la información encontrada en esquemas o mapas conceptuales.",
             "Toma nota de las respuestas de los estudiantes en el pizarrón y realiza una síntesis con ellas."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 6",
           "texto": "Leer independientemente y comprender textos no literarios (cartas, biografías, relatos históricos, libros y artículos informativos, noticias, etc.) para ampliar su conocimiento del mundo y formarse una opinión: ú extrayendo información explícita e implícita ú haciendo inferencias a partir de la información del texto y de sus experiencias y conocimientos ú relacionando la información de imágenes, gráficos, tablas, mapas o diagramas, con el texto en el cual están insertos ú interpretando expresiones en lenguaje figurado ú comparando información ú formulando una opinión sobre algún aspecto de la lectura ú fundamentando su opinión con información del texto o sus conocimientos previos etc.). yando también explicación, Finalmente, Crítica imágenes. diendo ! Observaciones ¿Qué mación Para ¿Cómo",
           "indicadores": [
             "Identifican las ideas más importantes de acuerdo con el propósito del lector; organizan la información en esquemas o mapas conceptuales."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 7",
           "texto": "Evaluar críticamente la información presente en textos de diversa procedencia: ú determinando quién es el emisor, cuál es su propósito y a quién dirige el mensaje ú evaluando si un texto entrega suficiente información para responder una determinada pregunta o cumplir un propósito",
           "indicadores": [
             "Identifican al autor y explican cuál es su intención al publicar ese texto; mencionan y fundamentan a qué público está dirigido el texto; explican si la información presente en un texto satisface su propósito de lectura o si necesitan consultar más fuentes."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 8",
           "texto": "Sintetizar y registrar las ideas principales de textos leídos para satisfacer propósitos como estudiar, hacer una investigación, recordar detalles, etc. repaso cias estudiando Ciencias información deteniéndose principal Luego, actividad, lista completen (Historia, Escritura párrafos título contrará bien retroalimenta. Elaboración establecidas organizador encuentran ción Esto toma clase, niza ! Observaciones Extraer superior estudiantes",
           "indicadores": [
             "Subrayan o registran la información relevante en un texto para distinguirla de la información accesoria; parafrasean con sus palabras un texto leído; completan organizadores gráficos dados por el docente con la información escuchada en clases."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 15",
           "texto": "Escribir artículos informativos para comunicar información sobre un tema: ú presentando el tema en una oración ú desarrollando una idea central por párrafo ú agregando las fuentes utilizadas",
           "indicadores": [
             "Eligen un tema interesante sobre las lecturas realizadas en clases y registran información para desarrollarlo; elaboran una introducción para presentar el tema al lector; desarrollan el tema en al menos tres párrafos en los que: elaboran un subtema y lo ilustran con ejemplos, datos o explicaciones; incorporan datos, descripciones, ejemplos o reflexiones provenientes de los textos leídos; describen hechos relevantes y acordes con el tema elegido; incluyen palabras y expresiones específicas del tema tratado."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 17",
@@ -391,14 +426,16 @@
             "Completan organizadores gráficos con la información que incluirán en sus textos.",
             "Ordenan la información siguiendo un criterio establecido, como orden cronológico o temas y subtemas.",
             "Presenta el tema y los va guiando para que encuentren subtemas que lo desarrollen de manera atractiva."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 18",
           "texto": "Escribir, revisar y editar sus 1 textos para satisfacer un descripción propósito y transmitir sus El ideas con claridad. durante o este proceso: seguirán: ú desarrollan las ideas agregando información te ú emplean un vocabulario uno preciso y variado, y un descripción Luego, registro adecuado ú releen a medida que orden escriben (Artes ú aseguran la coherencia y agregan conectores ú editan, en forma indeEscritura pendiente, aspectos de El ortografía y presentación que, siguientes ú utilizan las herramientas del procesador de textos ú para buscar sinónimos, corregir ortografía y gramática, y dar formaú to (cuando escriben en computador) práctica Escritura Usando rado pidiendo cómo subtema sustitución proyecta precisas quen palabras versión revisen conector revisión escuela sitivos explique ción. revisión talles para Incluí Señalo Incluí detalladas texto. palabras presar",
           "indicadores": [
             "Desarrollan las ideas agregando información; emplean un vocabulario preciso y variado, y un registro adecuado; releen a medida que escriben; aseguran la coherencia y agregan conectores; editan, en forma independiente, aspectos de ortografía y presentación."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 24",
@@ -410,7 +447,8 @@
             "Manifiestan una opinión frente a los textos escuchados.",
             "Completan organizadores gráficos con información del texto escuchado.",
             "Registran información que les sirva para un determinado propósito."
-          ]
+          ],
+          "eje": "Comunicación oral"
         },
         {
           "codigo": "OA 28",
@@ -422,7 +460,8 @@
             "Pide a los estudiantes que le cuenten al compañero de banco una experiencia personal utilizando los conectores sugeridos.",
             "Exposición de un tema en grupos Luego de haber realizado al menos dos de las actividades anteriores para ejercitar sus habilidades de exposición oral, los estudiantes realizan una presentación del trabajo de investigación que hicieron en grupos.",
             "De la narrativa oral a la literatura para niños."
-          ]
+          ],
+          "eje": "Comunicación oral"
         }
       ],
       "temas": [

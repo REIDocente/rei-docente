@@ -11,7 +11,8 @@
           "texto": "reconocer que los textos escritos transmiten mensajes y que son escritos por alguien para cumplir un propósito. mado presenta Observaciones trabajarse programa primeros conciencia culadamente",
           "indicadores": [
             "Identifican al autor y título de un libro."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 2",
@@ -20,7 +21,8 @@
             "Diferencian una palabra de una frase u oración.",
             "Identifican la cantidad de palabras que hay en una oración.",
             "Identifican la primera y la última letra de una palabra."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 3",
@@ -32,7 +34,8 @@
             "Descomponen palabras en los fonemas que las forman.",
             "Descomponen palabras en sílabas.",
             "Forman palabras a partir de sílabas dadas."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 4",
@@ -44,7 +47,8 @@
             "Leen palabras que contienen una o más vocales y las consonantes en estudio.",
             "Leen algunas palabras en textos apropiados a su edad.",
             "Leen frases cortas."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 5",
@@ -52,7 +56,8 @@
           "indicadores": [
             "Leen con precisión palabras que incluyen las letras aprendidas en esta unidad.",
             "Leen un listado de palabras o frases cortas haciendo lectura silábica en contadas ocasiones."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 13",
@@ -64,7 +69,8 @@
             "Crean mensajes que contienen palabras familiares, partes de palabras y/o palabras con ortografía inventada.",
             "Seleccionan, de un conjunto de palabras escritas en el pizarrón, aquellas que tienen la letra aprendida.",
             "Copian esas palabras en su cuaderno marcando con un color la letra que acaban de conocer y hacen el dibujo que corresponde al lado de cada palabra. ilustradas profesor entrega una guía a los estudiantes en que aparecen palabras con las letras que han aprendido durante la uniy sus respectivos dibujos."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 18",
@@ -74,7 +80,8 @@
             "Mencionan experiencias de sus vidas que se relacionan con lo que han escuchado.",
             "Dibujan objetos, eventos y experiencias personales que se relacionan con el texto escuchado.",
             "Hacen un recuento de partes de un texto escuchado en clases."
-          ]
+          ],
+          "eje": "Comunicación oral"
         },
         {
           "codigo": "OA 22",
@@ -85,7 +92,8 @@
             "Se espera que, al finalizar la unidad, sean capaces de reconocer los sonidos y los grafemas de las palabras para leer comprensivamente textos breves compuestos por las letras aprendidas en este período.",
             "EsCritUrA Paralelamente al proceso de enseñanza de la lectura, se inicia la escritura, ya que los estudiantes aprenden a escribir las letras y hacen sus primeros intentos por comunicar diversos mensajes mediante la escritura de símbolos, dibujos, garabatos, palabras, rótulos y frases cortas.",
             "COmUNiCACióN OrAL Durante esta unidad, se busca promover la comprensión oral a través del trabajo con las estrategias de comprensión y la exposición a textos orales variados."
-          ]
+          ],
+          "eje": "Comunicación oral"
         },
         {
           "codigo": "OA 26",
@@ -97,7 +105,8 @@
             "Finalmente, en la fecha señalada, la presentan al curso.",
             "Luego, cada estudiante elige un poema que sea nuevo para el resto del curso y lo practica durante dos o tres días en su casa.",
             "Se redestinar tiempo en la hora de Artes Visuales para crear de apoyo para las presentaciones, como una capa de un sombrero, una lira de cartulina u otros elementos."
-          ]
+          ],
+          "eje": "Comunicación oral"
         }
       ],
       "temas": [
@@ -122,7 +131,8 @@
             "Además, se espera que expongan sobre temas variados para que amplíen sus habilidades comunicativas.",
             "También se busca que fortalezcan su comprensión oral mediante el trabajo con textos orales que amplíen su vocabulario y su conocimiento del mundo, y que les sirvan de modelo al momento de preparar sus exposiciones.",
             "Demostrar respeto por las diversas opiniones y puntos de vista, reconociendo el diálogo como una herramienta de enriquecimiento personal y social."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 5",
@@ -130,7 +140,8 @@
           "indicadores": [
             "Leen con precisión palabras que incluyen las letras aprendidas en esta unidad.",
             "Leen un listado de palabras o frases cortas haciendo lectura silábica en contadas ocasiones."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 8",
@@ -143,7 +154,8 @@
             "Relacionan las ilustraciones de los textos leídos con los personajes, los acontecimientos y los lugares presentes en ellos.",
             "Mencionan experiencias de sus vidas que se relacionan con lo que leyeron.",
             "Formulan una opinión sobre un cuento o sobre una acción o un personaje de una historia leída."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 10",
@@ -151,7 +163,8 @@
           "indicadores": [
             "Hacen un recuento de la información obtenida de textos breves.",
             "Localizan información en un texto."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 14",
@@ -161,7 +174,8 @@
             "Escriben oraciones sobre sus lecturas.",
             "Describen por escrito objetos o personas.",
             "Escriben oraciones comprensibles."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 18",
@@ -171,7 +185,8 @@
             "Mencionan experiencias de sus vidas que se relacionan con lo que han escuchado.",
             "Dibujan objetos, eventos y experiencias personales que se relacionan con el texto escuchado.",
             "Hacen un recuento de partes de un texto escuchado en clases."
-          ]
+          ],
+          "eje": "Comunicación oral"
         },
         {
           "codigo": "OA 23",
@@ -185,7 +200,8 @@
             "Incorporan, si es pertinente, palabras aprendidas recientemente.",
             "Hacen contacto visual con la audiencia.",
             "Evitan movimientos bruscos o constantes al hablar."
-          ]
+          ],
+          "eje": "Comunicación oral"
         },
         {
           "codigo": "OA 26",
@@ -197,7 +213,8 @@
             "Luego divide al curso en grupos de tres o cuatro alumnos y entrega un poema por grupo.",
             "Los apoderados una y la mandan a la escuela.",
             "Luecada niño recita la canción o estrofa que cantaba su familiar."
-          ]
+          ],
+          "eje": "Comunicación oral"
         }
       ],
       "temas": [
@@ -222,7 +239,8 @@
             "Demostrar empatía hacia los demás, comprendiendo el contexto en el que se sitúan.",
             "Reflexionar sobre sí mismo, sus ideas e intereses para comprenderse y valorarse.",
             "Reconocen y reproducen el sonido de todas las letras."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 5",
@@ -230,14 +248,16 @@
           "indicadores": [
             "Leen con precisión palabras que incluyen las letras aprendidas en esta unidad.",
             "Leen un listado de palabras o frases cortas haciendo lectura silábica en contadas ocasiones."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 6",
           "texto": "Comprender textos aplicando estrategias de comprensión lectora; por ejemplo: ú relacionar la información del texto con sus experiencias y conocimientos ú visualizar lo que describe el texto Después nuevo nes. detengan ellos Visualizar diantes Luego dose entrega realizan algunos alumnos ! Observaciones Conviene problemas temprana",
           "indicadores": [
             "Mencionan un aspecto de sus vidas que se relaciona con el texto leído o escuchado."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 7",
@@ -250,7 +270,8 @@
             "Seleccionan textos para leer por su cuenta.",
             "Recomiendan textos a otros.",
             "Manifiestan su preferencia por algún texto."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 8",
@@ -263,7 +284,8 @@
             "Relacionan las ilustraciones de los textos leídos con los personajes, los acontecimientos y los lugares presentes en ellos.",
             "Mencionan experiencias de sus vidas que se relacionan con lo que leyeron.",
             "Formulan una opinión sobre un cuento o sobre una acción o un personaje de una historia leída."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 9",
@@ -275,7 +297,8 @@
             "Proponen nuevos versos para poemas que han leído en clases.",
             "Reconocen palabras que riman y sonidos característicos de un poema leído.",
             "Para esto, cada uno debe buscar varios trabalenguas y escoger el que más le guste para compartirlo con la clase, para lo que debe escribirlo en su cuaderno."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 10",
@@ -283,7 +306,8 @@
           "indicadores": [
             "Hacen un recuento de la información obtenida de textos breves.",
             "Localizan información en un texto."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 14",
@@ -293,7 +317,8 @@
             "Escriben oraciones sobre sus lecturas.",
             "Describen por escrito objetos o personas.",
             "Escriben oraciones comprensibles."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 23",
@@ -307,7 +332,8 @@
             "Incorporan, si es pertinente, palabras aprendidas recientemente.",
             "Hacen contacto visual con la audiencia.",
             "Evitan movimientos bruscos o constantes al hablar."
-          ]
+          ],
+          "eje": "Comunicación oral"
         }
       ],
       "temas": [
@@ -329,14 +355,16 @@
           "indicadores": [
             "Leen con precisión palabras que incluyen las letras aprendidas en esta unidad.",
             "Leen un listado de palabras o frases cortas haciendo lectura silábica en contadas ocasiones."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 6",
           "texto": "Comprender textos 1 aplicando estrategias de Estrategias comprensión lectora; por El pasos: ejemplo: ú relacionar la información ú del texto con sus experiencias y conocimientos ú visualizar lo que describe el texto lectura conocen. términos ! Observaciones necesarias Esta puede este especialmente frecuente",
           "indicadores": [
             "Mencionan un aspecto de sus vidas que se relaciona con el texto leído o escuchado."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 7",
@@ -349,7 +377,8 @@
             "Seleccionan textos para leer por su cuenta.",
             "Recomiendan textos a otros.",
             "Manifiestan su preferencia por algún texto."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 8",
@@ -362,7 +391,8 @@
             "Relacionan las ilustraciones de los textos leídos con los personajes, los acontecimientos y los lugares presentes en ellos.",
             "Mencionan experiencias de sus vidas que se relacionan con lo que leyeron.",
             "Formulan una opinión sobre un cuento o sobre una acción o un personaje de una historia leída."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 9",
@@ -374,7 +404,8 @@
             "Proponen nuevos versos para poemas que han leído en clases.",
             "Reconocen palabras que riman y sonidos característicos de un poema leído.",
             "Cada grupo prepara la lectura de su poema recitarlo de memoria, incorporando en su presentación elementos que tengan relación con el poema, como un o disfraces."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 10",
@@ -382,7 +413,8 @@
           "indicadores": [
             "Hacen un recuento de la información obtenida de textos breves.",
             "Localizan información en un texto."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 14",
@@ -392,7 +424,8 @@
             "Escriben oraciones sobre sus lecturas.",
             "Describen por escrito objetos o personas.",
             "Escriben oraciones comprensibles."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 20",
@@ -402,7 +435,8 @@
             "Nombran a los personajes de una obra de teatro o representación vista.",
             "Expresan oralmente los sentimientos y emociones que experimentaron durante una obra de teatro infantil o representación vista.",
             "Expresan qué sentimientos manifestó un personaje en una obra vista."
-          ]
+          ],
+          "eje": "Comunicación oral"
         },
         {
           "codigo": "OA 25",
@@ -412,7 +446,8 @@
             "Cumplen sus responsabilidades para realizar una representación.",
             "Los demás grupos adivinan el cuento que están representando sus compañeros.",
             "Los estudiantes se juntan en grupos de tres y se reparten los roles."
-          ]
+          ],
+          "eje": "Comunicación oral"
         }
       ],
       "temas": [

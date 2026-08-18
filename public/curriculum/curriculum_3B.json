@@ -16,7 +16,8 @@
             "Preguntan para ampliar la información leída.",
             "Luego comparan sus trabajos y comentan si la descripción coincide con el dibujo.",
             "Al leer un cuento, es normal preguntarse por cosas que no tienen respueso que tienen más de una respuesta posible."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 3",
@@ -27,14 +28,16 @@
             "Se espera que, a partir de estos textos, desarrollen sus habilidades de comprensión lectora y comiencen a familiarizarse con el lenguaje figurado.",
             "Uno de los objetivos de esta unidad es que los estudiantes lleven a cabo un trabajo de investigación, para lo cual deben practicar la escritura de artículos informativos y realizar exposiciones orales.",
             "También se busca que continúen aplicando una ortografía que facilite la comprensión de los textos y que continúen desarrollando su comprensión de textos orales."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 4",
           "texto": "Profundizar su comprensión de las narraciones leídas: ú extrayendo información explícita e implícita ú reconstruyendo la secuencia de las acciones en la historia ú describiendo a los personajes ú describiendo el ambiente en que ocurre la acción ú expresando opiniones fundamentadas sobre hechos y situaciones del texto ú emitiendo una opinión sobre los personajes dernos, Esta ! Observaciones frecuencia, aprendizaje construir Modificar Pereza estudiantes protagonista, parejas inventaron, consiste Esta",
           "indicadores": [
             "Aluden, en sus comentarios orales y escritos, a información explícita de un texto."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 6",
@@ -46,7 +49,8 @@
             "Encuentran información usando títulos, subtítulos, índices o glosarios.",
             "Describen los textos discontinuos que aparecen en un texto leído y los relacionan con la lectura.",
             "Expresan opiniones y las justifican mencionando información extraída de textos leídos."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 14",
@@ -54,14 +58,16 @@
           "indicadores": [
             "Escribir utilizando modelos Antes de realizar esta actividad, el profesor propone varios temas a los alumnos sobre los cuales les gustaría escribir.",
             "Por ejemplo:."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 22",
           "texto": "Escribir correctamente 1 para facilitar la comprenPlurales sión por parte del lector, El aplicando lo aprendido en terminan años anteriores y usando que rales de manera apropiada: ú plurales de palabras se terminadas en z lápiz-lápices, ú palabras con ge-gi, je-ji aplicación ú palabras terminadas en cito-cita Palabras pleten dernos Achicar lenguaje puesta diminutivo, Luego, docente, Luego, aumentativos",
           "indicadores": [
             "Escriben correctamente los plurales de las palabras que terminan en z."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 26",
@@ -73,7 +79,8 @@
             "Expresan desacuerdo frente a opiniones expresadas por otros, sin descalificar las ideas ni al emisor.",
             "Hacen comentarios que demuestran empatía por lo que expresa un compañero.",
             "Esperan que el interlocutor termine una idea para complementar lo dicho."
-          ]
+          ],
+          "eje": "Comunicación oral"
         }
       ],
       "temas": [
@@ -94,7 +101,8 @@
           "texto": "Comprender poemas adecuados al nivel e interpretar el lenguaje figurado presente en ellos. Poemas palabras mismas Esta físicas Esta escriban Para expliquen Profundizar responden profundizar Beatriz lean declamar unidad. profesores Esta",
           "indicadores": [
             "Dibujan imágenes de poemas que les gusten."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 9",
@@ -102,7 +110,8 @@
           "indicadores": [
             "Encuentran fuentes sobre el tema que quieren investigar.",
             "Anotan información que les llama la atención."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 10",
@@ -112,14 +121,16 @@
             "Identifican la raíz (morfema base) de una palabra.",
             "Explican el significado de palabras que tienen prefijo o sufijo como des, anti, re; oso, ito, ble, entre otros.",
             "Usan el significado de la raíz o de los prefijos o sufijos para inferir o aproximarse al significado de una palabra."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 22",
           "texto": "Escribir correctamente 1 para facilitar la comprenPlurales sión por parte del lector, El aplicando lo aprendido en terminan años anteriores y usando que rales de manera apropiada: ú plurales de palabras se terminadas en z lápiz-lápices, ú palabras con ge-gi, je-ji aplicación ú palabras terminadas en cito-cita Palabras pleten dernos Achicar lenguaje puesta diminutivo, Luego, docente, Luego, aumentativos",
           "indicadores": [
             "Escriben correctamente los plurales de las palabras que terminan en z."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 24",
@@ -128,7 +139,8 @@
             "Relacionan algún tema o aspecto del texto con sus experiencias o conocimientos previos u otros textos escuchados o leídos anteriormente.",
             "Señalan qué aprendieron de los textos escuchados o vistos en clases.",
             "Identifican el propósito del texto escuchado."
-          ]
+          ],
+          "eje": "Comunicación oral"
         },
         {
           "codigo": "OA 28",
@@ -143,7 +155,8 @@
             "Incorporan un vocabulario variado en sus intervenciones.",
             "Incorporan, si es pertinente, palabras aprendidas recientemente.",
             "Ajustan el volumen de la voz para que escuche toda la audiencia."
-          ]
+          ],
+          "eje": "Comunicación oral"
         }
       ],
       "temas": [
@@ -169,7 +182,8 @@
             "Preguntan para ampliar la información leída.",
             "Luego comparan sus trabajos y comentan si la descripción coincide con el dibujo.",
             "Al leer un cuento, es normal preguntarse por cosas que no tienen respueso que tienen más de una respuesta posible."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 13",
@@ -181,14 +195,16 @@
             "Divide al curso en grupos e indica que deben inventar un nuevo final para el cuento, que sea gracioso.",
             "Los grupos se ponen de acuerdo sobre lo que van a escribir y, una vez que tienen clara su idea, dibujan y redactan el final inventado en una cartulina o en un papel kraft y lo presentan al resto de los compañeros.",
             "Finalmente, redactan su texto, relacionando las acciones a través de conectores y utilizando los signos de puntuación."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 21",
           "texto": "Comprender la función de 1 los pronombres en textos Pronombres orales y escritos, y usarlos El nombres para ampliar las posibilidades de referirse a un previamente sustantivo en sus producen ciones. al comprensión Correferencia mismas bres Leen repeticiones. cicio, cada",
           "indicadores": [
             "Reemplazan en textos algunos sustantivos por pronombres personales para evitar la repetición."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 31",
@@ -196,7 +212,8 @@
           "indicadores": [
             "Recitan poemas o versos de memoria.",
             "Recitan poemas con entonación."
-          ]
+          ],
+          "eje": "Comunicación oral"
         }
       ],
       "temas": [
@@ -221,7 +238,8 @@
             "Escriben todos los pasos necesarios para llevar a cabo un procedimiento.",
             "Secuencian cronológicamente los procedimientos necesarios para llevar a cabo una tarea.",
             "Incluyen diagramas o dibujos para complementar información, si es pertinente."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 25",
@@ -230,7 +248,8 @@
             "Relatan una parte de la obra de teatro vista.",
             "Describen, oralmente o por escrito, la parte que más les gustó de una obra de teatro o representación vista.",
             "Nombran personajes favoritos de una obra de teatro o representación vista."
-          ]
+          ],
+          "eje": "Comunicación oral"
         },
         {
           "codigo": "OA 30",
@@ -239,7 +258,8 @@
             "Representan un personaje de un texto leído, actuando sus principales características.",
             "Imitan el lenguaje que usa el personaje que están interpretando.",
             "Resuelven los conflictos que se originan al trabajar en grupos."
-          ]
+          ],
+          "eje": "Comunicación oral"
         }
       ],
       "temas": []

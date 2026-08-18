@@ -13,7 +13,8 @@
             "Leen mensualmente una novela o un libro de cuentos o poemas.",
             "Leen semanalmente en clases textos literarios y no literarios.",
             "Recomiendan obras de su interés a sus pares a través de exposiciones o comentarios."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 3",
@@ -21,7 +22,8 @@
           "indicadores": [
             "Analizan conflictos, personajes (relaciones, dichos, motivaciones), y la relación de fragmentos con el total de la obra.",
             "Comparan obras literarias estableciendo relaciones entre personajes, temas y ambientes."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 4",
@@ -30,7 +32,8 @@
             "Explican con sus propias palabras los símbolos presentes en el poema.",
             "Interpretan el lenguaje figurado y ejemplifican actitudes líricas del hablante.",
             "Elaboran comentarios considerando tema, motivos líricos, figuras literarias y tipo de rima."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 7",
@@ -38,7 +41,8 @@
           "indicadores": [
             "Investigan acerca de la obra de autores representativos del Romanticismo.",
             "Fundamentan, con marcas textuales, por qué un determinado texto pertenece al Romanticismo."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 8",
@@ -46,7 +50,8 @@
           "indicadores": [
             "Formulan hipótesis considerando su postura personal, el contexto histórico y la visión de mundo.",
             "Investigan narraciones de diferentes culturas (símbolos, personajes, temas) y exponen resultados."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 12",
@@ -55,7 +60,8 @@
             "Escriben narraciones o poemas considerando sus estructuras básicas.",
             "Elaboran informes de análisis de textos.",
             "Corrigen sus escritos adecuándolos al propósito y destinatario."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 21",
@@ -64,7 +70,8 @@
             "Replantean su postura a partir de lo expuesto por otros.",
             "Comentan lo expuesto por otros considerando la validez de sus afirmaciones.",
             "Respetan instrucciones del moderador en debates."
-          ]
+          ],
+          "eje": "Comunicación oral"
         }
       ],
       "temas": [
@@ -87,14 +94,16 @@
             "Leen mensualmente una novela o un libro de cuentos o poemas.",
             "Leen semanalmente en clases textos literarios y no literarios.",
             "Recomiendan obras de su interés a sus pares a través de exposiciones o comentarios."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 9",
           "texto": "Analizar y evaluar textos con finalidad argumentativa, como columnas de opinión, cartas, discursos y ensayos, considerando: > La tesis, ya sea explícita o implícita, y los argumentos e información que la sostienen. > La diferencia entre hecho y opinión. > Si la información del texto es suficiente y pertinente para sustentar la tesis del autor. > La manera en que el autor organiza el texto. > Con qué intención el autor usa preguntas retóricas, oraciones desiderativas y oraciones dubitativas. > Su postura personal frente a lo leído y argumentos que la sustentan.",
           "indicadores": [
             "La tesis, ya sea explícita o implícita, y los argumentos e información que la sostienen; la diferencia entre hecho y opinión; si la información del texto es suficiente y pertinente para sustentar la tesis del autor; la manera en que el autor organiza el texto; con qué intención el autor usa preguntas retóricas, oraciones desiderativas y oraciones dubitativas."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 11",
@@ -102,7 +111,8 @@
           "indicadores": [
             "Establecen relaciones entre la información obtenida de textos no literarios, tales como biografías de autores, datos históricos, definiciones, etc., y las obras literarias leídas.",
             "Geografía y Ciencias Sociales."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 14",
@@ -110,7 +120,8 @@
           "indicadores": [
             "Elaboran textos que mantienen un eje temático claro.",
             "Investigan para obtener evidencias que respalden sus argumentos y referencias para citar."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 15",
@@ -122,7 +133,8 @@
             "Reescriben su texto corrigiendo los problemas de coherencia y cohesión.",
             "Sustituyen palabras poco precisas o muy generales por términos más específicos.",
             "Modifican sus escritos, ya sea a medida que van escribiendo o al final, para incorporar nuevas ideas relevantes."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 17",
@@ -134,7 +146,8 @@
             "Cumple parcialmente con el requisito.",
             "Se evidencian algunos errores que pueden afectar la comprensión del texto.",
             "No cumple con el requisito."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 18",
@@ -142,7 +155,8 @@
           "indicadores": [
             "Escriben textos con ortografía literal, acentual y puntual adecuada.",
             "Investigan la escritura correcta de palabras no sujetas a reglas."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 20",
@@ -150,7 +164,8 @@
           "indicadores": [
             "Explican oralmente los argumentos principales de panelistas en debates.",
             "Evalúan con pautas la calidad de los argumentos de sus compañeros."
-          ]
+          ],
+          "eje": "Comunicación oral"
         },
         {
           "codigo": "OA 24",
@@ -161,7 +176,8 @@
             "Organizan la información categorizándola de lo general a lo específico.",
             "Elaboran una bibliografía completa de las referencias utilizadas.",
             "Producen textos (noticias, informes, blogs, etc.) para comunicar hallazgos."
-          ]
+          ],
+          "eje": "Investigación"
         }
       ],
       "temas": [
@@ -184,14 +200,16 @@
             "Leen mensualmente una novela o un libro de cuentos o poemas.",
             "Leen semanalmente en clases textos literarios y no literarios.",
             "Recomiendan obras de su interés a sus pares a través de exposiciones o comentarios."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 2",
           "texto": "Reflexionar sobre las diferentes dimensiones de la experiencia humana, propia y ajena, a partir de la lectura de obras literarias y otros textos que forman parte de nuestras herencias culturales, abordando los temas estipulados para el curso y las obras sugeridas para cada uno57. 57 Véase el anexo al final del documento. lENGUA Y lITERATURA | Programa relaciones humanas estudiantes sean capaces de:",
           "indicadores": [
             "Comentan acerca de un tema propio de la tradición literaria, considerando las obras leídas y su propia experiencia."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 5",
@@ -203,7 +221,8 @@
             "Comparan el tratamiento dado a los tópicos literarios presentes en una obra dramática, con otro tipo de obras.",
             "Relacionan la visión de mundo de la época en que la obra fue escrita con la época actual.",
             "Explican con sus palabras el significado de símbolos y eventos que provocan la acción en las tragedias leídas."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 6",
@@ -212,7 +231,8 @@
             "Investigan acerca de datos del ambiente social y cultural en que se desarrolla la acción de diferentes obras dramáticas.",
             "Reflexionan acerca de la visión de mundo presente en una tragedia, y su relación con nuestra época.",
             "Comparan dos tragedias sobre un mismo tema y elaboran un cuadro resumen con los rasgos característicos."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 16",
@@ -223,7 +243,8 @@
             "Expresan en sus exposiciones orales el estilo indirecto al citar afirmaciones de otras personas.",
             "Laura dijo que Antígona presenta problemas para ser representada. (El presente de quien emite el discurso indirecto coincide con el presente de quien emite el discurso directo).",
             "Laura dijo: “Antígona presenta problemas para ser representada”."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 23",
@@ -234,7 +255,8 @@
             "Ejemplifican los elementos lingüísticos, paralingüísticos y no lingüísticos, a través de una disertación.",
             "Geografía y Ciencias Sociales.",
             "Las obras están disponibles en el catálogo CRA y en los siguientes links:."
-          ]
+          ],
+          "eje": "Comunicación oral"
         },
         {
           "codigo": "OA 24",
@@ -245,7 +267,8 @@
             "Organizan la información categorizándola de lo general a lo específico.",
             "Elaboran una bibliografía completa de las referencias utilizadas.",
             "Producen textos (noticias, informes, blogs, etc.) para comunicar hallazgos."
-          ]
+          ],
+          "eje": "Investigación"
         }
       ],
       "temas": [
@@ -268,14 +291,16 @@
             "Leen mensualmente una novela o un libro de cuentos o poemas.",
             "Leen semanalmente en clases textos literarios y no literarios.",
             "Recomiendan obras de su interés a sus pares a través de exposiciones o comentarios."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 10",
           "texto": "Analizar y evaluar textos de los noticias, reportajes, cartas al director, propaganda o crónicas, considerando: Los propósitos explícitos e implícitos del texto. > Las estrategias de persuasión utilizadas en el texto (uso del humor, presencia de estereotipos, apelación a los sentimientos, etc.) y evaluándolas. > La veracidad y consistencia de la información. > Los efectos causados por recursos no lingüísticos presentes en el texto, como diseño, imágenes, disposición gráfica y efectos de audio. > Similitudes y diferencias en la forma en que distintas fuentes presentan un mismo hecho. > Qué elementos del texto influyen en las propias opiniones, percepción de sí mismo y opciones que tomamos. lENGUA Y lITERATURA | Programa comunicación estudiantes sean capaces de:",
           "indicadores": [
             "Diferencian entre hecho y opinión en un mensaje de los medios de comunicación; establecen el efecto que producen las imágenes y el sonido que acompaña un texto oral o audiovisual; analizan la pertinencia de la imagen y el sonido que acompaña a un texto; relacionan el tema presentado en un texto de los medios de comunicación con una obra literaria."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 13",
@@ -285,7 +310,8 @@
             "Respaldan su punto de vista con descripciones y hechos.",
             "Incorporan información nueva usando recursos anafóricos y conectores.",
             "Integran imágenes complementarias y citan información según la norma estipulada."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 15",
@@ -297,7 +323,8 @@
             "Reescriben su texto corrigiendo los problemas de coherencia y cohesión.",
             "Sustituyen palabras poco precisas o muy generales por términos más específicos.",
             "Modifican sus escritos, ya sea a medida que van escribiendo o al final, para incorporar nuevas ideas relevantes."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 19",
@@ -306,7 +333,8 @@
             "Diferencian entre hecho y opinión en mensajes de los medios.",
             "Analizan la pertinencia y el efecto de imágenes y sonidos que acompañan a un texto audiovisual.",
             "Relacionan temas de los medios con obras literarias."
-          ]
+          ],
+          "eje": "Comunicación oral"
         },
         {
           "codigo": "OA 21",
@@ -315,7 +343,8 @@
             "Replantean su postura a partir de lo expuesto por otros.",
             "Comentan lo expuesto por otros considerando la validez de sus afirmaciones.",
             "Respetan instrucciones del moderador en debates."
-          ]
+          ],
+          "eje": "Comunicación oral"
         },
         {
           "codigo": "OA 22",
@@ -324,7 +353,8 @@
             "Incorporan vocabulario nuevo relacionado con el tema.",
             "Relacionan ideas mediante conectores adecuados.",
             "Elaboran material visual que resume ideas centrales para apoyar sus exposiciones."
-          ]
+          ],
+          "eje": "Comunicación oral"
         }
       ],
       "temas": [

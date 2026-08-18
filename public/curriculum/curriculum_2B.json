@@ -12,7 +12,8 @@
           "indicadores": [
             "Leen en voz alta, sin equivocarse, palabras con hiatos y diptongos.",
             "Leen en voz alta, sin equivocarse, palabras con las combinaciones ce-ci, que-qui, ge-gi, gue-gui, güe-güi."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 3",
@@ -21,7 +22,8 @@
             "Explican lo que saben de un tema antes de leer un texto sobre el mismo.",
             "Relacionan, oralmente o por escrito, algún tema o aspecto del texto con sus experiencias o conocimientos previos.",
             "Describen o dibujan lo que visualizan a partir de una lectura."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 4",
@@ -34,7 +36,8 @@
             "Seleccionan textos para leer por su cuenta.",
             "Recomiendan textos a otros.",
             "Manifiestan su preferencia por algún texto."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 5",
@@ -43,7 +46,8 @@
             "Comparan a los personajes con personas que conocen.",
             "Establecen si están de acuerdo o no con acciones realizadas por los personajes y explican por qué.",
             "Explican por qué les gusta o no una narración."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 7",
@@ -57,7 +61,8 @@
             "Evalúan si la imagen de un texto corresponde a la información que aparece en él.",
             "Cumplen exitosamente la tarea descrita en las instrucciones leídas.",
             "Expresan opiniones y las justifican, mencionando información extraída de textos leídos."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 11",
@@ -69,7 +74,8 @@
             "Leen el cuento en grupo y marcan las palabras desconocidas.",
             "Anotan en sus cuadernos las oraciones en las cuales aparecen las palabras que marcaron, dejando cinco líneas en blanco bajo cada una.",
             "Elabora, en conjunto con el curso, un gráfico en el cual registra la información sobre las seleccionadas."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 14",
@@ -77,7 +83,8 @@
           "indicadores": [
             "Escriben un párrafo sobre un tema.",
             "Incorporan en sus párrafos descripciones o datos sobre el tema."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 21",
@@ -85,7 +92,8 @@
           "indicadores": [
             "Escriben correctamente palabras que contienen las combinaciones ce-ci, que-qui, ge-gi, gue-gui, güe-güi.",
             "Escriben correctamente palabras que contienen: r-rr-nr."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 25",
@@ -94,7 +102,8 @@
             "Aportan información que se relaciona con el tema sobre el cual se conversa.",
             "Hacen comentarios que demuestran empatía por lo que expresa un compañero.",
             "Expresan desacuerdo frente a opiniones emitidas por otros sin descalificar las ideas ni al emisor."
-          ]
+          ],
+          "eje": "Comunicación oral"
         },
         {
           "codigo": "OA 26",
@@ -103,7 +112,8 @@
             "Finalmente, escriben un texto que reúne lo dicho en las casas y lo establecido por los mismos estudiantes para que las usen todos los miembros de la comunidad.",
             "Luego, les pregunta cómo actuarían o hablarían en dicha situación.",
             "Posteriormente, realizan una dramatización en la cual ponen en práctica lo aprendido."
-          ]
+          ],
+          "eje": "Comunicación oral"
         }
       ],
       "temas": [
@@ -130,14 +140,16 @@
             "Nombran su poema favorito.",
             "Nombran autores de poemas que les gustan.",
             "Escogen poemas para leer a otros."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 10",
           "texto": "Buscar información sobre 1 un tema en una fuente Buscar dada por el docente (página de internet, sección del sobre diario, capítulo de un libro, de etc.), para llevar a cabo una tamiento cómo investigación. Búsqueda fuentes revistas, lleva investiguen diferentes mente Cada",
           "indicadores": [
             "Escriben un párrafo para comunicar lo aprendido en la fuente leída."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 21",
@@ -145,7 +157,8 @@
           "indicadores": [
             "Escriben correctamente palabras que contienen las combinaciones ce-ci, que-qui, ge-gi, gue-gui, güe-güi.",
             "Escriben correctamente palabras que contienen: r-rr-nr."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 23",
@@ -153,7 +166,8 @@
           "indicadores": [
             "Responden preguntas, usando de manera pertinente la información escuchada.",
             "Expresan una opinión sobre algún aspecto de un texto escuchado y dan una razón."
-          ]
+          ],
+          "eje": "Comunicación oral"
         },
         {
           "codigo": "OA 27",
@@ -167,7 +181,8 @@
             "Incorporan un vocabulario variado en sus intervenciones.",
             "Incorporan, si es pertinente, palabras aprendidas recientemente.",
             "Pronuncian cada una de las palabras de manera que todos las comprenden fácilmente."
-          ]
+          ],
+          "eje": "Comunicación oral"
         },
         {
           "codigo": "OA 30",
@@ -178,7 +193,8 @@
             "Pronuncian adecuadamente las palabras.",
             "De lo anterior se desprende que la transmisión de un contenido es siempre el objetivo primordial y, para que esto sea así, es necesario que el mensaje tenga coherencia.",
             "Cada grupo memoriza el texto que le tocó y lo presenta en la próxima reunión de apoderados."
-          ]
+          ],
+          "eje": "Comunicación oral"
         }
       ],
       "temas": [
@@ -201,7 +217,8 @@
             "Explican lo que saben de un tema antes de leer un texto sobre el mismo.",
             "Relacionan, oralmente o por escrito, algún tema o aspecto del texto con sus experiencias o conocimientos previos.",
             "Describen o dibujan lo que visualizan a partir de una lectura."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 13",
@@ -212,7 +229,8 @@
             "Escriben narraciones que tienen un desenlace.",
             "Puede entregar una copia a cada estudiante o proyectarla en la sala.",
             "A partir de los dibujos, los estudiantes primero cuentan la historia oralmente a un compañero y luego la escriben."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 19",
@@ -232,7 +250,8 @@
             "Ana, por favor devuélveme vestido verde.",
             "Un niño busca su cuaderno de matemáticas.",
             "Le describe a otro niño su cuaderno para saber si lo ha visto."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 20",
@@ -244,7 +263,8 @@
             "Después, escribe palabra en el pizarrón y los estudiantes levantan las tarjecorrespondientes al género y el número de dicha palabra.",
             "Luego les entrega un texto en el cual artículos no concuerdan con los sustantivos para que estudiantes los corrijan en sus cuadernos.",
             "Discuten sobre qué problemas de comunicación podrían tener si escriben frases como “mi tía lindo”."
-          ]
+          ],
+          "eje": "Escritura"
         }
       ],
       "temas": [
@@ -267,7 +287,8 @@
             "Relatan una parte de la obra de teatro infantil vista.",
             "Describen, oralmente o por escrito, la parte que más les gustó de una obra de teatro o representación vista.",
             "Nombran personajes favoritos de una obra de teatro o representación vista."
-          ]
+          ],
+          "eje": "Comunicación oral"
         },
         {
           "codigo": "OA 29",
@@ -276,7 +297,8 @@
             "Representan un personaje de un texto leído, actuando sus principales características.",
             "Imitan el lenguaje que usa el personaje que están interpretando.",
             "Representan partes de textos escuchados o leídos."
-          ]
+          ],
+          "eje": "Comunicación oral"
         }
       ],
       "temas": [

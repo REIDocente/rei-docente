@@ -14,7 +14,8 @@
             "Hacen una recapitulación, oralmente o por escrito, de un texto leído.",
             "Escriben preguntas al margen del texto sobre lo que no comprenden o lo que quieren profundizar.",
             "Subrayan la información más relevante de cada párrafo."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 3",
@@ -25,7 +26,8 @@
             "Solicitan recomendaciones de textos similares a los leídos en clases.",
             "Seleccionan textos para leer por su cuenta.",
             "Recomiendan textos a otros."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 4",
@@ -34,7 +36,8 @@
             "Aluden, en sus comentarios orales y escritos, a información explícita de un texto.",
             "Contestan, oralmente o por escrito, preguntas que aluden a información implícita del texto.",
             "Explican las consecuencias que tienen las acciones de ciertos personajes."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 6",
@@ -43,7 +46,8 @@
             "Relacionan información del texto con sus experiencias y conocimientos.",
             "Explican, oralmente o por escrito, la información que han aprendido o descubierto en los textos que leen.",
             "Aluden a información implícita o explícita de un texto leído al comentar o escribir."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 12",
@@ -53,7 +57,8 @@
             "Escriben experiencias personales.",
             "Escriben una secuencia de acciones que se suceden de manera lógica.",
             "Estructuran el relato en inicio, desarrollo y desenlace."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 17",
@@ -64,7 +69,8 @@
             "Utilizan conectores para relacionar las ideas del texto, como primero, luego, después, entonces, por eso, pero, así, porque, entre otros.",
             "Reescriben sus textos corrigiendo la ortografía literal, acentual y puntual.",
             "Adecuan el formato al propósito del texto para publicarlo."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 21",
@@ -76,7 +82,8 @@
             "Tildan correctamente las palabras agudas, graves, esdrújulas y sobreesdrújulas en los textos que escriben.",
             "Para practicar el uso de las palabras con h, los estudiantes escriben en grupos un texto en el que incluyen al menos cinco palabras de la lista anterior.",
             "Pegan la cartulina en la pared de la sala para poder recurrir a ella cuando tengan dudas sobre esas palabras."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 23",
@@ -89,7 +96,8 @@
             "Formulan preguntas para aclarar o profundizar aspectos del texto escuchado en clases.",
             "Comparan información proveniente de dos textos sobre un mismo tema.",
             "Responden preguntas sobre información explícita e implícita del texto escuchado."
-          ]
+          ],
+          "eje": "Comunicación oral"
         }
       ],
       "temas": [
@@ -111,7 +119,8 @@
           "indicadores": [
             "Dibujan imágenes de poemas que les gusten.",
             "Explican, oralmente o por escrito, qué les gustó o no de un poema."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 14",
@@ -122,7 +131,8 @@
             "Escriben todos los pasos necesarios para llevar a cabo un procedimiento.",
             "Secuencian cronológicamente los procedimientos necesarios para llevar a cabo una tarea.",
             "Incluyen diagramas o dibujos para complementar información, si es pertinente."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 16",
@@ -131,7 +141,8 @@
             "Explican sobre qué van a escribir.",
             "Establecen el destinatario y el propósito de su texto.",
             "Relatan a un compañero qué es lo que van a escribir."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 21",
@@ -143,14 +154,16 @@
             "Tildan correctamente las palabras agudas, graves, esdrújulas y sobreesdrújulas en los textos que escriben.",
             "Para practicar el uso de las palabras con h, los estudiantes escriben en grupos un texto en el que incluyen al menos cinco palabras de la lista anterior.",
             "Pegan la cartulina en la pared de la sala para poder recurrir a ella cuando tengan dudas sobre esas palabras."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 27",
           "texto": "Expresarse de manera co1 herente y articulada sobre Exposición temas de su interés: El contenido ú organizando las ideas en introducción, desarrollo mejor y cierre un ú incorporando descrippronunciación, modela ciones y ejemplos que ilustren las ideas los ú utilizando un vocabulario IV variado (2 grande, ú reemplazando los pronombres y algunos adverbios por construc2 ciones sintácticas que describir expliciten o describan al referente la ú usando gestos y postuque ras acordes a la situación debe ú usando material de apoyo (powerpoint, papelóno grafo, objetos, etc.) si es siguen pertinente descripción Ensayan clase ! Observaciones",
           "indicadores": [
             "Se expresan sobre un tema: explicando claramente la idea que quieren transmitir usando ejemplos o fundamentos para extenderla usando un vocabulario preciso y variado adecuando su tono de voz, gestos y movimientos a la situación."
-          ]
+          ],
+          "eje": "Comunicación oral"
         },
         {
           "codigo": "OA 30",
@@ -165,7 +178,8 @@
             "Explican el poema con sus propias palabras para entenderlo.",
             "Repiten el poema varias veces, pensando en su significado, para poder memorizarlo.",
             "Incorporan énfasis en el tono y gestualidad en momentos clave del poema."
-          ]
+          ],
+          "eje": "Comunicación oral"
         }
       ],
       "temas": [
@@ -189,7 +203,8 @@
             "Hacen una recapitulación, oralmente o por escrito, de un texto leído.",
             "Escriben preguntas al margen del texto sobre lo que no comprenden o lo que quieren profundizar.",
             "Subrayan la información más relevante de cada párrafo."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 9",
@@ -200,7 +215,8 @@
             "Explican la información que descubrieron durante la investigación.",
             "Anotan información que les llama la atención.",
             "Escriben un párrafo para comunicar lo aprendido."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 13",
@@ -208,7 +224,8 @@
           "indicadores": [
             "Eligen un tema interesante para escribir.",
             "Buscan y registran información para desarrollarlo."
-          ]
+          ],
+          "eje": "Escritura"
         }
       ],
       "temas": [
@@ -233,7 +250,8 @@
             "Solicitan recomendaciones de textos similares a los leídos en clases.",
             "Seleccionan textos para leer por su cuenta.",
             "Recomiendan textos a otros."
-          ]
+          ],
+          "eje": "Lectura"
         },
         {
           "codigo": "OA 19",
@@ -241,7 +259,8 @@
           "indicadores": [
             "Explican qué información aporta el adverbio en una oración determinada.",
             "Utilizan una variedad de adverbios para precisar sus escritos."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 20",
@@ -251,21 +270,24 @@
             "Distinguen el sujeto del predicado en oraciones simples.",
             "Mantienen la concordancia de número entre el verbo y el sujeto al escribir o hablar.",
             "Identifican errores de concordancia entre verbo y sujeto en sus escritos o los de sus compañeros."
-          ]
+          ],
+          "eje": "Escritura"
         },
         {
           "codigo": "OA 24",
           "texto": "disfrutar de la experiencia 1 de asistir a obras de teatro representación infantiles o representaEl ciones para ampliar sus adecuada posibilidades de expreantes sión, desarrollar su creatividad y familiarizarse con preparar el género. iluminación momento convenciones teatro, ver, sobre actores comentan, Esta ! Observaciones miento, montada obra",
           "indicadores": [
             "Comentan qué aspectos de la historia les llamaron la atención y por qué."
-          ]
+          ],
+          "eje": "Comunicación oral"
         },
         {
           "codigo": "OA 29",
           "texto": "Caracterizar distintos personajes para desarrollar su lenguaje y autoestima, y aprender a trabajar en equipo. ¿Adivina personajes semestre saca están tiene Obra Luego docente puedan aspectos Leen leen acuerdo padres Ejemplos Ejemplo 1 OA_4 Profundizar su comprensión de extrayendo información explícita determinando las consecuencias ú describiendo y comparando a reconociendo el problema y la ú Aluden, en sus comentarios orales Contestan, oralmente o por escrito, Explican, oralmente o por escrito, resuelven Actividad Antes de leer el cuento Piñoncito trabaja con los estudiantes las palabras pendiente y contestan por escrito Preguntas sobre información explícita: 1 ¿Qué le entrega el viejo a la 2 ¿Por qué los padres le ponen 3 ¿Por qué los arrieros no ven ¿Cómo salva Piñoncito a los 5 ¿Qué regalo le entrega el ave Preguntas de inferencias: ¿Es importante el tamaño puesta con un ejemplo del 7 ¿Cómo se habrá sentido Piñoncito 8 ¿Por qué en el cuento se dice ¿Qué logra Piñoncito después 10 Mencione una característica rística en dos momentos del PAUtA dE EVALUACióN Preguntas sobre información explícita: 1 ¿Qué le entrega el viejo a la madre tos? Un piñón. 2 ¿Por qué los padres le ponen Piñoncito ¿Por qué los arrieros no ven a Piñoncito pequeño y por eso se puede esconder 4 ¿Cómo salva Piñoncito a los polluelos serpiente que quería comerse a ¿Qué regalo le entrega el ave a contró en la cordillera y que convierte Preguntas de inferencias: ¿Es importante el tamaño de Piñoncito puesta con un ejemplo del cuento. vivido esas aventuras. Por ejemplo: de una callampa. Si Piñoncito no ¿Cómo se habrá sentido Piñoncito Asfixiado, porque el estómago lo podía morir ahogado por estar 8 ¿Por qué en el cuento se dice que Porque la madre de los polluelos 9 ¿Qué logra Piñoncito después de verse un niño normal. 10 Mencione una característica sicológica terística en dos momentos del cuento. defender a los polluelos. / Inteligente, al morderle el labio. Los problemas de comprensión de los ú Problemas de fluidez: se demoran en comprenderlo. Problemas de vocabulario: no conocen comprenderlo. ú Problemas de comprensión: comprenden cultades para extraer información",
           "indicadores": [
             "Representan roles en obras teatrales:."
-          ]
+          ],
+          "eje": "Comunicación oral"
         }
       ],
       "temas": []
