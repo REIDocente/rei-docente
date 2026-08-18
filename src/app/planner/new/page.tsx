@@ -121,8 +121,9 @@ function getEjeFromCodigo(codigo: string, nivel: string): string {
     if (num <= 18) return 'Escritura';
     return 'Comunicación oral';
   }
-  if (num <= 13) return 'Lectura';
-  if (num <= 22) return 'Escritura';
+  // Básico: Lectura OA1–12, Escritura OA13–17, Comunicación oral OA18+
+  if (num <= 12) return 'Lectura';
+  if (num <= 17) return 'Escritura';
   return 'Comunicación oral';
 }
 
@@ -1614,7 +1615,7 @@ export default function NewPlannerPage() {
           unit,
           unitNum,
           unidadNombre: unidadNombreCompleto,
-          oas: suggestedOAs.map(oa => ({ codigo: oa.codigo, texto: oa.texto })),
+          oas: suggestedOAs.map(oa => ({ codigo: oa.codigo, texto: oa.texto, eje: oa.eje || getEjeFromCodigo(oa.codigo, grade) })),
           indicadores: allIndicadores,
         }),
       });

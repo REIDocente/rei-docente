@@ -243,14 +243,19 @@ type BloomPhase = (typeof BLOOM_PHASES)[number];
 
 const TOTAL_CLASES = 27;
 
-function bloomForClass(idx: number): BloomPhase {
-  const r = idx / TOTAL_CLASES;
-  if (r < 0.15) return BLOOM_PHASES[0];
-  if (r < 0.30) return BLOOM_PHASES[1];
-  if (r < 0.50) return BLOOM_PHASES[2];
-  if (r < 0.68) return BLOOM_PHASES[3];
-  if (r < 0.84) return BLOOM_PHASES[4];
-  return BLOOM_PHASES[5];
+/**
+ * Bloom según la posición del OA en la lista (no la clase absoluta).
+ * Así OA5 (fluidez lectora) no sube a "Analizar" aunque sus clases caigan
+ * en la segunda mitad del bloque de 27.
+ */
+function bloomForOA(oaIndex: number, totalOAs: number): BloomPhase {
+  const r = totalOAs <= 1 ? 0 : oaIndex / (totalOAs - 1);
+  if (r < 0.15) return BLOOM_PHASES[0]; // Recordar
+  if (r < 0.32) return BLOOM_PHASES[1]; // Comprender
+  if (r < 0.55) return BLOOM_PHASES[2]; // Aplicar
+  if (r < 0.72) return BLOOM_PHASES[3]; // Analizar
+  if (r < 0.88) return BLOOM_PHASES[4]; // Evaluar
+  return BLOOM_PHASES[5];               // Crear
 }
 
 // ── Helpers de texto ─────────────────────────────────────────────────────────
@@ -297,8 +302,9 @@ function getEjeDoc(codigo: string, nivel: string): 'Lectura' | 'Escritura' | 'Co
     if (num <= 18) return 'Escritura';
     return 'Comunicación oral';
   }
-  if (num <= 13) return 'Lectura';
-  if (num <= 22) return 'Escritura';
+  // Básico: Lectura OA1–12, Escritura OA13–17, Comunicación oral OA18+
+  if (num <= 12) return 'Lectura';
+  if (num <= 17) return 'Escritura';
   return 'Comunicación oral';
 }
 
@@ -442,14 +448,16 @@ export async function POST(req: NextRequest) {
 
   const clases: ClaseData[] = [];
   for (let i = 0; i < TOTAL_CLASES; i++) {
-    const bloom = bloomForClass(i);
-    const tema  = temaForClass(i);
+    const oaCodigo  = oaForClass(i);
+    const oaIndex   = oaList.indexOf(oaCodigo);
+    const bloom     = bloomForOA(oaIndex >= 0 ? oaIndex : i, oaList.length || 1);
+    const tema      = temaForClass(i);
     clases.push({
       numero:   i + 1,
       semana:   Math.ceil((i + 1) / 2),
       bloom,
       tema,
-      oaCodigo: oaForClass(i),
+      oaCodigo,
       objetivo: `${bloom.habilidades.split(',')[0].trim()}: ${tema.toLowerCase()}`,
       producto: bloom.producto,
     });
@@ -743,6 +751,22 @@ export async function POST(req: NextRequest) {
       new TableRow({ children: [
         mkCell('PIE', { bold: true }),
         mkCell('Adecuaciones curriculares según Plan de Apoyo Individual (PAI) de cada estudiante.'),
+      ]}),
+      new TableRow({ children: [
+        mkCell('PNL — Apertura', { bold: true, bg: ALT_BG }),
+        mkCell('Activar conocimientos previos con una pregunta-ancla, imagen motivadora o canción relacionada con el tema de la lección.', { bg: ALT_BG }),
+      ]}),
+      new TableRow({ children: [
+        mkCell('PNL — Pausa Activa', { bold: true }),
+        mkCell('Incorporar una pausa de movimiento o respiración a mitad de la sesión para restablecer la atención y el estado de aprendizaje.'),
+      ]}),
+      new TableRow({ children: [
+        mkCell('PNL — Cierre', { bold: true, bg: ALT_BG }),
+        mkCell('Cerrar la clase con una imagen mental, una frase de refuerzo positivo o un recuento oral breve que consolide el aprendizaje.', { bg: ALT_BG }),
+      ]}),
+      new TableRow({ children: [
+        mkCell('PNL — Anclaje', { bold: true }),
+        mkCell('Usar un gesto, color o palabra clave que se repite cada vez que se introduce un concepto o fonema nuevo, para reforzar la memoria asociativa.'),
       ]}),
     ],
   }));
