@@ -58,7 +58,29 @@ const GARBAGE_PATTERNS = [
   /logrado\s+MedianaMente/i,
   /recortes recorten/i,
   /\([^)]+,[^)]+\)/,       // fill-in-the-blank: "(botones, manchones)" o "(opción1, opción2)"
+  /medio e identidad/i,    // basura PDF de programas de 2° Medio
+  /a todas las unidades/i, // "A tOdAs lAs unidAdes" — artefacto de extracción PDF
+  /^A\s+t[Oo]d[Aa]s/,     // variante con mayúsculas mezcladas
 ];
+
+/** Patrones de basura que aparecen PEGADOS al final de un indicador real */
+const INLINE_GARBAGE = [
+  /\s+medio\s+e\s+identidad\b.*/i,
+  /\.\s+medio\b.*/i,                    // ". medio e identidad..."
+  /\s+[Aa]\s+t[Oo]d[Aa]s\s+l[Aa]s\s+[Uu]nidades.*/i,
+  /\s+\([Aa]\s+t[Oo]d[Aa]s.*/i,
+];
+
+/** Limpia basura PDF que queda pegada al final de un indicador real */
+function cleanIndicatorText(text: string): string {
+  let out = text;
+  for (const re of INLINE_GARBAGE) {
+    out = out.replace(re, '');
+  }
+  out = out.trim();
+  if (out && !out.endsWith('.')) out += '.';
+  return out;
+}
 
 const IMPERATIVE_STARTS = /^(Describa|Explique|Comente|Compare|Analice|Discuta|Reflexione|Señale|Mencione|Identifique|Busca|Lee|Escribe|Observa|Responde|Piensa|Investiga)\b/i;
 
@@ -89,8 +111,8 @@ function splitIndicadores(raw: string | null): string[] {
     .split(/\n|(?<=\.)\s+(?=[A-ZÁÉÍÓÚÑ])/)
     .map(s => s.trim())
     .filter(s => s.length > 10);
-  // Asegurarse de que cada parte termina en punto
-  return parts.map(s => s.endsWith('.') ? s : s + '.');
+  // Limpiar basura inline y asegurar que cada parte termina en punto
+  return parts.map(s => cleanIndicatorText(s.endsWith('.') ? s : s + '.'));
 }
 
 function loadCurriculumData(grade: string, unitNum: number): CurriculumData {
