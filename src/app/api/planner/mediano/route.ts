@@ -61,6 +61,8 @@ const GARBAGE_PATTERNS = [
   /medio e identidad/i,    // basura PDF de programas de 2° Medio
   /a todas las unidades/i, // "A tOdAs lAs unidAdes" — artefacto de extracción PDF
   /^A\s+t[Oo]d[Aa]s/,     // variante con mayúsculas mezcladas
+  /^Por esto,/i,           // fragmento de explicación pedagógica del PDF
+  /^A modo de sugerencia/i, // instrucción al docente, no es indicador
 ];
 
 /** Patrones de basura que aparecen PEGADOS al final de un indicador real */
