@@ -112,18 +112,31 @@ interface ObjetivoAprendizaje {
   indicadores_evaluacion: Indicador[];
 }
 
-/** Eje curricular desde código de OA y nivel */
+/** Eje curricular desde código de OA y nivel — thresholds oficiales MINEDUC por grupo de curso */
 function getEjeFromCodigo(codigo: string, nivel: string): string {
   const num = parseInt(codigo.replace(/\D/g, '') || '0');
-  const isMedia = nivel.includes('Medio');
-  if (isMedia) {
-    if (num <= 9) return 'Lectura';
+  if (nivel.includes('Medio')) {
+    // 1°M–2°M: Lectura OA1–9, Escritura OA10–18, Comunicación oral OA19+
+    if (num <= 9)  return 'Lectura';
     if (num <= 18) return 'Escritura';
     return 'Comunicación oral';
   }
-  // Básico: Lectura OA1–12, Escritura OA13–17, Comunicación oral OA18+
+  const grade = parseInt(nivel.match(/(\d+)/)?.[1] ?? '5');
+  if (grade === 1) {
+    // 1°B: Lectura OA1–12, Escritura OA13–17, Comunicación oral OA18+
+    if (num <= 12) return 'Lectura';
+    if (num <= 17) return 'Escritura';
+    return 'Comunicación oral';
+  }
+  if (grade <= 4) {
+    // 2°B–4°B: Lectura OA1–12, Escritura OA13–21, Comunicación oral OA22+
+    if (num <= 12) return 'Lectura';
+    if (num <= 21) return 'Escritura';
+    return 'Comunicación oral';
+  }
+  // 5°B–8°B: Lectura OA1–12, Escritura OA13–20, Comunicación oral OA21+
   if (num <= 12) return 'Lectura';
-  if (num <= 17) return 'Escritura';
+  if (num <= 20) return 'Escritura';
   return 'Comunicación oral';
 }
 

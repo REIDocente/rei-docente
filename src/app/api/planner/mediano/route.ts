@@ -293,18 +293,31 @@ function extractTheme(text: string, max = 65): string {
   return first.slice(0, cut > 20 ? cut : max);
 }
 
-/** Determina el eje curricular a partir del código de OA y el nivel */
+/** Determina el eje curricular — thresholds oficiales MINEDUC por grupo de curso */
 function getEjeDoc(codigo: string, nivel: string): 'Lectura' | 'Escritura' | 'Comunicación oral' {
   const num = parseInt(codigo.replace(/\D/g, '') || '0');
-  const isMedia = nivel.includes('Medio');
-  if (isMedia) {
-    if (num <= 9) return 'Lectura';
+  if (nivel.includes('Medio')) {
+    // 1°M–2°M: Lectura OA1–9, Escritura OA10–18, Comunicación oral OA19+
+    if (num <= 9)  return 'Lectura';
     if (num <= 18) return 'Escritura';
     return 'Comunicación oral';
   }
-  // Básico: Lectura OA1–12, Escritura OA13–17, Comunicación oral OA18+
+  const grade = parseInt(nivel.match(/(\d+)/)?.[1] ?? '5');
+  if (grade === 1) {
+    // 1°B: Lectura OA1–12, Escritura OA13–17, Comunicación oral OA18+
+    if (num <= 12) return 'Lectura';
+    if (num <= 17) return 'Escritura';
+    return 'Comunicación oral';
+  }
+  if (grade <= 4) {
+    // 2°B–4°B: Lectura OA1–12, Escritura OA13–21, Comunicación oral OA22+
+    if (num <= 12) return 'Lectura';
+    if (num <= 21) return 'Escritura';
+    return 'Comunicación oral';
+  }
+  // 5°B–8°B: Lectura OA1–12, Escritura OA13–20, Comunicación oral OA21+
   if (num <= 12) return 'Lectura';
-  if (num <= 17) return 'Escritura';
+  if (num <= 20) return 'Escritura';
   return 'Comunicación oral';
 }
 
@@ -418,17 +431,16 @@ export async function POST(req: NextRequest) {
     `hasta niveles de análisis, evaluación y creación, en coherencia con la Taxonomía de Bloom ` +
     `y el Programa de Estudio MINEDUC (${oaCodes}).`;
 
-  // ── Distribución de temas entre clases ───────────────────────────────────
-  // Cada tema ocupa un bloque de clases; dentro del bloque se aplica Bloom
-  const temaCount = temas.length || 1;
-  function temaForClass(idx: number): string {
+  // ── Distribución de temas según posición del OA ──────────────────────────
+  // Derivar tema a partir del índice del OA en la lista (no el índice de clase)
+  function temaForOAIndex(oaIdx: number, totalOAs: number): string {
     if (temas.length === 0) {
-      const ind = cleanInds[idx % (cleanInds.length || 1)]
+      const ind = cleanInds[oaIdx % (cleanInds.length || 1)]
         ?? { texto: 'Contenido de la unidad' };
       return extractTheme(ind.texto, 65);
     }
-    const block = Math.floor(idx / (TOTAL_CLASES / temaCount));
-    return temas[Math.min(block, temas.length - 1)];
+    const t = Math.round(oaIdx * (temas.length - 1) / Math.max(totalOAs - 1, 1));
+    return temas[Math.min(Math.max(t, 0), temas.length - 1)];
   }
 
   // ── Secuencia de 27 clases ────────────────────────────────────────────────
@@ -451,7 +463,8 @@ export async function POST(req: NextRequest) {
     const oaCodigo  = oaForClass(i);
     const oaIndex   = oaList.indexOf(oaCodigo);
     const bloom     = bloomForOA(oaIndex >= 0 ? oaIndex : i, oaList.length || 1);
-    const tema      = temaForClass(i);
+    const effectiveOAIdx = oaIndex >= 0 ? oaIndex : i;
+    const tema      = temaForOAIndex(effectiveOAIdx, oaList.length || 1);
     clases.push({
       numero:   i + 1,
       semana:   Math.ceil((i + 1) / 2),
@@ -567,12 +580,8 @@ export async function POST(req: NextRequest) {
     if (!indsMapFrontend[ind.oaCodigo]) indsMapFrontend[ind.oaCodigo] = [];
     indsMapFrontend[ind.oaCodigo].push(ind.texto);
   }
-  // Unión de códigos: resolvedOAs primero, luego OAs del JSON que no estén incluidos
-  const resolvedCodes = new Set(resolvedOAs.map(o => o.codigo));
-  const allIndCodes: string[] = [
-    ...resolvedOAs.map(o => o.codigo),
-    ...Object.keys(currData.oaIndicadores).filter(c => !resolvedCodes.has(c)),
-  ];
+  // Solo mostrar indicadores de los OAs seleccionados por el docente
+  const allIndCodes: string[] = resolvedOAs.map(o => o.codigo);
   let anyIndicators = false;
   for (const codigo of allIndCodes) {
     // Priorizar frontend; caer a JSON si no hay
