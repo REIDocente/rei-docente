@@ -66,7 +66,7 @@ export async function POST(
       .join('\n');
 
     const promptText = `
-Eres REÍ, asistente pedagógico experto en Lenguaje y Literatura para docentes chilenos.
+Eres REÍ, asistente pedagógico experto en evaluación y refuerzo pedagógico para docentes chilenos de cualquier asignatura.
 
 Datos del curso:
 - Curso: ${evaluacion.curso}

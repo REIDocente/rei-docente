@@ -7,7 +7,7 @@ import { supabase } from '@/lib/supabase';
 import Sidebar from '@/components/Sidebar';
 import {
   Users, Upload, Download, Plus, Trash2, ArrowLeft,
-  CheckCircle2, AlertCircle, Loader2, FileSpreadsheet
+  CheckCircle2, AlertCircle, Loader2, Sparkles, Layers
 } from 'lucide-react';
 import Papa from 'papaparse';
 
@@ -20,12 +20,30 @@ interface EstudianteRow {
 export default function CursosPage() {
   const router = useRouter();
   const [curso, setCurso] = useState('8°A');
+  
+  // Generador de paralelos
+  const [nivelBase, setNivelBase] = useState('2° Medio');
+  const [numParalelos, setNumParalelos] = useState<number>(3); // 0 = sin paralelo, 1..7 = A..G
+  const [paralelosGenerados, setParalelosGenerados] = useState<string[]>(['2°A', '2°B', '2°C']);
+
   const [estudiantes, setEstudiantes] = useState<EstudianteRow[]>([
     { numero_lista: 1, nombre: '', rut: '' },
   ]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  // Recalcular paralelos al cambiar nivel base o cantidad
+  const handleGenerarParalelos = (base: string, count: number) => {
+    if (count === 0) {
+      setParalelosGenerados([base.trim()]);
+    } else {
+      const letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+      const maxCount = Math.min(count, 7);
+      const generated = letras.slice(0, maxCount).map(letra => `${base.trim()}${letra}`);
+      setParalelosGenerados(generated);
+    }
+  };
 
   useEffect(() => {
     async function loadCurso() {
@@ -43,6 +61,8 @@ export default function CursosPage() {
             nombre: e.nombre,
             rut: e.rut || '',
           })));
+        } else {
+          setEstudiantes([{ numero_lista: 1, nombre: '', rut: '' }]);
         }
       } catch (e) {
         console.error(e);
@@ -50,7 +70,9 @@ export default function CursosPage() {
         setLoading(false);
       }
     }
-    loadCurso();
+    if (curso.trim()) {
+      loadCurso();
+    }
   }, [curso]);
 
   const handleDownloadTemplate = () => {
@@ -80,7 +102,7 @@ export default function CursosPage() {
 
         if (parsedRows.length > 0) {
           setEstudiantes(parsedRows);
-          setMessage({ type: 'success', text: `Se cargaron ${parsedRows.length} estudiantes desde el archivo.` });
+          setMessage({ type: 'success', text: `Se cargaron ${parsedRows.length} estudiantes desde el archivo para ${curso}.` });
         }
       },
       error: (err) => {
@@ -129,7 +151,7 @@ export default function CursosPage() {
           ...(token ? { Authorization: `Bearer ${token}` } : {})
         },
         body: JSON.stringify({
-          curso,
+          curso: curso.trim(),
           estudiantes: validRows,
         }),
       });
@@ -137,7 +159,7 @@ export default function CursosPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Error al guardar la lista');
 
-      setMessage({ type: 'success', text: `¡Lista del curso ${curso} guardada exitosamente con ${validRows.length} estudiantes!` });
+      setMessage({ type: 'success', text: `¡Lista de ${curso} guardada exitosamente con ${validRows.length} estudiantes!` });
     } catch (err: any) {
       setMessage({ type: 'error', text: err.message });
     } finally {
@@ -157,83 +179,135 @@ export default function CursosPage() {
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <div>
-              <h1 className="text-base font-black text-slate-800 leading-none">Gestión de Cursos y Estudiantes</h1>
-              <p className="text-xs text-slate-400 mt-1">Registra las listas de curso para asociar los puntajes OMR automáticamente</p>
+              <h1 className="text-base font-black text-slate-800 leading-none">Gestión de Cursos, Nivel y Paralelos</h1>
+              <p className="text-xs text-slate-400 mt-1">Configura cualquier curso o genera sus paralelos (A hasta G) con su propia lista de estudiantes</p>
             </div>
           </div>
         </header>
 
         <main className="p-6 max-w-4xl mx-auto w-full space-y-6">
 
-          {/* Selector de Curso */}
-          <div className="bg-white rounded-2xl border border-slate-200/70 p-6 space-y-4 shadow-2xs">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block">Seleccionar o ingresar Curso</label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={curso}
-                    onChange={e => setCurso(e.target.value)}
-                    placeholder="Ej: 8°A, 1° Medio B"
-                    className="text-sm px-4 py-2 rounded-xl border border-slate-200 font-bold text-slate-800 focus:border-emerald-500 focus:outline-none"
-                  />
-                  <select
-                    onChange={e => setCurso(e.target.value)}
-                    className="text-xs px-3 py-2.5 rounded-xl border border-slate-200 bg-white font-medium focus:outline-none"
-                  >
-                    <option value="1° Básico">1° Básico</option>
-                    <option value="2° Básico">2° Básico</option>
-                    <option value="3° Básico">3° Básico</option>
-                    <option value="4° Básico">4° Básico</option>
-                    <option value="5° Básico">5° Básico</option>
-                    <option value="6° Básico">6° Básico</option>
-                    <option value="7° Básico">7° Básico</option>
-                    <option value="8° Básico">8° Básico</option>
-                    <option value="8°A">8°A</option>
-                    <option value="8°B">8°B</option>
-                    <option value="1° Medio">1° Medio</option>
-                    <option value="2° Medio">2° Medio</option>
-                    <option value="3° Medio">3° Medio</option>
-                    <option value="4° Medio">4° Medio</option>
-                  </select>
-                </div>
+          {/* 1. Selector Libre de Curso y Generador de Paralelos */}
+          <div className="bg-white rounded-2xl border border-slate-200/70 p-6 space-y-5 shadow-2xs">
+            <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-3">
+              <Layers className="w-4 h-4 text-emerald-700" />
+              1. Selección Libre y Configuración de Paralelos
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Campo Entrada Libre */}
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
+                  Nombre del Curso Actual (Escritura Libre)
+                </label>
+                <input
+                  type="text"
+                  value={curso}
+                  onChange={e => setCurso(e.target.value)}
+                  placeholder="Ej: 8°A, 3°B, Kínder, Nivel 1, Taller Matemáticas"
+                  className="w-full text-sm px-4 py-2.5 rounded-xl border border-slate-200 font-black text-slate-900 focus:border-emerald-500 focus:outline-none shadow-2xs"
+                />
+                <p className="text-[11px] text-slate-400">Puedes escribir libremente cualquier nombre de curso o asignatura.</p>
               </div>
 
-              {/* Botones de plantilla Excel y subida CSV */}
+              {/* Generador de Paralelos A hasta G */}
+              <div className="space-y-2 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <span className="text-[11px] font-black text-slate-700 uppercase tracking-wider block">
+                  Generador de Paralelos (A – G)
+                </span>
+                
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-[10px] font-bold text-slate-400 block mb-1">Nivel Base</label>
+                    <input
+                      type="text"
+                      value={nivelBase}
+                      onChange={e => {
+                        setNivelBase(e.target.value);
+                        handleGenerarParalelos(e.target.value, numParalelos);
+                      }}
+                      placeholder="Ej: 2° Medio, 8°"
+                      className="w-full text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white font-bold"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] font-bold text-slate-400 block mb-1">Cantidad de Paralelos</label>
+                    <select
+                      value={numParalelos}
+                      onChange={e => {
+                        const count = Number(e.target.value);
+                        setNumParalelos(count);
+                        handleGenerarParalelos(nivelBase, count);
+                      }}
+                      className="w-full text-xs px-2 py-1.5 rounded-lg border border-slate-200 bg-white font-bold"
+                    >
+                      <option value={0}>Sin Paralelo (Único)</option>
+                      <option value={1}>1 Paralelo (A)</option>
+                      <option value={2}>2 Paralelos (A-B)</option>
+                      <option value={3}>3 Paralelos (A-C)</option>
+                      <option value={4}>4 Paralelos (A-D)</option>
+                      <option value={5}>5 Paralelos (A-E)</option>
+                      <option value={6}>6 Paralelos (A-F)</option>
+                      <option value={7}>7 Paralelos (A-G)</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Chips Seleccionables de Paralelos Generados */}
+                <div className="pt-2 flex flex-wrap gap-1.5">
+                  {paralelosGenerados.map(p => (
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() => setCurso(p)}
+                      className={`px-3 py-1 rounded-lg text-xs font-black transition-all cursor-pointer border ${curso === p ? 'bg-emerald-700 text-white border-emerald-700 shadow-xs' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'}`}
+                    >
+                      {p}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Acciones Plantilla CSV / Subir */}
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-4">
+              <span className="text-xs text-slate-500 font-medium">
+                Editando lista para: <strong className="text-slate-800 font-bold">{curso}</strong>
+              </span>
+
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={handleDownloadTemplate}
                   className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
                 >
-                  <Download className="w-3.5 h-3.5" />
-                  Descargar Plantilla CSV
+                  <Download className="w-3.5 h-3.5" /> Plantilla CSV
                 </button>
 
                 <label className="flex items-center gap-1.5 px-3 py-2 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 rounded-xl text-xs font-bold transition-all cursor-pointer border border-emerald-200">
-                  <Upload className="w-3.5 h-3.5" />
-                  Subir Lista CSV
+                  <Upload className="w-3.5 h-3.5" /> Subir CSV para {curso}
                   <input type="file" accept=".csv" onChange={handleFileUpload} className="hidden" />
                 </label>
               </div>
             </div>
+
           </div>
 
-          {/* Alert Message */}
+          {/* Mensaje de Alerta */}
           {message && (
             <div className={`p-4 rounded-2xl border text-xs font-bold flex items-center gap-2 ${message.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-red-50 border-red-200 text-red-900'}`}>
-              {message.type === 'success' ? <CheckCircle2 className="w-4 h-4 text-emerald-700" /> : <AlertCircle className="w-4 h-4 text-red-700" />}
+              {message.type === 'success' ? <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" /> : <AlertCircle className="w-4 h-4 text-red-700 shrink-0" />}
               {message.text}
             </div>
           )}
 
-          {/* Tabla de Estudiantes */}
+          {/* 2. Tabla de Estudiantes del Curso Seleccionado */}
           <div className="bg-white rounded-2xl border border-slate-200/70 p-6 space-y-4 shadow-2xs">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
                 <Users className="w-4 h-4 text-emerald-700" />
-                Lista de Estudiantes ({estudiantes.length})
+                Estudiantes de {curso} ({estudiantes.length})
               </h3>
               <button
                 type="button"

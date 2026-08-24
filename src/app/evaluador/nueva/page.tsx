@@ -15,7 +15,7 @@ interface PreguntaItem {
   tipo: 'alternativa' | 'desarrollo';
   respuesta_correcta: string;
   oa_codigo: string;
-  habilidad: 'literal' | 'inferencial' | 'interpretativo' | 'argumentativo';
+  habilidad: string;
   puntaje_maximo: number;
 }
 
@@ -27,10 +27,10 @@ export default function NuevaEvaluacionPage() {
   const [fecha, setFecha] = useState(new Date().toISOString().split('T')[0]);
 
   const [preguntas, setPreguntas] = useState<PreguntaItem[]>([
-    { numero: 1, tipo: 'alternativa', respuesta_correcta: 'A', oa_codigo: 'OA 3', habilidad: 'literal', puntaje_maximo: 1 },
-    { numero: 2, tipo: 'alternativa', respuesta_correcta: 'B', oa_codigo: 'OA 3', habilidad: 'inferencial', puntaje_maximo: 1 },
-    { numero: 3, tipo: 'alternativa', respuesta_correcta: 'C', oa_codigo: 'OA 4', habilidad: 'interpretativo', puntaje_maximo: 1 },
-    { numero: 4, tipo: 'desarrollo', respuesta_correcta: '', oa_codigo: 'OA 7', habilidad: 'argumentativo', puntaje_maximo: 4 },
+    { numero: 1, tipo: 'alternativa', respuesta_correcta: 'A', oa_codigo: 'OA 1', habilidad: 'Conocimiento', puntaje_maximo: 1 },
+    { numero: 2, tipo: 'alternativa', respuesta_correcta: 'B', oa_codigo: 'OA 1', habilidad: 'Comprensión', puntaje_maximo: 1 },
+    { numero: 3, tipo: 'alternativa', respuesta_correcta: 'C', oa_codigo: 'OA 2', habilidad: 'Aplicación', puntaje_maximo: 1 },
+    { numero: 4, tipo: 'desarrollo', respuesta_correcta: '', oa_codigo: 'OA 3', habilidad: 'Análisis', puntaje_maximo: 4 },
   ]);
 
   const [uploadingPdf, setUploadingPdf] = useState(false);
@@ -77,8 +77,8 @@ export default function NuevaEvaluacionPage() {
         numero: prev.length + 1,
         tipo: 'alternativa',
         respuesta_correcta: 'A',
-        oa_codigo: 'OA 3',
-        habilidad: 'inferencial',
+        oa_codigo: 'OA 1',
+        habilidad: 'Comprensión',
         puntaje_maximo: 1,
       }
     ]);
@@ -167,7 +167,7 @@ export default function NuevaEvaluacionPage() {
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block">Título de la Evaluación</label>
                 <input
                   type="text"
-                  placeholder="Ej: Prueba Diagnóstica Comprensión Lectora - Unidad 1"
+                  placeholder="Ej: Prueba Diagnóstica Unidad 1, Evaluación Sumativa Matemáticas"
                   value={titulo}
                   onChange={e => setTitulo(e.target.value)}
                   className="w-full text-sm px-4 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:outline-none font-medium"
@@ -178,7 +178,7 @@ export default function NuevaEvaluacionPage() {
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block">Curso</label>
                 <input
                   type="text"
-                  placeholder="Ej: 8°A"
+                  placeholder="Ej: 8°A, 3°B, Kínder, Nivel 1"
                   value={curso}
                   onChange={e => setCurso(e.target.value)}
                   className="w-full text-sm px-4 py-2.5 rounded-xl border border-slate-200 focus:border-emerald-500 focus:outline-none font-medium"
@@ -298,16 +298,13 @@ export default function NuevaEvaluacionPage() {
                         />
                       </td>
                       <td className="py-2 px-3">
-                        <select
+                        <input
+                          type="text"
                           value={p.habilidad}
                           onChange={e => handleQuestionChange(idx, 'habilidad', e.target.value)}
-                          className="w-full px-2 py-1 rounded-lg border border-slate-200 bg-white font-medium focus:outline-none"
-                        >
-                          <option value="literal">Literal (Localizar información)</option>
-                          <option value="inferencial">Inferencial (Relacionar e interpretar)</option>
-                          <option value="interpretativo">Interpretativo (Reflexionar)</option>
-                          <option value="argumentativo">Argumentativo (Evaluar críticamente)</option>
-                        </select>
+                          placeholder="Ej: Comprensión, Análisis, Aplicación..."
+                          className="w-full px-2 py-1 rounded-lg border border-slate-200 font-medium focus:outline-none"
+                        />
                       </td>
                       <td className="py-2 px-3">
                         <input
