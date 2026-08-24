@@ -112,32 +112,52 @@ interface ObjetivoAprendizaje {
   indicadores_evaluacion: Indicador[];
 }
 
-/** Eje curricular desde código de OA y nivel — thresholds oficiales MINEDUC por grupo de curso */
+/** Eje curricular desde código de OA y nivel — thresholds oficiales MINEDUC por grado */
 function getEjeFromCodigo(codigo: string, nivel: string): string {
   const num = parseInt(codigo.replace(/\D/g, '') || '0');
   if (nivel.includes('Medio')) {
-    // 1°M–2°M: Lectura OA1–9, Escritura OA10–18, Comunicación oral OA19+
-    if (num <= 9)  return 'Lectura';
+    // 1°M–2°M: Lectura OA1–11, Escritura OA12–18, Comunicación oral OA19–23, Investigación OA24+
+    if (num <= 11) return 'Lectura';
     if (num <= 18) return 'Escritura';
-    return 'Comunicación oral';
+    if (num <= 23) return 'Comunicación oral';
+    return 'Investigación';
   }
   const grade = parseInt(nivel.match(/(\d+)/)?.[1] ?? '5');
   if (grade === 1) {
-    // 1°B: Lectura OA1–12, Escritura OA13–17, Comunicación oral OA18+
+    // 1°B: Lectura OA1–12, Escritura OA13–16, Comunicación oral OA17+
     if (num <= 12) return 'Lectura';
-    if (num <= 17) return 'Escritura';
+    if (num <= 16) return 'Escritura';
     return 'Comunicación oral';
   }
-  if (grade <= 4) {
-    // 2°B–4°B: Lectura OA1–12, Escritura OA13–21, Comunicación oral OA22+
-    if (num <= 12) return 'Lectura';
+  if (grade === 2) {
+    // 2°B: Lectura OA1–11, Escritura OA12–21, Comunicación oral OA22+
+    if (num <= 11) return 'Lectura';
     if (num <= 21) return 'Escritura';
     return 'Comunicación oral';
   }
-  // 5°B–8°B: Lectura OA1–12, Escritura OA13–20, Comunicación oral OA21+
-  if (num <= 12) return 'Lectura';
-  if (num <= 20) return 'Escritura';
-  return 'Comunicación oral';
+  if (grade === 3) {
+    // 3°B: Lectura OA1–11, Escritura OA12–22, Comunicación oral OA23+
+    if (num <= 11) return 'Lectura';
+    if (num <= 22) return 'Escritura';
+    return 'Comunicación oral';
+  }
+  if (grade === 4) {
+    // 4°B: Lectura OA1–10, Escritura OA11–21, Comunicación oral OA22+
+    if (num <= 10) return 'Lectura';
+    if (num <= 21) return 'Escritura';
+    return 'Comunicación oral';
+  }
+  if (grade === 5 || grade === 6) {
+    // 5°B–6°B: Lectura OA1–12, Escritura OA13–22, Comunicación oral OA23+
+    if (num <= 12) return 'Lectura';
+    if (num <= 22) return 'Escritura';
+    return 'Comunicación oral';
+  }
+  // 7°B–8°B: Lectura OA1–11, Escritura OA12–19, Comunicación oral OA20–23, Investigación OA24+
+  if (num <= 11) return 'Lectura';
+  if (num <= 19) return 'Escritura';
+  if (num <= 23) return 'Comunicación oral';
+  return 'Investigación';
 }
 
 interface Eje {
@@ -1184,8 +1204,8 @@ export default function NewPlannerPage() {
       seen.add(oa.codigo);
       return true;
     });
-    // Pre-seleccionar 1 OA por eje (Lectura, Escritura, Comunicación oral)
-    const EJES_ORDEN = ['Lectura', 'Escritura', 'Comunicación oral'];
+    // Pre-seleccionar 1 OA por eje
+    const EJES_ORDEN = ['Lectura', 'Escritura', 'Comunicación oral', 'Investigación'];
     const preselectedIds: (number | string)[] = [];
     for (const eje of EJES_ORDEN) {
       const oaForEje = uniqueOas.find((o: any) =>
@@ -2566,13 +2586,14 @@ export default function NewPlannerPage() {
                       </p>
                     </div>
                     <div className="space-y-3">
-                      {(['Lectura', 'Escritura', 'Comunicación oral'] as const).map(eje => {
+                      {(['Lectura', 'Escritura', 'Comunicación oral', 'Investigación'] as const).map(eje => {
                         const ejeOas = suggestedOAs.filter(oa => (oa.eje || getEjeFromCodigo(oa.codigo, grade)) === eje);
                         if (ejeOas.length === 0) return null;
                         const EJE_M: Record<string, { border: string; header: string; badge: string }> = {
                           'Lectura':           { border: 'border-violet-200', header: 'bg-violet-100 text-violet-700', badge: 'bg-violet-100 border-violet-200 text-violet-700' },
                           'Escritura':         { border: 'border-emerald-200', header: 'bg-emerald-100 text-emerald-700', badge: 'bg-emerald-100 border-emerald-200 text-emerald-700' },
                           'Comunicación oral': { border: 'border-amber-200', header: 'bg-amber-100 text-amber-700', badge: 'bg-amber-100 border-amber-200 text-amber-700' },
+                          'Investigación':     { border: 'border-blue-200', header: 'bg-blue-100 text-blue-700', badge: 'bg-blue-100 border-blue-200 text-blue-700' },
                         };
                         const s = EJE_M[eje];
                         return (
@@ -2639,8 +2660,9 @@ export default function NewPlannerPage() {
                             'Lectura':            { border: 'border-violet-200', header: 'bg-violet-100 text-violet-700', badge: 'bg-violet-600 border-violet-600 text-white', checked: 'border-violet-300 bg-violet-50/50' },
                             'Escritura':          { border: 'border-emerald-200', header: 'bg-emerald-100 text-emerald-700', badge: 'bg-emerald-600 border-emerald-600 text-white', checked: 'border-emerald-300 bg-emerald-50/50' },
                             'Comunicación oral':  { border: 'border-amber-200', header: 'bg-amber-100 text-amber-700', badge: 'bg-amber-600 border-amber-600 text-white', checked: 'border-amber-300 bg-amber-50/50' },
+                            'Investigación':      { border: 'border-blue-200', header: 'bg-blue-100 text-blue-700', badge: 'bg-blue-600 border-blue-600 text-white', checked: 'border-blue-300 bg-blue-50/50' },
                           };
-                          const EJES_ORDEN = ['Lectura', 'Escritura', 'Comunicación oral'];
+                          const EJES_ORDEN = ['Lectura', 'Escritura', 'Comunicación oral', 'Investigación'];
                           return EJES_ORDEN.map(eje => {
                             const ejeOas = oas.filter((oa: any) => (oa.eje || getEjeFromCodigo(oa.codigo, grade)) === eje);
                             if (ejeOas.length === 0) return null;

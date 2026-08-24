@@ -293,32 +293,52 @@ function extractTheme(text: string, max = 65): string {
   return first.slice(0, cut > 20 ? cut : max);
 }
 
-/** Determina el eje curricular — thresholds oficiales MINEDUC por grupo de curso */
-function getEjeDoc(codigo: string, nivel: string): 'Lectura' | 'Escritura' | 'Comunicación oral' {
+/** Determina el eje curricular — thresholds oficiales MINEDUC por grado (fallback cuando oa.eje no está disponible) */
+function getEjeDoc(codigo: string, nivel: string): 'Lectura' | 'Escritura' | 'Comunicación oral' | 'Investigación' {
   const num = parseInt(codigo.replace(/\D/g, '') || '0');
   if (nivel.includes('Medio')) {
-    // 1°M–2°M: Lectura OA1–9, Escritura OA10–18, Comunicación oral OA19+
-    if (num <= 9)  return 'Lectura';
+    // 1°M–2°M: Lectura OA1–11, Escritura OA12–18, Comunicación oral OA19–23, Investigación OA24+
+    if (num <= 11) return 'Lectura';
     if (num <= 18) return 'Escritura';
-    return 'Comunicación oral';
+    if (num <= 23) return 'Comunicación oral';
+    return 'Investigación';
   }
   const grade = parseInt(nivel.match(/(\d+)/)?.[1] ?? '5');
   if (grade === 1) {
-    // 1°B: Lectura OA1–12, Escritura OA13–17, Comunicación oral OA18+
+    // 1°B: Lectura OA1–12, Escritura OA13–16, Comunicación oral OA17+
     if (num <= 12) return 'Lectura';
-    if (num <= 17) return 'Escritura';
+    if (num <= 16) return 'Escritura';
     return 'Comunicación oral';
   }
-  if (grade <= 4) {
-    // 2°B–4°B: Lectura OA1–12, Escritura OA13–21, Comunicación oral OA22+
-    if (num <= 12) return 'Lectura';
+  if (grade === 2) {
+    // 2°B: Lectura OA1–11, Escritura OA12–21, Comunicación oral OA22+
+    if (num <= 11) return 'Lectura';
     if (num <= 21) return 'Escritura';
     return 'Comunicación oral';
   }
-  // 5°B–8°B: Lectura OA1–12, Escritura OA13–20, Comunicación oral OA21+
-  if (num <= 12) return 'Lectura';
-  if (num <= 20) return 'Escritura';
-  return 'Comunicación oral';
+  if (grade === 3) {
+    // 3°B: Lectura OA1–11, Escritura OA12–22, Comunicación oral OA23+
+    if (num <= 11) return 'Lectura';
+    if (num <= 22) return 'Escritura';
+    return 'Comunicación oral';
+  }
+  if (grade === 4) {
+    // 4°B: Lectura OA1–10, Escritura OA11–21, Comunicación oral OA22+
+    if (num <= 10) return 'Lectura';
+    if (num <= 21) return 'Escritura';
+    return 'Comunicación oral';
+  }
+  if (grade === 5 || grade === 6) {
+    // 5°B–6°B: Lectura OA1–12, Escritura OA13–22, Comunicación oral OA23+
+    if (num <= 12) return 'Lectura';
+    if (num <= 22) return 'Escritura';
+    return 'Comunicación oral';
+  }
+  // 7°B–8°B: Lectura OA1–11, Escritura OA12–19, Comunicación oral OA20–23, Investigación OA24+
+  if (num <= 11) return 'Lectura';
+  if (num <= 19) return 'Escritura';
+  if (num <= 23) return 'Comunicación oral';
+  return 'Investigación';
 }
 
 function truncate(text: string, max = 150): string {
@@ -431,16 +451,21 @@ export async function POST(req: NextRequest) {
     `hasta niveles de análisis, evaluación y creación, en coherencia con la Taxonomía de Bloom ` +
     `y el Programa de Estudio MINEDUC (${oaCodes}).`;
 
-  // ── Distribución de temas según posición del OA ──────────────────────────
-  // Derivar tema a partir del índice del OA en la lista (no el índice de clase)
-  function temaForOAIndex(oaIdx: number, totalOAs: number): string {
-    if (temas.length === 0) {
-      const ind = cleanInds[oaIdx % (cleanInds.length || 1)]
-        ?? { texto: 'Contenido de la unidad' };
-      return extractTheme(ind.texto, 65);
+  // ── Tema desde el texto del OA (no desde posición en temas[]) ───────────
+  // Cada OA tiene su propio foco: se extrae la primera cláusula de su texto oficial.
+  // Esto evita que OAs de Lectura reciban temas de Escritura/Comunicación oral.
+  function temaForOACodigo(codigo: string): string {
+    const oa = resolvedOAs.find(o => o.codigo === codigo);
+    if (oa?.texto && oa.texto.length > 10) {
+      return extractTheme(oa.texto, 65);
     }
-    const t = Math.round(oaIdx * (temas.length - 1) / Math.max(totalOAs - 1, 1));
-    return temas[Math.min(Math.max(t, 0), temas.length - 1)];
+    // Fallback a temas[] si el OA no tiene texto
+    const oaIdx = oaList.indexOf(codigo);
+    if (temas.length > 0) {
+      const t = Math.round(oaIdx * (temas.length - 1) / Math.max(oaList.length - 1, 1));
+      return temas[Math.min(Math.max(t, 0), temas.length - 1)];
+    }
+    return 'Contenido de la unidad';
   }
 
   // ── Secuencia de 27 clases ────────────────────────────────────────────────
@@ -463,8 +488,7 @@ export async function POST(req: NextRequest) {
     const oaCodigo  = oaForClass(i);
     const oaIndex   = oaList.indexOf(oaCodigo);
     const bloom     = bloomForOA(oaIndex >= 0 ? oaIndex : i, oaList.length || 1);
-    const effectiveOAIdx = oaIndex >= 0 ? oaIndex : i;
-    const tema      = temaForOAIndex(effectiveOAIdx, oaList.length || 1);
+    const tema      = temaForOACodigo(oaCodigo);
     clases.push({
       numero:   i + 1,
       semana:   Math.ceil((i + 1) / 2),
@@ -528,8 +552,9 @@ export async function POST(req: NextRequest) {
     'Lectura':           { label: 'LECTURA',           code: '4C1D95', bg: 'EDE9FE' },
     'Escritura':         { label: 'ESCRITURA',         code: '065F46', bg: 'D1FAE5' },
     'Comunicación oral': { label: 'COMUNICACIÓN ORAL', code: '92400E', bg: 'FEF3C7' },
+    'Investigación':     { label: 'INVESTIGACIÓN',     code: '1E40AF', bg: 'DBEAFE' },
   };
-  const EJES_ORDEN = ['Lectura', 'Escritura', 'Comunicación oral'] as const;
+  const EJES_ORDEN = ['Lectura', 'Escritura', 'Comunicación oral', 'Investigación'] as const;
   for (const eje of EJES_ORDEN) {
     const ejeOAs = resolvedOAs.filter(oa => (oa.eje || getEjeDoc(oa.codigo, grade)) === eje);
     if (ejeOAs.length === 0) continue;
