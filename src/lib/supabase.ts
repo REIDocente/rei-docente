@@ -307,6 +307,15 @@ export const supabase = new Proxy(realSupabase, {
             }
             return makeMockQueryBuilder(list, table);
           }
+          if (table === 'cursos_docente') {
+            let list: any[] = [];
+            if (isClient) {
+              try {
+                list = JSON.parse(window.localStorage.getItem('mock_cursos_docente') || '[]');
+              } catch (e) {}
+            }
+            return makeMockQueryBuilder(list, table);
+          }
           return makeMockQueryBuilder([], table);
         };
       }
