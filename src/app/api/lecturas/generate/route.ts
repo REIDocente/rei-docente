@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
         message: "Ya generaste la planificación de lectura domiciliaria disponible para este libro durante la prueba piloto. Puedes verla y descargarla desde tus recursos generados.",
         reason: "pilot_generation_limit",
         tipo: "lecturas_generated",
-        limit: 1,
+        limit: 2,
         current: 1
       },
       { status: 403 }
@@ -119,7 +119,7 @@ export async function POST(req: NextRequest) {
           message: 'Alcanzaste el límite del plan piloto. Has utilizado todas las generaciones disponibles para este módulo.',
           reason: guard.reason,
           tipo: 'lecturas_generated',
-          limit: isActive ? 999999 : 1,
+          limit: isActive ? 999999 : 2,
           current: uniqueBooksCount,
           plan_status: guard.profile?.plan_status,
           renewal_date: guard.renewalDate,

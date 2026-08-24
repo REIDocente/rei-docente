@@ -1073,7 +1073,7 @@ export async function POST(req: NextRequest) {
         message: 'Alcanzaste el límite del plan piloto. Has utilizado todas las generaciones disponibles para este módulo.',
         reason: guard.reason,
         tipo: 'guides_generated',
-        limit: isActive ? 12 : 5,
+        limit: isActive ? 12 : 7,
         current: guard.profile?.guides_generated ?? 0,
         plan_status: guard.profile?.plan_status,
         renewal_date: guard.renewalDate,

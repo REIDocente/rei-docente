@@ -483,7 +483,7 @@ export async function POST(req: NextRequest) {
               message: errorMsg,
               reason: guard.reason,
               tipo: 'planifications_generated',
-              limit: isActive ? 24 : 5,
+              limit: isActive ? 24 : 7,
               current: guard.profile?.planifications_generated ?? 0,
               plan_status: guard.profile?.plan_status,
               renewal_date: guard.renewalDate,

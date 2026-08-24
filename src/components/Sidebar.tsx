@@ -17,7 +17,8 @@ import {
   X,
   Sparkle,
   BookMarked,
-  Layers
+  Layers,
+  ClipboardCheck
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -75,6 +76,7 @@ export default function Sidebar({ sidebarOpen = false, setSidebarOpen }: Sidebar
     { href: '/planner/new', label: 'Kit de Clase', icon: PlusCircle, id: 'kit' },
     { href: '/play', label: 'REI Play', icon: Gamepad2, id: 'play' },
     { href: '/evaluaciones', label: 'Evaluaciones y Rúbricas', icon: FileText, id: 'evaluaciones' },
+    { href: '/evaluador', label: 'REI Evaluador IA', icon: ClipboardCheck, id: 'evaluador' },
     { href: '/guias', label: 'Guías de Aprendizaje', icon: BookOpen, id: 'guias' },
     { href: '/lecturas', label: 'REI Lecturas', icon: BookMarked, id: 'lecturas' },
     { href: '/experiencias', label: 'Experiencias REI', icon: Layers, id: 'experiencias' },
@@ -152,11 +154,7 @@ export default function Sidebar({ sidebarOpen = false, setSidebarOpen }: Sidebar
             <nav className="space-y-1.5">
               <Link 
                 href="/#biblioteca"
-                className={`flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-200 border ${
-                  pathname === '/' && typeof window !== 'undefined' && window.location.hash === '#biblioteca'
-                    ? 'bg-gradient-to-r from-violet-50/70 via-purple-50/70 to-pink-50/40 border-violet-100/50 text-violet-750 font-bold'
-                    : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50 font-semibold'
-                }`}
+                className="flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-200 border border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50 font-semibold"
                 onClick={() => setSidebarOpen && setSidebarOpen(false)}
               >
                 <Library className="w-4.5 h-4.5 text-slate-450" />
@@ -164,11 +162,7 @@ export default function Sidebar({ sidebarOpen = false, setSidebarOpen }: Sidebar
               </Link>
               <Link 
                 href="/#configuracion"
-                className={`flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-200 border ${
-                  pathname === '/' && typeof window !== 'undefined' && window.location.hash === '#configuracion'
-                    ? 'bg-gradient-to-r from-violet-50/70 via-purple-50/70 to-pink-50/40 border-violet-100/50 text-violet-750 font-bold'
-                    : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50 font-semibold'
-                }`}
+                className="flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-200 border border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50 font-semibold"
                 onClick={() => setSidebarOpen && setSidebarOpen(false)}
               >
                 <Settings className="w-4.5 h-4.5 text-slate-450" />
@@ -185,19 +179,19 @@ export default function Sidebar({ sidebarOpen = false, setSidebarOpen }: Sidebar
             <div className="space-y-1.5 text-[10px] font-bold text-slate-600">
               <div className="flex justify-between">
                 <span>Planificaciones:</span>
-                <span className="text-slate-800">{profileData.planifications_generated} de 5</span>
+                <span className="text-slate-800">{profileData.planifications_generated} de 7</span>
               </div>
               <div className="flex justify-between">
                 <span>Evaluaciones:</span>
-                <span className="text-slate-800">{profileData.evaluations_generated} de 5</span>
+                <span className="text-slate-800">{profileData.evaluations_generated} de 7</span>
               </div>
               <div className="flex justify-between">
                 <span>Guías:</span>
-                <span className="text-slate-800">{profileData.guides_generated} de 5</span>
+                <span className="text-slate-800">{profileData.guides_generated} de 7</span>
               </div>
               <div className="flex justify-between">
                 <span>Lectura domic.:</span>
-                <span className="text-slate-800">{profileData.lecturas_generated} de 1</span>
+                <span className="text-slate-800">{profileData.lecturas_generated} de 2</span>
               </div>
             </div>
           </div>

@@ -31,7 +31,8 @@ import {
   Bell,
   MoreVertical,
   ExternalLink,
-  Gamepad2
+  Gamepad2,
+  ClipboardCheck
 } from 'lucide-react';
 import Link from 'next/link';
 import Sidebar from '@/components/Sidebar';
@@ -65,6 +66,7 @@ const cardIcons: Record<string, React.ComponentType<{ className?: string }>> = {
   guias: BookOpen,
   gamificacion: Gamepad2,
   experiencias: Layers,
+  evaluador: ClipboardCheck,
 };
 
 const toolIconPaths: Record<string, string> = {
@@ -81,6 +83,7 @@ const MODULE_COLORS: Record<string, { color: string; bg: string; label: string }
   'play':         { color: '#10B981', bg: '#ECFDF5', label: 'verde'   },
   'evaluaciones': { color: '#F97316', bg: '#FFF7ED', label: 'naranjo' },
   'guias':        { color: '#3B82F6', bg: '#EFF6FF', label: 'azul'    },
+  'evaluador':    { color: '#059669', bg: '#ECFDF5', label: 'esmeralda'},
   'lecturas':     { color: '#EC4899', bg: '#FDF2F8', label: 'rosado'  },
   'experiencias': { color: '#F59E0B', bg: '#FFFBEB', label: 'amarillo'},
 };
@@ -226,6 +229,14 @@ export default function DashboardPage() {
       link: '/evaluaciones',
     },
     {
+      id: 'evaluador',
+      iconKey: 'evaluador',
+      title: 'REI Evaluador IA',
+      description: 'Hojas OMR imprimibles, escáner con cámara, corrección automática y análisis RTI por OA.',
+      enabled: true,
+      link: '/evaluador',
+    },
+    {
       id: 'guias',
       iconKey: 'guias',
       title: 'Guías de Aprendizaje',
@@ -362,22 +373,7 @@ export default function DashboardPage() {
                     </p>
                   </div>
                   <div className="hidden sm:flex shrink-0 mr-4 items-center justify-center relative w-36 h-24">
-                    <img
-                      src="/assets/dashboard/welcome_illustration.png"
-                      alt="Bienvenida"
-                      className="w-full h-full object-contain rounded-2xl z-10 hidden"
-                      onLoad={(e) => {
-                        e.currentTarget.classList.remove('hidden');
-                        const fallbackEl = e.currentTarget.nextElementSibling as HTMLElement;
-                        if (fallbackEl) fallbackEl.style.display = 'none';
-                      }}
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                        const fallbackEl = e.currentTarget.nextElementSibling as HTMLElement;
-                        if (fallbackEl) fallbackEl.style.display = 'flex';
-                      }}
-                    />
-                    <div className="w-16 h-16 rounded-full bg-white border flex items-center justify-center shrink-0 shadow-sm animate-pulse" style={{ borderColor: '#E5E7EB' }}>
+                    <div className="w-16 h-16 rounded-full bg-white border flex items-center justify-center shrink-0 shadow-sm" style={{ borderColor: '#E5E7EB' }}>
                       <Sparkles className="w-8 h-8" style={{ color: '#6D28F5' }} />
                     </div>
                   </div>

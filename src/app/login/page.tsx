@@ -8,7 +8,11 @@ import {
   Heart, X, Calendar, Users, Clock, Star, GraduationCap
 } from 'lucide-react';
 
-const MAX_TRIAL_USERS = Number(process.env.NEXT_PUBLIC_MAX_TRIAL_USERS || '20');
+const MAX_TRIAL_USERS = Number(process.env.NEXT_PUBLIC_MAX_TRIAL_USERS || '14');
+
+// Ventana de registro de la prueba piloto (solo bloquea nuevos registros, nunca el login)
+const PILOT_START = new Date('2026-07-23T00:00:00-04:00');
+const PILOT_END   = new Date('2026-07-29T23:59:59-04:00');
 
 export default function LoginPage() {
   const router = useRouter();
@@ -45,9 +49,15 @@ export default function LoginPage() {
           router.push('/');
         }
       } else if (mode === 'signup') {
+        // Validación 1: ventana de registro 23–29 de julio de 2026
+        const now = new Date();
+        if (now < PILOT_START || now > PILOT_END) {
+          throw new Error('El período de inscripción de la prueba piloto de REÍ Docente ha finalizado.');
+        }
+        // Validación 2: cupo máximo de docentes
         const { data: count, error: countError } = await supabase.rpc('get_user_profile_count');
         if (!countError && count !== null && count >= MAX_TRIAL_USERS) {
-          throw new Error(`El período de prueba ha alcanzado el cupo máximo de ${MAX_TRIAL_USERS} docentes.`);
+          throw new Error('Los cupos de la prueba piloto de REÍ Docente ya fueron completados. Muchas gracias por tu interés.');
         }
         const { data, error: authError } = await supabase.auth.signUp({
           email,

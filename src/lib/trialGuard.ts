@@ -36,20 +36,20 @@ export interface TrialGuardResult {
 
 const TRIAL_DAYS = 7;
 
-// Límites plan piloto (20 docentes)
+// Límites plan piloto (7 docentes, 23–29 jul 2026)
 // Límites por columna — cualquier columna no listada es ilimitada (999999)
 export const TRIAL_LIMITS: Record<string, number> = {
-  planifications_generated:      5,
-  evaluations_generated:         5,
-  guides_generated:              5,
+  planifications_generated:      7,
+  evaluations_generated:         7,
+  guides_generated:              7,
   presentations_generated:       999999,
   images_generated:              999999,
   gamified_activities_generated: 999999,
   visual_resources_generated:    999999,
   juegos_generated:              0, // Bloqueado en piloto
-  lecturas_generated:            1,
+  lecturas_generated:            2,
   rei_play_count:                0, // Bloqueado en piloto
-  rei_lecturas_count:            1,
+  rei_lecturas_count:            2,
   experiencias_rei_count:        0, // Bloqueado en piloto
 };
 
