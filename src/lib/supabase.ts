@@ -280,6 +280,33 @@ export const supabase = new Proxy(realSupabase, {
             }
             return makeMockQueryBuilder(list, table);
           }
+          if (table === 'analisis_evaluaciones') {
+            let list: any[] = [];
+            if (isClient) {
+              try {
+                list = JSON.parse(window.localStorage.getItem('mock_analisis_evaluaciones') || '[]');
+              } catch (e) {}
+            }
+            return makeMockQueryBuilder(list, table);
+          }
+          if (table === 'resultados_estudiantes') {
+            let list: any[] = [];
+            if (isClient) {
+              try {
+                list = JSON.parse(window.localStorage.getItem('mock_resultados_estudiantes') || '[]');
+              } catch (e) {}
+            }
+            return makeMockQueryBuilder(list, table);
+          }
+          if (table === 'usage_counters') {
+            let list: any[] = [];
+            if (isClient) {
+              try {
+                list = JSON.parse(window.localStorage.getItem('mock_usage_counters') || '[]');
+              } catch (e) {}
+            }
+            return makeMockQueryBuilder(list, table);
+          }
           return makeMockQueryBuilder([], table);
         };
       }
