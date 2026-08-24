@@ -70,7 +70,7 @@ export const gameEngines: GameEngine[] = [
     ideal_para: 'Vocabulario y conceptos clave',
     duraciones: [45, 90],
     modalidades: ['individual', 'parejas'],
-    dificultades: ['básica', 'media'],
+    dificultades: ['básica', 'media', 'desafiante'],
     estructura: [
       { id: 'cartones', nombre: 'Cartones de Bingo', descripcion: '6 cartones diferentes de 4x4 con conceptos', es_solo_docente: false },
       { id: 'instrucciones', nombre: 'Instrucciones', descripcion: 'Reglas del juego para alumnos', es_solo_docente: false },
@@ -81,7 +81,7 @@ export const gameEngines: GameEngine[] = [
   },
   {
     id: 'trivia',
-    nombre: 'Trivia',
+    nombre: 'Trivial',
     emoji: '❓',
     descripcion: 'Preguntas por categorías con sistema de puntos por equipo.',
     ideal_para: 'Repaso rápido de contenidos',
@@ -133,7 +133,7 @@ export const gameEngines: GameEngine[] = [
   },
   {
     id: 'clue',
-    nombre: 'CLUE',
+    nombre: 'MISTERIO REI',
     emoji: '🎲',
     descripcion: 'Juego de deducción tipo Cluedo. Los alumnos identifican al culpable, el lugar y la evidencia usando pistas del texto o del OA.',
     ideal_para: 'Lectura domiciliaria, análisis de personajes, comprensión profunda',

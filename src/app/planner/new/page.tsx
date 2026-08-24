@@ -42,16 +42,16 @@ import Sidebar from '@/components/Sidebar';
 
 const UNIT_TITLES: Record<string, Record<string, string>> = {
   '5° Básico': {
-    'Unidad 1': 'Unidad 1: La unión hace la fuerza',
-    'Unidad 2': 'Unidad 2: Emociones que sanan',
-    'Unidad 3': 'Unidad 3: Coexistir en armonía',
-    'Unidad 4': 'Unidad 4: Un mundo en movimiento',
+    'Unidad 1': 'Unidad 1',
+    'Unidad 2': 'Unidad 2',
+    'Unidad 3': 'Unidad 3',
+    'Unidad 4': 'Unidad 4',
   },
   '6° Básico': {
-    'Unidad 1': 'Unidad 1: El poder de la aventura, la imaginación y la creatividad',
-    'Unidad 2': 'Unidad 2: El medioambiente y su protección',
-    'Unidad 3': 'Unidad 3: El ser humano y su vínculo con el cosmos',
-    'Unidad 4': 'Unidad 4: Respetar las diferencias y la igualdad de derechos',
+    'Unidad 1': 'Unidad 1',
+    'Unidad 2': 'Unidad 2',
+    'Unidad 3': 'Unidad 3',
+    'Unidad 4': 'Unidad 4',
   },
   '7° Básico': {
     'Unidad 1': 'Unidad 1: El héroe en distintas épocas',
@@ -72,16 +72,16 @@ const UNIT_TITLES: Record<string, Record<string, string>> = {
     'Unidad 7': 'Unidad 7: Medios de comunicación',
   },
   '1° Medio': {
-    'Unidad 1': 'Unidad 1: Libertad',
-    'Unidad 2': 'Unidad 2: Ciudadanos',
-    'Unidad 3': 'Unidad 3: Relaciones humanas',
-    'Unidad 4': 'Unidad 4: Sociedad',
+    'Unidad 1': 'Unidad 1: La libertad como tema literario',
+    'Unidad 2': 'Unidad 2: Ciudadanos y opinión',
+    'Unidad 3': 'Unidad 3: Relaciones humanas en el teatro y la literatura',
+    'Unidad 4': 'Unidad 4: Comunicación y sociedad',
   },
   '2° Medio': {
-    'Unidad 1': 'Unidad 1: Ausencia',
-    'Unidad 2': 'Unidad 2: Ciudadanía',
-    'Unidad 3': 'Unidad 3: Lo divino',
-    'Unidad 4': 'Unidad 4: Poder',
+    'Unidad 1': 'Unidad 1: Sobre la ausencia: exilio, migración e identidad',
+    'Unidad 2': 'Unidad 2: Ciudadanía y trabajo',
+    'Unidad 3': 'Unidad 3: Lo divino y lo humano',
+    'Unidad 4': 'Unidad 4: Poder y ambición',
   }
 };
 
@@ -108,7 +108,36 @@ interface ObjetivoAprendizaje {
   codigo: string;
   texto: string;
   tipo: string;
+  eje?: string;
   indicadores_evaluacion: Indicador[];
+}
+
+/** Eje curricular desde código de OA y nivel — thresholds oficiales MINEDUC por grupo de curso */
+function getEjeFromCodigo(codigo: string, nivel: string): string {
+  const num = parseInt(codigo.replace(/\D/g, '') || '0');
+  if (nivel.includes('Medio')) {
+    // 1°M–2°M: Lectura OA1–9, Escritura OA10–18, Comunicación oral OA19+
+    if (num <= 9)  return 'Lectura';
+    if (num <= 18) return 'Escritura';
+    return 'Comunicación oral';
+  }
+  const grade = parseInt(nivel.match(/(\d+)/)?.[1] ?? '5');
+  if (grade === 1) {
+    // 1°B: Lectura OA1–12, Escritura OA13–17, Comunicación oral OA18+
+    if (num <= 12) return 'Lectura';
+    if (num <= 17) return 'Escritura';
+    return 'Comunicación oral';
+  }
+  if (grade <= 4) {
+    // 2°B–4°B: Lectura OA1–12, Escritura OA13–21, Comunicación oral OA22+
+    if (num <= 12) return 'Lectura';
+    if (num <= 21) return 'Escritura';
+    return 'Comunicación oral';
+  }
+  // 5°B–8°B: Lectura OA1–12, Escritura OA13–20, Comunicación oral OA21+
+  if (num <= 12) return 'Lectura';
+  if (num <= 20) return 'Escritura';
+  return 'Comunicación oral';
 }
 
 interface Eje {
@@ -926,6 +955,14 @@ export default function NewPlannerPage() {
   const [leccionesList, setLeccionesList] = useState<any[]>([]);
   const [selectedLeccionId, setSelectedLeccionId] = useState<string | number>('');
   const [selectedOaIds, setSelectedOaIds] = useState<(number | string)[]>([]);
+  const [planificationType, setPlanificationType] = useState<'corto' | 'mediano'>('corto');
+  const [selectedIndicadorIds, setSelectedIndicadorIds] = useState<number[]>([]);
+  const [customIndicadores, setCustomIndicadores] = useState<string[]>([]);
+  const [customIndicadorInput, setCustomIndicadorInput] = useState('');
+  const [medianoDownloading, setMedianoDownloading] = useState(false);
+  // Temas/bloques de la unidad (desde JSON curricular)
+  const [temasList, setTemasList] = useState<string[]>([]);
+  const [selectedTema, setSelectedTema] = useState<string>('');
 
   const basalesOAs = suggestedOAs.filter(oa => oaBasales.includes(oa.codigo));
   const compOAs = suggestedOAs.filter(oa => oaComplementarios.includes(oa.codigo));
@@ -1054,19 +1091,47 @@ export default function NewPlannerPage() {
     }
   }, []);
 
-  const loadLecciones = useCallback(async (lvl: string, uni: string) => {
+  const loadLecciones = useCallback(async (lvl: string, uni: string, tipo?: string) => {
     try {
       setLeccionesList([]);
       setSelectedLeccionId('');
       setSelectedOaIds([]);
-      
+      setSuggestedOAs([]);
+      setTemasList([]);
+      setSelectedTema('');
+
       const match = uni.match(/\d+/);
       const unitNum = match ? match[0] : uni;
+
+      // Cargar temas del JSON curricular
+      const temasRes = await fetch(`/api/curriculum/temas?nivel=${encodeURIComponent(lvl)}&unidad=${encodeURIComponent(unitNum)}`);
+      if (temasRes.ok) {
+        const temasData = await temasRes.json();
+        setTemasList(temasData.temas || []);
+      }
 
       const res = await fetch(`/api/curriculum/lecciones?nivel=${encodeURIComponent(lvl)}&unidad=${encodeURIComponent(unitNum)}`);
       if (res.ok) {
         const data = await res.json();
         setLeccionesList(data || []);
+
+        // Mediano plazo: auto-cargar TODOS los OAs de TODAS las lecciones
+        if ((tipo ?? 'corto') === 'mediano' && data?.length > 0) {
+          const allOas = (data as any[]).flatMap(l => l.oas || []);
+          const seen = new Set<string>();
+          const uniqueOas = allOas.filter((oa: any) => {
+            if (seen.has(oa.codigo)) return false;
+            seen.add(oa.codigo);
+            return true;
+          });
+          setSuggestedOAs(uniqueOas);
+          setSelectedOaIds(uniqueOas.map((o: any) => o.id));
+          setOaBasales(uniqueOas.map((o: any) => o.codigo));
+          setManualTheme(uni);
+          setThemeMode('manual');
+          setIsRealLesson(true);
+          setValidatedOA(true);
+        }
       }
     } catch (err) {
       console.warn('Error loading lessons:', err);
@@ -1085,12 +1150,76 @@ export default function NewPlannerPage() {
       setManualTheme(leccion.titulo);
       setThemeMode('manual');
       setIsRealLesson(true);
+      // Pre-seleccionar primer indicador de cada OA
+      const preIndIds: number[] = [];
+      for (const oa of oas) {
+        if (oa.indicadores_evaluacion?.length > 0) {
+          preIndIds.push(oa.indicadores_evaluacion[0].id);
+        }
+      }
+      setSelectedIndicadorIds(preIndIds);
+      setCustomIndicadores([]);
     } else {
       setSelectedOaIds([]);
       setSuggestedOAs([]);
       setOaBasales([]);
       setOaComplementarios([]);
+      setSelectedIndicadorIds([]);
     }
+  };
+
+  const handleTemaChange = (tema: string) => {
+    setSelectedTema(tema);
+    if (!tema) {
+      setSelectedOaIds([]);
+      setSuggestedOAs([]);
+      setOaBasales([]);
+      return;
+    }
+    // Obtener TODOS los OAs de la unidad (deduplicados) para mostrarlos en el selector
+    const allOas = leccionesList.flatMap((l: any) => l.oas || []);
+    const seen = new Set<string>();
+    const uniqueOas = allOas.filter((oa: any) => {
+      if (seen.has(oa.codigo)) return false;
+      seen.add(oa.codigo);
+      return true;
+    });
+    // Pre-seleccionar 1 OA por eje (Lectura, Escritura, Comunicación oral)
+    const EJES_ORDEN = ['Lectura', 'Escritura', 'Comunicación oral'];
+    const preselectedIds: (number | string)[] = [];
+    for (const eje of EJES_ORDEN) {
+      const oaForEje = uniqueOas.find((o: any) =>
+        (o.eje || getEjeFromCodigo(o.codigo, grade)) === eje
+      );
+      if (oaForEje && !preselectedIds.includes(oaForEje.id)) {
+        preselectedIds.push(oaForEje.id);
+      }
+    }
+    // Fallback si no hay eje disponible: primeros 3
+    if (preselectedIds.length === 0) {
+      uniqueOas.slice(0, 3).forEach((o: any) => preselectedIds.push(o.id));
+    }
+    // Pre-seleccionar primer indicador de cada OA preseleccionado
+    const preIndIds: number[] = [];
+    for (const oaId of preselectedIds) {
+      const oa = uniqueOas.find((o: any) => o.id === oaId);
+      if (oa?.indicadores_evaluacion?.length > 0) {
+        preIndIds.push(oa.indicadores_evaluacion[0].id);
+      }
+    }
+    setSuggestedOAs(uniqueOas); // Todos los OAs de la unidad (para el display completo)
+    setSelectedOaIds(preselectedIds); // 1 pre-seleccionado por eje
+    setSelectedIndicadorIds(preIndIds);
+    setCustomIndicadores([]);
+    setOaBasales(preselectedIds.map(id => {
+      const oa = uniqueOas.find((o: any) => o.id === id);
+      return oa?.codigo || '';
+    }).filter(Boolean));
+    setOaComplementarios([]);
+    setManualTheme(tema);
+    setThemeMode('manual');
+    setIsRealLesson(true);
+    setValidatedOA(true);
   };
 
   const handleOaToggle = (oaId: number | string, checked: boolean) => {
@@ -1098,17 +1227,43 @@ export default function NewPlannerPage() {
     if (checked) {
       if (!nextOaIds.includes(oaId)) {
         nextOaIds.push(oaId);
+        // Auto pre-seleccionar primer indicador del OA (corto plazo)
+        if (planificationType === 'corto') {
+          const oa = suggestedOAs.find((o: any) => o.id === oaId);
+          const inds: Indicador[] = oa?.indicadores_evaluacion ?? [];
+          if (inds.length > 0) {
+            const firstId = inds[0].id;
+            setSelectedIndicadorIds(prev => prev.includes(firstId) ? prev : [...prev, firstId]);
+          }
+        }
       }
     } else {
       nextOaIds = nextOaIds.filter(id => id !== oaId);
+      // Quitar los indicadores de este OA (corto plazo)
+      if (planificationType === 'corto') {
+        const oa = suggestedOAs.find((o: any) => o.id === oaId);
+        const inds: Indicador[] = oa?.indicadores_evaluacion ?? [];
+        if (inds.length > 0) {
+          const oaIndIds = new Set<number>(inds.map((i) => i.id));
+          setSelectedIndicadorIds(prev => prev.filter(id => !oaIndIds.has(id)));
+        }
+      }
     }
     setSelectedOaIds(nextOaIds);
 
-    const leccion = leccionesList.find(l => String(l.id) === String(selectedLeccionId));
-    if (leccion && leccion.oas) {
-      const matched = (leccion.oas as any[]).filter(oa => nextOaIds.includes(oa.id));
-      setSuggestedOAs(matched);
-      setOaBasales(matched.map(oa => oa.codigo));
+    if (selectedTema) {
+      // Modo bloque: suggestedOAs ya tiene TODOS los OAs de la unidad; solo actualizar basales
+      setOaBasales(nextOaIds.map(id => {
+        const oa = suggestedOAs.find((o: any) => o.id === id);
+        return oa?.codigo || '';
+      }).filter(Boolean));
+    } else {
+      const leccion = leccionesList.find(l => String(l.id) === String(selectedLeccionId));
+      if (leccion && leccion.oas) {
+        const matched = (leccion.oas as any[]).filter(oa => nextOaIds.includes(oa.id));
+        setSuggestedOAs(matched);
+        setOaBasales(matched.map(oa => oa.codigo));
+      }
     }
   };
 
@@ -1134,9 +1289,43 @@ export default function NewPlannerPage() {
       setOaBasales([]);
       setOaComplementarios([]);
       setIsRealLesson(false);
-      loadLecciones(grade, unit);
+      setSelectedLeccionId('');
+      setSelectedOaIds([]);
+      loadLecciones(grade, unit, planificationType);
     }
-  }, [grade, unit, loadLecciones]);
+  }, [grade, unit, planificationType, loadLecciones]);
+
+  // Al cambiar tipo, recargar OAs según el modo
+  useEffect(() => {
+    if (grade && unit && leccionesList.length > 0) {
+      if (planificationType === 'mediano') {
+        const allOas = leccionesList.flatMap((l: any) => l.oas || []);
+        const seen = new Set<string>();
+        const uniqueOas = allOas.filter((oa: any) => {
+          if (seen.has(oa.codigo)) return false;
+          seen.add(oa.codigo);
+          return true;
+        });
+        setSuggestedOAs(uniqueOas);
+        setSelectedOaIds(uniqueOas.map((o: any) => o.id));
+        setOaBasales(uniqueOas.map((o: any) => o.codigo));
+        setManualTheme(unit);
+        setThemeMode('manual');
+        setIsRealLesson(true);
+        setValidatedOA(true);
+        setSelectedLeccionId('');
+      } else {
+        // Corto: limpiar selección para que el docente elija lección
+        setSuggestedOAs([]);
+        setSelectedOaIds([]);
+        setOaBasales([]);
+        setSelectedLeccionId('');
+        setValidatedOA(true);
+      }
+      setSelectedIndicadorIds([]);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [planificationType]);
 
 
   // Auth check + fetch courses
@@ -1411,9 +1600,64 @@ export default function NewPlannerPage() {
     }
   };
 
+  // ── Mediano plazo: genera Word sin Claude ──────────────────────────────────
+  const handleSubmitMediano = async () => {
+    if (!user) return;
+    if (suggestedOAs.length === 0) {
+      setError('Selecciona al menos un OA para la planificación de mediano plazo.');
+      return;
+    }
+    setError(null);
+    setMedianoDownloading(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      const unitNum = parseInt((unit || 'Unidad 1').replace(/\D+/g, '')) || 1;
+      const unidadNombreCompleto = getFullUnitName(grade, unit) || unit;
+      const allIndicadores = suggestedOAs.flatMap(oa =>
+        (oa.indicadores_evaluacion || []).map(ind => ({ oaCodigo: oa.codigo, texto: ind.texto }))
+      );
+      const resp = await fetch('/api/planner/mediano', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          grade,
+          unit,
+          unitNum,
+          unidadNombre: unidadNombreCompleto,
+          oas: suggestedOAs.map(oa => ({ codigo: oa.codigo, texto: oa.texto, eje: oa.eje || getEjeFromCodigo(oa.codigo, grade) })),
+          indicadores: allIndicadores,
+        }),
+      });
+      if (!resp.ok) throw new Error('Error generando planificación de mediano plazo');
+      const blob = await resp.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Planificacion_Mediano_${grade.replace(/[°\s]/g, '')}_${unit.replace(/\s/g, '')}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err: any) {
+      setError(err.message || 'Error generando planificación de mediano plazo');
+    } finally {
+      setMedianoDownloading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
+
+    // Mediano plazo: ruta separada sin Claude
+    if (planificationType === 'mediano') {
+      await handleSubmitMediano();
+      return;
+    }
 
     const themeText = themeMode === 'select' ? selectedTheme : manualTheme;
     if (!themeText) {
@@ -1442,15 +1686,32 @@ export default function NewPlannerPage() {
       formData.append('oa_basales_json', JSON.stringify(oaBasales));
       formData.append('oa_complementarios_json', JSON.stringify(oaComplementarios));
       
-      const oasCodigos = suggestedOAs.map((o) => o.codigo).join(', ');
-      const oasTextos = suggestedOAs.map((o) => `${o.codigo}: ${o.texto}`).join('\n');
+      // Solo los OAs que el docente marcó (no todos los de la unidad)
+      const selectedOasObjs = suggestedOAs.filter((o: any) => selectedOaIds.includes(o.id));
+      const oasCodigos = selectedOasObjs.map((o) => o.codigo).join(', ');
+      const oasTextos = selectedOasObjs.map((o) => `${o.codigo}: ${o.texto}`).join('\n');
       formData.append('oa_codigo', oasCodigos);
       formData.append('oa_texto', oasTextos);
-      formData.append('oa_eje', 'Lectura'); // Main default axis
-      
-      const allIndicators = suggestedOAs.flatMap(o => (o.indicadores_evaluacion || []).map(i => i.texto));
-      formData.append('indicadores_json', JSON.stringify(allIndicators));
-      formData.append('learningObjective', `${oasCodigos} — ${suggestedOAs.map(o => o.texto).join(' | ')}`);
+      // Eje principal: primer eje entre los OAs seleccionados
+      const firstEje = selectedOasObjs.length > 0
+        ? (selectedOasObjs[0].eje || getEjeFromCodigo(selectedOasObjs[0].codigo, grade))
+        : 'Lectura';
+      formData.append('oa_eje', firstEje);
+
+      // Corto plazo: indicadores elegidos por el docente (sin límite) + personalizados
+      const selectedMineduc = selectedIndicadorIds.length > 0
+        ? selectedOasObjs.flatMap((o: any) =>
+            (o.indicadores_evaluacion || [])
+              .filter((i: any) => selectedIndicadorIds.includes(i.id))
+              .map((i: any) => i.texto)
+          )
+        : selectedOasObjs.flatMap((o: any) =>
+            (o.indicadores_evaluacion || []).slice(0, 1).map((i: any) => i.texto)
+          );
+      const cortoPlazoIndicators = [...selectedMineduc, ...customIndicadores];
+      formData.append('indicadores_json', JSON.stringify(cortoPlazoIndicators));
+      formData.append('planning_type', 'corto');
+      formData.append('learningObjective', `${oasCodigos} — ${selectedOasObjs.map(o => o.texto).join(' | ')}`);
 
       formData.append('planning_scope', planningScope);
       formData.append('duracion_bloque_min', '90');
@@ -1644,8 +1905,8 @@ export default function NewPlannerPage() {
           throw new Error('No se recibió la planificación completa.');
         }
 
-        // Save in Supabase
-        const learningObjectiveForDB = `${suggestedOAs.map(o => o.codigo).join(', ')} — ${suggestedOAs.map(o => o.texto).join(' | ')}`;
+        // Save in Supabase — solo los OAs que el docente marcó
+        const learningObjectiveForDB = `${selectedOasObjs.map((o: any) => o.codigo).join(', ')} — ${selectedOasObjs.map((o: any) => o.texto).join(' | ')}`;
         const { reading_level_eval, ...contentOnly } = finalPlanJson;
 
         const { data: savedData, error: dbError } = await supabase
@@ -2144,7 +2405,40 @@ export default function NewPlannerPage() {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                
+
+                {/* 0. Tipo de Planificación */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">
+                    Tipo de Planificación
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {([
+                      { key: 'corto' as const, label: 'Corto plazo', desc: '1 sesión de 90 min', icon: '📌' },
+                      { key: 'mediano' as const, label: 'Mediano plazo', desc: 'Unidad completa (~24–30 clases)', icon: '📅' },
+                    ] as const).map(opt => (
+                      <button
+                        key={opt.key}
+                        type="button"
+                        onClick={() => { setPlanificationType(opt.key); setSelectedIndicadorIds([]); }}
+                        className={`flex flex-col items-start gap-1 p-3.5 rounded-2xl border-2 text-left transition-all ${
+                          planificationType === opt.key
+                            ? 'border-violet-500 bg-violet-50'
+                            : 'border-slate-200 bg-white hover:border-slate-300'
+                        }`}
+                      >
+                        <span className="text-base">{opt.icon}</span>
+                        <span className={`text-xs font-extrabold ${planificationType === opt.key ? 'text-violet-700' : 'text-slate-700'}`}>{opt.label}</span>
+                        <span className="text-[10px] text-slate-500 leading-relaxed font-medium">{opt.desc}</span>
+                      </button>
+                    ))}
+                  </div>
+                  {planificationType === 'mediano' && (
+                    <p className="text-[10px] text-violet-600 font-semibold bg-violet-50 border border-violet-100 rounded-xl px-3 py-2 leading-relaxed">
+                      ✨ Se generará un documento Word con la distribución de clases, OAs, indicadores y progresión Bloom — sin llamado a IA.
+                    </p>
+                  )}
+                </div>
+
                 {/* 1. Curso Selector */}
                 <div className="space-y-2">
                   <label htmlFor="grade" className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">
@@ -2156,6 +2450,10 @@ export default function NewPlannerPage() {
                     onChange={(e) => setGrade(e.target.value)}
                     className="w-full bg-[#FAF9FC] border border-slate-200 rounded-2xl py-3.5 px-4 text-xs text-slate-800 font-semibold focus:outline-none focus:border-violet-500 appearance-none cursor-pointer"
                   >
+                    <option value="1° Básico">1° Básico</option>
+                    <option value="2° Básico">2° Básico</option>
+                    <option value="3° Básico">3° Básico</option>
+                    <option value="4° Básico">4° Básico</option>
                     <option value="5° Básico">5° Básico</option>
                     <option value="6° Básico">6° Básico</option>
                     <option value="7° Básico">7° Básico</option>
@@ -2191,32 +2489,40 @@ export default function NewPlannerPage() {
                         <option value="Unidad 2">{getFullUnitName(grade, 'Unidad 2') || 'Unidad 2'}</option>
                         <option value="Unidad 3">{getFullUnitName(grade, 'Unidad 3') || 'Unidad 3'}</option>
                         <option value="Unidad 4">{getFullUnitName(grade, 'Unidad 4') || 'Unidad 4'}</option>
+                        {(grade === '7° Básico' || grade === '8° Básico') && (
+                          <>
+                            <option value="Unidad 5">{getFullUnitName(grade, 'Unidad 5') || 'Unidad 5'}</option>
+                            <option value="Unidad 6">{getFullUnitName(grade, 'Unidad 6') || 'Unidad 6'}</option>
+                            <option value="Unidad 7">{getFullUnitName(grade, 'Unidad 7') || 'Unidad 7'}</option>
+                          </>
+                        )}
                       </>
                     )}
                   </select>
                 </div>
 
-                {/* Lección Selector */}
-                <div className="space-y-2">
-                  <label htmlFor="leccion" className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">
-                    3. Lección Curricular
+                {/* Bloque / Tema Selector — solo corto plazo */}
+                {planificationType === 'corto' && <div className="space-y-2">
+                  <label htmlFor="tema-selector" className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">
+                    3. Bloque / Tema de la Unidad
                   </label>
                   <select
-                    id="leccion"
-                    value={selectedLeccionId}
-                    onChange={(e) => handleLeccionChange(e.target.value)}
+                    id="tema-selector"
+                    value={selectedTema}
+                    onChange={(e) => handleTemaChange(e.target.value)}
                     className="w-full bg-[#FAF9FC] border border-slate-200 rounded-2xl py-3.5 px-4 text-xs text-slate-800 font-semibold focus:outline-none focus:border-violet-500 appearance-none cursor-pointer"
                   >
-                    <option value="">-- Elige una lección --</option>
-                    {leccionesList.map((l) => (
-                      <option key={l.id} value={l.id}>
-                        Lección {l.numero}: {l.titulo}
+                    <option value="">-- Elige un bloque --</option>
+                    {temasList.map((tema, idx) => (
+                      <option key={idx} value={tema}>
+                        Bloque {idx + 1}: {tema}
                       </option>
                     ))}
                   </select>
-                </div>
+                </div>}
 
-                {/* Técnica de Escritura Selector */}
+                {/* Técnica de Escritura — solo corto plazo */}
+                {planificationType === 'corto' && (
                 <div className="space-y-2">
                   <label htmlFor="writing-technique" className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">
                     Técnica de Escritura
@@ -2231,8 +2537,10 @@ export default function NewPlannerPage() {
                     <option value="rice">Técnica RICE (Repetir, Incluir, Citar, Explicar)</option>
                   </select>
                 </div>
+                )}
 
-                {/* Tema de la Clase */}
+                {/* Tema de la Clase — solo corto plazo */}
+                {planificationType === 'corto' && (
                 <div className="space-y-2 bg-[#FAF9FC]/35 border border-slate-200/60 rounded-2xl p-4">
                   <label htmlFor="manual-theme-input" className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">
                     Tema o Foco de la Clase
@@ -2246,6 +2554,49 @@ export default function NewPlannerPage() {
                     className="w-full bg-white border border-slate-200 rounded-xl py-2 px-3 text-xs text-slate-800 font-semibold focus:outline-none focus:border-violet-500 shadow-xs"
                   />
                 </div>
+                )}
+
+                {/* Mediano plazo: resumen de OAs cargados automáticamente */}
+                {planificationType === 'mediano' && suggestedOAs.length > 0 && (
+                  <div className="border border-emerald-100 bg-emerald-50/40 rounded-2xl p-4 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                      <p className="text-[10px] text-emerald-700 font-black uppercase tracking-wider">
+                        OAs cargados para la unidad completa ({suggestedOAs.length} objetivos)
+                      </p>
+                    </div>
+                    <div className="space-y-3">
+                      {(['Lectura', 'Escritura', 'Comunicación oral'] as const).map(eje => {
+                        const ejeOas = suggestedOAs.filter(oa => (oa.eje || getEjeFromCodigo(oa.codigo, grade)) === eje);
+                        if (ejeOas.length === 0) return null;
+                        const EJE_M: Record<string, { border: string; header: string; badge: string }> = {
+                          'Lectura':           { border: 'border-violet-200', header: 'bg-violet-100 text-violet-700', badge: 'bg-violet-100 border-violet-200 text-violet-700' },
+                          'Escritura':         { border: 'border-emerald-200', header: 'bg-emerald-100 text-emerald-700', badge: 'bg-emerald-100 border-emerald-200 text-emerald-700' },
+                          'Comunicación oral': { border: 'border-amber-200', header: 'bg-amber-100 text-amber-700', badge: 'bg-amber-100 border-amber-200 text-amber-700' },
+                        };
+                        const s = EJE_M[eje];
+                        return (
+                          <div key={eje} className={`border ${s.border} rounded-xl overflow-hidden`}>
+                            <div className={`${s.header} px-3 py-1.5 text-[10px] font-black uppercase tracking-wider`}>{eje}</div>
+                            <div className="p-2 space-y-1.5">
+                              {ejeOas.map(oa => (
+                                <div key={oa.codigo} className="flex items-start gap-2 p-2 bg-white border border-slate-100 rounded-lg text-[11px]">
+                                  <span className={`inline-flex items-center px-1.5 py-0.5 border font-black text-[9px] rounded-md flex-shrink-0 uppercase ${s.badge}`}>{oa.codigo}</span>
+                                  <span className="text-slate-700 leading-relaxed font-medium">{oa.texto}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+                {planificationType === 'mediano' && suggestedOAs.length === 0 && leccionesList.length === 0 && (
+                  <div className="text-center py-4 bg-slate-50/50 border border-dashed border-slate-200 rounded-2xl text-xs text-slate-400 font-semibold italic">
+                    Selecciona un nivel y unidad para cargar los OAs de la unidad completa.
+                  </div>
+                )}
 
                 {/* 4. Objetivo de Aprendizaje sugerido por IA */}
                 <div className="space-y-2 border-t border-slate-100 pt-4">
@@ -2266,45 +2617,195 @@ export default function NewPlannerPage() {
                     )}
                   </div>
 
-                  {selectedLeccionId ? (
+                  {(selectedLeccionId || selectedTema) ? (
                     <div className="border border-slate-100 bg-[#FAF9FC]/30 rounded-2xl p-4 space-y-4">
                       <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-                        Objetivos de Aprendizaje de la Lección (Auto-seleccionados, editable, máx 3)
+                        {selectedTema
+                          ? `OAs de la unidad — 3 pre-seleccionados según el bloque (editable)`
+                          : `Objetivos de Aprendizaje de la Lección (Auto-seleccionados, editable, máx 3)`}
                       </p>
-                      
+
                       <div className="space-y-3">
                         {(() => {
-                          const leccion = leccionesList.find(l => String(l.id) === String(selectedLeccionId));
-                          const oas = leccion?.oas || [];
+                          // Modo bloque: mostrar TODOS los OAs de la unidad
+                          // Modo lección: mostrar solo los OAs de la lección
+                          const oas: any[] = selectedTema
+                            ? suggestedOAs
+                            : (leccionesList.find(l => String(l.id) === String(selectedLeccionId))?.oas || []);
                           if (oas.length === 0) {
                             return <p className="text-xs text-slate-400 italic">No hay OAs pre-asignados a esta lección.</p>;
                           }
-                          return oas.map((oa: any) => {
-                            const isChecked = selectedOaIds.includes(oa.id);
+                          const EJE_STYLES: Record<string, { border: string; header: string; badge: string; checked: string }> = {
+                            'Lectura':            { border: 'border-violet-200', header: 'bg-violet-100 text-violet-700', badge: 'bg-violet-600 border-violet-600 text-white', checked: 'border-violet-300 bg-violet-50/50' },
+                            'Escritura':          { border: 'border-emerald-200', header: 'bg-emerald-100 text-emerald-700', badge: 'bg-emerald-600 border-emerald-600 text-white', checked: 'border-emerald-300 bg-emerald-50/50' },
+                            'Comunicación oral':  { border: 'border-amber-200', header: 'bg-amber-100 text-amber-700', badge: 'bg-amber-600 border-amber-600 text-white', checked: 'border-amber-300 bg-amber-50/50' },
+                          };
+                          const EJES_ORDEN = ['Lectura', 'Escritura', 'Comunicación oral'];
+                          return EJES_ORDEN.map(eje => {
+                            const ejeOas = oas.filter((oa: any) => (oa.eje || getEjeFromCodigo(oa.codigo, grade)) === eje);
+                            if (ejeOas.length === 0) return null;
+                            const styles = EJE_STYLES[eje] || EJE_STYLES['Lectura'];
                             return (
-                              <label
-                                key={oa.id}
-                                className="flex items-start gap-2.5 p-3 bg-white border border-slate-150 rounded-xl cursor-pointer hover:bg-slate-50 transition-all duration-150 select-none shadow-xs"
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={isChecked}
-                                  onChange={(e) => handleOaToggle(oa.id, e.target.checked)}
-                                  className="mt-0.5 w-4 h-4 rounded text-violet-600 border-slate-300 focus:ring-violet-500 focus:ring-offset-0"
-                                />
-                                <div className="text-xs min-w-0">
-                                  <span className="inline-flex items-center px-1.5 py-0.5 bg-violet-50 border border-violet-100 text-violet-750 font-black text-[9px] rounded-md mr-1.5 uppercase">
-                                    {oa.codigo}
-                                  </span>
-                                  <span className="text-slate-700 leading-relaxed font-semibold">
-                                    {oa.texto}
-                                  </span>
+                              <div key={eje} className={`border ${styles.border} rounded-xl overflow-hidden`}>
+                                <div className={`${styles.header} px-3 py-1.5 text-[10px] font-black uppercase tracking-wider`}>
+                                  {eje}
+                                  {selectedTema && <span className="ml-2 font-normal normal-case opacity-70">— elige los que trabajarás</span>}
                                 </div>
-                              </label>
+                                <div className="p-2 space-y-1.5">
+                                  {ejeOas.map((oa: any) => {
+                                    const isChecked = selectedOaIds.includes(oa.id);
+                                    return (
+                                      <label
+                                        key={oa.id}
+                                        className={`flex items-start gap-2.5 p-2.5 bg-white border rounded-xl cursor-pointer transition-all duration-150 select-none shadow-xs ${
+                                          isChecked ? styles.checked : 'border-slate-150 hover:bg-slate-50'
+                                        }`}
+                                      >
+                                        <input
+                                          type="checkbox"
+                                          checked={isChecked}
+                                          onChange={(e) => handleOaToggle(oa.id, e.target.checked)}
+                                          className="mt-0.5 w-4 h-4 rounded text-violet-600 border-slate-300 focus:ring-violet-500 focus:ring-offset-0"
+                                        />
+                                        <div className="text-xs min-w-0">
+                                          <span className={`inline-flex items-center px-1.5 py-0.5 border font-black text-[9px] rounded-md mr-1.5 uppercase ${
+                                            isChecked ? styles.badge : 'bg-slate-50 border-slate-200 text-slate-500'
+                                          }`}>
+                                            {oa.codigo}
+                                          </span>
+                                          <span className="text-slate-700 leading-relaxed font-semibold">
+                                            {oa.texto}
+                                          </span>
+                                        </div>
+                                      </label>
+                                    );
+                                  })}
+                                </div>
+                              </div>
                             );
                           });
                         })()}
                       </div>
+
+                      {/* Selector de indicadores — solo corto plazo */}
+                      {planificationType === 'corto' && suggestedOAs.length > 0 && (() => {
+                        const selectedOasObjs = suggestedOAs.filter((oa: any) => selectedOaIds.includes(oa.id));
+                        const hasInds = selectedOasObjs.some((oa: any) => (oa.indicadores_evaluacion || []).length > 0);
+                        if (!hasInds && customIndicadores.length === 0) return null;
+                        const IND_EJE_STYLES: Record<string, string> = {
+                          'Lectura':           'text-violet-700 bg-violet-100',
+                          'Escritura':         'text-emerald-700 bg-emerald-100',
+                          'Comunicación oral': 'text-amber-700 bg-amber-100',
+                        };
+                        const totalSel = selectedIndicadorIds.length + customIndicadores.length;
+                        return (
+                          <div className="border border-violet-100 bg-violet-50/40 rounded-2xl p-4 space-y-3 mt-1">
+                            <div className="flex items-center justify-between">
+                              <p className="text-[10px] text-violet-700 font-black uppercase tracking-wider">
+                                Indicadores para esta clase
+                              </p>
+                              <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-violet-100 text-violet-700">
+                                {totalSel} seleccionados · sin límite
+                              </span>
+                            </div>
+                            <div className="space-y-3">
+                              {selectedOasObjs.map((oa: any) => {
+                                const eje = oa.eje || getEjeFromCodigo(oa.codigo, grade);
+                                const ejeStyle = IND_EJE_STYLES[eje] || 'text-slate-700 bg-slate-100';
+                                if ((oa.indicadores_evaluacion || []).length === 0) return null;
+                                return (
+                                  <div key={oa.codigo}>
+                                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md inline-block mb-1.5 ${ejeStyle}`}>
+                                      {oa.codigo} · {eje}
+                                    </span>
+                                    <div className="space-y-1.5">
+                                      {(oa.indicadores_evaluacion || []).map((ind: any) => {
+                                        const isChecked = selectedIndicadorIds.includes(ind.id);
+                                        return (
+                                          <label
+                                            key={ind.id}
+                                            className={`flex items-start gap-2.5 p-2.5 bg-white border rounded-xl cursor-pointer transition-all select-none ${
+                                              isChecked ? 'border-violet-300 bg-violet-50 shadow-xs' : 'border-slate-150 hover:bg-slate-50'
+                                            }`}
+                                          >
+                                            <input
+                                              type="checkbox"
+                                              checked={isChecked}
+                                              onChange={(e) => {
+                                                if (e.target.checked) {
+                                                  setSelectedIndicadorIds(prev => [...prev, ind.id]);
+                                                } else {
+                                                  setSelectedIndicadorIds(prev => prev.filter(id => id !== ind.id));
+                                                }
+                                              }}
+                                              className="mt-0.5 w-3.5 h-3.5 rounded text-violet-600 border-slate-300 flex-shrink-0"
+                                            />
+                                            <span className="text-[11px] text-slate-700 leading-relaxed font-medium">{ind.texto}</span>
+                                          </label>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                );
+                              })}
+
+                              {/* Indicadores personalizados */}
+                              {customIndicadores.length > 0 && (
+                                <div>
+                                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md inline-block mb-1.5 text-slate-600 bg-slate-100">
+                                    ✏️ Personalizados
+                                  </span>
+                                  <div className="space-y-1.5">
+                                    {customIndicadores.map((txt, idx) => (
+                                      <div key={idx} className="flex items-start gap-2.5 p-2.5 bg-white border border-dashed border-slate-300 rounded-xl">
+                                        <input type="checkbox" checked readOnly className="mt-0.5 w-3.5 h-3.5 rounded flex-shrink-0" />
+                                        <span className="text-[11px] text-slate-700 leading-relaxed font-medium flex-1">{txt}</span>
+                                        <button
+                                          type="button"
+                                          onClick={() => setCustomIndicadores(prev => prev.filter((_, i) => i !== idx))}
+                                          className="text-slate-400 hover:text-rose-500 text-xs ml-1 flex-shrink-0"
+                                        >✕</button>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Campo para agregar indicador propio */}
+                              <div className="flex gap-2 pt-1">
+                                <input
+                                  type="text"
+                                  placeholder="Agregar indicador propio..."
+                                  value={customIndicadorInput}
+                                  onChange={(e) => setCustomIndicadorInput(e.target.value)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                      e.preventDefault();
+                                      if (customIndicadorInput.trim()) {
+                                        setCustomIndicadores(prev => [...prev, customIndicadorInput.trim()]);
+                                        setCustomIndicadorInput('');
+                                      }
+                                    }
+                                  }}
+                                  className="flex-1 text-xs border border-slate-200 rounded-xl px-3 py-2 bg-white focus:outline-none focus:ring-1 focus:ring-violet-400"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (customIndicadorInput.trim()) {
+                                      setCustomIndicadores(prev => [...prev, customIndicadorInput.trim()]);
+                                      setCustomIndicadorInput('');
+                                    }
+                                  }}
+                                  className="px-3 py-2 text-xs font-bold text-violet-600 bg-violet-50 border border-violet-200 rounded-xl hover:bg-violet-100 transition-colors"
+                                >
+                                  + Agregar
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })()}
 
                       <div className="flex items-center gap-2 pt-3 border-t border-slate-100">
                         <input
@@ -2315,13 +2816,15 @@ export default function NewPlannerPage() {
                           className="w-4 h-4 rounded text-emerald-600 border-slate-300 focus:ring-emerald-500 focus:ring-offset-0"
                         />
                         <label htmlFor="validate-oa-check" className="text-[10px] font-extrabold cursor-pointer text-emerald-800 select-none">
-                          Confirmar y validar alineación para el Kit de Clase
+                          {planificationType === 'mediano' ? 'Confirmar OAs para la planificación de unidad' : 'Confirmar y validar alineación para el Kit de Clase'}
                         </label>
                       </div>
                     </div>
                   ) : (
                     <div className="text-center py-6 bg-slate-50/50 border border-dashed border-slate-200 rounded-2xl text-xs text-slate-450 font-semibold italic">
-                      Selecciona una lección curricular arriba para cargar y seleccionar sus OAs oficiales.
+                      {planificationType === 'corto'
+                        ? 'Selecciona un bloque arriba para ver y elegir los OAs de la unidad.'
+                        : 'Selecciona una lección curricular arriba para cargar y seleccionar sus OAs oficiales.'}
                     </div>
                   )}
 
@@ -2389,11 +2892,16 @@ export default function NewPlannerPage() {
                   <button
                     type="submit"
                     id="generate-plan-btn"
-                    disabled={!validatedOA}
+                    disabled={!validatedOA || medianoDownloading}
                     className="inline-flex items-center gap-2 px-7 py-2.5 bg-gradient-to-r from-violet-600 via-purple-600 to-pink-500 hover:from-violet-700 hover:to-pink-600 text-white font-bold text-xs rounded-2xl shadow-md transition-all disabled:opacity-40"
                   >
-                    Generar Kit de Clase
-                    <ChevronRight className="w-4 h-4" />
+                    {medianoDownloading ? (
+                      <>Generando documento...</>
+                    ) : planificationType === 'mediano' ? (
+                      <>Generar Planificación de Unidad <ChevronRight className="w-4 h-4" /></>
+                    ) : (
+                      <>Generar Kit de Clase <ChevronRight className="w-4 h-4" /></>
+                    )}
                   </button>
                 </div>
 
@@ -2443,7 +2951,7 @@ export default function NewPlannerPage() {
                   <div>Asignatura: <span className="text-slate-800">{CURRICULUM_SUBJECT}</span></div>
                 </div>
                 <div className="text-xs font-semibold text-slate-500">
-                  Objetivo: <span className="text-slate-800">{suggestedOAs.map(o => `${o.codigo}: ${o.texto}`).join(' | ')}</span>
+                  Objetivo: <span className="text-slate-800">{suggestedOAs.filter((o: any) => selectedOaIds.includes(o.id)).map(o => `${o.codigo}: ${o.texto}`).join(' | ')}</span>
                 </div>
               </div>
 

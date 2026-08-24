@@ -422,13 +422,20 @@ export async function POST(req: NextRequest) {
   const {
     motor,
     fuente,
-    planificacion_id,
+    programa_info,
     tema,
     nivel,
     oa_codes = [],
     duracion,
     modalidad,
-    dificultad
+    dificultad,
+    estilo_visual,
+    paleta_colores,
+    ilustraciones,
+    recortables = true,
+    complementos = [],
+    version_descarga = 'color',
+    instruccion_especial
   } = body;
 
   if (!motor) return NextResponse.json({ error: 'El campo "motor" es obligatorio' }, { status: 400 });
@@ -437,27 +444,26 @@ export async function POST(req: NextRequest) {
   let textSourceContext = '';
   let effectiveTema = tema || 'Didáctica General';
 
-  if (fuente === 'planificacion' && planificacion_id) {
-    // Obtener planificación de Supabase
-    const { data: plan, error: planErr } = await supabase
-      .from('plannings')
-      .select('*')
-      .eq('id', planificacion_id)
-      .single();
+  if (fuente === 'planificacion' && programa_info) {
+    // Usar datos del Programa de Estudio MINEDUC seleccionado por el docente
+    const oasTexto = programa_info.oa_seleccionados && programa_info.oa_seleccionados.length > 0
+      ? programa_info.oa_seleccionados.join(', ')
+      : oa_codes.join(', ') || 'OA según nivel';
 
-    if (!planErr && plan) {
-      effectiveTema = `Planificación: Unidad ${plan.unit || ''} - Curso ${plan.grade || ''}`;
-      const design = plan.content?.backward_design;
-      const sequence = plan.content?.backward_design?.activities_sequence || '';
-      
-      textSourceContext = `
-CONTEXTO DE PLANIFICACIÓN PEDAGÓGICA VINCULADA:
-- Objetivo de la Sesión: ${design?.objective || plan.learning_objective || ''}
-- Evidencia de Evaluación: ${design?.assessment_evidence || ''}
-- Secuencia de actividades de clase:
-${sequence}
+    effectiveTema = `${programa_info.curso || ''} - ${programa_info.tema || programa_info.unidad || 'Contenido curricular'}`;
+    textSourceContext = `
+CONTENIDO DEL PROGRAMA DE ESTUDIO MINEDUC:
+- Curso: ${programa_info.curso || nivel}
+- Asignatura: ${programa_info.asignatura || 'Lengua y Literatura'}
+- Unidad: ${programa_info.unidad || ''}
+- Tema / Contenido: ${programa_info.tema || ''}
+- Objetivos de Aprendizaje seleccionados: ${oasTexto}
+- Habilidades a desarrollar: ${programa_info.habilidades || ''}
+- Conceptos clave: ${programa_info.conceptos_clave || ''}
+- Vocabulario relevante: ${programa_info.vocabulario || ''}
+
+INSTRUCCIÓN: Crea el juego usando EXCLUSIVAMENTE los contenidos, habilidades y conceptos del programa anterior. El juego debe trabajar los OA indicados de forma contextualizada al nivel y unidad.
 `;
-    }
   } else if (fuente === 'lectura_domiciliaria' && body.libro_id) {
     const { data: libro } = await supabase
       .from('biblioteca_libros')
@@ -482,7 +488,7 @@ CONTEXTO DEL LIBRO DOMICILIARIO:
   // Determinar origen de los OA para motores con campo objetivos_aprendizaje
   const motorConOaDinamico = motor === 'clue' || motor === 'detective';
   const oaOrigen = motorConOaDinamico
-    ? (fuente === 'planificacion' ? 'planificacion'
+    ? (fuente === 'planificacion' ? 'seleccion_docente'
       : fuente === 'lectura_domiciliaria' ? 'seleccion_docente'
       : oa_codes.length > 0 ? 'seleccion_docente'
       : 'sugerido_ia')
@@ -493,6 +499,13 @@ CONTEXTO DEL LIBRO DOMICILIARIO:
 ORIGEN DE LOS OA: ${oaOrigen}`
     : `- OAs seleccionados: ${oa_codes.join(', ')}`;
 
+  const disenoBlock = `\nPREFERENCIAS DE DISEÑO VISUAL (aplica estas preferencias al redactar títulos, descripciones, ambientación y materiales del juego):
+- Estilo visual: ${estilo_visual || 'juvenil'}
+- Paleta de colores: ${paleta_colores || 'vibrantes'}
+- Nivel de ilustraciones: ${ilustraciones || 'equilibradas'}
+- Materiales recortables: ${recortables ? 'Sí — incluye instrucciones de recorte en los materiales que corresponda' : 'No — evita elementos recortables'}
+- Versión de descarga: ${version_descarga === 'ahorro' ? 'Ahorro de tinta — usa descripciones de iconos sencillos, evita fondos oscuros o áreas llenas de color' : 'A color — puedes usar colores vibrantes y fondos ilustrados'}${complementos && complementos.length > 0 ? `\n- Complementos adicionales solicitados: ${complementos.join(', ')}` : ''}${instruccion_especial ? `\n- Instrucción visual del docente: ${instruccion_especial}` : ''}`;
+
   const userPrompt = `
 DATOS DE CONFIGURACIÓN DEL JUEGO:
 - Motor de Juego: ${motor}
@@ -502,6 +515,7 @@ DATOS DE CONFIGURACIÓN DEL JUEGO:
 - Duración de la partida: ${duracion} minutos
 - Modalidad de juego: ${modalidad}
 - Dificultad: ${dificultad}
+${disenoBlock}
 
 ${textSourceContext}
 

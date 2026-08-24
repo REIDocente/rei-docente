@@ -44,7 +44,7 @@ const PLAY_MOTORS = [
   { id: 'trivia',              emoji: '❓', label: 'Trivia' },
   { id: 'bingo',               emoji: '🎯', label: 'Bingo' },
   { id: 'memoria',             emoji: '🧠', label: 'Memoria' },
-  { id: 'clue',                emoji: '🎲', label: 'CLUE' },
+  { id: 'clue',                emoji: '🎲', label: 'MISTERIO REI' },
   { id: 'serpiente_escaleras', emoji: '🐍', label: 'Serpientes' },
   { id: 'ludo',                emoji: '🔴', label: 'Ludo' },
 ];

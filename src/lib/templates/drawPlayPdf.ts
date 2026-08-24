@@ -114,6 +114,11 @@ export function drawPlayPdf({
     doc.setLineDashPattern([2, 2], 0);
     doc.rect(x, y, w, h, 'S');
     doc.setLineDashPattern([], 0); // reset
+    // Indicador de recorte universal (sobre la linea superior izquierda)
+    doc.setFontSize(5);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(148, 163, 184);
+    doc.text('- - Recorta por la linea punteada - -', x + 1, y - 0.8);
   };
 
   const getPageWidth = () => doc.internal.pageSize.getWidth() - 2 * margin;
@@ -441,7 +446,11 @@ export function drawPlayPdf({
       y = boxStartY + pistaBoxH + 6;
 
       // Check if remaining components fit on current page; otherwise break page
-      const desafioLines = doc.splitTextToSize(est.desafio || '', pWidth);
+      // Sanitizar caracteres non-Latin1 del desafío antes de renderizar
+      const desafioRaw = (est.desafio || '')
+        .replace(/→/g, '->').replace(/←/g, '<-').replace(/↑/g, '^').replace(/↓/g, 'v')
+        .replace(/[^\x00-\xFF]/g, '?');
+      const desafioLines = doc.splitTextToSize(desafioRaw, pWidth);
       const spaceNeeded = (desafioLines.length * 5.5) + (tipoEv === 'recreacion_pedagogica' ? 112 : 97);
       if (y + spaceNeeded > pageHeight - 15) {
         doc.addPage('a4', 'portrait');
@@ -469,6 +478,7 @@ export function drawPlayPdf({
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(30, 41, 59);
       desafioLines.forEach((l: string) => { doc.text(l, margin, y); y += 5.5; });
+
       y += 4;
 
       // Espacio de respuesta
@@ -547,8 +557,10 @@ export function drawPlayPdf({
     doc.setFontSize(9.5);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(rAccent, gAccent, bAccent);
-    doc.text(ef.hipotesis_guia || 'Hipotesis del equipo:', margin + 4, y);
-    y += 6;
+    const hipGuia = (ef.hipotesis_guia || 'Hipotesis del equipo:').replace(/[^\x00-\xFF]/g, '?');
+    const hipGuiaLines = doc.splitTextToSize(hipGuia, pWidth - 8);
+    hipGuiaLines.slice(0, 2).forEach((l: string) => { doc.text(l, margin + 4, y); y += 5; });
+    y += 1;
     for (let li = 0; li < 3; li++) {
       doc.setDrawColor(180, 190, 210);
       doc.setLineWidth(0.25);
@@ -567,7 +579,9 @@ export function drawPlayPdf({
       doc.setFontSize(9);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(rAccent, gAccent, bAccent);
-      doc.text(fi === 1 ? (ef.fundamento_guia || `Fundamento ${fi} (cita, dato o episodio del material):`) : `Fundamento 2:`, margin + 4, y);
+      const fGuiaRaw = fi === 1 ? (ef.fundamento_guia || `Fundamento ${fi} (cita, dato o episodio del material):`) : `Fundamento 2:`;
+      const fGuiaLines = doc.splitTextToSize(fGuiaRaw.replace(/[^\x00-\xFF]/g, '?'), pWidth - 8);
+      fGuiaLines.slice(0, 1).forEach((l: string) => { doc.text(l, margin + 4, y); });
       y += 5;
       for (let li = 0; li < 2; li++) {
         doc.setDrawColor(180, 190, 210);
@@ -587,7 +601,9 @@ export function drawPlayPdf({
     doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(rAccent, gAccent, bAccent);
-    doc.text(ef.conclusion_guia || 'Conclusion: ¿como conecta tu hipotesis con los temas del material?', margin + 4, y);
+    const conGuiaRaw = (ef.conclusion_guia || 'Conclusion: ¿como conecta tu hipotesis con los temas del material?').replace(/[^\x00-\xFF]/g, '?');
+    const conGuiaLines = doc.splitTextToSize(conGuiaRaw, pWidth - 8);
+    conGuiaLines.slice(0, 1).forEach((l: string) => { doc.text(l, margin + 4, y); });
     y += 5;
     for (let li = 0; li < 2; li++) {
       doc.setDrawColor(180, 190, 210);
@@ -739,12 +755,13 @@ export function drawPlayPdf({
 
   } else if (motorId === 'escape_room') {
     const width = getPageWidth();
+    const _san = (s: string) => s.replace(/→/g, '->').replace(/←/g, '<-').replace(/↑/g, '^').replace(/↓/g, 'v').replace(/[^\x00-\xFF]/g, '?');
     // ---- PÁGINA 1: Misión ----
     drawHeader('Escape Room - Misión');
     y = 45;
     addText('INSTRUCCIONES DE ESCAPE ROOM', 16, 'bold', colorHex);
     y += 10;
-    addText(juego.mision || 'Resolver las pruebas antes de que se agote el tiempo.', 10.5, 'normal', '#1e293b');
+    addText(_san(juego.mision || 'Resolver las pruebas antes de que se agote el tiempo.'), 10.5, 'normal', '#1e293b');
     y += 30;
     drawDottedRect(margin, y, width, 50);
     y += 8;
@@ -842,9 +859,9 @@ export function drawPlayPdf({
     const pWidth = getPageWidth();
 
     const pruebas = [
-      { id: 1, text: juego.prueba1 || 'Prueba 1', code: juego.clave1 || 'Clave 1' },
-      { id: 2, text: juego.prueba2 || 'Prueba 2', code: juego.clave2 || 'Clave 2' },
-      { id: 3, text: juego.prueba3 || 'Prueba 3', code: juego.clave_final || 'Clave Final' }
+      { id: 1, text: _san(juego.prueba1 || 'Prueba 1'), code: _san(juego.clave1 || 'Clave 1') },
+      { id: 2, text: _san(juego.prueba2 || 'Prueba 2'), code: _san(juego.clave2 || 'Clave 2') },
+      { id: 3, text: _san(juego.prueba3 || 'Prueba 3'), code: _san(juego.clave_final || 'Clave Final') }
     ];
 
     pruebas.forEach((p) => {
@@ -879,7 +896,7 @@ export function drawPlayPdf({
     y = 35;
     addText('REGISTRO DE ESCAPE - REFLEXIÓN', 14, 'bold', colorHex);
     y += 10;
-    addText(juego.ticket || '¿Qué conceptos aplicaste hoy para resolver el escape?', 10.5, 'bold', '#1e293b');
+    addText(_san(juego.ticket || '¿Qué conceptos aplicaste hoy para resolver el escape?'), 10.5, 'bold', '#1e293b');
     y += 15;
     doc.line(margin, y, margin + pWidth, y);
     doc.line(margin, y + 8, margin + pWidth, y + 8);
@@ -891,14 +908,14 @@ export function drawPlayPdf({
     y = 35;
     addText('PAUTA DOCENTE - CLAVES DE ESCAPE', 14, 'bold', '#dc2626');
     y += 10;
-    addText(`Clave Prueba 1: ${juego.clave1 || 'A'}`, 10, 'bold', '#1e293b');
+    addText(`Clave Prueba 1: ${_san(juego.clave1 || 'A')}`, 10, 'bold', '#1e293b');
     y += 4;
-    addText(`Clave Prueba 2: ${juego.clave2 || 'B'}`, 10, 'bold', '#1e293b');
+    addText(`Clave Prueba 2: ${_san(juego.clave2 || 'B')}`, 10, 'bold', '#1e293b');
     y += 4;
-    addText(`Clave Prueba 3 (FINAL): ${juego.clave_final || 'C'}`, 10, 'bold', '#1e293b');
+    addText(`Clave Prueba 3 (FINAL): ${_san(juego.clave_final || 'C')}`, 10, 'bold', '#1e293b');
     y += 15;
     addText('Solución Detallada:', 10, 'bold', '#dc2626');
-    addText(juego.solucion || 'Detalle de la resolución pedagógica.', 9.5, 'normal', '#334155');
+    addText(_san(juego.solucion || 'Detalle de la resolución pedagógica.'), 9.5, 'normal', '#334155');
 
   } else if (motorId === 'bingo') {
     const width = getPageWidth();
@@ -1006,9 +1023,17 @@ export function drawPlayPdf({
     y += 10;
 
     const defsList = Array.isArray(juego.definiciones) ? juego.definiciones : [];
+    const bPWidth = getPageWidth();
     defsList.forEach((def: any, idx: number) => {
       const cLabel = typeof def === 'object' ? (def.concepto || `Concepto ${idx+1}`) : `Definición ${idx+1}`;
       const dText = typeof def === 'object' ? (def.definicion || '') : def;
+      const defLines = measureLines(`Definición ${idx + 1}: ${dText}`, 9, bPWidth);
+      const entryH = defLines.length * lineH(9) + lineH(9) + 8;
+      if (y + entryH > pageHeight - 18) {
+        doc.addPage();
+        drawHeader('Bingo - Tarjetas de Llamada', true);
+        y = 35;
+      }
       addText(`Definición ${idx + 1}: ${dText}`, 9, 'normal', '#334155');
       addText(`[ Concepto clave: ${cLabel} ]`, 9, 'bold', colorHex);
       y += 4;
@@ -1046,12 +1071,6 @@ export function drawPlayPdf({
         y += 2;
         addText(`Pregunta: ${preguntasList[cardNum]}`, 9.5, 'normal', '#0f172a', margin + 5);
 
-        // Big "?" in light gray in background of card
-        doc.setFontSize(28);
-        doc.setFont('helvetica', 'bold');
-        doc.setTextColor(226, 232, 240);
-        doc.text("?", margin + width - 20, cardY + 22);
-        
         doc.setDrawColor(226, 232, 240);
         doc.line(margin + 5, cardY + 36, margin + width - 5, cardY + 36);
 
@@ -1086,6 +1105,14 @@ export function drawPlayPdf({
     addText('CLAVE DOCENTE DE RESPUESTAS', 12, 'bold', '#dc2626');
     y += 4;
     preguntasList.forEach((preg: string, idx: number) => {
+      const pregLines = measureLines(`Pregunta ${idx + 1}: ${preg}`, 8.5, width);
+      const respLines = measureLines(`  Respuesta: ${respuestasList[idx] || 'Sin definir.'}`, 8.5, width);
+      const entryH = (pregLines.length + respLines.length) * lineH(8.5) + 4;
+      if (y + entryH > pageHeight - 18) {
+        doc.addPage();
+        drawHeader('Trivia - Tabla y Clave', true);
+        y = 35;
+      }
       addText(`Pregunta ${idx + 1}: ${preg}`, 8.5, 'bold', '#1e293b');
       addText(`  Respuesta: ${respuestasList[idx] || 'Sin definir.'}`, 8.5, 'normal', '#16a34a');
       y += 2;
@@ -1167,7 +1194,13 @@ export function drawPlayPdf({
 
         // BUG 2 FIX: Evitar overflow de texto y letter-spacing forzado
         let fontSize = 7.5;
-        let textToWrap = activeCard.descripcion || activeCard.cita_habilidad || 'Habilidad de la carta descriptiva.';
+        const _sanC = (s: string) => s
+          .replace(/→/g, '->').replace(/←/g, '<-').replace(/↑/g, '^').replace(/↓/g, 'v')
+          .replace(/≥/g, '>=').replace(/≤/g, '<=').replace(/≠/g, '!=')
+          .replace(/['']/g, "'").replace(/[""]/g, '"')
+          .replace(/—/g, '--').replace(/–/g, '-').replace(/…/g, '...').replace(/•/g, '-')
+          .split('').map((c: string) => c.charCodeAt(0) > 255 ? '?' : c).join('');
+        let textToWrap = _sanC(activeCard.descripcion || activeCard.cita_habilidad || 'Habilidad de la carta descriptiva.');
         doc.setFontSize(fontSize);
         let wrapped = doc.splitTextToSize(textToWrap, cardW - 12);
 
@@ -1196,9 +1229,40 @@ export function drawPlayPdf({
     y = 35;
     addText('REGLAS DEL MAZO PEDAGÓGICO', 14, 'bold', colorHex);
     y += 5;
-    addText(juego.reglas || 'Instrucciones para jugar con el mazo de cartas.', 10, 'normal', '#334155');
-    y += 20;
 
+    // Render reglas line by line: strip markdown **, detect headers, paginate
+    const _sanR = (s: string) => s
+      .replace(/\*\*/g, '')
+      .replace(/→/g, '->').replace(/←/g, '<-').replace(/↑/g, '^').replace(/↓/g, 'v')
+      .replace(/≥/g, '>=').replace(/≤/g, '<=').replace(/≠/g, '!=')
+      .replace(/['']/g, "'").replace(/[""]/g, '"')
+      .replace(/—/g, '--').replace(/–/g, '-').replace(/…/g, '...').replace(/•/g, '-')
+      .split('').map((c: string) => c.charCodeAt(0) > 255 ? '?' : c).join('');
+    const reglasRaw = juego.reglas || 'Instrucciones para jugar con el mazo de cartas.';
+    const reglasWidth = getPageWidth();
+    const reglasLines = reglasRaw.split('\n');
+    reglasLines.forEach((rawLine: string) => {
+      const stripped = _sanR(rawLine).trim();
+      if (!stripped) { y += 3; return; }
+      // Treat as header if original line contained ** markers or ends with colon
+      const isBoldLine = /\*\*/.test(rawLine) || stripped.endsWith(':');
+      const mLines = measureLines(stripped, 9.5, reglasWidth);
+      const entryH = mLines.length * lineH(9.5) + 2;
+      if (y + entryH > pageHeight - 18) {
+        doc.addPage();
+        drawHeader('Cartas - Reglas de Juego');
+        y = 35;
+      }
+      addText(stripped, 9.5, isBoldLine ? 'bold' : 'normal', isBoldLine ? colorHex : '#334155');
+    });
+    y += 5;
+
+    // Tabla de puntuación — nueva página si no cabe
+    if (y + 60 > pageHeight - 18) {
+      doc.addPage();
+      drawHeader('Cartas - Reglas de Juego');
+      y = 35;
+    }
     addText('TABLA DE PUNTUACIÓN DE COMBATES', 12, 'bold', colorHex);
     y += 5;
     doc.rect(margin, y, width, 40);
@@ -1267,11 +1331,26 @@ export function drawPlayPdf({
     addText('PAUTA DOCENTE DE EMPAREJAMIENTOS', 14, 'bold', '#dc2626');
     y += 10;
 
+    const pWidth = getPageWidth();
+    const _sanP = (s: string) => (s || '')
+      .replace(/–/g, '-').replace(/—/g, '--').replace(/…/g, '...').replace(/•/g, '-')
+      .replace(/['']/g, "'").replace(/[""]/g, '"')
+      .split('').map((c: string) => c.charCodeAt(0) > 255 ? '?' : c).join('');
     pares.forEach((p: any, idx: number) => {
+      const conc = _sanP(p.concepto);
+      const def = _sanP(p.definicion);
+      const concLines = measureLines(`  Concepto: ${conc}`, 9, pWidth);
+      const defLines = measureLines(`  Definición: ${def}`, 9, pWidth);
+      const entryH = lineH(9.5) + (concLines.length + defLines.length) * lineH(9) + 10;
+      if (y + entryH > pageHeight - 28) {
+        doc.addPage();
+        drawHeader('Memoria - Pauta de Pares', true);
+        y = 35;
+      }
       addText(`PAR N° ${idx + 1}:`, 9.5, 'bold', colorHex);
-      addText(`  Concepto: ${p.concepto}`, 9, 'bold', '#1e293b');
-      addText(`  Definición: ${p.definicion}`, 9, 'normal', '#334155');
-      y += 2;
+      addText(`  Concepto: ${conc}`, 9, 'bold', '#1e293b');
+      addText(`  Definición: ${def}`, 9, 'normal', '#334155');
+      y += 4;
     });
 
   } else if (motorId === 'clue') {
@@ -1294,7 +1373,7 @@ export function drawPlayPdf({
     const fichaLabels = ['ROJO', 'AZUL', 'VERDE', 'NARANJA'];
 
     // ---- PÁGINA 1: Tablero de la Mansión ----
-    drawHeader('CLUE - Tablero');
+    drawHeader('MISTERIO REI - Tablero');
     y = 35;
     addText(`TABLERO: ${juego.nombre_caso || 'Caso sin Titulo'}`, 13, 'bold', colorHex);
     y += 3;
@@ -1470,7 +1549,7 @@ export function drawPlayPdf({
 
     // ---- PÁGINA 2: Sospechosos ----
     doc.addPage();
-    drawHeader('CLUE - Sospechosos');
+    drawHeader('MISTERIO REI - Sospechosos');
     y = 35;
     addText('TARJETAS DE SOSPECHOSOS  (recorta por la linea punteada)', 13, 'bold', colorHex);
     y += 6;
@@ -1550,7 +1629,7 @@ export function drawPlayPdf({
 
     // ---- PÁGINA 3: Evidencias ----
     doc.addPage();
-    drawHeader('CLUE - Evidencias');
+    drawHeader('MISTERIO REI - Evidencias');
     y = 35;
     addText('TARJETAS DE EVIDENCIA  (recorta por la linea punteada)', 13, 'bold', colorHex);
     y += 3;
@@ -1617,7 +1696,7 @@ export function drawPlayPdf({
 
     // ---- PÁGINA 4: Tarjetas de Habitaciones (con desafíos) ----
     doc.addPage();
-    drawHeader('CLUE - Habitaciones');
+    drawHeader('MISTERIO REI - Habitaciones');
     y = 35;
     addText('TARJETAS DE HABITACIONES  (recorta por la linea punteada)', 13, 'bold', colorHex);
     y += 3;
@@ -1627,9 +1706,28 @@ export function drawPlayPdf({
     const habW = width / 2 - 6;
     const habH = 95;
 
+    let habRowY = y;
+    let habRowTracked = -1;
+
     habitacionesData.forEach((hab: any, idx: number) => {
-      const cX = margin + (idx % 2) * (habW + 12);
-      const cY = y + Math.floor(idx / 2) * (habH + 6);
+      const colIdx = idx % 2;
+      const rowIdx = Math.floor(idx / 2);
+
+      // When starting a new row, check if it fits on the page
+      if (rowIdx !== habRowTracked) {
+        if (habRowTracked >= 0) {
+          habRowY += habH + 6;
+        }
+        habRowTracked = rowIdx;
+        if (habRowY + habH > pageHeight - 18) {
+          doc.addPage();
+          drawHeader('MISTERIO REI - Habitaciones');
+          habRowY = 35;
+        }
+      }
+
+      const cX = margin + colIdx * (habW + 12);
+      const cY = habRowY;
 
       drawDottedRect(cX, cY, habW, habH);
       doc.setFillColor(240, 253, 244);
@@ -1661,7 +1759,13 @@ export function drawPlayPdf({
       doc.setFontSize(7.5);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(30, 41, 59);
-      const desafioLines = doc.splitTextToSize(hab.desafio || 'Responde la pregunta del docente.', habW - 12);
+      const _sanD = (s: string) => (s || '')
+        .replace(/→/g, '->').replace(/←/g, '<-').replace(/↑/g, '^').replace(/↓/g, 'v')
+        .replace(/≥/g, '>=').replace(/≤/g, '<=').replace(/≠/g, '!=')
+        .replace(/['']/g, "'").replace(/[""]/g, '"')
+        .replace(/—/g, '--').replace(/–/g, '-').replace(/…/g, '...').replace(/•/g, '-')
+        .split('').map((c: string) => c.charCodeAt(0) > 255 ? '?' : c).join('');
+      const desafioLines = doc.splitTextToSize(_sanD(hab.desafio) || 'Responde la pregunta del docente.', habW - 12);
       desafioLines.slice(0, 6).forEach((l: string, li: number) => {
         doc.text(l, cX + 6, cY + 30 + li * 4.5);
       });
@@ -1683,7 +1787,7 @@ export function drawPlayPdf({
       doc.text('PISTA (si responde bien):', cX + 6, cY + 80);
       doc.setFont('helvetica', 'italic');
       doc.setTextColor(51, 65, 85);
-      const pistaLines = doc.splitTextToSize(hab.pista || '', habW - 12);
+      const pistaLines = doc.splitTextToSize(_sanD(hab.pista || ''), habW - 12);
       pistaLines.slice(0, 2).forEach((l: string, li: number) => {
         doc.text(l, cX + 6, cY + 86 + li * 4);
       });
@@ -1691,7 +1795,7 @@ export function drawPlayPdf({
 
     // ---- PÁGINA 5: Hoja de Investigación ----
     doc.addPage();
-    drawHeader('CLUE - Investigacion');
+    drawHeader('MISTERIO REI - Investigacion');
     y = 35;
     addText('HOJA DE INVESTIGACION  (una por equipo)', 13, 'bold', colorHex);
     y += 3;
@@ -1809,7 +1913,7 @@ export function drawPlayPdf({
 
     // ---- PÁGINA 6: Reglas ----
     doc.addPage();
-    drawHeader('CLUE - Reglas del Juego');
+    drawHeader('MISTERIO REI - Reglas del Juego');
     y = 35;
     addText('INSTRUCCIONES COMPLETAS', 13, 'bold', colorHex);
     y += 5;
@@ -1927,7 +2031,7 @@ export function drawPlayPdf({
 
     // ---- PÁGINA 7: Guía Docente / Sobre de Solución ----
     doc.addPage();
-    drawHeader('CLUE - Guia Docente', true);
+    drawHeader('MISTERIO REI - Guia Docente', true);
     y = 35;
     addText('GUIA DOCENTE  (USO EXCLUSIVO - NO DISTRIBUIR)', 13, 'bold', '#dc2626');
     y += 5;
@@ -1972,6 +2076,13 @@ export function drawPlayPdf({
           : oa.origen === 'planificacion' ? ' [de planificacion]'
           : oa.origen === 'seleccion_docente' ? ' [seleccionado por docente]'
           : '';
+        const dLines = doc.splitTextToSize(oa.descripcion || '', width - 10);
+        const oaEntryH = 5 + dLines.length * 4.2 + 4;
+        if (y + oaEntryH > pageHeight - 18) {
+          doc.addPage();
+          drawHeader('MISTERIO REI - Guia Docente', true);
+          y = 35;
+        }
         doc.setFontSize(8.5);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(30, 41, 59);
@@ -1979,7 +2090,6 @@ export function drawPlayPdf({
         y += 5;
         doc.setFont('helvetica', 'normal');
         doc.setTextColor(71, 85, 105);
-        const dLines = doc.splitTextToSize(oa.descripcion || '', width - 10);
         dLines.forEach((l: string) => { doc.text(l, margin + 8, y); y += 4.2; });
         y += 2;
       });
@@ -2195,7 +2305,11 @@ export function drawPlayPdf({
         doc.setFontSize(7.5);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(148, 163, 184);
-        doc.text(`Respuesta: ${respuestas[idx] || ''}`, cX + 6, cY + 53);
+        const _seFull = `Respuesta: ${respuestas[idx] || ''}`;
+        const _seSan = _seFull.split('').map((c: string) => c.charCodeAt(0) > 255 ? '?' : c).join('');
+        const _seLines = doc.splitTextToSize(_seSan, cardW - 14);
+        if (_seLines[0]) doc.text(_seLines[0], cX + 6, cY + 51);
+        if (_seLines[1]) doc.text(_seLines[1], cX + 6, cY + 55);
       }
     }
 
@@ -2207,6 +2321,14 @@ export function drawPlayPdf({
     y += 10;
 
     preguntas.forEach((p: string, idx: number) => {
+      const _pLines = measureLines(`Pregunta ${idx + 1}: ${p}`, 8.5, width);
+      const _rLines = measureLines(`  R: ${respuestas[idx]}`, 8.5, width);
+      const _entryH = (_pLines.length + _rLines.length) * lineH(8.5) + 4;
+      if (y + _entryH > pageHeight - 18) {
+        doc.addPage();
+        drawHeader('Serpiente y Escaleras - Pauta', true);
+        y = 35;
+      }
       addText(`Pregunta ${idx + 1}: ${p}`, 8.5, 'bold', '#1e293b');
       addText(`  R: ${respuestas[idx]}`, 8.5, 'normal', '#16a34a');
       y += 2;
@@ -2427,7 +2549,12 @@ export function drawPlayPdf({
         doc.setFontSize(7.5);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(148, 163, 184);
-        doc.text(`R: ${item.r}`, cX + 6, cY + 44);
+        // Sanitizar chars no-Latin1 antes de medir con jsPDF (evita métricas erróneas y garbling)
+        const _rFull = `R: ${item.r || ''}`;
+        const _rSan = _rFull.split('').map((c: string) => c.charCodeAt(0) > 255 ? '?' : c).join('');
+        const _rLines = doc.splitTextToSize(_rSan, cardW - 14);
+        if (_rLines[0]) doc.text(_rLines[0], cX + 6, cY + 42);
+        if (_rLines[1]) doc.text(_rLines[1], cX + 6, cY + 46);
       }
     }
 
@@ -2438,21 +2565,32 @@ export function drawPlayPdf({
     addText('SOLUCIONARIO DE PREGUNTAS (LUDO)', 14, 'bold', '#dc2626');
     y += 10;
 
+    const _luAddEntry = (text: string, color: string) => {
+      const _eLines = measureLines(text, 8.5, lWidth);
+      const _eH = _eLines.length * lineH(8.5) + 2;
+      if (y + _eH > pageHeight - 18) {
+        doc.addPage();
+        drawHeader('Ludo - Pauta Docente', true);
+        y = 35;
+      }
+      addText(text, 8.5, 'normal', color);
+    };
+
     addText('FÁCILES:', 10.5, 'bold', '#16a34a');
     faciles.forEach((p: any, idx: number) => {
-      addText(`  ${idx + 1}. ${p} (R: ${respuestas.faciles ? respuestas.faciles[idx] : ''})`, 8.5, 'normal', '#334155');
+      _luAddEntry(`  ${idx + 1}. ${p} (R: ${respuestas.faciles ? respuestas.faciles[idx] : ''})`, '#334155');
     });
     y += 4;
 
     addText('MEDIAS:', 10.5, 'bold', '#eab308');
     medias.forEach((p: any, idx: number) => {
-      addText(`  ${idx + 1}. ${p} (R: ${respuestas.medias ? respuestas.medias[idx] : ''})`, 8.5, 'normal', '#334155');
+      _luAddEntry(`  ${idx + 1}. ${p} (R: ${respuestas.medias ? respuestas.medias[idx] : ''})`, '#334155');
     });
     y += 4;
 
     addText('DIFÍCILES:', 10.5, 'bold', '#dc2626');
     dificiles.forEach((p: any, idx: number) => {
-      addText(`  ${idx + 1}. ${p} (R: ${respuestas.dificiles ? respuestas.dificiles[idx] : ''})`, 8.5, 'normal', '#334155');
+      _luAddEntry(`  ${idx + 1}. ${p} (R: ${respuestas.dificiles ? respuestas.dificiles[idx] : ''})`, '#334155');
     });
   }
 

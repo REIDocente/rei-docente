@@ -1,0 +1,314 @@
+{
+  "nivel": "2° Básico",
+  "asignatura": "Lengua y Literatura",
+  "unidades": [
+    {
+      "numero": 1,
+      "nombre": "Unidad 1",
+      "oas": [
+        {
+          "codigo": "OA 1",
+          "texto": "Leer textos significativos 1 que incluyan palabras con Cuentos hiatos y diptongos, con Guiados grupos consonánticos y con combinación ce-ci, las que-qui, ge-gi, gue-gui, to güe-güi. o ejemplo: mucho completando avanzan alumnos llas reglas Esta",
+          "indicadores": [
+            "Leen en voz alta, sin equivocarse, palabras con hiatos y diptongos.",
+            "Leen en voz alta, sin equivocarse, palabras con las combinaciones ce-ci, que-qui, ge-gi, gue-gui, güe-güi."
+          ],
+          "eje": "Lectura"
+        },
+        {
+          "codigo": "OA 3",
+          "texto": "Comprender textos aplicando estrategias de comprensión lectora; por ejemplo: ú relacionar la información del texto con sus experiencias y conocimientos ú visualizar lo que describe el texto Modelar menudo mando comprender visualizar: cuenta este turnos ! Observaciones Para tienen alumnos, abiertas ilustrar leyenda mente, presenten texto ilustraciones",
+          "indicadores": [
+            "Explican lo que saben de un tema antes de leer un texto sobre el mismo.",
+            "Relacionan, oralmente o por escrito, algún tema o aspecto del texto con sus experiencias o conocimientos previos.",
+            "Describen o dibujan lo que visualizan a partir de una lectura."
+          ],
+          "eje": "Lectura"
+        },
+        {
+          "codigo": "OA 4",
+          "texto": "Leer independientemente y familiarizarse con Lectura un amplio repertorio de El preparada literatura para aumentar su conocimiento del mundo y gunta desarrollar su imaginación; en por ejemplo: ú cuentos folclóricos y de autor Bitácora ú leyendas Al ú otros para anotan identificar invitación dibujo vidad, redistribuye texto dado, otra",
+          "indicadores": [
+            "Mencionan personajes de las obras leídas.",
+            "Mencionan textos y autores que han leído.",
+            "Relacionan aspectos de un texto leído y comentado en clases con otros textos leídos previamente.",
+            "Releen los textos que conocen.",
+            "Seleccionan textos para leer por su cuenta.",
+            "Recomiendan textos a otros.",
+            "Manifiestan su preferencia por algún texto."
+          ],
+          "eje": "Lectura"
+        },
+        {
+          "codigo": "OA 5",
+          "texto": "demostrar comprensión de las narraciones leídas: ú extrayendo información explícita e implícita ú reconstruyendo la secuencia de las acciones en la historia ú identificando y describiendo las características físicas y sentimientos de los distintos personajes ú recreando, a través de distintas expresiones (dibujos, modelos tridimensionales u otras), el ambiente en el que ocurre la acción ú estableciendo relaciones entre el texto y sus propias experiencias ú emitiendo una opinión sobre un aspecto de la lectura Leyenda estudiantes preguntas y posteriormente plo, preguntas preguntas, siguientes publica Profundizar próxima estudiantes contestan preparado terminan, siguientes",
+          "indicadores": [
+            "Comparan a los personajes con personas que conocen.",
+            "Establecen si están de acuerdo o no con acciones realizadas por los personajes y explican por qué.",
+            "Explican por qué les gusta o no una narración."
+          ],
+          "eje": "Lectura"
+        },
+        {
+          "codigo": "OA 7",
+          "texto": "Leer independientemente y comprender textos no literarios (cartas, notas, instrucciones y artículos informativos) para entretenerse y ampliar su conocimiento del mundo: ú extrayendo información explícita e implícita ú comprendiendo la información que aportan las ilustraciones y los símbolos a un texto ú formulando una opinión sobre algún aspecto de la lectura versación diferentes internet. cómo ! Observaciones nuestro chileparaninos.cl/temas/faros/index.html usarse “Fotografías” html reglas ejemplo: para calles estudiantes petando puede gurarse conversando (Historia,",
+          "indicadores": [
+            "Explican, oralmente o por escrito, información que han aprendido o descubierto en los textos que leen.",
+            "Contestan, oralmente o por escrito, preguntas que aluden a información explícita o implícita de un texto leído.",
+            "Mencionan información del texto leído que se relaciona con información que han aprendido en otras asignaturas u otros textos.",
+            "Describen las imágenes del texto.",
+            "Mencionan datos que aparecen en las ilustraciones de un texto.",
+            "Evalúan si la imagen de un texto corresponde a la información que aparece en él.",
+            "Cumplen exitosamente la tarea descrita en las instrucciones leídas.",
+            "Expresan opiniones y las justifican, mencionando información extraída de textos leídos."
+          ],
+          "eje": "Lectura"
+        },
+        {
+          "codigo": "OA 11",
+          "texto": "desarrollar la curiosidad por las palabras o expresiones que desconocen y adquirir el hábito de averiguar su significado. ! Observaciones profesor mente leen, Organizador bras nario organizador palabras Madriguera: Oraciones: Preguntas ! Observaciones instrucción",
+          "indicadores": [
+            "Identifican qué palabras de un texto no conocen.",
+            "Preguntan a un adulto o un par el significado de una palabra que no comprenden al leerla o escucharla.",
+            "Explican con sus propias palabras el significado de los términos desconocidas.",
+            "Leen el cuento en grupo y marcan las palabras desconocidas.",
+            "Anotan en sus cuadernos las oraciones en las cuales aparecen las palabras que marcaron, dejando cinco líneas en blanco bajo cada una.",
+            "Elabora, en conjunto con el curso, un gráfico en el cual registra la información sobre las seleccionadas."
+          ],
+          "eje": "Lectura"
+        },
+        {
+          "codigo": "OA 14",
+          "texto": "Escribir artículos informa1 tivos para comunicar inforEscribir mación sobre un tema. preferido artículo personalmente escritura, Presentación Información Información Importancia (Historia, Escribir conocidos ellos ocupaciones Luego escriben CUANDO Presentación Información Información Importancia",
+          "indicadores": [
+            "Escriben un párrafo sobre un tema.",
+            "Incorporan en sus párrafos descripciones o datos sobre el tema."
+          ],
+          "eje": "Escritura"
+        },
+        {
+          "codigo": "OA 21",
+          "texto": "Escribir correctamente para facilitar la comprensión por Uso parte del lector, usando de El manera apropiada: inadecuadamente ú combinaciones ce-ci, que-qui, ge-gi, gue-gui, Quiero güe-güi Luego ú r-rr-nr puede ú mayúsculas al iniciar una oración y al escribir anota sustantivos propios completar ú punto al finalizar una palabras oración que, pizarrón, cartel Luego, aplicar zarrón. usando diantes",
+          "indicadores": [
+            "Escriben correctamente palabras que contienen las combinaciones ce-ci, que-qui, ge-gi, gue-gui, güe-güi.",
+            "Escriben correctamente palabras que contienen: r-rr-nr."
+          ],
+          "eje": "Escritura"
+        },
+        {
+          "codigo": "OA 25",
+          "texto": "Participar activamente en conversaciones grupales sobre textos leídos o escuchados en clases o temas de su interés: ú manteniendo el foco de la conversación ú expresando sus ideas u opiniones ú formulando preguntas para aclarar dudas ú demostrando interés ante lo escuchado ú mostrando empatía frente a situaciones expresadas por otros ú respetando turnos Orientaciones didácticas para la unidad trABAjO iNtEgrAdO dE LOS OBjEtiVOS Las actividades propuestas en todas las unidades del presente programa de estudio son sugerencias que muestran distintas maneras de alcanzar rrollarlos en profundidad es indispensable el trabajo con los objetivos, relacionando temáticamente las actividades y evitando hacer actividades descontextualizadas o sin conexión con el previo. Para lograr esto, el profesor puede ficar unidades temáticas semanales o cada semanas, en las que los estudiantes lean, escriban, escuchen y hablen sobre un tema y, de esta ra, sean capaces de transmitir lo que han aprendido. Si bien el propósito de la asignatura es alumnos desarrollen habilidades comunicativas, estas deben anclarse en conocimientos concretos. Por este motivo, los temas y textos que el prepare para realizar las clases son fundamentales y deben estar cuidadosamente elegidos, considerando el nivel y las necesidades de sus alumnos. mEtACOgNiCióN Pensar metacognitivamente consiste en tomar conciencia de cómo uno aprende y qué mecanismos pone en práctica para procesar nueva información. La metacognición es una habilidad indispensable para que los alumnos puedan solucionar las dificultades y los desafíos que presentan al leer, escribir, hablar y escuchar esta manera, puedan convertirse en comunicadores autónomos y competentes. Para desarrollar esta habilidad, es necesario que el docente dele los procesos que lleva a cabo para aprender procesar la información de un texto. El modelaje importante porque, cuando el profesor verbaliza sus propios procesos cognitivos y comparte estudiantes cómo llegó a una conclusión o resolvió alguna dificultad, los alumnos amplían repertorio de estrategias y las aprenden. Además, entienden que, para comprender o producir texto, es necesario tener conciencia de cuándo tiene una dificultad y cómo se puede solucionar. Una manera de fomentar la metacognición plantear preguntas o indicaciones que ayuden me imaginé cuando estaba creando esta Para lograr esto, tengo que darles más ¿qué palabras puedo incorporar para cómo era el personaje? ¿hay algo que personaje que le pueda interesar al lector?. vez que hace los cambios, el docente párrafo modificado y analiza si mejora cambios o no. ESCritUrA La escritura de párrafos o artículos informativos puede ser difícil para los estudiantes si entregan las herramientas para enfrentar mente la tarea. Por esta razón, es necesario antes de comenzar a escribir, los alumnos: conversen sobre lo que van a escribir lean al menos dos o tres textos breves tema que quieren desarrollar ú lean buenos modelos de escritura de adecuados a su edad estén motivados frente a la tarea De lo anterior se desprende que inicialmente esfuerzos deben estar puestos en las que, para escribir un buen texto, es indispensable conocer bien lo que se quiere transmitir manejar suficiente información sobre Ejemplos de",
+          "indicadores": [
+            "Aportan información que se relaciona con el tema sobre el cual se conversa.",
+            "Hacen comentarios que demuestran empatía por lo que expresa un compañero.",
+            "Expresan desacuerdo frente a opiniones emitidas por otros sin descalificar las ideas ni al emisor."
+          ],
+          "eje": "Comunicación oral"
+        },
+        {
+          "codigo": "OA 26",
+          "texto": "interactuar de acuerdo con las convenciones sociales en diferentes situaciones: ú presentarse a sí mismo y a otros ú saludar ú preguntar ú expresar opiniones, sentimientos e ideas ú situaciones que requieren el uso de fórmulas de cortesía como por favor, gracias, perdón, permiso Seguridad historia actitud tores explican (Historia, demostrar acciones Hacen fican mensajes cabo mensaje. Observaciones convenciones namente, emplean estos responsabilidades recordando traspasando conforma PrOPóSitO amplio repertorio de leyendas, cuentos folclóricos y de autor, para que desarrollen su comprensión de textos narrativos de variada índole y se liaricen con diversas manifestaciones literarias. Además, en esta unidad se incluye la lectura trabajo con textos no literarios, que servirán ampliar los conocimientos del mundo y fomentar la curiosidad de los alumnos. Se busca conozcan algunas estrategias de comprensión lectora para que puedan aplicarlas en la lectura de narraciones literarias y de textos no literarios. Por otra parte, se consolida el proceso de critura con el repaso y el refuerzo de la lectura palabras multisilábicas, hiatos, diptongos combinaciones más complejas. En vocabulario, se espera que los alumnos adquieran el hábito preguntar por las palabras que no conocen, que incrementen su vocabulario diariamente esta estrategia. En escritura los estudiantes aprenden a escribir artículos informativos para compartir los aprendizajes y conocimientos adquiridos a través lectura. En este sentido, se espera que los diantes se enfoquen principalmente en las que quieren comunicar y, una vez que han transmitir ideas con efectividad, se centren aspectos ortográficos como mayúsculas, punto guido y signos de exclamación y de interrogación. Finalmente, se espera que, en comunicación LECtUrAS SUgEridAS diez narraciones, diez poemas y dos textos rarios. A continuación se sugieren algunos que se consideran adecuados para este NArrACiONES Título Autor Rapunzel Versión los hermanos Grimm Las doce princesas bailarinas Versión los hermanos Grimm El pez arcoiris Marcus Supongamos Ivar de Coll Yo te curaré dijo el pequeño Janosch Vamos a buscar un tesoro Janosch León de biblioteca Michelle Sapo y Sepo un año entero Arnold Lobel Caperucita roja tal como se Luis María la contaron a Jorge Los tres lobitos y el cochinito Eugene feroz Siete ratones ciegos Ed Young Caperucita roja Charles Ricitos de oro y los tres osos Robert Southey El libro de oro de los niños Verónica (antología) Flon Flon y Musina Elzbieta El domador de monstruos Ana María Machado El huevo más famoso de la Juan Carlos ciudad Chandro La Añañuca (leyenda chilena) Anónimo La serpiente emplumada Anónimo de Asososca (leyenda nicaragüense) El coyote y la tortuga Anónimo (leyenda hopi) Tanabata (leyenda japonesa) Anónimo Cuentas de elefante Helme Heine El pez coi (leyenda china) Anónimo El medio pollo Versión Santa Cruz OBjEtiVOS dE APrENdizAjE",
+          "indicadores": [
+            "Finalmente, escriben un texto que reúne lo dicho en las casas y lo establecido por los mismos estudiantes para que las usen todos los miembros de la comunidad.",
+            "Luego, les pregunta cómo actuarían o hablarían en dicha situación.",
+            "Posteriormente, realizan una dramatización en la cual ponen en práctica lo aprendido."
+          ],
+          "eje": "Comunicación oral"
+        }
+      ],
+      "temas": [
+        "Lectura de leyendas, cuentos folclóricos y de autor",
+        "Comprensión de textos narrativos: estrategias de comprensión",
+        "Lectura no literaria: cartas, instrucciones y artículos informativos",
+        "Escritura de artículos informativos",
+        "Vocabulario: palabras nuevas en contexto",
+        "Comunicación oral: conversación grupal sobre textos leídos"
+      ]
+    },
+    {
+      "numero": 2,
+      "nombre": "Unidad 2",
+      "oas": [
+        {
+          "codigo": "OA 6",
+          "texto": "Leer habitualmente y dis2 frutar los mejores poemas Lectura de autor y de la tradición El pero oral adecuados a su edad. ritmo y el explicados ilustración poema ! Observaciones mente sonidos",
+          "indicadores": [
+            "Dibujan imágenes de poemas que les gusten.",
+            "Explican versos del poema.",
+            "Subrayan y leen en voz alta versos de los poemas leídos en clases que les gustan.",
+            "Recitan poemas seleccionados por ellos.",
+            "Nombran su poema favorito.",
+            "Nombran autores de poemas que les gustan.",
+            "Escogen poemas para leer a otros."
+          ],
+          "eje": "Lectura"
+        },
+        {
+          "codigo": "OA 10",
+          "texto": "Buscar información sobre 1 un tema en una fuente Buscar dada por el docente (página de internet, sección del sobre diario, capítulo de un libro, de etc.), para llevar a cabo una tamiento cómo investigación. Búsqueda fuentes revistas, lleva investiguen diferentes mente Cada",
+          "indicadores": [
+            "Escriben un párrafo para comunicar lo aprendido en la fuente leída."
+          ],
+          "eje": "Lectura"
+        },
+        {
+          "codigo": "OA 21",
+          "texto": "Escribir correctamente 1 para facilitar la comprenmemorice sión por parte del lector, El usando de manera apropiada: escriben ú combinaciones ce-ci, naciones que-qui, ge-gi, gue-gui, bras. grupo güe-güi ú r-rr-nr hacia ú signos de interrogación que y exclamación al inicio que y final de preguntas y exclamaciones 2 ú punto al finalizar una Oraciones oración El combinaciones luego concurso. Practicar indica Afirmativa Comentan leerlas. Para entonando Edición letras y les error está textos",
+          "indicadores": [
+            "Escriben correctamente palabras que contienen las combinaciones ce-ci, que-qui, ge-gi, gue-gui, güe-güi.",
+            "Escriben correctamente palabras que contienen: r-rr-nr."
+          ],
+          "eje": "Escritura"
+        },
+        {
+          "codigo": "OA 23",
+          "texto": "Comprender textos orales (explicaciones, instrucciones, relatos, anécdotas, etc.) para obtener información y desarrollar su curiosidad por el mundo: ú estableciendo conexiones con sus propias experiencias ú identificando el propósito ú formulando preguntas para obtener información adicional y aclarar dudas ú respondiendo preguntas sobre información explícita e implícita ú formulando una opinión sobre lo escuchado",
+          "indicadores": [
+            "Responden preguntas, usando de manera pertinente la información escuchada.",
+            "Expresan una opinión sobre algún aspecto de un texto escuchado y dan una razón."
+          ],
+          "eje": "Comunicación oral"
+        },
+        {
+          "codigo": "OA 27",
+          "texto": "Expresarse de manera coherente y articulada sobre temas de su interés: ú presentando información o narrando un evento relacionado con el tema ú incorporando frases descriptivas que ilustren lo dicho ú utilizando un vocabulario variado ú pronunciando adecuadamente y usando un volumen audible ú manteniendo una postura adecuada alumnos alguno ción Esta Adivinanza y que deberá curso correcta Esta otros dato tiguen tes: rancia tormentas imagen tiguen deben",
+          "indicadores": [
+            "Exponen sobre un tema.",
+            "Describen el objeto o el evento que presentan.",
+            "Expresan al menos dos ideas relacionadas con el tema elegido.",
+            "Expresan las ideas sobre el tema sin hacer digresiones.",
+            "Comunican sus ideas sin recurrir a gestos ni al contexto.",
+            "Incorporan un vocabulario variado en sus intervenciones.",
+            "Incorporan, si es pertinente, palabras aprendidas recientemente.",
+            "Pronuncian cada una de las palabras de manera que todos las comprenden fácilmente."
+          ],
+          "eje": "Comunicación oral"
+        },
+        {
+          "codigo": "OA 30",
+          "texto": "recitar con entonación y expresión poemas, rimas, canciones, trabalenguas y adivinanzas para fortalecer la confianza en sí mismos, aumentar el vocabulario y desarrollar su capacidad expresiva. Orientaciones didácticas para la unidad LECtUrA Para desarrollar la fluidez y la comprensión es fundamental que los alumnos lean en clases, de manera independiente, una abundante cantidad de textos. Por esto, cada vez que posible, los alumnos leen primero el texto cuenta y luego se hace una lectura común. esta manera, los estudiantes adquirirán la necesaria que les permitirá enfocar sus esfuerzos en comprender los textos. mOdELOS dE ESCritUrA En general los niños que leen en abundancia pueden redactar con mayor facilidad, ya que por medio de la lectura han internalizado modelos sintácticos y estructuras textuales das. Por otra parte, los alumnos que han tenido múltiples experiencias con un mismo género, tienen una mejor idea de cómo debe ser ducto final de una tarea de escritura. Por antes de dedicarse a escribir una carta, conviene que lean varios ejemplos de cartas; si se les crear un poema, deben conocer primero diversos para no encasillarse en un modelo Además, leer textos bien escritos puede constituir Ejemplos",
+          "indicadores": [
+            "Recitan poemas o versos de memoria.",
+            "Recitan poemas con entonación.",
+            "Pronuncian adecuadamente las palabras.",
+            "De lo anterior se desprende que la transmisión de un contenido es siempre el objetivo primordial y, para que esto sea así, es necesario que el mensaje tenga coherencia.",
+            "Cada grupo memoriza el texto que le tocó y lo presenta en la próxima reunión de apoderados."
+          ],
+          "eje": "Comunicación oral"
+        }
+      ],
+      "temas": [
+        "Lectura de poemas, fábulas y cuentos folclóricos y de autor",
+        "Comprensión: relacionar textos con experiencias personales",
+        "Lectura no literaria: textos informativos y búsqueda de información",
+        "Escritura de artículos informativos",
+        "Comprensión y expresión oral: recitar poemas con expresión",
+        "Ortografía: uso de mayúsculas y puntuación básica"
+      ]
+    },
+    {
+      "numero": 3,
+      "nombre": "Unidad 3",
+      "oas": [
+        {
+          "codigo": "OA 3",
+          "texto": "Comprender textos Observaciones aplicando estrategias de Enseñar comprensión lectora; por lograr aspectos. ejemplo: ú hacer preguntas mienlos alumnos, tras se lee del docente, lectura esta estrategia al texto la larga, lector Los buenos ú aclarar especular mente localizar ú establecer escribe Elaboración Luego diantes autor Preguntas cente periodistas. protagonista importantes Parejas Luego pide intercambien mente, Escribir serie deben",
+          "indicadores": [
+            "Explican lo que saben de un tema antes de leer un texto sobre el mismo.",
+            "Relacionan, oralmente o por escrito, algún tema o aspecto del texto con sus experiencias o conocimientos previos.",
+            "Describen o dibujan lo que visualizan a partir de una lectura."
+          ],
+          "eje": "Lectura"
+        },
+        {
+          "codigo": "OA 13",
+          "texto": "Escribir creativamente narraciones (experiencias personales, relatos de hechos, cuentos, etc.) que tengan inicio, desarrollo y desenlace. Narración toria sonaje (Historia, ! Observaciones",
+          "indicadores": [
+            "Escriben uno o más párrafos para narrar una experiencia o un evento imaginado.",
+            "Escriben narraciones en las cuales se desarrolla la historia a través de varias acciones.",
+            "Escriben narraciones que tienen un desenlace.",
+            "Puede entregar una copia a cada estudiante o proyectarla en la sala.",
+            "A partir de los dibujos, los estudiantes primero cuentan la historia oralmente a un compañero y luego la escriben."
+          ],
+          "eje": "Escritura"
+        },
+        {
+          "codigo": "OA 19",
+          "texto": "Comprender la función de 1 los artículos, sustantivos y Sustantivos adjetivos en textos orales El bras y escritos, y reemplazarlos o combinarlos de diversas tos, maneras para enriquecer o Luego precisar sus producciones. que alumnos plica comunes pios otros Rubén Chile trabajen Artículos ellos, pañan hablando perros profesor definidos personas, Adjetivos acompañan terísticas; quién están chico, cionado, varios indiquen guía describir textura. adjetivos descripción. resto",
+          "indicadores": [
+            "Seleccionan el artículo que concuerda con un sustantivo en un texto.",
+            "Usan adecuadamente los artículos definidos e indefinidos, según el contexto.",
+            "Eligen el artículo (definido o indefinido) que mejor calza con una situación descrita.",
+            "Usan, en sus producciones orales y escritas, sustantivos precisos para nombrar objetos, personas y lugares.",
+            "Sintetizan una frase nominal con un sustantivo.",
+            "Por ejemplo: reemplazan “El hijo de la hermana de mi mamá” por “mi primo”.",
+            "Precisan un sustantivo, utilizando adjetivos y complementos.",
+            "Buscan sinónimos de los sustantivos usados en sus textos para evitar la repetición o para precisar sus ideas.",
+            "Señalan en un texto qué palabras caracterizan a un objeto, lugar, animal o persona.",
+            "Usan adjetivos para especificar las características de un objeto, animal o persona en una descripción.",
+            "Una niña le dice a su hermana que le devuelva su vestido verde.",
+            "Ana, por favor devuélveme vestido verde.",
+            "Un niño busca su cuaderno de matemáticas.",
+            "Le describe a otro niño su cuaderno para saber si lo ha visto."
+          ],
+          "eje": "Escritura"
+        },
+        {
+          "codigo": "OA 20",
+          "texto": "Identificar el género y nú1 mero de las palabras para Tarjetas asegurar la concordancia El palabra en sus escritos. entrega escriban: continuación, ejemplo, esta Concordancia palabras algunos comunicación.",
+          "indicadores": [
+            "Identifican el género y el número de las palabras.",
+            "Mantienen la concordancia de género y número entre sustantivos y adjetivos.",
+            "Luego, cuatro tarjetas en blanco a los estudiantes, para que femenino, masculino, singular y plural.",
+            "Después, escribe palabra en el pizarrón y los estudiantes levantan las tarjecorrespondientes al género y el número de dicha palabra.",
+            "Luego les entrega un texto en el cual artículos no concuerdan con los sustantivos para que estudiantes los corrijan en sus cuadernos.",
+            "Discuten sobre qué problemas de comunicación podrían tener si escriben frases como “mi tía lindo”."
+          ],
+          "eje": "Escritura"
+        }
+      ],
+      "temas": [
+        "Comprensión lectora con estrategias",
+        "Narraciones literarias: comprensión profunda e inferencia",
+        "Poesía: interpretación y recitación",
+        "Escritura narrativa creativa",
+        "Gramática: artículos, sustantivos y adjetivos; género y número",
+        "Comunicación oral: conversación grupal sobre textos leídos"
+      ]
+    },
+    {
+      "numero": 4,
+      "nombre": "Unidad 4",
+      "oas": [
+        {
+          "codigo": "OA 24",
+          "texto": "disfrutar de la experiencia 1 de asistir a obras de teatro Antes infantiles o representaAntes sación ciones para ampliar sus posibilidades de expreobra sión, desarrollar su creatiqué vidad y familiarizarse con En sible, el género. Conversar Después estudiantes prensión. y pide diferentes originales imitar nunciación, Actuar personaje. y los identificar ñeros Después y sus género,",
+          "indicadores": [
+            "Relatan una parte de la obra de teatro infantil vista.",
+            "Describen, oralmente o por escrito, la parte que más les gustó de una obra de teatro o representación vista.",
+            "Nombran personajes favoritos de una obra de teatro o representación vista."
+          ],
+          "eje": "Comunicación oral"
+        },
+        {
+          "codigo": "OA 29",
+          "texto": "desempeñar diferentes 1 roles para desarrollar su mímica lenguaje y autoestima, El tarjetas y aprender a trabajar en equipo. nes. ocupación ningún mímica, cuál sión Lectura sonajes. racterizando entre recreación narrativo. narrados. docente acontecimientos. y luego representar narrativo. divide cuento recorten contar Ejemplos Ejemplo 1 OA_23 Comprender textos orales (explicaciones, información y desarrollar su curiosidad estableciendo conexiones con ú respondiendo preguntas sobre iNdiCAdOrES dE EVALUACióN Relacionan algún tema o aspecto otros textos escuchados o leídos Señalan qué aprendieron de los Responden preguntas, usando Actividad El docente selecciona un texto en elalmanaque.com/navidad/mundo.htm Navidad en diferentes países (Finlandia aunque se recomienda adaptar mismo tema, puede adaptar y acortar tradiciones-navidad-finlandia.php luego se les preguntará sobre ello; preguntas en el pizarrón. ¿Los finlandeses celebran la Navidad ¿Qué hacen en Finlandia las familias El docente lee el texto y los estudiantes Finalmente, comentan sus respuestas texto. El docente evalúa las respuestas problemas de comprensión. Ejemplo 2 OA_23 Comprender textos orales (explicaciones, información y desarrollar su curiosidad estableciendo conexiones con sus ú respondiendo preguntas sobre información iNdiCAdOrES dE EVALUACióN Relacionan algún tema o aspecto otros textos escuchados o leídos anteriormente. Señalan qué aprendieron de los textos Responden preguntas, usando de Actividad El docente lee en voz alta un texto informativo una película o una materia que han lito viaje de Jemmy Button, de Ana María sobre los canales del sur de Chile (sobre que son adecuados para el nivel). Después del artículo con los conocimientos previos instrucciones: Antes de escuchar un texto sobre los ¿Qué sabe de estos canales? ú ¿Qué se dice en la historia de Jemmy Luego de escuchar el texto leído por ¿Qué otro lugar se parece al sitio ¿Por qué se parece? ú ¿Qué cosas se mencionan en el artículo ton? ¿Qué información nueva aprendió Dibuje el lugar descrito y a Jemmy CritEriOS dE EVALUACióN Esta actividad está orientada como habilidades de comprensión oral nueva con conocimientos adquiridos Para evaluar el desempeño de cada cuenta los siguientes criterios: Pregunta ¿Qué sabe de estos canales? ¿Qué se dice en la historia de Jemmy Button sobre estos canales? ¿Qué otro lugar se parece al sitio sobre el que escuchó? ¿Por qué se parece? ¿Qué cosas se mencionan en el artículo que también salían en la historia de Jemmy Button? ¿Qué información nueva aprendió sobre el lugar? Dibuje el lugar descrito y a Jemmy Button en él. BiBLiOgrAfÍA PArA EL dOCENtE Lectura Alliende, f. y CondeMArín, M. (1997). asignatura de Castellano al área del Santiago: Dolmen. arizPe e. y styLes, m. (2006). Lectura de imágenes. Ciudad de México: FCE. (2001). Poesía, mucha poesía BeuChAt, C. Educación Básica. Santiago: Andrés BoisVert, J. (2004). La formación del pensamiento crítico. Ciudad de México: FCE. (Comps.) Burns, m. s., Griffin, P. y snow, C. (2002). Un buen comienzo. Guía para promover la lectura en la infancia. Ciudad México: FCE. (2009). Conversaciones: escritos ChAMBers, A. sobre la lectura. Ciudad de México: ChAMBers, A. (2008). El ambiente de la Ciudad de México: FCE. (2006). Lecturas. Ciudad de ChAMBers, A. México: FCE. ColAsAnti, M. (2004). Fragatas para tierras lejanas. Bogotá: Norma. (2005). Andar entre libros: la ColoMer, t. literaria en la escuela. Buenos Aires: Centro de reCursos Para eL aPrendizaje – Cra (2009). Leamos juntos. Santiago: Ministerio de Educación. http://www. bibliotecas-cra.cl/uploadImg/File/ Leamosjuntos.pdf Centro de reCursos Para eL aPrendizaje (2007). Ver para leer. Acercándonos – Cra. al libro álbum. Santiago: Ministerio Educación. http://www.bibliotecas-cra.cl/ uploadDocs/200805081101470. Ultimo%20LIBRO_CRA_DIC18.pdf díAz, f. h. (2007). Leer y mirar el libro álbum: género en construcción? Bogotá: Norma. (1999). La hora del cuento. edWArds, A. Santillana. eyzAGuirre, B. y fontAine, l. (2008). escuelas que tenemos. Santiago: CEP. (2000). El cuento en pedagogía GiLLiG, j-m. reeducación. Ciudad de México: FCE. JoliBert, J. (1991). Formar niños lectores textos. Santiago de Chile: Hachette. (1997). El poder JoliBert, J. y Gloton, r. leer. Barcelona: Gedisa. Otros (1988). Pensamiento VyGotsky, l.s. Buenos Aires: La Pléyade. VyGotsky, l.s. (1984). Aprendizaje y intelectual en la edad escolar. En aprendizaje, Nº 27-28, Madrid. BiBLiOgrAfÍA ALUmNOS textos literarios Gustavo y los miedos AlCÁntArA, r. f. Nuevos cofres para antiguos Alliende, ÁlVArez, B. La araña enamorada ArMiJo, C. El mono imitamonos A. Encender una luz BonillA rius, Mi dragona CzerloWski, C. y donoso, V. de PaoLa, t. Memo y Leo deVetACh, l. Historia de ratita La bruja en la montaña díAz, G. C. El rey solito estrAdA, r. fAlConer, i. Olivia fAlConer, i. Olivia salva el circo Olivia y su banda fAlConer, i. i. Olivia recibe la Navidad fAlConer, fAlConer, i. Olivia y el juguete desaparecido heCk, e. Miguel y el dragón Disculpe… ¿Es usted una bruja? horn, e. Matilde y las brujas huAnqui, J. f. inkioW, d. Yo, y mi hermana Clara JAnosCh. Vamos a buscar un tesoro. Historia cómo el pequeño oso y el pequeño en busca de la felicidad. ketteMAn, h. Armadillo el chismoso lionni, l. Nadarin Una piedra extraordinaria lionni, l. l. Un pez arcoiris lionni, loBe, M. El fantasma de palacio loBel, A. Días con Sapo y Sepo Sapo y Sepo inseparables loBel, A. El viaje de Lisa maar, P. maar, P. La puerta olvidada mateos, P. La bruja Mon Franz se mete en problemas nöstlinGer, C. amor nöstlinGer, C. De por qué a Franz le estómago C. Más historias de Franz nöstlinGer, Perro Azul nAdJA. Perera, H. Rana ranita Biblioteca digital internacional para niños http://es.childrenslibrary.org/ diCCionArios Diccionario Espasa Calpe http://www.wordreference.com/definicion/ Diccionario Espasa Calpe de sinónimos http://www.wordreference.com/sinonimos/ Diccionario Larousse http://www.diccionarios.com/ Real Academia de la Lengua Española http://www.rae.es/rae.html Diccionario de biografías www.buscabiografias.com Cuentos y Poemas Cuentos de los hermanos Grimm http://www.grimmstories.com/es/grimm_ cuentos/index ú Fábulas de Esopo http://www.edyd.com Federico García Lorca http://federicogarcialorca.net/index.htm ú Gabriela Mistral http://www.gabrielamistral.uchile.cl/ Pablo Neruda http://www.neruda.uchile.cl/ ú Poesía en español http://www.los-poetas.com/ Poesía latinoamericana http://poesialat.tripod.com/poetas.html ú Antología de poesía infantil iberoamericana http://www.comunidadandina.org/bda/docs/ PE-LIN-0001.pdf Prensa Revista de Literatura Infantil http://www.cuatrogatos.org Anexo Matriz de Bases LECtUrA NiVEL 1º BáSiCO NiVEL Reconocer que los textos escritos transmiten mensajes y que son escritos por alguien para cumplir un propósito. Reconocer que las palabras son unidades de significado separadas por espacios en el texto escrito. laicini Identificar los sonidos que componen las palabras (conarutceL ciencia fonológica), reconociendo, separando y combinando sus fonemas y sílabas. Leer palabras aisladas y en Leer contexto, aplicando su conoincluyan cimiento de la correspondendiptongos, cia letra-sonido en diferentes nánticos combinaciones: sílaba directa, ce-ci, indirecta o compleja, y dígragüe-güi. fos rr-ll-ch-qu. arutcel Leer textos breves en voz alta Leer para adquirir fluidez: fluidez: pronunciando cada palabra pronunciando con precisión, aunque se autoprecisión, corrijan en algunas ocasiones jan en nóisnerpmoC ú respetando el punto seguido y ú respetando el punto aparte el punto leyendo palabra a palabra sin detenerse NiVEL 4º BáSiCO NiVEL Leer en voz alta de manera Leer fluida variados textos aprovariados piados a su edad: pronunciando las palabras con precisión ú respetando los signos de puntuación leyendo con entonación adecuada ú leyendo con velocidad adecuada para el nivel NiVEL 1º BáSiCO NiVEL Comprender textos aplicando Comprender estrategias de comprensión estrategias lectora; por ejemplo: lectora; ú relacionar la información del ú relacionar texto con sus experiencias y texto conocimientos conocimientos ú visualizar lo que describe el ú visualizar texto texto hacer arutcel nóisnerpmoC Leer independientemente y Leer familiarizarse con un amplio familiarizarse repertorio de literatura para repertorio aumentar su conocimiento aumentar del mundo y desarrollar su mundo imaginación; por ejemplo: nación; ú poemas ú poemas ú historias breves ú cuentos textos con una estructura fábulas predecible leyendas ú otros NiVEL 4º BáSiCO NiVEL Comprender textos aplicando Comprender estrategias de comprensión estrategias lectora; por ejemplo: lectora; relacionar la información del texto con sus experiencias y conocimientos releer lo que no fue comprendido visualizar lo que describe el texto recapitular formular preguntas sobre lo leído y responderlas ú subrayar información releú vante en un texto Leer y familiarizarse con Leer un amplio repertorio de amplio literatura para aumentar su para conocimiento del mundo y del desarrollar su imaginación; ginación por ejemplo: social ú poemas ú ú cuentos folclóricos y de ú autor fábulas ú leyendas ú ú mitos ú novelas historietas ú otros NiVEL 1º BáSiCO NiVEL Demostrar comprensión de naDemostrar rraciones que aborden temas narraciones que les sean familiares: ú extrayendo ú extrayendo información cita explícita e implícita reconstruyendo respondiendo preguntas simlas ples, oralmente o por escrito, ú identificando sobre los textos (qué, quién, do dónde, cuándo, por qué) sentimientos recreando personajes a través personajes de distintas expresiones artísú recreando, ticas, como títeres, dramatiexpresiones zaciones, dibujos o esculturas tridimensionales describiendo con sus palabras ambiente las ilustraciones del texto y acción relacionándolas con la historia ú estableciendo estableciendo relaciones el texto entre el texto y sus propias cias arutcel experiencias ú emitiendo ú emitiendo una opinión sobre un un aspecto de la lectura nóisnerpmoC Leer habitualmente y disfrutar Leer los mejores poemas de autor y los mejores de la tradición oral adecuados de la a su edad. su edad. NiVEL 4º BáSiCO NiVEL Profundizar su comprensión de Analizar las narraciones leídas: narraciones ú extrayendo información zar explícita e implícita ú determinando las consecuencias de hechos o accioú describiendo y comparando a los personajes describiendo los diferentes ambientes que aparecen en un texto ú reconociendo el problema y la solución en una narración ú expresando opiniones fundaú mentadas sobre actitudes y acciones de los personajes comparando diferentes textos escritos por un mismo ú autor Comprender poemas adecuaAnalizar dos al nivel e interpretar el diversos lenguaje figurado presente en zar ellos. ú NiVEL 1º BáSiCO NiVEL Leer independientemente y comprender textos no literarios mente escritos con oraciones simples literarios (cartas, notas, instrucciones ciones y artículos informativos) para para entretenerse y ampliar su coconocimiento nocimiento del mundo: ú extrayendo ú extrayendo información cita explícita e implícita comprendiendo formulando una opinión que sobre algún aspecto de la los lectura ú formulando algún arutcel nóisnerpmoC NiVEL 4º BáSiCO NiVEL Leer independientemente y Leer comprender textos no literarios comprender (cartas, biografías, relatos his(cartas, tóricos, instrucciones, libros y ricos, artículos informativos, noticias, tivos, etc.) para ampliar su conocisu miento del mundo y formarse formarse una opinión: ú extrayendo información explícita e implícita ú utilizando los organizadores de textos expositivos (títulos, subtítulos, índice y glosario) para encontrar información específica ú comprendiendo la información entregada por textos discontinuos, como imágenes, gráficos, tablas, mapas o diagramas ú interpretando expresiones en lenguaje figurado ú comparando información ú ú respondiendo preguntas como ¿por qué sucede…?, ¿cuál es la consecuencia de…?, ¿qué sucedería si…? ú formulando una opinión sobre algún aspecto de la lectura ú fundamentando su opinión con información del texto o sus conocimientos previos Evaluar mación diversa NiVEL 1º BáSiCO NiVEL arutcel nóisnerpmoC Desarrollar el gusto por la Desarrollar lectura, explorando libros y sus lectura, arutcel ilustraciones. diversos Asistir habitualmente a la Asistir biblioteca para elegir, escuchar, teca leer y explorar textos de su y elegir sotibáH interés. rial en nóicagitsevni Buscar tema el docente sección libro, investigación. Desarrollar las palabras desconocen de averiguar oiralubacoV NiVEL 4º BáSiCO NiVEL Sintetizar principales para estudiar, recordar Desarrollar el gusto por la lecDesarrollar tura, leyendo habitualmente leyendo diversos textos. textos. Asistir habitualmente a la Asistir biblioteca para satisfacer ca diversos propósitos (enconsitos trar información, elegir libros, sobre estudiar, trabajar o investigar), actualidad, cuidando el material en favor comportamiento del uso común. material Buscar y clasificar información Buscar sobre un tema en internet, lición bros, diarios, revistas, encicloen pedias, atlas, etc., para llevar a tas, cabo una investigación. llevar Aplicar estrategias para deterAplicar minar el significado de palabras minar nuevas: nuevas: claves del texto (para deterclaves minar qué acepción es pertinar nente según el contexto) según raíces y afijos raíces preguntar a otro preguntar ú diccionarios, enciclopedias e ú diccionarios, internet internet ESCritUrA NiVEL 1º BáSiCO NiVEL erbil Experimentar con la escritura Escribir para comunicar hechos, ideas desarrollar arutircsE y sentimientos, entre otros. expresar poemas, dotas, Escribir oraciones completas Escribir para transmitir mensajes. ciones relatos etc.) rrollo Escribir adaiug para sobre arutircsE Escribir con letra clara, seEscribir parando las palabras con un rando espacio para que puedan ser cio para leídas por otros con facilidad. por otros NiVEL 4º BáSiCO NiVEL Escribir frecuentemente, Escribir para desarrollar la creatividad para y expresar sus ideas, textos y como poemas, diarios de vida, como cuentos, anécdotas, cartas, cuentos, comentarios sobre sus lectublogs, ras, noticias, etc. Escribir creativamente Escribir narraciones (experiencias ciones personales, relatos de hechos, personales, cuentos, etc.) que incluyan: etc.) una secuencia lógica de eventos ú inicio, desarrollo y desenlace ú ú conectores adecuados descripciones un lenguaje expresivo para desarrollar la acción Escribir artículos informativos Escribir para comunicar información para sobre un tema: sobre ú presentando el tema en una ú oración desarrollando una idea central por párrafo ú utilizando sus propias palaú bras Escribir cartas, instruccioEscribir nes, afiches, reportes de una compartir experiencia o noticias, entre sus otros, para lograr diferentes tema propósitos: fundamentando usando un formato adecuado rios ú transmitiendo el mensaje con claridad Escribir con letra clara para que pueda ser leída por otros con facilidad. NiVEL 1º BáSiCO NiVEL Planificar ideas ú observación ú conversaciones el docente personales Escribir, arutircse tos para transmitir Durante ú organizan y terminan utilizan sosecorP ú mejoran a partir pares corrigen género y la Incorporar de manera perIncorporar augnel tinente en la escritura el en la vocabulario nuevo extraído de nuevo textos escuchados o leídos. chados Comprender artículos, ojenam en textos reemplazarlos diversas cer o NiVEL 4º BáSiCO NiVEL Planificar la escritura: Planificar estableciendo propósito y destinatario ú generando ideas a partir de ú conversaciones, investigaciones, lluvia de ideas u otra estrategia Escribir, revisar y editar sus texEscribir, tos para satisfacer un propósito tos y transmitir sus ideas con claritransmitir dad. Durante este proceso: Durante ú organizan las ideas en páú rrafos separados con punto aparte utilizan conectores apropiados ú emplean un vocabulario preú ciso y variado adecuan el registro al propósito del texto y al destinatario ú mejoran la redacción del texto a partir de sugerencias de los pares y el docente corrigen la ortografía y la presentación Incorporar de manera perIncorporar tinente en la escritura el en vocabulario nuevo extraído de nuevo textos escuchados o leídos. chados NiVEL 1º BáSiCO NiVEL Identificar de las augnel concordancia ojenam Escribir facilitar del lector, apropiada: combinaciones ge-gi, ú r-rr-nr ú mayúsculas oración propios ú punto ú signos exclamación preguntas NiVEL 4º BáSiCO NiVEL Comprender la función de los adverbios en textos orales y escritos, y reemplazarlos o combinarlos para enriquecer o precisar sus producciones. Comprender la función de los Conjugar verbos en textos orales y escribos tos, y usarlos manteniendo la producciones concordancia con el sujeto. Escribir correctamente para faEscribir cilitar la comprensión por parte facilitar del lector, aplicando todas las del reglas de ortografía literal y ortográficas puntual aprendidas en años anteriores, anteriores, además de: ú palabras con b-v ú ú palabras con h de uso freú cuente escritura de ay, hay, ahí ú acentuación de palabras agudas, graves, esdrújulas y sobreesdrújulas COmUNiCACióN OrAL NiVEL 1º BáSiCO NiVEL Comprender y disfrutar verComprender siones completas de obras de nes completas la literatura, narradas o leídas literatura, por un adulto, como: un adulto, cuentos folclóricos y de cuentos autor ú poemas poemas fábulas fábulas leyendas leyendas Comprender textos orales Comprender (explicaciones, instruccio(explicaciones, nes, relatos, anécdotas, etc.) relatos, para obtener información y obtener desarrollar su curiosidad por llar su el mundo: ú estableciendo estableciendo conexiones sus laro con sus propias experiencias identificando ú visualizando lo que se desú formulando nóisnerpmoC cribe en el texto obtener formulando preguntas para y aclarar obtener información adiciorespondiendo nal y aclarar dudas sobre ú respondiendo preguntas implícita abiertas formulando formulando una opinión lo escuchado sobre lo escuchado Desarrollar la curiosidad por las palabras o expresiones que desconocen y adquirir el hábito de averiguar su significado. NiVEL 4º BáSiCO NiVEL Comprender y disfrutar verComprender siones completas de obras de nes la literatura, narradas o leídas literatura, por un adulto, como: un cuentos folclóricos y de autor ú poemas mitos y leyendas capítulos de novelas Comprender textos orales Comprender (explicaciones, instruccio(explicaciones, nes, noticias, documentales, noticias, películas, testimonios, relatos, trevistas, etc.) para obtener informaetc.) ción y desarrollar su curiosiy dad por el mundo: el estableciendo conexiones con sus propias experiencias ú identificando el propósito formulando preguntas para obtener información adicional, aclarar dudas y profundizar la comprensión ú estableciendo relaciones entre distintos textos ú respondiendo preguntas sobre información explícita e implícita formulando una opinión sobre lo escuchado NiVEL 1º BáSiCO NiVEL laro nóisnerpmoC Disfrutar de la experiencia Disfrutar de asistir a obras de teatro asistir infantiles o representaciones o representaciones para ampliar sus posibilidades sus posibilidades de expresión, desarrollar su desarrollar creatividad y familiarizarse con liarizarse el género. Participar activamente en Participar conversaciones grupales sobre conversaciones textos leídos o escuchados en textos clases o temas de su interés: clases ú expresando sus ideas u opiú manteniendo niones conversación nóiccaretni demostrando interés ante lo expresando escuchado nes ú respetando turnos ú formulando aclarar demostrando escuchado ú mostrando tuaciones respetando NiVEL 4º BáSiCO NiVEL Disfrutar de la experiencia Apreciar de asistir a obras de teatro las infantiles o representaciones para ampliar sus posibilidades de expresión, desarrollar su ú creatividad y familiarizarse con el género. Participar activamente en Dialogar conversaciones grupales sobre rrollar textos leídos o escuchados en clases o temas de su interés: ú manteniendo el foco de la ú conversación expresando sus ideas u opiniones y fundamentándolas ú ú formulando preguntas para aclarar dudas y verificar la comprensión ú demostrando interés ante lo escuchado mostrando empatía frente a situaciones expresadas por otros ú respetando turnos NiVEL 1º BáSiCO NiVEL Interactuar de acuerdo con Interactuar las convenciones sociales en convenciones diferentes situaciones: rentes ú presentarse a sí mismo y a ú presentarse nóiccaretni otros saludar saludar preguntar ú preguntar ú expresar ú expresar opiniones, sentitos mientos e ideas situaciones situaciones que requieren el uso uso de fórmulas de cortesía como como por favor, gracias, perdón, dón, permiso Expresarse de manera coheExpresarse rente y articulada sobre temas y articulada de su interés: interés: presentando información o presentando narrando un evento relaciorrando nado con el tema con ú incorporando frases descripú incorporando tivas que ilustren lo dicho vas utilizando un vocabulario utilizando variado do ú pronunciando adecuadaú pronunciando mente y usando un volumen y usando audible manteniendo manteniendo una postura cuada laro adecuada nóiserpxE NiVEL 4º BáSiCO NiVEL Interactuar de acuerdo con Interactuar las convenciones sociales en convenciones diferentes situaciones: rentes ú presentarse a sí mismo y a ú otros saludar ú preguntar ú ú expresar opiniones, sentimientos e ideas situaciones que requieren el uso de fórmulas de cortesía como por favor, gracias, perdón, permiso Expresarse de manera coheExpresarse rente y articulada sobre temas efectiva de su interés: para organizando las ideas en ininterés: troducción, desarrollo y cierre incorporando descripciones y ejemplos que ilustren las ú ideas utilizando un vocabulario variado ú reemplazando los pronomú bres y algunos adverbios por construcciones sintácticas que expliciten o describan al referente ú usando gestos y posturas acordes a la situación usando material de apoyo (power point, papelógrafo, objetos, etc.) si es pertinente NiVEL 1º BáSiCO NiVEL Incorporar de manera pertiIncorporar nente en sus intervenciones en sus orales el vocabulario nuevo vocabulario extraído de textos escuchados textos o leídos. Desempeñar diferentes roles Desempeñar para desarrollar su lenguaje para laro y autoestima, y aprender a autoestima, trabajar en equipo. en equipo. nóiserpxE Recitar con entonación y exRecitar presión poemas, rimas, canciosión nes, trabalenguas y adivinanzas trabalenguas para fortalecer la confianza fortalecer en sí mismos, aumentar el mismos, vocabulario y desarrollar su lario capacidad expresiva. expresiva. NiVEL 4º BáSiCO NiVEL Incorporar de manera pertiIncorporar nente en sus intervenciones en orales el vocabulario nuevo vocabulario extraído de textos escuchados textos o leídos. Caracterizar distintos personaProducir jes para desarrollar su lenguaje dos y autoestima, y aprender a llar trabajar en equipo. Recitar poemas con entonación y expresión para fortalecer la confianza en sí mismos, aumentar el vocabulario y desarrollar su capacidad expresiva. En este programa se utilizaron las tipografías Sailec Bold y Digna (tipografía chilena diseñada por Rodrigo Ramírez) en todas sus variantes. Se imprimió en papel hilado de 106 g para interiores y papel couché de 250 g para portadas. Encuadernado en lomo cuadrado, con costura hilo y hot melt.",
+          "indicadores": [
+            "Representan un personaje de un texto leído, actuando sus principales características.",
+            "Imitan el lenguaje que usa el personaje que están interpretando.",
+            "Representan partes de textos escuchados o leídos."
+          ],
+          "eje": "Comunicación oral"
+        }
+      ],
+      "temas": [
+        "Repertorio literario: cuentos y narraciones variadas",
+        "Narraciones: comprensión y análisis de personajes",
+        "Textos no literarios: leer con propósito",
+        "Escritura narrativa creativa",
+        "Comprensión de textos orales",
+        "Teatro infantil y juego dramático: roles y personajes"
+      ]
+    }
+  ]
+}

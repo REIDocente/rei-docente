@@ -26,6 +26,7 @@ import {
   Library
 } from 'lucide-react';
 import { gameEngines, GameEngine, GameSection } from '@/lib/templates/gameEngines';
+import { programas, getUnidades, getTemas, getOAs, Programa, Unidad, Tema, OA } from '@/data/programas';
 import { drawPlayPdf } from '@/lib/templates/drawPlayPdf';
 import { drawPlayWord } from '@/lib/templates/drawPlayWord';
 import { jsPDF } from 'jspdf';
@@ -39,8 +40,6 @@ const CHILEAN_COURSES = [
 export default function REIPlayPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
-  const [plannings, setPlannings] = useState<any[]>([]);
-  const [loadingPlannings, setLoadingPlannings] = useState(true);
   const [lecturas, setLecturas] = useState<any[]>([]);
   const [loadingLecturas, setLoadingLecturas] = useState(true);
 
@@ -49,17 +48,80 @@ export default function REIPlayPage() {
 
   // Form states
   const [fuente, setFuente] = useState<'planificacion' | 'tema_manual' | 'lectura_domiciliaria'>('planificacion');
-  const [planificacionId, setPlanificacionId] = useState<string>('');
-  const [tema, setTema] = useState<string>('');
   const [libroId, setLibroId] = useState<string>('');
+  const [tema, setTema] = useState<string>('');
   const [nivel, setNivel] = useState<string>('2° Medio');
   const [oaCodes, setOaCodes] = useState<string>('');
+
+  // Estado para fuente 'planificacion' (selectores curriculares MINEDUC)
+  const [programaId, setProgramaId] = useState<string>('');
+  const [unidadId, setUnidadId] = useState<string>('');
+  const [temaId, setTemaId] = useState<string>('');
+  const [selectedOAs, setSelectedOAs] = useState<string[]>([]);
+
+  // Computados de programa
+  const selectedPrograma = programas.find(p => p.id === programaId) ?? null;
+  const unidadesDisponibles = programaId ? getUnidades(programaId) : [];
+  const temasDisponibles = (programaId && unidadId) ? getTemas(programaId, unidadId) : [];
+  const oasDisponibles = (programaId && unidadId && temaId) ? getOAs(programaId, unidadId, temaId) : [];
+
+  const toggleOA = (codigo: string) => {
+    setSelectedOAs(prev => prev.includes(codigo) ? prev.filter(c => c !== codigo) : [...prev, codigo]);
+  };
+
+  const handleSelectPrograma = (id: string) => {
+    setProgramaId(id);
+    setUnidadId('');
+    setTemaId('');
+    setSelectedOAs([]);
+    const p = programas.find(pr => pr.id === id);
+    if (p) setNivel(p.nivel_codigo);
+  };
+
+  const handleSelectUnidad = (id: string) => {
+    setUnidadId(id);
+    setTemaId('');
+    setSelectedOAs([]);
+  };
+
+  const handleSelectTema = (id: string) => {
+    setTemaId(id);
+    // Auto-seleccionar todos los OAs del tema
+    const oas = getOAs(programaId, unidadId, id);
+    setSelectedOAs(oas.map(o => o.codigo));
+  };
 
   // Selected engine & configs
   const [selectedEngineId, setSelectedEngineId] = useState<string>('detective');
   const [duracion, setDuracion] = useState<number>(20);
   const [modalidad, setModalidad] = useState<string>('parejas');
   const [dificultad, setDificultad] = useState<string>('media');
+
+  // Paso 3: Personalización visual
+  const [estilo, setEstilo] = useState<string>('juvenil');
+  const [colores, setColores] = useState<string>('vibrantes');
+  const [ilustraciones, setIlustraciones] = useState<string>('equilibradas');
+  const [recortables, setRecortables] = useState<boolean>(true);
+  const [complementos, setComplementos] = useState<string[]>([]);
+  const [versionDescarga, setVersionDescarga] = useState<string>('color');
+  const [instruccionEspecial, setInstruccionEspecial] = useState<string>('');
+
+  // Complementos disponibles por motor
+  const COMPLEMENTOS_POR_MOTOR: Record<string, string[]> = {
+    detective:           ['Sobres de evidencia', 'Credenciales de investigador', 'Tarjetas de pistas'],
+    escape_room:         ['Sobres de pistas', 'Llaves recortables', 'Tarjetas de codigo'],
+    bingo:               ['Fichas para marcar'],
+    trivia:              ['Fichas de jugador', 'Marcador de puntaje', 'Tablero de puntuacion'],
+    cartas:              ['Caja armable', 'Reglamento imprimible'],
+    memoria:             ['Fichas para marcar pares'],
+    clue:                ['Hoja de deduccion adicional', 'Fichas de jugador', 'Sobre de acusacion'],
+    serpiente_escaleras: ['Dado armable', 'Fichas de jugador'],
+    ludo:                ['Dado armable', 'Fichas de jugador (4 colores)'],
+  };
+
+  const toggleComplemento = (c: string) => {
+    setComplementos(prev => prev.includes(c) ? prev.filter(x => x !== c) : [...prev, c]);
+  };
 
   // Generation status
   const [generating, setGenerating] = useState(false);
@@ -69,9 +131,43 @@ export default function REIPlayPage() {
   // Preview UI collapsibles
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
 
+  // Planificaciones guardadas (para fuente 'planificacion')
+  const [plannings, setPlannings] = useState<any[]>([]);
+  const [loadingPlannings, setLoadingPlannings] = useState(false);
+  const [selectedPlanningId, setSelectedPlanningId] = useState<string>('');
+
   // Export statuses
   const [exportingPdf, setExportingPdf] = useState(false);
   const [exportingWord, setExportingWord] = useState(false);
+
+  // Ilustrar con IA externa
+  const [showIlustrarPrompt, setShowIlustrarPrompt] = useState(false);
+  const [copiadoPrompt, setCopiadoPrompt] = useState(false);
+
+  const generarPromptIlustracion = () => {
+    const selectedPlanning = plannings.find(p => p.id === selectedPlanningId);
+    const unidadNombre = selectedPlanning?.unit || unidadesDisponibles.find(u => u.id === unidadId)?.nombre || '';
+    const temaNombre = temasDisponibles.find(t => t.id === temaId)?.nombre || tema || '';
+    const asignatura = selectedPlanning?.subject || selectedPrograma?.asignatura || 'la asignatura';
+    const nivelTexto = selectedPlanning?.grade || nivel;
+    const motorNombre = activeEngine?.nombre || selectedEngineId;
+    const contexto = unidadNombre ? `la unidad "${unidadNombre}"` : `el tema "${temaNombre}"`;
+
+    return `Soy docente de ${asignatura}, ${nivelTexto}.
+
+Acabo de crear un juego tipo "${motorNombre}" basado en ${contexto}.
+
+El PDF adjunto contiene las tarjetas y fichas del juego con su texto completo.
+
+Por favor, genera una imagen ilustrativa para cada tarjeta que sea:
+- Temáticamente coherente con ${temaNombre || unidadNombre}
+- Apropiada para estudiantes de ${nivelTexto}
+- Estilo gráfico educativo, colorido y atractivo
+- Con el texto de cada tarjeta integrado o destacado visualmente en la imagen
+- Con un diseño que invite a la participación y el juego
+
+Adjunto el PDF con las fichas del juego.`;
+  };
 
   useEffect(() => {
     supabase.auth.getUser().then(async ({ data: { user } }) => {
@@ -80,23 +176,6 @@ export default function REIPlayPage() {
         return;
       }
       setUser(user);
-
-      // Fetch plannings
-      try {
-        const { data: planningsData } = await supabase
-          .from('plannings')
-          .select('id, created_at, subject, grade, learning_objective, unit')
-          .order('created_at', { ascending: false });
-        
-        setPlannings(planningsData || []);
-        if (planningsData && planningsData.length > 0) {
-          setPlanificacionId(planningsData[0].id);
-        }
-      } catch (e) {
-        console.error('Error fetching plannings:', e);
-      } finally {
-        setLoadingPlannings(false);
-      }
 
       // Fetch lecturas_docente
       try {
@@ -123,22 +202,38 @@ export default function REIPlayPage() {
       } finally {
         setLoadingLecturas(false);
       }
+
+      // Fetch planificaciones guardadas
+      setLoadingPlannings(true);
+      try {
+        const { data: planningsData } = await supabase
+          .from('plannings')
+          .select('id, unit, subject, grade, learning_objective, created_at')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
+
+        setPlannings(planningsData || []);
+      } catch (e) {
+        console.error('Error fetching plannings:', e);
+      } finally {
+        setLoadingPlannings(false);
+      }
     });
   }, [router]);
 
-  // Read URL params for deep-link from REI Lecturas (/play?fuente=lectura_domiciliaria&libro_id=...&motor=...)
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const params = new URLSearchParams(window.location.search);
-    const fuenteParam = params.get('fuente');
-    const libroIdParam = params.get('libro_id');
-    const motorParam = params.get('motor');
-    if (fuenteParam === 'lectura_domiciliaria') {
-      setFuente('lectura_domiciliaria');
-      if (libroIdParam) setLibroId(libroIdParam);
-      if (motorParam) setSelectedEngineId(motorParam);
+
+  const handleSelectBook = (libId: string) => {
+    setLibroId(libId);
+    const selected = lecturas.find(l => l.libro_id === libId);
+    if (selected) {
+      if (selected.cursos_sugeridos && selected.cursos_sugeridos.length > 0) {
+        setNivel(selected.cursos_sugeridos[0]);
+      }
+      if (selected.oa_sugeridos && selected.oa_sugeridos.length > 0) {
+        setOaCodes(selected.oa_sugeridos.join(', '));
+      }
     }
-  }, []);
+  };
 
   const handleSelectEngine = (engineId: string) => {
     setSelectedEngineId(engineId);
@@ -157,18 +252,6 @@ export default function REIPlayPage() {
     }
   };
 
-  const handleSelectBook = (libId: string) => {
-    setLibroId(libId);
-    const selected = lecturas.find(l => l.libro_id === libId);
-    if (selected) {
-      if (selected.cursos_sugeridos && selected.cursos_sugeridos.length > 0) {
-        setNivel(selected.cursos_sugeridos[0]);
-      }
-      if (selected.oa_sugeridos && selected.oa_sugeridos.length > 0) {
-        setOaCodes(selected.oa_sugeridos.join(', '));
-      }
-    }
-  };
 
   const handleGenerate = async () => {
     setGenerating(true);
@@ -178,17 +261,36 @@ export default function REIPlayPage() {
     const session = await supabase.auth.getSession();
     const token = session.data.session?.access_token;
 
+    const selectedPlanning = plannings.find(p => p.id === selectedPlanningId);
+
     const payload = {
       motor: selectedEngineId,
       fuente,
-      planificacion_id: fuente === 'planificacion' ? planificacionId : undefined,
+      programa_info: fuente === 'planificacion' && selectedPlanning ? {
+        curso: selectedPlanning.grade,
+        asignatura: selectedPlanning.subject,
+        unidad: selectedPlanning.unit,
+        tema: selectedPlanning.unit,
+        oa_seleccionados: selectedPlanning.learning_objective
+          ? [selectedPlanning.learning_objective]
+          : undefined,
+      } : undefined,
       tema: fuente === 'tema_manual' ? tema : undefined,
       libro_id: fuente === 'lectura_domiciliaria' ? libroId : undefined,
-      nivel,
-      oa_codes: oaCodes ? oaCodes.split(',').map(s => s.trim()) : ['OA General'],
+      nivel: fuente === 'planificacion' && selectedPlanning ? selectedPlanning.grade : nivel,
+      oa_codes: fuente === 'planificacion'
+        ? ['OA General']
+        : (oaCodes ? oaCodes.split(',').map(s => s.trim()) : ['OA General']),
       duracion,
       modalidad,
-      dificultad
+      dificultad,
+      estilo_visual: estilo,
+      paleta_colores: colores,
+      ilustraciones,
+      recortables,
+      complementos: complementos.length > 0 ? complementos : undefined,
+      version_descarga: versionDescarga,
+      instruccion_especial: instruccionEspecial || undefined
     };
 
     try {
@@ -214,7 +316,7 @@ export default function REIPlayPage() {
         initialCollapseState[sec.id] = false;
       });
       setCollapsedSections(initialCollapseState);
-      setStep(5); // Go to results
+      setStep(6); // Go to results
 
     } catch (e: any) {
       setGenerationError(e.message);
@@ -298,7 +400,7 @@ export default function REIPlayPage() {
           {step > 1 && (
             <button
               onClick={() => {
-                if (step === 5) {
+                if (step === 6) {
                   setStep(1);
                   setGeneratedGame(null);
                 } else {
@@ -316,9 +418,9 @@ export default function REIPlayPage() {
         <main className="flex-1 p-8 max-w-4xl mx-auto w-full space-y-8">
           
           {/* Stepper Indicators */}
-          {step < 5 && (
+          {step < 6 && (
             <div className="flex items-center justify-between max-w-md mx-auto mb-8">
-              {[1, 2, 3, 4].map((s) => (
+              {[1, 2, 3, 4, 5].map((s) => (
                 <div key={s} className="flex items-center flex-1 last:flex-none">
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-all ${
@@ -329,7 +431,7 @@ export default function REIPlayPage() {
                   >
                     {s}
                   </div>
-                  {s < 4 && (
+                  {s < 5 && (
                     <div
                       className={`h-0.5 flex-1 mx-2 transition-all ${
                         step > s ? 'bg-violet-700' : 'bg-[#E2E8F0]'
@@ -394,29 +496,63 @@ export default function REIPlayPage() {
               </div>
 
               {fuente === 'planificacion' && (
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-500 block">Selecciona tu Planificación Reciente</label>
+                <div className="space-y-3">
+                  <label className="text-xs font-bold text-slate-500 block">Selecciona una planificación guardada</label>
                   {loadingPlannings ? (
-                    <div className="flex items-center gap-2 text-xs text-slate-400">
+                    <div className="flex items-center gap-2 text-xs text-slate-400 py-3">
                       <Loader2 className="w-4 h-4 animate-spin text-violet-700" />
-                      Cargando planificaciones...
+                      Cargando tus planificaciones...
                     </div>
                   ) : plannings.length === 0 ? (
-                    <div className="text-xs text-slate-500 p-4 bg-slate-50 border rounded-xl">
-                      No tienes planificaciones creadas. Crea una en el Kit de Clase o elige tema manual.
+                    <div className="text-xs text-slate-500 p-5 bg-amber-50/20 border border-amber-100 rounded-xl space-y-3">
+                      <p>Aún no tienes planificaciones guardadas. Ve al Planificador IA para crear una.</p>
+                      <button
+                        type="button"
+                        onClick={() => router.push('/planner/new')}
+                        className="text-xs font-bold text-violet-700 underline underline-offset-2"
+                      >
+                        Ir al Planificador IA →
+                      </button>
                     </div>
                   ) : (
-                    <select
-                      value={planificacionId}
-                      onChange={(e) => setPlanificacionId(e.target.value)}
-                      className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] focus:border-violet-600 focus:outline-none bg-white"
-                    >
-                      {plannings.map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.unit} ({p.grade} - {p.subject})
-                        </option>
-                      ))}
-                    </select>
+                    <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
+                      {plannings.map((p) => {
+                        const isSelected = selectedPlanningId === p.id;
+                        const fecha = new Date(p.created_at).toLocaleDateString('es-CL', { day: 'numeric', month: 'short', year: 'numeric' });
+                        return (
+                          <button
+                            key={p.id}
+                            type="button"
+                            onClick={() => {
+                              setSelectedPlanningId(p.id);
+                              setNivel(p.grade || nivel);
+                            }}
+                            className={`w-full text-left px-4 py-3 rounded-xl border transition-all ${
+                              isSelected
+                                ? 'border-violet-600 bg-violet-50/30 shadow-sm'
+                                : 'border-[#E2E8F0] bg-white hover:border-violet-300'
+                            }`}
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="space-y-0.5 flex-1 min-w-0">
+                                <p className={`text-xs font-bold truncate ${isSelected ? 'text-violet-700' : 'text-slate-700'}`}>
+                                  {p.unit || 'Sin título'}
+                                </p>
+                                <p className="text-[10px] text-slate-400">
+                                  {p.grade} · {p.subject}
+                                </p>
+                              </div>
+                              <span className="text-[10px] text-slate-400 whitespace-nowrap shrink-0 pt-0.5">{fecha}</span>
+                            </div>
+                            {isSelected && p.learning_objective && (
+                              <p className="text-[10px] text-violet-600 mt-1.5 line-clamp-2 leading-snug">
+                                {p.learning_objective}
+                              </p>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
                   )}
                 </div>
               )}
@@ -532,7 +668,7 @@ export default function REIPlayPage() {
                   type="button"
                   onClick={() => setStep(2)}
                   disabled={
-                    (fuente === 'planificacion' && !planificacionId) ||
+                    (fuente === 'planificacion' && !selectedPlanningId) ||
                     (fuente === 'lectura_domiciliaria' && !libroId) ||
                     (fuente === 'tema_manual' && !tema.trim())
                   }
@@ -615,11 +751,138 @@ export default function REIPlayPage() {
             </div>
           )}
 
-          {/* PASO 3: Configurar Parámetros */}
-          {step === 3 && activeEngine && (
+          {/* PASO 3: Personaliza el Diseño */}
+          {step === 3 && (
             <div className="bg-white rounded-2xl border border-[#E2E8F0]/70 p-6 space-y-6 shadow-sm">
               <div className="space-y-1">
-                <h2 className="text-lg font-bold text-slate-800">Paso 3: Configuración de la Sesión de Juego</h2>
+                <h2 className="text-lg font-bold text-slate-800">Paso 3: Personaliza el Diseño</h2>
+                <p className="text-xs text-slate-400">Indica cómo quieres que se vea tu juego imprimible. La IA ajustará la ambientación, los textos y los materiales al estilo elegido.</p>
+              </div>
+
+              <div className="space-y-6">
+                {/* Estilo visual */}
+                <div className="space-y-2.5">
+                  <label className="text-xs font-bold text-slate-500 block">🎨 Estilo Visual</label>
+                  <div className="flex flex-wrap gap-3">
+                    {['infantil', 'juvenil', 'misterio', 'aventura', 'minimalista'].map((e) => (
+                      <button key={e} type="button" onClick={() => setEstilo(e)}
+                        className={`px-4 py-2 rounded-xl text-xs font-bold border capitalize transition-all ${
+                          estilo === e ? 'bg-violet-700 border-violet-700 text-white' : 'bg-white border-[#E2E8F0] text-slate-500 hover:bg-slate-50'
+                        }`}>
+                        {e}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Paleta de colores */}
+                <div className="space-y-2.5">
+                  <label className="text-xs font-bold text-slate-500 block">🌈 Paleta de Colores</label>
+                  <div className="flex flex-wrap gap-3">
+                    {['vibrantes', 'pastel', 'institucionales'].map((c) => (
+                      <button key={c} type="button" onClick={() => setColores(c)}
+                        className={`px-4 py-2 rounded-xl text-xs font-bold border capitalize transition-all ${
+                          colores === c ? 'bg-violet-700 border-violet-700 text-white' : 'bg-white border-[#E2E8F0] text-slate-500 hover:bg-slate-50'
+                        }`}>
+                        {c}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Nivel de ilustraciones */}
+                <div className="space-y-2.5">
+                  <label className="text-xs font-bold text-slate-500 block">🖼️ Nivel de Ilustraciones</label>
+                  <div className="flex flex-wrap gap-3">
+                    {['pocas', 'equilibradas', 'abundantes'].map((il) => (
+                      <button key={il} type="button" onClick={() => setIlustraciones(il)}
+                        className={`px-4 py-2 rounded-xl text-xs font-bold border capitalize transition-all ${
+                          ilustraciones === il ? 'bg-violet-700 border-violet-700 text-white' : 'bg-white border-[#E2E8F0] text-slate-500 hover:bg-slate-50'
+                        }`}>
+                        {il}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Materiales recortables */}
+                <div className="space-y-2.5">
+                  <label className="text-xs font-bold text-slate-500 block">✂️ Materiales Recortables</label>
+                  <div className="flex gap-3">
+                    {[{ v: true, label: 'Incluir recortables' }, { v: false, label: 'Sin recortables' }].map(({ v, label }) => (
+                      <button key={String(v)} type="button" onClick={() => setRecortables(v)}
+                        className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all ${
+                          recortables === v ? 'bg-violet-700 border-violet-700 text-white' : 'bg-white border-[#E2E8F0] text-slate-500 hover:bg-slate-50'
+                        }`}>
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Complementos del juego (por motor) */}
+                {selectedEngineId && COMPLEMENTOS_POR_MOTOR[selectedEngineId] && COMPLEMENTOS_POR_MOTOR[selectedEngineId].length > 0 && (
+                  <div className="space-y-2.5">
+                    <label className="text-xs font-bold text-slate-500 block">🎲 Complementos del Juego <span className="font-normal text-slate-400">(opcional)</span></label>
+                    <div className="flex flex-wrap gap-3">
+                      {COMPLEMENTOS_POR_MOTOR[selectedEngineId].map((comp) => (
+                        <button key={comp} type="button" onClick={() => toggleComplemento(comp)}
+                          className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all ${
+                            complementos.includes(comp) ? 'bg-violet-700 border-violet-700 text-white' : 'bg-white border-[#E2E8F0] text-slate-500 hover:bg-slate-50'
+                          }`}>
+                          {comp}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Versión de descarga */}
+                <div className="space-y-2.5">
+                  <label className="text-xs font-bold text-slate-500 block">🖨️ Versión de Descarga</label>
+                  <div className="flex gap-3">
+                    {[{ v: 'color', label: '🌈 A color' }, { v: 'ahorro', label: '⬜ Ahorro de tinta' }].map(({ v, label }) => (
+                      <button key={v} type="button" onClick={() => setVersionDescarga(v)}
+                        className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all ${
+                          versionDescarga === v ? 'bg-violet-700 border-violet-700 text-white' : 'bg-white border-[#E2E8F0] text-slate-500 hover:bg-slate-50'
+                        }`}>
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* ¿Cómo te gustaría que se vea? */}
+                <div className="space-y-2.5">
+                  <label className="text-xs font-bold text-slate-500 block">📝 ¿Cómo te gustaría que se vea? <span className="font-normal text-slate-400">(opcional)</span></label>
+                  <textarea
+                    placeholder='Ej: "Quiero un juego de misterio ambientado en una biblioteca antigua, con colores azul oscuro y dorado."'
+                    value={instruccionEspecial}
+                    onChange={(e) => setInstruccionEspecial(e.target.value)}
+                    rows={3}
+                    className="w-full text-xs px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] focus:border-violet-600 focus:outline-none resize-none"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-between pt-4 border-t border-slate-50">
+                <button type="button" onClick={() => setStep(2)}
+                  className="px-5 py-2.5 border border-[#E2E8F0] hover:bg-slate-50 rounded-xl text-xs font-bold transition-all">
+                  Atrás
+                </button>
+                <button type="button" onClick={() => setStep(4)}
+                  className="flex items-center gap-1.5 px-5 py-2.5 bg-violet-700 hover:bg-violet-800 text-white rounded-xl text-xs font-bold transition-all">
+                  Siguiente paso <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* PASO 4: Configurar Parámetros */}
+          {step === 4 && activeEngine && (
+            <div className="bg-white rounded-2xl border border-[#E2E8F0]/70 p-6 space-y-6 shadow-sm">
+              <div className="space-y-1">
+                <h2 className="text-lg font-bold text-slate-800">Paso 4: Configuración de la Sesión de Juego</h2>
                 <p className="text-xs text-slate-400">Ajusta los parámetros para adaptar la dinámica a los tiempos y modalidades de tu aula.</p>
               </div>
 
@@ -632,6 +895,7 @@ export default function REIPlayPage() {
                       <button
                         key={d}
                         type="button"
+                        translate="no"
                         onClick={() => setDuracion(d)}
                         className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all ${
                           duracion === d
@@ -653,6 +917,7 @@ export default function REIPlayPage() {
                       <button
                         key={m}
                         type="button"
+                        translate="no"
                         onClick={() => setModalidad(m)}
                         className={`px-4 py-2 rounded-xl text-xs font-bold border capitalize transition-all ${
                           modalidad === m
@@ -669,11 +934,12 @@ export default function REIPlayPage() {
                 {/* Dificultad */}
                 <div className="space-y-2.5">
                   <label className="text-xs font-bold text-slate-500 block">Dificultad Pedagógica</label>
-                  <div className="flex gap-3">
+                    <div className="flex gap-3">
                     {activeEngine.dificultades.map((d) => (
                       <button
                         key={d}
                         type="button"
+                        translate="no"
                         onClick={() => setDificultad(d)}
                         className={`px-4 py-2 rounded-xl text-xs font-bold border capitalize transition-all ${
                           dificultad === d
@@ -691,14 +957,14 @@ export default function REIPlayPage() {
               <div className="flex justify-between pt-4 border-t border-slate-50">
                 <button
                   type="button"
-                  onClick={() => setStep(2)}
+                  onClick={() => setStep(3)}
                   className="px-5 py-2.5 border border-[#E2E8F0] hover:bg-slate-50 rounded-xl text-xs font-bold transition-all"
                 >
                   Atrás
                 </button>
                 <button
                   type="button"
-                  onClick={() => setStep(4)}
+                  onClick={() => setStep(5)}
                   className="flex items-center gap-1.5 px-5 py-2.5 bg-violet-700 hover:bg-violet-800 text-white rounded-xl text-xs font-bold transition-all"
                 >
                   Siguiente paso <ArrowRight className="w-3.5 h-3.5" />
@@ -707,8 +973,8 @@ export default function REIPlayPage() {
             </div>
           )}
 
-          {/* PASO 4: Confirmación y Generación */}
-          {step === 4 && activeEngine && (
+          {/* PASO 5: Confirmación y Generación */}
+          {step === 5 && activeEngine && (
             <div className="bg-white rounded-2xl border border-[#E2E8F0]/70 p-6 space-y-6 shadow-sm text-center">
               <div className="max-w-md mx-auto space-y-4">
                 <div className="w-16 h-16 rounded-full bg-violet-50 text-violet-700 flex items-center justify-center mx-auto shadow-inner">
@@ -739,6 +1005,20 @@ export default function REIPlayPage() {
                     <span className="text-slate-400 font-semibold">Configuración:</span>
                     <span className="font-bold text-slate-700 capitalize">{duracion} min · {modalidad} · {dificultad}</span>
                   </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400 font-semibold">Diseño:</span>
+                    <span className="font-bold text-slate-700 capitalize">{estilo} · {colores} · {ilustraciones}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400 font-semibold">Descarga:</span>
+                    <span className="font-bold text-slate-700">{versionDescarga === 'color' ? '🌈 A color' : '⬜ Ahorro de tinta'}{recortables ? ' · Con recortables' : ''}{complementos.length > 0 ? ` · ${complementos.join(', ')}` : ''}</span>
+                  </div>
+                  {instruccionEspecial && (
+                    <div className="flex justify-between gap-3">
+                      <span className="text-slate-400 font-semibold shrink-0">¿Cómo se ve?</span>
+                      <span className="font-bold text-slate-700 text-right">{instruccionEspecial}</span>
+                    </div>
+                  )}
                 </div>
 
                 {generationError && (
@@ -750,7 +1030,7 @@ export default function REIPlayPage() {
                 <div className="flex gap-4 pt-4">
                   <button
                     type="button"
-                    onClick={() => setStep(3)}
+                    onClick={() => setStep(4)}
                     disabled={generating}
                     className="flex-1 px-5 py-3 border border-[#E2E8F0] hover:bg-slate-50 disabled:opacity-50 rounded-xl text-xs font-bold transition-all"
                   >
@@ -777,8 +1057,8 @@ export default function REIPlayPage() {
             </div>
           )}
 
-          {/* PASO 5: Resultado / Preview del Juego Generado */}
-          {step === 5 && generatedGame && activeEngine && (
+          {/* PASO 6: Resultado / Preview del Juego Generado */}
+          {step === 6 && generatedGame && activeEngine && (
             <div className="space-y-6">
               {/* Box de exportaciones y metadata */}
               <div className="bg-white rounded-2xl border border-[#E2E8F0]/70 p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-sm">
@@ -815,8 +1095,49 @@ export default function REIPlayPage() {
                     {exportingWord ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileDown className="w-4 h-4" />}
                     Descargar Word
                   </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowIlustrarPrompt(prev => !prev)}
+                    className="flex items-center gap-1.5 px-4.5 py-2.5 border border-violet-200 hover:bg-violet-50 text-violet-600 rounded-xl text-xs font-bold transition-all cursor-pointer"
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    Ilustrar con IA
+                  </button>
                 </div>
               </div>
+
+              {/* Prompt para ilustrar con IA externa */}
+              {showIlustrarPrompt && (
+                <div className="bg-violet-50 border border-violet-200 rounded-2xl p-5 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-violet-600" />
+                      <h3 className="text-sm font-bold text-violet-800">Ilustrar con IA externa</h3>
+                    </div>
+                    <span className="text-[10px] text-violet-500 font-medium uppercase tracking-wide">ChatGPT · Gemini · Copilot</span>
+                  </div>
+                  <p className="text-xs text-violet-700">
+                    Copia este prompt, ve a ChatGPT o Gemini, adjunta el PDF que descargaste y pégalo. La IA generará imágenes ilustrativas para cada tarjeta.
+                  </p>
+                  <div className="bg-white border border-violet-200 rounded-xl p-4">
+                    <pre className="text-xs text-slate-700 whitespace-pre-wrap font-sans leading-relaxed">
+                      {generarPromptIlustracion()}
+                    </pre>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(generarPromptIlustracion());
+                      setCopiadoPrompt(true);
+                      setTimeout(() => setCopiadoPrompt(false), 2000);
+                    }}
+                    className="flex items-center gap-1.5 px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-xl text-xs font-bold transition-all cursor-pointer"
+                  >
+                    {copiadoPrompt ? '✓ ¡Copiado!' : '📋 Copiar prompt'}
+                  </button>
+                </div>
+              )}
 
               {/* Vista previa del contenido (Acordeones por Sección) */}
               <div className="space-y-3">
