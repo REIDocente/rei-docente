@@ -2903,57 +2903,6 @@ export default function NewPlannerPage() {
 
                 </div>
 
-                {/* Optional Configuration Section (Collapsed by default) */}
-                <div className="border-t border-slate-100 pt-4 space-y-3">
-                  <p className="text-[10px] font-bold text-slate-400">MATERIAL DE APOYO & HORARIOS (OPCIONAL)</p>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Course select */}
-                    <div className="space-y-1">
-                      <label htmlFor="curso-selector" className="text-[9px] font-bold text-slate-500 block">
-                        Vincular a Horario de Curso
-                      </label>
-                      <select
-                        id="curso-selector"
-                        value={selectedCursoId}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          setSelectedCursoId(val);
-                          if (val) {
-                            const course = cursos.find(c => c.id === val);
-                            if (course && course.nivel) {
-                              setGrade(course.nivel);
-                            }
-                          }
-                        }}
-                        className="w-full bg-white border border-slate-200 rounded-xl py-2 px-3 text-xs text-slate-800"
-                      >
-                        <option value="">Sin horario vinculado</option>
-                        {cursos.map((c) => (
-                          <option key={c.id} value={c.id}>
-                            {c.nombre} ({c.nivel})
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    {/* Reference URL */}
-                    <div className="space-y-1">
-                      <label htmlFor="ref-url" className="text-[9px] font-bold text-slate-500 block">
-                        URL de Referencia Didáctica
-                      </label>
-                      <input
-                        id="ref-url"
-                        type="url"
-                        placeholder="https://ejemplo.cl/recurso"
-                        value={referenceUrl}
-                        onChange={(e) => setReferenceUrl(e.target.value)}
-                        className="w-full bg-white border border-slate-200 rounded-xl py-2 px-3 text-xs text-slate-800"
-                      />
-                    </div>
-                  </div>
-                </div>
-
                 {/* Submit Action Bar */}
                 <div className="border-t border-slate-100 pt-6 flex justify-end gap-3">
                   <Link
