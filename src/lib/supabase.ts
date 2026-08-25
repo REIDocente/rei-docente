@@ -55,7 +55,31 @@ function makeMockQueryBuilder(data: any, tableName?: string): any {
       }
       return makeMockQueryBuilder(payload, tableName);
     },
-    update: (payload: any) => makeMockQueryBuilder(payload, tableName),
+    update: (payload: any) => {
+      if (typeof window !== 'undefined' && tableName) {
+        try {
+          const storageKey = `mock_${tableName}`;
+          const list = JSON.parse(window.localStorage.getItem(storageKey) || '[]');
+          
+          if (tableName === 'user_profiles' && list.length === 0) {
+            list.push({ ...mockProfiles });
+          }
+
+          if (tableName === 'user_profiles') {
+            list[0] = { ...list[0], ...payload };
+          } else {
+            const idx = list.findIndex((x: any) => x.id === payload.id);
+            if (idx > -1) {
+              list[idx] = { ...list[idx], ...payload };
+            } else if (payload.id) {
+              list.push(payload);
+            }
+          }
+          window.localStorage.setItem(storageKey, JSON.stringify(list));
+        } catch (e) {}
+      }
+      return makeMockQueryBuilder(payload, tableName);
+    },
     delete: () => makeMockQueryBuilder([], tableName),
     then: (onfulfilled: any) => {
       return Promise.resolve({ data: filteredData, error: null }).then(onfulfilled);
@@ -170,6 +194,22 @@ const mockVisuals = [
 export const supabase = new Proxy(realSupabase, {
   get(target, prop, receiver) {
     const isClient = typeof window !== 'undefined';
+    
+    if (isClient) {
+      if (window.localStorage.getItem('use_mock_auth') === 'true') {
+        document.cookie = "use_mock_auth=true; path=/";
+        try {
+          const stored = window.localStorage.getItem('mock_user_profiles');
+          const list = stored ? JSON.parse(stored) : [];
+          const completed = list[0]?.perfil_completado === true;
+          document.cookie = `perfil_completado=${completed}; path=/`;
+        } catch (e) {}
+      } else {
+        document.cookie = "use_mock_auth=; Max-Age=0; path=/";
+        document.cookie = "perfil_completado=; Max-Age=0; path=/";
+      }
+    }
+
     const useMock = isClient && window.localStorage.getItem('use_mock_auth') === 'true';
 
     if (useMock) {
@@ -232,7 +272,23 @@ export const supabase = new Proxy(realSupabase, {
 
       if (prop === 'from') {
         return (table: string) => {
-          if (table === 'user_profiles') return makeMockQueryBuilder(mockProfiles, table);
+          if (table === 'user_profiles') {
+            let item: any = { ...mockProfiles };
+            if (isClient) {
+              try {
+                const stored = window.localStorage.getItem('mock_user_profiles');
+                if (stored) {
+                  const list = JSON.parse(stored);
+                  if (list && list.length > 0) {
+                    item = list[0];
+                  }
+                } else {
+                  window.localStorage.setItem('mock_user_profiles', JSON.stringify([mockProfiles]));
+                }
+              } catch (e) {}
+            }
+            return makeMockQueryBuilder(item, table);
+          }
           if (table === 'plannings') return makeMockQueryBuilder(mockPlannings, table);
           if (table === 'guias') {
             let list = [...mockGuias];

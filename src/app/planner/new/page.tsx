@@ -937,6 +937,23 @@ const DESTINOS = [
   { id: 'Gamma', label: 'Gamma', desc: 'Formato optimizado para tarjetas de IA.' },
 ];
 
+function normalizeGradeForCurriculum(g: string): string {
+  if (!g) return '5° Básico';
+  if (g.includes('Básico') || g.includes('Medio')) return g;
+  
+  const numMatch = g.match(/(\d+)/);
+  if (!numMatch) return g;
+  
+  const num = numMatch[1];
+  const isMedio = g.includes('M') || g.includes('Medio') || g.toLowerCase().includes('m');
+  
+  if (isMedio) {
+    return `${num}° Medio`;
+  } else {
+    return `${num}° Básico`;
+  }
+}
+
 export default function NewPlannerPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
@@ -959,6 +976,8 @@ export default function NewPlannerPage() {
 
   // Optional course / reference states
   const [cursos, setCursos] = useState<Curso[]>([]);
+  const [onboardingProfile, setOnboardingProfile] = useState<any>(null);
+  const [teacherCursos, setTeacherCursos] = useState<any[]>([]);
   const [selectedCursoId, setSelectedCursoId] = useState<string>('');
   const [referenceUrl, setReferenceUrl] = useState('');
   const [referenceFile, setReferenceFile] = useState<File | null>(null);
@@ -1079,7 +1098,9 @@ export default function NewPlannerPage() {
     try {
       setCurriculumEjes(null);
       setRealLecciones([]);
-      const params = new URLSearchParams({ asignatura: CURRICULUM_SUBJECT, nivel: lvl, _t: String(Date.now()) });
+      const normalizedLvl = normalizeGradeForCurriculum(lvl);
+      const activeSubject = onboardingProfile?.asignatura_principal || CURRICULUM_SUBJECT;
+      const params = new URLSearchParams({ asignatura: activeSubject, nivel: normalizedLvl, _t: String(Date.now()) });
       const res = await fetch(`/api/curriculum?${params.toString()}`);
       if (res.ok) {
         const data = await res.json();
@@ -1089,7 +1110,7 @@ export default function NewPlannerPage() {
     } catch (err) {
       console.warn('Error fetching curriculum ejes:', err);
     }
-  }, []);
+  }, [onboardingProfile]);
 
   const loadUnidades = useCallback(async (lvl: string) => {
     try {
@@ -1098,7 +1119,8 @@ export default function NewPlannerPage() {
       setSelectedLeccionId('');
       setSelectedOaIds([]);
       
-      const res = await fetch(`/api/curriculum/unidades?nivel=${encodeURIComponent(lvl)}`);
+      const normalizedLvl = normalizeGradeForCurriculum(lvl);
+      const res = await fetch(`/api/curriculum/unidades?nivel=${encodeURIComponent(normalizedLvl)}`);
       if (res.ok) {
         const data = await res.json();
         setUnidadesList(data || []);
@@ -1123,14 +1145,15 @@ export default function NewPlannerPage() {
       const match = uni.match(/\d+/);
       const unitNum = match ? match[0] : uni;
 
+      const normalizedLvl = normalizeGradeForCurriculum(lvl);
       // Cargar temas del JSON curricular
-      const temasRes = await fetch(`/api/curriculum/temas?nivel=${encodeURIComponent(lvl)}&unidad=${encodeURIComponent(unitNum)}`);
+      const temasRes = await fetch(`/api/curriculum/temas?nivel=${encodeURIComponent(normalizedLvl)}&unidad=${encodeURIComponent(unitNum)}`);
       if (temasRes.ok) {
         const temasData = await temasRes.json();
         setTemasList(temasData.temas || []);
       }
 
-      const res = await fetch(`/api/curriculum/lecciones?nivel=${encodeURIComponent(lvl)}&unidad=${encodeURIComponent(unitNum)}`);
+      const res = await fetch(`/api/curriculum/lecciones?nivel=${encodeURIComponent(normalizedLvl)}&unidad=${encodeURIComponent(unitNum)}`);
       if (res.ok) {
         const data = await res.json();
         setLeccionesList(data || []);
@@ -1352,6 +1375,29 @@ export default function NewPlannerPage() {
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { user } } = await supabase.auth.getUser();
+      const sessionRes = await supabase.auth.getSession();
+      const token = sessionRes.data.session?.access_token;
+
+      // Fetch profile & courses
+      try {
+        const res = await fetch('/api/onboarding/perfil', {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.profile) setOnboardingProfile(data.profile);
+          if (data.cursos) {
+            setTeacherCursos(data.cursos);
+            // Pre-select first course if it exists
+            if (data.cursos.length > 0) {
+              setGrade(data.cursos[0].nombre);
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to load profile details:', e);
+      }
+
       if (!user) {
         console.log('[Bypass] Planner auth bypass activated');
         const mockUser = { id: 'mock-user-123', email: 'guest@reidocente.cl' };
@@ -1360,19 +1406,6 @@ export default function NewPlannerPage() {
       } else {
         setUser(user);
         loadPromptPlannings(user.id);
-        try {
-          const { data: session } = await supabase.auth.getSession();
-          const token = session.session?.access_token;
-          const res = await fetch('/api/cursos', {
-            headers: token ? { Authorization: `Bearer ${token}` } : {},
-          });
-          if (res.ok) {
-            const data = await res.json();
-            setCursos(data.cursos ?? []);
-          }
-        } catch (e) {
-          // ignore optional course fetch errors
-        }
       }
     };
     checkAuth();
@@ -1694,7 +1727,7 @@ export default function NewPlannerPage() {
 
     try {
       const formData = new FormData();
-      formData.append('subject', CURRICULUM_SUBJECT);
+      formData.append('subject', onboardingProfile?.asignatura_principal || CURRICULUM_SUBJECT);
       formData.append('grade', grade);
       formData.append('unit', `${unit}: ${themeText}`);
       formData.append('referenceUrl', referenceUrl);
@@ -1934,7 +1967,7 @@ export default function NewPlannerPage() {
           .insert({
             user_id: user.id,
             curso_id: selectedCursoId || null,
-            subject: CURRICULUM_SUBJECT,
+            subject: onboardingProfile?.asignatura_principal || CURRICULUM_SUBJECT,
             grade,
             learning_objective: learningObjectiveForDB,
             unit: `${unit}: ${themeText}`,
@@ -2470,17 +2503,35 @@ export default function NewPlannerPage() {
                     onChange={(e) => setGrade(e.target.value)}
                     className="w-full bg-[#FAF9FC] border border-slate-200 rounded-2xl py-3.5 px-4 text-xs text-slate-800 font-semibold focus:outline-none focus:border-violet-500 appearance-none cursor-pointer"
                   >
-                    <option value="1° Básico">1° Básico</option>
-                    <option value="2° Básico">2° Básico</option>
-                    <option value="3° Básico">3° Básico</option>
-                    <option value="4° Básico">4° Básico</option>
-                    <option value="5° Básico">5° Básico</option>
-                    <option value="6° Básico">6° Básico</option>
-                    <option value="7° Básico">7° Básico</option>
-                    <option value="8° Básico">8° Básico</option>
-                    <option value="1° Medio">1° Medio</option>
-                    <option value="2° Medio">2° Medio</option>
+                    {teacherCursos.length > 0 ? (
+                      teacherCursos.map((c) => (
+                        <option key={c.id} value={c.nombre}>
+                          {c.nombre}
+                        </option>
+                      ))
+                    ) : (
+                      <>
+                        <option value="1° Básico">1° Básico</option>
+                        <option value="2° Básico">2° Básico</option>
+                        <option value="3° Básico">3° Básico</option>
+                        <option value="4° Básico">4° Básico</option>
+                        <option value="5° Básico">5° Básico</option>
+                        <option value="6° Básico">6° Básico</option>
+                        <option value="7° Básico">7° Básico</option>
+                        <option value="8° Básico">8° Básico</option>
+                        <option value="1° Medio">1° Medio</option>
+                        <option value="2° Medio">2° Medio</option>
+                      </>
+                    )}
                   </select>
+                  {teacherCursos.length === 0 && (
+                    <div className="text-[10px] text-amber-700 bg-amber-50 border border-amber-100 rounded-xl px-3 py-1.5 mt-1 font-semibold flex items-center justify-between">
+                      <span>Configura tus cursos reales en tu perfil para planificar más rápido.</span>
+                      <Link href="/ajustes/perfil" className="underline font-bold text-amber-800 hover:text-amber-900">
+                        Configurar ahora →
+                      </Link>
+                    </div>
+                  )}
                 </div>
 
                 {/* 2. Unidad Selector */}
@@ -2970,7 +3021,7 @@ export default function NewPlannerPage() {
               <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 space-y-2">
                 <div className="grid grid-cols-2 gap-4 text-xs font-semibold text-slate-500">
                   <div>Curso: <span className="text-slate-800">{grade}</span></div>
-                  <div>Asignatura: <span className="text-slate-800">{CURRICULUM_SUBJECT}</span></div>
+                  <div>Asignatura: <span className="text-slate-800">{onboardingProfile?.asignatura_principal || CURRICULUM_SUBJECT}</span></div>
                 </div>
                 <div className="text-xs font-semibold text-slate-500">
                   Objetivo: <span className="text-slate-800">{suggestedOAs.filter((o: any) => selectedOaIds.includes(o.id)).map(o => `${o.codigo}: ${o.texto}`).join(' | ')}</span>

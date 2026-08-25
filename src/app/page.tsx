@@ -32,7 +32,10 @@ import {
   MoreVertical,
   ExternalLink,
   Gamepad2,
-  ClipboardCheck
+  ClipboardCheck,
+  AlertTriangle,
+  Clock,
+  Users
 } from 'lucide-react';
 import Link from 'next/link';
 import Sidebar from '@/components/Sidebar';
@@ -96,6 +99,8 @@ export default function DashboardPage() {
   const [evaluaciones, setEvaluaciones] = useState<any[]>([]);
   const [visuals, setVisuals] = useState<any[]>([]);
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [onboardingProfile, setOnboardingProfile] = useState<any>(null);
+  const [cursos, setCursos] = useState<any[]>([]);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -129,8 +134,21 @@ export default function DashboardPage() {
           const { data: visData } = await supabase.from('recursos_visuales').select('id, created_at, tema, tipo, imagen_url, contenido_json').order('created_at', { ascending: false });
           setVisuals(visData || []);
         } catch (e) { console.warn('Recursos visuales table not queryable:', e); }
-        const { data: profileData } = await supabase.from('user_profiles').select('*').eq('id', user.id).maybeSingle();
-        if (profileData) setProfile(profileData as UserProfile);
+        
+        // Fetch profile and courses
+        const sessionRes = await supabase.auth.getSession();
+        const token = sessionRes.data.session?.access_token;
+        const profileRes = await fetch('/api/onboarding/perfil', {
+          headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) }
+        });
+        const profileData = await profileRes.json();
+        if (profileData.profile) {
+          setOnboardingProfile(profileData.profile);
+          setProfile(profileData.profile as UserProfile);
+        }
+        if (profileData.cursos) {
+          setCursos(profileData.cursos);
+        }
       } catch (err) {
         console.error('Error in checkAuthAndFetch:', err);
       } finally {
@@ -291,6 +309,44 @@ export default function DashboardPage() {
     ...visuals.map(v => ({ id: v.id, title: `Tema: ${v.tema}`, type: 'Recurso Visual', typeKey: 'recursos_visuales', date: v.created_at, link: `/visual`, meta: 'General', subject: v.tipo, estilo: v.contenido_json?.estilo, paleta: v.contenido_json?.paleta, formato: v.contenido_json?.formato }))
   ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
+  interface HorarioBloque {
+    dia: string;
+    desde: string;
+    hasta: string;
+    curso: string;
+    asignatura: string;
+  }
+
+  const getHoyBlocks = () => {
+    if (!onboardingProfile?.horario_docente_json) return [];
+    try {
+      const hoy = new Date().toLocaleDateString('es-CL', {
+        timeZone: 'America/Santiago', weekday: 'long'
+      });
+      const diaHoy = hoy.charAt(0).toUpperCase() + hoy.slice(1);
+      const blocks = (onboardingProfile.horario_docente_json as HorarioBloque[]) || [];
+      return blocks
+        .filter((b) => b.dia.toLowerCase() === diaHoy.toLowerCase())
+        .sort((a, b) => a.desde.localeCompare(b.desde));
+    } catch (e) {
+      return [];
+    }
+  };
+
+  const getDiaHoyString = () => {
+    try {
+      const hoy = new Date().toLocaleDateString('es-CL', {
+        timeZone: 'America/Santiago', weekday: 'long'
+      });
+      return hoy.charAt(0).toUpperCase() + hoy.slice(1);
+    } catch (e) {
+      return 'Hoy';
+    }
+  };
+
+  const diaHoy = getDiaHoyString();
+  const hoyBlocks = getHoyBlocks();
+
   if (checkingAuth) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#F8FAFC' }}>
@@ -355,6 +411,36 @@ export default function DashboardPage() {
           <main className="flex-1 p-6 md:p-8 space-y-8 min-w-0">
             {currentTab === 'inicio' && (
               <>
+                {/* BANNER REQUERIMIENTO ONBOARDING COMPLETADO */}
+                {onboardingProfile && !onboardingProfile.perfil_completado && (
+                  <div className="bg-amber-50 border border-amber-200 rounded-3xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-amber-800 animate-pulse">
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />
+                      <p className="font-bold">Completa tu perfil pedagógico para personalizar tus recursos y planificaciones.</p>
+                    </div>
+                    <button
+                      onClick={() => router.push('/onboarding')}
+                      className="bg-amber-600 hover:bg-amber-700 text-white font-black px-4 py-2 rounded-xl text-[10px] shrink-0 cursor-pointer shadow-xs transition-colors"
+                    >
+                      Completar Perfil
+                    </button>
+                  </div>
+                )}
+
+                {/* BANNER HORARIO OMITIDO */}
+                {onboardingProfile && onboardingProfile.perfil_completado && !onboardingProfile.horario_docente_json && (
+                  <div
+                    onClick={() => router.push('/ajustes/perfil')}
+                    className="bg-indigo-50 border border-indigo-200 rounded-3xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-indigo-900 cursor-pointer hover:bg-indigo-100/20 transition-colors shadow-xs"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-5 h-5 text-indigo-650 shrink-0" />
+                      <p className="font-bold">Sube tu horario para activar tu agenda diaria "Hoy en Aula" y personalizar el Planificador →</p>
+                    </div>
+                    <span className="text-[10px] font-black underline shrink-0">Subir Horario</span>
+                  </div>
+                )}
+
                 {/* BANNER BIENVENIDA */}
                 <div
                   className="rounded-3xl p-6 flex items-center justify-between relative overflow-hidden border"
@@ -366,16 +452,78 @@ export default function DashboardPage() {
                 >
                   <div className="space-y-2 max-w-lg z-10">
                     <h1 className="text-2xl font-black" style={{ color: '#0F172A' }}>
-                      Hola 👋 {firstName || 'Docente'}, ¿Qué vamos a crear hoy?
+                      Hola, {onboardingProfile?.nombre_completo || firstName} 👋
                     </h1>
                     <p className="text-xs leading-relaxed font-semibold" style={{ color: '#64748B' }}>
-                      Todo lo que necesitas para planificar, enseñar y evaluar con inteligencia artificial.
+                      {onboardingProfile?.establecimiento
+                        ? `${onboardingProfile.establecimiento} · ${onboardingProfile.establecimiento_tipo} · ${onboardingProfile.comuna}`
+                        : 'Todo lo que necesitas para planificar, enseñar y evaluar con inteligencia artificial.'}
                     </p>
                   </div>
                   <div className="hidden sm:flex shrink-0 mr-4 items-center justify-center relative w-36 h-24">
                     <div className="w-16 h-16 rounded-full bg-white border flex items-center justify-center shrink-0 shadow-sm" style={{ borderColor: '#E5E7EB' }}>
                       <Sparkles className="w-8 h-8" style={{ color: '#6D28F5' }} />
                     </div>
+                  </div>
+                </div>
+
+                {/* WIDGETS PEDAGÓGICOS: AGENDA + CURSOS */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  {/* Widget Hoy en Aula */}
+                  {onboardingProfile?.horario_docente_json && (
+                    <div className="bg-white rounded-3xl p-5 flex flex-col justify-between border" style={{ borderColor: '#E5E7EB', boxShadow: '0 8px 30px rgba(0,0,0,0.05)' }}>
+                      <div className="space-y-3">
+                        <h3 className="font-black text-xs text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                          <Calendar className="w-4 h-4 text-rose-600" /> Hoy en Aula ({diaHoy})
+                        </h3>
+                        <div className="space-y-2 pt-1 max-h-48 overflow-y-auto">
+                          {hoyBlocks.length > 0 ? (
+                            hoyBlocks.map((blk, idx) => (
+                              <div key={idx} className="flex justify-between items-center bg-slate-50 border border-slate-100 p-2.5 rounded-xl text-xs font-semibold">
+                                <span className="text-slate-550 flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {blk.desde}–{blk.hasta}</span>
+                                <span className="text-slate-800 font-extrabold">{blk.curso}</span>
+                                <span className="text-slate-450 text-[10px] truncate max-w-40">{blk.asignatura || 'General'}</span>
+                              </div>
+                            ))
+                          ) : (
+                            <p className="text-xs text-slate-400 italic py-2 text-center">No tienes clases programadas para hoy 🎉</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Widget Mis Cursos */}
+                  <div className="bg-white rounded-3xl p-5 flex flex-col justify-between border" style={{ borderColor: '#E5E7EB', boxShadow: '0 8px 30px rgba(0,0,0,0.05)' }}>
+                    <div className="space-y-3">
+                      <h3 className="font-black text-xs text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                        <Users className="w-4 h-4 text-rose-600" /> Mis Cursos Registrados
+                      </h3>
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {cursos.length > 0 ? (
+                          cursos.map((c, idx) => (
+                            <span
+                              key={idx}
+                              className="px-2.5 py-1 bg-rose-50 text-rose-700 text-[10px] font-extrabold rounded-full border border-rose-100"
+                            >
+                              {c.nombre}
+                            </span>
+                          ))
+                        ) : (
+                          <p className="text-xs text-slate-400 italic py-2">No tienes cursos registrados aún.</p>
+                        )}
+                      </div>
+                    </div>
+                    {cursos.length > 0 && (
+                      <div className="pt-2 text-right">
+                        <Link
+                          href="/evaluaciones/evaluador"
+                          className="text-[10px] font-black text-rose-600 hover:underline inline-flex items-center gap-0.5"
+                        >
+                          Ver todos los cursos →
+                        </Link>
+                      </div>
+                    )}
                   </div>
                 </div>
 

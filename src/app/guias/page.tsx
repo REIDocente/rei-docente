@@ -181,7 +181,8 @@ export default function GuiasPage() {
       if (!user) {
         console.log('[Bypass] Guias auth bypass activated');
         setInitials('G');
-        setDocenteNombre('Docente Invitado');
+        setDocenteNombre('Jacqueline');
+        setEstablecimientoGuia('Liceo Rigoberto Fontt');
         setPlannings([
           {
             id: 'mock-id-123',
@@ -246,6 +247,24 @@ export default function GuiasPage() {
         console.warn('Error loading lecturas:', e);
       } finally {
         setLoadingLecturas(false);
+      }
+
+      // Fetch profile details for pre-filling
+      try {
+        const sessionRes = await supabase.auth.getSession();
+        const token = sessionRes.data.session?.access_token;
+        const profileRes = await fetch('/api/onboarding/perfil', {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
+        if (profileRes.ok) {
+          const profileData = await profileRes.json();
+          if (profileData.profile) {
+            if (profileData.profile.nombre_completo) setDocenteNombre(profileData.profile.nombre_completo);
+            if (profileData.profile.establecimiento) setEstablecimientoGuia(profileData.profile.establecimiento);
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to load profile details for guides:', e);
       }
 
       setAuthLoading(false);
