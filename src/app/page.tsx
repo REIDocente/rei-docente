@@ -392,15 +392,7 @@ export default function DashboardPage() {
         </header>
 
         {/* Desktop Header */}
-        <header className="hidden lg:flex bg-white px-8 py-3 justify-between items-center z-20 border-b" style={{ borderColor: '#E5E7EB' }}>
-          <div className="flex items-center gap-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo-rei.png" alt="REI DOCENTE" className="w-9 h-9 object-contain rounded-xl" />
-            <div>
-              <div className="text-sm font-black tracking-tight text-slate-800 leading-none">REI DOCENTE</div>
-              <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Recursos Educativos Inteligentes</div>
-            </div>
-          </div>
+        <header className="hidden lg:flex bg-white px-8 py-3 justify-end items-center z-20 border-b" style={{ borderColor: '#E5E7EB' }}>
           <div className="flex items-center gap-4">
             <button className="p-2 rounded-xl border border-transparent hover:border-[#E5E7EB] hover:bg-white transition-all" style={{ color: '#64748B' }}>
               <Bell className="w-4 h-4" />

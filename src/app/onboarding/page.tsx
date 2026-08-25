@@ -406,7 +406,7 @@ export default function OnboardingPage() {
             <div className="space-y-2">
               <label className="text-xs font-bold text-slate-500 block">Tipo de Dependencia</label>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {['Municipal', 'SLEP', 'Particular subvencionado', 'Particular pagado'].map((tipo) => (
+                {['Municipal', 'Particular subvencionado', 'Particular pagado'].map((tipo) => (
                   <label
                     key={tipo}
                     className={`flex items-center justify-center p-3 border rounded-xl cursor-pointer text-center text-[10px] font-bold transition-all ${establecimientoTipo === tipo ? 'bg-rose-50 border-rose-500 text-rose-700' : 'bg-white border-slate-200 hover:bg-slate-50 text-slate-500'}`}

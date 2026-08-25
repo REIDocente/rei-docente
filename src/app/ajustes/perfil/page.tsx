@@ -383,17 +383,44 @@ export default function PerfilAjustesPage() {
         </header>
 
         <main className="flex-1 p-6 md:p-8 max-w-4xl w-full mx-auto space-y-6">
+          {/* SALUDO + PNL */}
+          {(() => {
+            const PNL_MESSAGES = [
+              { dia: 'Domingo',   msg: 'Mañana vuelves a transformar vidas. Descansa y confía en tu preparación.' },
+              { dia: 'Lunes',     msg: 'Hoy abres una nueva página en la historia de cada estudiante. Tu presencia en el aula hace la diferencia.' },
+              { dia: 'Martes',    msg: 'Lo que tú crees sobre tus estudiantes, ellos lo creen sobre sí mismos. Cree en ellos hoy.' },
+              { dia: 'Miércoles', msg: 'Cada pregunta que haces en el aula planta una semilla de curiosidad.' },
+              { dia: 'Jueves',    msg: 'Tu vocación transforma vidas. Lo que haces hoy importa más de lo que imaginas.' },
+              { dia: 'Viernes',   msg: 'Has llegado hasta aquí con todo tu compromiso. Celebra cada avance de tus estudiantes.' },
+              { dia: 'Sábado',    msg: 'Hoy es un buen día para recargar energía y recordar por qué elegiste enseñar.' },
+            ];
+            const diaSemana = new Date().toLocaleDateString('es-CL', { timeZone: 'America/Santiago', weekday: 'long' });
+            const diaKey = diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1);
+            const pnl = PNL_MESSAGES.find(m => m.dia === diaKey) || PNL_MESSAGES[1];
+            const firstName = nombreCompleto?.split(' ')[0] || 'Docente';
+            return (
+              <div className="rounded-3xl p-6 relative overflow-hidden border" style={{ background: 'linear-gradient(135deg, #7C3AED08 0%, #EC489908 100%)', borderColor: '#E2E8F0', boxShadow: '0 8px 30px rgba(124,58,237,0.06)' }}>
+                <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#7C3AED' }}>
+                  {diaKey} · {new Date().toLocaleDateString('es-CL', { timeZone: 'America/Santiago', day: 'numeric', month: 'long' })}
+                </p>
+                <h1 className="text-2xl sm:text-3xl font-black leading-tight mb-3" style={{ color: '#0F172A' }}>
+                  ¡Hola, {firstName}! 👋
+                </h1>
+                <div className="flex items-start gap-2 rounded-2xl p-3" style={{ backgroundColor: 'white', border: '1px solid #E2E8F0' }}>
+                  <span className="text-sm shrink-0">✨</span>
+                  <p className="text-xs leading-relaxed font-medium italic" style={{ color: '#475569' }}>
+                    &ldquo;{pnl.msg}&rdquo;
+                  </p>
+                </div>
+              </div>
+            );
+          })()}
+
           <div className="flex items-center justify-between">
             <div className="space-y-1">
               <h1 className="text-xl font-black text-slate-800">Mi Perfil Pedagógico</h1>
               <p className="text-xs text-slate-450">Actualiza tus cursos, colegio, asignatura y horario escolar.</p>
             </div>
-            <button
-              onClick={() => router.push('/')}
-              className="px-4 py-2 border border-slate-200 text-slate-500 hover:text-slate-700 text-xs font-bold rounded-xl bg-white hover:bg-slate-50 flex items-center gap-1 transition-colors cursor-pointer"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" /> Volver
-            </button>
           </div>
 
           {successMsg && (
@@ -479,7 +506,7 @@ export default function PerfilAjustesPage() {
               <div className="space-y-2 pt-2">
                 <label className="text-xs font-bold text-slate-550 block">Tipo de Dependencia</label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  {['Municipal', 'SLEP', 'Particular subvencionado', 'Particular pagado'].map((tipo) => (
+                  {['Municipal', 'Particular subvencionado', 'Particular pagado'].map((tipo) => (
                     <label
                       key={tipo}
                       className={`flex items-center justify-center p-3 border rounded-xl cursor-pointer text-center text-[10px] font-bold transition-all ${establecimientoTipo === tipo ? 'bg-rose-50/50 border-rose-500 text-rose-700 font-extrabold' : 'bg-white border-slate-200 hover:bg-slate-50 text-slate-500'}`}

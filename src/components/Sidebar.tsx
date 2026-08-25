@@ -72,7 +72,7 @@ export default function Sidebar({ sidebarOpen = false, setSidebarOpen }: Sidebar
   };
 
   const menuItems = [
-    { href: '/', label: 'Inicio', icon: Home, id: 'inicio' },
+    { href: '/ajustes/perfil', label: 'Inicio', icon: Home, id: 'inicio' },
     { href: '/planner/new', label: 'Kit de Clase', icon: PlusCircle, id: 'kit' },
     { href: '/play', label: 'REI Play', icon: Gamepad2, id: 'play' },
     { href: '/evaluaciones', label: 'Evaluaciones y Rúbricas', icon: FileText, id: 'evaluaciones' },
