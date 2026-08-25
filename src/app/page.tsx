@@ -110,6 +110,21 @@ export default function DashboardPage() {
   const [activeDropdownId, setActiveDropdownId] = useState<string | null>(null);
   const [currentTab, setCurrentTab] = useState<'inicio' | 'biblioteca'>('inicio');
 
+  // ── Perfil inline ──────────────────────────────────────────────
+  const ASIGNATURAS_LIST = ['Lengua y Literatura','Lenguaje y Comunicación','Matemática','Historia, Geografía y Cs. Sociales','Ciencias Naturales','Inglés','Educación Física','Artes Visuales','Música','Otra'];
+  const LEVEL_NAME_MAP: Record<string,string> = {'1°B':'1° Básico','2°B':'2° Básico','3°B':'3° Básico','4°B':'4° Básico','5°B':'5° Básico','6°B':'6° Básico','7°B':'7° Básico','8°B':'8° Básico','1°M':'1° Medio','2°M':'2° Medio'};
+  const LETRAS = ['A','B','C','D','E','F','G'];
+  const [pfNombre, setPfNombre] = useState('');
+  const [pfEstablecimiento, setPfEstablecimiento] = useState('');
+  const [pfTipo, setPfTipo] = useState('Municipal');
+  const [pfComuna, setPfComuna] = useState('');
+  const [pfAsignatura, setPfAsignatura] = useState('Lengua y Literatura');
+  const [pfOtra, setPfOtra] = useState('');
+  const [pfLevels, setPfLevels] = useState<Record<string,boolean>>({});
+  const [pfLetras, setPfLetras] = useState<Record<string,Record<string,boolean>>>({});
+  const [pfSaving, setPfSaving] = useState(false);
+  const [pfSuccess, setPfSuccess] = useState('');
+
   useEffect(() => {
     const checkAuthAndFetch = async () => {
       try {
@@ -157,6 +172,74 @@ export default function DashboardPage() {
     };
     checkAuthAndFetch();
   }, [router]);
+
+  // Pre-fill profile form when data loads
+  useEffect(() => {
+    if (!onboardingProfile) return;
+    setPfNombre(onboardingProfile.nombre_completo || '');
+    setPfEstablecimiento(onboardingProfile.establecimiento || '');
+    setPfTipo(onboardingProfile.establecimiento_tipo || 'Municipal');
+    setPfComuna(onboardingProfile.comuna || '');
+    if (ASIGNATURAS_LIST.includes(onboardingProfile.asignatura_principal)) {
+      setPfAsignatura(onboardingProfile.asignatura_principal || 'Lengua y Literatura');
+    } else if (onboardingProfile.asignatura_principal) {
+      setPfAsignatura('Otra'); setPfOtra(onboardingProfile.asignatura_principal);
+    }
+  }, [onboardingProfile]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!cursos.length) return;
+    const lv: Record<string,boolean> = {};
+    const lt: Record<string,Record<string,boolean>> = {};
+    cursos.forEach((c: any) => {
+      const code = Object.keys(LEVEL_NAME_MAP).find(k => LEVEL_NAME_MAP[k] === c.nivel);
+      if (code) {
+        lv[code] = true;
+        if (!lt[code]) lt[code] = {A:false,B:false,C:false,D:false,E:false,F:false,G:false};
+        const m = c.nombre?.match(/[A-G]$/);
+        if (m) lt[code][m[0]] = true;
+      }
+    });
+    setPfLevels(lv); setPfLetras(lt);
+  }, [cursos]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleSaveProfile = async () => {
+    setPfSaving(true);
+    try {
+      const sessionRes = await supabase.auth.getSession();
+      const token = sessionRes.data.session?.access_token;
+      const compiledCursos: any[] = [];
+      Object.keys(pfLevels).forEach(lvl => {
+        if (!pfLevels[lvl]) return;
+        const letrasObj = pfLetras[lvl] || {};
+        Object.keys(letrasObj).forEach(letter => {
+          if (!letrasObj[letter]) return;
+          compiledCursos.push({ nombre: `${LEVEL_NAME_MAP[lvl]} ${letter}`, nivel: LEVEL_NAME_MAP[lvl], asignatura: pfAsignatura === 'Otra' ? pfOtra.trim() : pfAsignatura });
+        });
+      });
+      const payload = {
+        nombre_completo: pfNombre.trim(),
+        establecimiento: pfEstablecimiento.trim(),
+        establecimiento_tipo: pfTipo,
+        comuna: pfComuna.trim(),
+        asignatura_principal: pfAsignatura === 'Otra' ? pfOtra.trim() : pfAsignatura,
+        perfil_completado: true,
+        cursos: compiledCursos,
+      };
+      const res = await fetch('/api/onboarding/guardar-perfil', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) {
+        setPfSuccess('¡Perfil guardado correctamente!');
+        setOnboardingProfile((prev: any) => ({ ...prev, ...payload }));
+        setCursos(compiledCursos);
+        setTimeout(() => setPfSuccess(''), 4000);
+      }
+    } catch (e) { console.error(e); }
+    finally { setPfSaving(false); }
+  };
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -522,94 +605,88 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                {/* WIZARD CONOCE AL DOCENTE — aparece cuando falta perfil o cursos */}
-                {(!onboardingProfile?.establecimiento || cursos.length === 0) && (() => {
-                  const steps = [
-                    { n: 1, label: 'Mi perfil',    sub: 'Nombre y asignatura',    done: !!onboardingProfile?.nombre_completo },
-                    { n: 2, label: 'Mi colegio',   sub: 'Establecimiento',        done: !!onboardingProfile?.establecimiento },
-                    { n: 3, label: 'Mis cursos',   sub: 'Cursos que atienzo',     done: cursos.length > 0 },
-                    { n: 4, label: 'Mi horario',   sub: 'Agenda de clases',       done: !!onboardingProfile?.horario_docente_json },
-                    { n: 5, label: 'Mis metas',    sub: 'Desafíos en el aula',    done: false },
-                  ];
-                  const completedCount = steps.filter(s => s.done).length;
-                  return (
-                    <div className="rounded-3xl overflow-hidden border" style={{ borderColor: '#E2E8F0', boxShadow: '0 8px 30px rgba(124,58,237,0.07)' }}>
-                      {/* Header degradado */}
-                      <div className="px-6 pt-6 pb-4" style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)' }}>
-                        <div className="flex items-center justify-between mb-1">
-                          <div className="flex items-center gap-2">
-                            <span className="text-lg">👋</span>
-                            <p className="text-white text-sm font-black">¡Cuéntanos sobre ti!</p>
-                          </div>
-                          <span className="text-xs font-bold text-white/80">{completedCount}/{steps.length} completado</span>
-                        </div>
-                        <p className="text-white/70 text-[11px] mb-4">Mientras más nos cuentes, mejor personalizamos REI Docente para ti.</p>
-                        {/* Barra de progreso */}
-                        <div className="w-full h-1.5 rounded-full bg-white/20 mb-4">
-                          <div className="h-1.5 rounded-full bg-white transition-all duration-500" style={{ width: `${(completedCount / steps.length) * 100}%` }} />
-                        </div>
-                        {/* Stepper */}
-                        <div className="flex items-center gap-0">
-                          {steps.map((step, i) => (
-                            <React.Fragment key={step.n}>
-                              <div className="flex flex-col items-center gap-1 min-w-0" style={{ flex: 1 }}>
-                                <div
-                                  className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black border-2 transition-all shrink-0"
-                                  style={{
-                                    backgroundColor: step.done ? '#fff' : 'transparent',
-                                    borderColor: step.done ? '#fff' : 'rgba(255,255,255,0.4)',
-                                    color: step.done ? '#7C3AED' : 'rgba(255,255,255,0.7)',
-                                  }}
-                                >
-                                  {step.done ? '✓' : step.n}
-                                </div>
-                                <span className="text-[9px] font-bold text-white/80 text-center leading-tight hidden sm:block">{step.label}</span>
-                                <span className="text-[8px] text-white/50 text-center leading-tight hidden sm:block">{step.sub}</span>
-                              </div>
-                              {i < steps.length - 1 && (
-                                <div className="h-px flex-1 mx-1 shrink" style={{ backgroundColor: 'rgba(255,255,255,0.25)', minWidth: 8 }} />
-                              )}
-                            </React.Fragment>
-                          ))}
-                        </div>
-                      </div>
+                {/* FORMULARIO PERFIL PEDAGÓGICO INLINE */}
+                <div className="space-y-4">
+                  {pfSuccess && (
+                    <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-2xl text-xs font-bold">✓ {pfSuccess}</div>
+                  )}
 
-                      {/* Tarjetas de pasos */}
-                      <div className="bg-white p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                        {steps.map((step) => (
-                          <button
-                            key={step.n}
-                            onClick={() => router.push('/ajustes/perfil')}
-                            className="flex items-start gap-3 p-4 rounded-2xl text-left transition-all hover:scale-[1.01] active:scale-[0.99]"
-                            style={{
-                              background: step.done ? 'linear-gradient(135deg, #F5F3FF 0%, #FDF4FF 100%)' : '#FAFAFA',
-                              border: `1.5px solid ${step.done ? '#DDD6FE' : '#E5E7EB'}`,
-                            }}
-                          >
-                            <div
-                              className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 font-black text-sm"
-                              style={{
-                                background: step.done
-                                  ? 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)'
-                                  : 'linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%)',
-                                color: step.done ? '#fff' : '#9CA3AF',
-                              }}
-                            >
-                              {step.done ? '✓' : step.n}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-xs font-black text-slate-800 leading-tight">{step.label}</p>
-                              <p className="text-[10px] text-slate-400 mt-0.5">{step.sub}</p>
-                              <p className="text-[10px] font-semibold mt-1" style={{ color: step.done ? '#7C3AED' : '#9CA3AF' }}>
-                                {step.done ? 'Listo ✓' : 'Completar →'}
-                              </p>
-                            </div>
+                  {/* Sección 1: Identificación */}
+                  <div className="bg-white rounded-3xl p-5 border space-y-4" style={{ borderColor: '#E5E7EB' }}>
+                    <h2 className="text-xs font-black uppercase tracking-wider pb-2 border-b" style={{ color: '#7C3AED', borderColor: '#EDE9FE' }}>1. Identificación y Establecimiento</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-slate-500 block">Nombre Completo</label>
+                        <input value={pfNombre} onChange={e => setPfNombre(e.target.value)} placeholder="Tu nombre completo" className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-violet-300" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-slate-500 block">Establecimiento Educativo</label>
+                        <input value={pfEstablecimiento} onChange={e => setPfEstablecimiento(e.target.value)} placeholder="Nombre del colegio" className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-violet-300" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-slate-500 block">Comuna / Ciudad</label>
+                        <input value={pfComuna} onChange={e => setPfComuna(e.target.value)} placeholder="Ej: Santiago" className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-violet-300" />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-bold text-slate-500 block">Asignatura Principal</label>
+                        <select value={pfAsignatura} onChange={e => setPfAsignatura(e.target.value)} className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-violet-300 bg-white">
+                          {ASIGNATURAS_LIST.map(a => <option key={a}>{a}</option>)}
+                        </select>
+                        {pfAsignatura === 'Otra' && (
+                          <input value={pfOtra} onChange={e => setPfOtra(e.target.value)} placeholder="Escribe tu asignatura" className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-violet-300 mt-2" />
+                        )}
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold text-slate-500 block">Tipo de Dependencia</label>
+                      <div className="flex flex-wrap gap-2">
+                        {['Municipal', 'Particular subvencionado', 'Particular pagado'].map(t => (
+                          <button key={t} type="button" onClick={() => setPfTipo(t)}
+                            className="px-4 py-2 rounded-xl text-xs font-bold border transition-all"
+                            style={pfTipo === t ? { background: 'linear-gradient(135deg,#7C3AED,#EC4899)', color: '#fff', borderColor: 'transparent' } : { background: '#F8F9FC', color: '#64748B', borderColor: '#E5E7EB' }}>
+                            {t}
                           </button>
                         ))}
                       </div>
                     </div>
-                  );
-                })()}
+                  </div>
+
+                  {/* Sección 2: Cursos */}
+                  <div className="bg-white rounded-3xl p-5 border space-y-4" style={{ borderColor: '#E5E7EB' }}>
+                    <h2 className="text-xs font-black uppercase tracking-wider pb-2 border-b" style={{ color: '#7C3AED', borderColor: '#EDE9FE' }}>2. Cursos y Paralelos</h2>
+                    <p className="text-[10px] text-slate-400">Selecciona los niveles y marca los paralelos que atiendes.</p>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+                      {Object.entries(LEVEL_NAME_MAP).map(([code, name]) => (
+                        <div key={code} className="space-y-1">
+                          <button type="button" onClick={() => setPfLevels(prev => ({ ...prev, [code]: !prev[code] }))}
+                            className="w-full px-3 py-2 rounded-xl text-[10px] font-bold border transition-all"
+                            style={pfLevels[code] ? { background: 'linear-gradient(135deg,#7C3AED,#EC4899)', color:'#fff', borderColor:'transparent' } : { background:'#F8F9FC', color:'#64748B', borderColor:'#E5E7EB' }}>
+                            {name}
+                          </button>
+                          {pfLevels[code] && (
+                            <div className="flex flex-wrap gap-1 px-1">
+                              {LETRAS.map(l => (
+                                <button key={l} type="button"
+                                  onClick={() => setPfLetras(prev => ({ ...prev, [code]: { ...prev[code], [l]: !prev[code]?.[l] } }))}
+                                  className="w-6 h-6 rounded-lg text-[9px] font-black border transition-all"
+                                  style={pfLetras[code]?.[l] ? { backgroundColor:'#7C3AED', color:'#fff', borderColor:'#7C3AED' } : { backgroundColor:'#F3F4F6', color:'#9CA3AF', borderColor:'#E5E7EB' }}>
+                                  {l}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Botón guardar */}
+                  <button onClick={handleSaveProfile} disabled={pfSaving}
+                    className="w-full py-3 rounded-2xl text-sm font-black text-white transition-all disabled:opacity-60"
+                    style={{ background: 'linear-gradient(135deg,#7C3AED 0%,#EC4899 100%)' }}>
+                    {pfSaving ? 'Guardando...' : 'Guardar mi perfil pedagógico →'}
+                  </button>
+                </div>
               </>
             )}
 
