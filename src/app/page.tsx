@@ -91,6 +91,11 @@ const MODULE_COLORS: Record<string, { color: string; bg: string; label: string }
   'experiencias': { color: '#F59E0B', bg: '#FFFBEB', label: 'amarillo'},
 };
 
+// Constantes fuera del componente para evitar traducción automática del navegador
+const ASIGNATURAS_LIST_GLOBAL = ['Lengua y Literatura','Lenguaje y Comunicación','Matemática','Historia, Geografía y Cs. Sociales','Ciencias Naturales','Inglés','Educación Física','Artes Visuales','Música','Otra'];
+const LEVEL_NAME_MAP_GLOBAL: Record<string,string> = {'1°B':'1° Básico','2°B':'2° Básico','3°B':'3° Básico','4°B':'4° Básico','5°B':'5° Básico','6°B':'6° Básico','7°B':'7° Básico','8°B':'8° Básico','1°M':'1° Medio','2°M':'2° Medio'};
+const LETRAS_GLOBAL = ['A','B','C','D','E','F','G'] as const;
+
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
@@ -111,9 +116,9 @@ export default function DashboardPage() {
   const [currentTab, setCurrentTab] = useState<'inicio' | 'biblioteca'>('inicio');
 
   // ── Perfil inline ──────────────────────────────────────────────
-  const ASIGNATURAS_LIST = ['Lengua y Literatura','Lenguaje y Comunicación','Matemática','Historia, Geografía y Cs. Sociales','Ciencias Naturales','Inglés','Educación Física','Artes Visuales','Música','Otra'];
-  const LEVEL_NAME_MAP: Record<string,string> = {'1°B':'1° Básico','2°B':'2° Básico','3°B':'3° Básico','4°B':'4° Básico','5°B':'5° Básico','6°B':'6° Básico','7°B':'7° Básico','8°B':'8° Básico','1°M':'1° Medio','2°M':'2° Medio'};
-  const LETRAS = ['A','B','C','D','E','F','G'];
+  const ASIGNATURAS_LIST = ASIGNATURAS_LIST_GLOBAL;
+  const LEVEL_NAME_MAP = LEVEL_NAME_MAP_GLOBAL;
+  const LETRAS = LETRAS_GLOBAL;
   const [pfNombre, setPfNombre] = useState('');
   const [pfEstablecimiento, setPfEstablecimiento] = useState('');
   const [pfTipo, setPfTipo] = useState('Municipal');
@@ -666,11 +671,11 @@ export default function DashboardPage() {
                           {pfLevels[code] && (
                             <div className="flex flex-wrap gap-1 px-1">
                               {LETRAS.map(l => (
-                                <button key={l} type="button"
+                                <button key={l} type="button" translate="no"
                                   onClick={() => setPfLetras(prev => ({ ...prev, [code]: { ...prev[code], [l]: !prev[code]?.[l] } }))}
                                   className="w-6 h-6 rounded-lg text-[9px] font-black border transition-all"
                                   style={pfLetras[code]?.[l] ? { backgroundColor:'#7C3AED', color:'#fff', borderColor:'#7C3AED' } : { backgroundColor:'#F3F4F6', color:'#9CA3AF', borderColor:'#E5E7EB' }}>
-                                  {l}
+                                  <span translate="no">{l}</span>
                                 </button>
                               ))}
                             </div>
