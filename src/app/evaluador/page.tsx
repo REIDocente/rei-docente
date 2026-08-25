@@ -39,11 +39,7 @@ import {
   Eye,
   FileDown
 } from 'lucide-react';
-import * as XLSX from 'xlsx';
-import { drawHojaRespuestas } from '@/lib/templates/drawHojaRespuestas';
-import { drawInformeApoderado } from '@/lib/templates/drawInformeApoderado';
-import { drawPlanMejoraWord } from '@/lib/templates/drawPlanMejoraWord';
-import { Packer } from 'docx';
+// Heavy libs cargadas dinámicamente para evitar crash de bundle en Vercel
 
 // --- Interfaces ---
 interface Student {
@@ -538,8 +534,9 @@ export default function EvaluadorPage() {
 
   const handleExcelImport = (file: File) => {
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
+        const XLSX = await import('xlsx');
         const data = e.target?.result;
         const workbook = XLSX.read(data, { type: 'binary' });
         const sheetName = workbook.SheetNames[0];
@@ -793,6 +790,7 @@ export default function EvaluadorPage() {
     if (studentsResults.length === 0) return;
     setGeneratingSheets(true);
     try {
+      const { drawHojaRespuestas } = await import('@/lib/templates/drawHojaRespuestas');
       const selectedCourse = cursos.find(c => c.id === evalCursoId);
       const pdf = await drawHojaRespuestas({
         analisisId: currentEvalId || '',
@@ -984,8 +982,9 @@ export default function EvaluadorPage() {
   };
 
   // --- Step 4 Handlers (Estadísticas & Excel export) ---
-  const handleExportNotasExcel = () => {
+  const handleExportNotasExcel = async () => {
     try {
+      const XLSX = await import('xlsx');
       const data = sortedResults.map(s => ({
         'N° Lista': s.numero_lista,
         'Estudiante': s.nombre_estudiante,
@@ -1111,7 +1110,7 @@ export default function EvaluadorPage() {
     }
   };
 
-  const handleDownloadSingleParentReport = (idx: number) => {
+  const handleDownloadSingleParentReport = async (idx: number) => {
     const est = calculatedResults[idx];
     const text = est.informe_apoderado_texto || reportsResult[est.nombre_estudiante];
     if (!text) {
@@ -1120,6 +1119,7 @@ export default function EvaluadorPage() {
     }
 
     try {
+      const { drawInformeApoderado } = await import('@/lib/templates/drawInformeApoderado');
       const pdf = drawInformeApoderado({
         establecimiento: evalEstablecimiento,
         nombreDocente: evalDocente,
@@ -1141,7 +1141,7 @@ export default function EvaluadorPage() {
     }
   };
 
-  const handleDownloadCombinedParentReports = () => {
+  const handleDownloadCombinedParentReports = async () => {
     const missing = calculatedResults.some(c => !c.informe_apoderado_texto && !reportsResult[c.nombre_estudiante]);
     if (missing) {
       alert('Primero debes generar los informes para todos los apoderados.');
@@ -1150,6 +1150,7 @@ export default function EvaluadorPage() {
 
     setCombinedPDFGenerating(true);
     try {
+      const { drawInformeApoderado } = await import('@/lib/templates/drawInformeApoderado');
       const list = calculatedResults.map(est => ({
         nombre: est.nombre_estudiante,
         nota: est.nota || 1.0,
@@ -1201,6 +1202,7 @@ export default function EvaluadorPage() {
         nota: s.nota || 1.0
       }));
 
+      const { drawPlanMejoraWord } = await import('@/lib/templates/drawPlanMejoraWord');
       const blob = await drawPlanMejoraWord(completeAnalisis, formatted);
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
