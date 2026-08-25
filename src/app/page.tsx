@@ -392,13 +392,20 @@ export default function DashboardPage() {
         </header>
 
         {/* Desktop Header */}
-        <header className="hidden lg:flex bg-white px-8 py-4 justify-between items-center z-20 border-b" style={{ borderColor: '#E5E7EB' }}>
-          <div className="text-xs font-semibold" style={{ color: '#64748B' }}>Panel Docente</div>
+        <header className="hidden lg:flex bg-white px-8 py-3 justify-between items-center z-20 border-b" style={{ borderColor: '#E5E7EB' }}>
+          <div className="flex items-center gap-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo-rei.png" alt="REI DOCENTE" className="w-9 h-9 object-contain rounded-xl" />
+            <div>
+              <div className="text-sm font-black tracking-tight text-slate-800 leading-none">REI DOCENTE</div>
+              <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Recursos Educativos Inteligentes</div>
+            </div>
+          </div>
           <div className="flex items-center gap-4">
             <button className="p-2 rounded-xl border border-transparent hover:border-[#E5E7EB] hover:bg-white transition-all" style={{ color: '#64748B' }}>
               <Bell className="w-4 h-4" />
             </button>
-            <div className="w-8 h-8 rounded-full text-white flex items-center justify-center font-bold text-xs shadow-sm" style={{ backgroundColor: '#6D28F5' }}>
+            <div className="w-8 h-8 rounded-full text-white flex items-center justify-center font-bold text-xs shadow-sm" style={{ backgroundColor: '#7C3AED' }}>
               {initials}
             </div>
           </div>
@@ -441,31 +448,51 @@ export default function DashboardPage() {
                   </div>
                 )}
 
-                {/* BANNER BIENVENIDA */}
-                <div
-                  className="rounded-3xl p-6 flex items-center justify-between relative overflow-hidden border"
-                  style={{
-                    background: 'linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)',
-                    borderColor: '#E5E7EB',
-                    boxShadow: '0 8px 30px rgba(0,0,0,0.05)',
-                  }}
-                >
-                  <div className="space-y-2 max-w-lg z-10">
-                    <h1 className="text-2xl font-black" style={{ color: '#0F172A' }}>
-                      Hola, {onboardingProfile?.nombre_completo || firstName} 👋
-                    </h1>
-                    <p className="text-xs leading-relaxed font-semibold" style={{ color: '#64748B' }}>
-                      {onboardingProfile?.establecimiento
-                        ? `${onboardingProfile.establecimiento} · ${onboardingProfile.establecimiento_tipo} · ${onboardingProfile.comuna}`
-                        : 'Todo lo que necesitas para planificar, enseñar y evaluar con inteligencia artificial.'}
-                    </p>
-                  </div>
-                  <div className="hidden sm:flex shrink-0 mr-4 items-center justify-center relative w-36 h-24">
-                    <div className="w-16 h-16 rounded-full bg-white border flex items-center justify-center shrink-0 shadow-sm" style={{ borderColor: '#E5E7EB' }}>
-                      <Sparkles className="w-8 h-8" style={{ color: '#6D28F5' }} />
+                {/* BIENVENIDA HERO */}
+                {(() => {
+                  const PNL_MESSAGES = [
+                    { dia: 'Domingo',   msg: 'Mañana vuelves a transformar vidas. Descansa y confía en tu preparación. Eres exactamente el docente que tus estudiantes necesitan.' },
+                    { dia: 'Lunes',     msg: 'Hoy abres una nueva página en la historia de cada estudiante. Tu presencia en el aula hace la diferencia desde el primer minuto.' },
+                    { dia: 'Martes',    msg: 'Lo que tú crees sobre tus estudiantes, ellos lo creen sobre sí mismos. Cree en ellos hoy — y verás cómo crecen.' },
+                    { dia: 'Miércoles', msg: 'Cada pregunta que haces en el aula planta una semilla de curiosidad. Sigues sembrando aunque no siempre veas la cosecha.' },
+                    { dia: 'Jueves',    msg: 'Tu vocación transforma vidas. Lo que haces hoy — esta clase, esta corrección, este gesto — importa más de lo que imaginas.' },
+                    { dia: 'Viernes',   msg: 'Has llegado hasta aquí con todo tu compromiso. Celebra cada avance de tus estudiantes: son el reflejo de tu dedicación.' },
+                    { dia: 'Sábado',    msg: 'Hoy es un buen día para recargar energía y recordar por qué elegiste enseñar. Tu vocación es un regalo para quienes aprenden contigo.' },
+                  ];
+                  const diaSemana = new Date().toLocaleDateString('es-CL', { timeZone: 'America/Santiago', weekday: 'long' });
+                  const diaKey = diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1);
+                  const pnl = PNL_MESSAGES.find(m => m.dia === diaKey) || PNL_MESSAGES[1];
+                  const nombreDocente = onboardingProfile?.nombre_completo?.split(' ')[0] || firstName;
+                  return (
+                    <div className="rounded-3xl p-8 relative overflow-hidden border" style={{ background: 'linear-gradient(135deg, #7C3AED08 0%, #EC489908 100%)', borderColor: '#E2E8F0', boxShadow: '0 8px 30px rgba(124,58,237,0.06)' }}>
+                      {/* Logo decorativo */}
+                      <div className="absolute right-6 top-1/2 -translate-y-1/2 hidden sm:block opacity-10">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src="/logo-rei.png" alt="" className="w-32 h-32 object-contain" />
+                      </div>
+                      <div className="relative z-10 space-y-3 max-w-2xl">
+                        <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#7C3AED' }}>
+                          {diaKey} · {new Date().toLocaleDateString('es-CL', { timeZone: 'America/Santiago', day: 'numeric', month: 'long' })}
+                        </p>
+                        <h1 className="text-3xl sm:text-4xl font-black leading-tight" style={{ color: '#0F172A' }}>
+                          ¡Hola, {nombreDocente}! 👋
+                        </h1>
+                        {onboardingProfile?.establecimiento && (
+                          <p className="text-xs font-semibold" style={{ color: '#64748B' }}>
+                            {onboardingProfile.establecimiento} · {onboardingProfile.establecimiento_tipo} · {onboardingProfile.comuna}
+                          </p>
+                        )}
+                        {/* Mensaje PNL diario */}
+                        <div className="mt-2 flex items-start gap-3 rounded-2xl p-4" style={{ backgroundColor: 'white', border: '1px solid #E2E8F0' }}>
+                          <Sparkles className="w-4 h-4 shrink-0 mt-0.5" style={{ color: '#7C3AED' }} />
+                          <p className="text-sm leading-relaxed font-medium italic" style={{ color: '#475569' }}>
+                            &ldquo;{pnl.msg}&rdquo;
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
+                  );
+                })()}
 
                 {/* WIDGETS PEDAGÓGICOS: AGENDA + CURSOS */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -527,59 +554,94 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                {/* GRILLA DE MÓDULOS */}
-                <div className="space-y-4">
-                  <h2 className="text-xs font-bold uppercase tracking-wider" style={{ color: '#64748B' }}>Accesos Rápidos a Módulos</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    {tools.map((tool) => {
-                      const Icon = cardIcons[tool.iconKey];
-                      const mod = MODULE_COLORS[tool.id] || { color: '#6D28F5', bg: '#F0EBFF' };
-                      return (
-                        <div
-                          key={tool.id}
-                          className="bg-white rounded-2xl p-5 flex flex-col justify-between transition-all duration-200 hover:scale-[1.005]"
-                          style={{
-                            border: '1.5px solid #E5E7EB',
-                            boxShadow: '0 8px 30px rgba(0,0,0,0.05)',
-                          }}
-                        >
-                          <div className="flex gap-4 items-start">
-                            {/* Icono con color del módulo */}
-                            <div
-                              className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 text-white"
-                              style={{ backgroundColor: mod.color }}
-                            >
-                              {Icon && <Icon className="w-5 h-5" />}
-                            </div>
-                            <div className="flex-1 min-w-0 space-y-1">
-                              <h3 className="font-bold text-xs" style={{ color: '#0F172A' }}>{tool.title}</h3>
-                              <p className="text-[10px] leading-normal font-medium" style={{ color: '#64748B' }}>
-                                {tool.description}
-                              </p>
-                              <div className="pt-2">
-                                {tool.enabled && tool.link ? (
-                                  <Link
-                                    href={tool.link}
-                                    className="inline-flex items-center gap-1 px-4 py-2 text-white text-[10px] font-bold rounded-xl transition-colors duration-200 shadow-sm"
-                                    style={{ backgroundColor: '#6D28F5' }}
-                                    onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#5B21D9')}
-                                    onMouseLeave={e => (e.currentTarget.style.backgroundColor = '#6D28F5')}
-                                  >
-                                    Crear <ChevronRight className="w-3 h-3" />
-                                  </Link>
-                                ) : (
-                                  <span className="inline-flex items-center px-3 py-1.5 text-[10px] font-bold rounded-xl select-none cursor-not-allowed" style={{ backgroundColor: '#F8FAFC', color: '#94A3B8', border: '1px solid #E5E7EB' }}>
-                                    Próximamente
-                                  </span>
-                                )}
-                              </div>
-                            </div>
+                {/* WIZARD CONOCE AL DOCENTE — aparece cuando falta perfil o cursos */}
+                {(!onboardingProfile?.establecimiento || cursos.length === 0) && (() => {
+                  const steps = [
+                    { n: 1, label: 'Mi perfil',    sub: 'Nombre y asignatura',    done: !!onboardingProfile?.nombre_completo },
+                    { n: 2, label: 'Mi colegio',   sub: 'Establecimiento',        done: !!onboardingProfile?.establecimiento },
+                    { n: 3, label: 'Mis cursos',   sub: 'Cursos que atienzo',     done: cursos.length > 0 },
+                    { n: 4, label: 'Mi horario',   sub: 'Agenda de clases',       done: !!onboardingProfile?.horario_docente_json },
+                    { n: 5, label: 'Mis metas',    sub: 'Desafíos en el aula',    done: false },
+                  ];
+                  const completedCount = steps.filter(s => s.done).length;
+                  return (
+                    <div className="rounded-3xl overflow-hidden border" style={{ borderColor: '#E2E8F0', boxShadow: '0 8px 30px rgba(124,58,237,0.07)' }}>
+                      {/* Header degradado */}
+                      <div className="px-6 pt-6 pb-4" style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)' }}>
+                        <div className="flex items-center justify-between mb-1">
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg">👋</span>
+                            <p className="text-white text-sm font-black">¡Cuéntanos sobre ti!</p>
                           </div>
+                          <span className="text-xs font-bold text-white/80">{completedCount}/{steps.length} completado</span>
                         </div>
-                      );
-                    })}
-                  </div>
-                </div>
+                        <p className="text-white/70 text-[11px] mb-4">Mientras más nos cuentes, mejor personalizamos REI Docente para ti.</p>
+                        {/* Barra de progreso */}
+                        <div className="w-full h-1.5 rounded-full bg-white/20 mb-4">
+                          <div className="h-1.5 rounded-full bg-white transition-all duration-500" style={{ width: `${(completedCount / steps.length) * 100}%` }} />
+                        </div>
+                        {/* Stepper */}
+                        <div className="flex items-center gap-0">
+                          {steps.map((step, i) => (
+                            <React.Fragment key={step.n}>
+                              <div className="flex flex-col items-center gap-1 min-w-0" style={{ flex: 1 }}>
+                                <div
+                                  className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black border-2 transition-all shrink-0"
+                                  style={{
+                                    backgroundColor: step.done ? '#fff' : 'transparent',
+                                    borderColor: step.done ? '#fff' : 'rgba(255,255,255,0.4)',
+                                    color: step.done ? '#7C3AED' : 'rgba(255,255,255,0.7)',
+                                  }}
+                                >
+                                  {step.done ? '✓' : step.n}
+                                </div>
+                                <span className="text-[9px] font-bold text-white/80 text-center leading-tight hidden sm:block">{step.label}</span>
+                                <span className="text-[8px] text-white/50 text-center leading-tight hidden sm:block">{step.sub}</span>
+                              </div>
+                              {i < steps.length - 1 && (
+                                <div className="h-px flex-1 mx-1 shrink" style={{ backgroundColor: 'rgba(255,255,255,0.25)', minWidth: 8 }} />
+                              )}
+                            </React.Fragment>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Tarjetas de pasos */}
+                      <div className="bg-white p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {steps.map((step) => (
+                          <button
+                            key={step.n}
+                            onClick={() => router.push('/ajustes/perfil')}
+                            className="flex items-start gap-3 p-4 rounded-2xl text-left transition-all hover:scale-[1.01] active:scale-[0.99]"
+                            style={{
+                              background: step.done ? 'linear-gradient(135deg, #F5F3FF 0%, #FDF4FF 100%)' : '#FAFAFA',
+                              border: `1.5px solid ${step.done ? '#DDD6FE' : '#E5E7EB'}`,
+                            }}
+                          >
+                            <div
+                              className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 font-black text-sm"
+                              style={{
+                                background: step.done
+                                  ? 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)'
+                                  : 'linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%)',
+                                color: step.done ? '#fff' : '#9CA3AF',
+                              }}
+                            >
+                              {step.done ? '✓' : step.n}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-black text-slate-800 leading-tight">{step.label}</p>
+                              <p className="text-[10px] text-slate-400 mt-0.5">{step.sub}</p>
+                              <p className="text-[10px] font-semibold mt-1" style={{ color: step.done ? '#7C3AED' : '#9CA3AF' }}>
+                                {step.done ? 'Listo ✓' : 'Completar →'}
+                              </p>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
               </>
             )}
 
