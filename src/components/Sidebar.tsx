@@ -103,9 +103,8 @@ export default function Sidebar({ sidebarOpen = false, setSidebarOpen }: Sidebar
           {/* Logo */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-8.5 h-8.5 rounded-xl bg-gradient-to-tr from-violet-650 via-purple-500 to-pink-500 flex items-center justify-center shadow-md shadow-violet-500/10">
-                <Sparkle className="w-4.5 h-4.5 text-white" />
-              </div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo-rei.png" alt="REI DOCENTE" className="w-10 h-10 object-contain rounded-xl" />
               <div className="min-w-0">
                 <span className="block text-sm font-black tracking-tight text-slate-800 leading-none">
                   REI DOCENTE

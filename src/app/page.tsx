@@ -391,17 +391,6 @@ export default function DashboardPage() {
           </div>
         </header>
 
-        {/* Desktop Header */}
-        <header className="hidden lg:flex bg-white px-8 py-3 justify-end items-center z-20 border-b" style={{ borderColor: '#E5E7EB' }}>
-          <div className="flex items-center gap-4">
-            <button className="p-2 rounded-xl border border-transparent hover:border-[#E5E7EB] hover:bg-white transition-all" style={{ color: '#64748B' }}>
-              <Bell className="w-4 h-4" />
-            </button>
-            <div className="w-8 h-8 rounded-full text-white flex items-center justify-center font-bold text-xs shadow-sm" style={{ backgroundColor: '#7C3AED' }}>
-              {initials}
-            </div>
-          </div>
-        </header>
 
         {/* Central & Right Layout */}
         <div className="flex-1 flex flex-col xl:flex-row min-w-0">
@@ -426,19 +415,6 @@ export default function DashboardPage() {
                   </div>
                 )}
 
-                {/* BANNER HORARIO OMITIDO */}
-                {onboardingProfile && onboardingProfile.perfil_completado && !onboardingProfile.horario_docente_json && (
-                  <div
-                    onClick={() => router.push('/ajustes/perfil')}
-                    className="bg-indigo-50 border border-indigo-200 rounded-3xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-indigo-900 cursor-pointer hover:bg-indigo-100/20 transition-colors shadow-xs"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-5 h-5 text-indigo-650 shrink-0" />
-                      <p className="font-bold">Sube tu horario para activar tu agenda diaria "Hoy en Aula" y personalizar el Planificador →</p>
-                    </div>
-                    <span className="text-[10px] font-black underline shrink-0">Subir Horario</span>
-                  </div>
-                )}
 
                 {/* BIENVENIDA HERO */}
                 {(() => {
