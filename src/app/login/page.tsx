@@ -101,16 +101,16 @@ export default function LoginPage() {
   };
 
   const modules = [
-    { name: 'Planificación', desc: 'Clases alineadas al currículo', color: '#6A1BFA', bg: '#EDE7F6' },
+    { name: 'Planificación', desc: 'Clases alineadas al currículo', color: '#7C3AED', bg: '#EDE7F6' },
     { name: 'REI Lecturas', desc: 'Biblioteca inteligente', color: '#00A878', bg: '#E6F7F2' },
     { name: 'Evaluaciones', desc: 'Rúbricas y pruebas', color: '#FF8A65', bg: '#FFF0EB' },
     { name: 'REI Play', desc: 'Gamificación educativa', color: '#D4A017', bg: '#FFF8E7' },
     { name: 'Rec. Visuales', desc: 'Presentaciones y más', color: '#60A5FA', bg: '#EFF6FF' },
-    { name: 'Guías', desc: 'Guías y actividades', color: '#8B5CF6', bg: '#F3EEFF' },
+    { name: 'Guías', desc: 'Guías y actividades', color: '#A855F7', bg: '#F3EEFF' },
   ];
 
   const stats = [
-    { icon: <Users className="w-5 h-5" />, stat: '+10.000', desc: 'Docentes confían en REI Docente', color: '#6A1BFA' },
+    { icon: <Users className="w-5 h-5" />, stat: '+10.000', desc: 'Docentes confían en REI Docente', color: '#7C3AED' },
     { icon: <Clock className="w-5 h-5" />, stat: 'Ahorra horas', desc: 'en planificación y evaluación', color: '#00A878' },
     { icon: <ShieldCheck className="w-5 h-5" />, stat: '100% Alineado', desc: 'al Currículum MINEDUC', color: '#60A5FA' },
     { icon: <Star className="w-5 h-5" style={{ fill: '#FFC857', color: '#FFC857' }} />, stat: 'Calidad pedagógica', desc: 'respaldada por expertos', color: '#FFC857' },
@@ -120,11 +120,10 @@ export default function LoginPage() {
     <div className="min-h-screen font-sans antialiased overflow-x-hidden flex flex-col" style={{ backgroundColor: '#F3F0FF' }}>
 
       {/* NAVBAR */}
-      <header className="sticky top-0 z-30 w-full px-6 py-4 flex items-center justify-between" style={{ backgroundColor: 'rgba(243,240,255,0.9)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(106,27,250,0.1)' }}>
+      <header className="sticky top-0 z-30 w-full px-6 py-4 flex items-center justify-between" style={{ backgroundColor: 'rgba(243,240,255,0.9)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(124,58,237,0.1)' }}>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg" style={{ background: 'linear-gradient(135deg, #6A1BFA, #8B5CF6)' }}>
-            <Sparkles className="w-5 h-5 text-white" />
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo-rei.png" alt="REI DOCENTE" className="w-9 h-9 rounded-xl object-contain" />
           <div>
             <div className="text-base font-black tracking-tight text-slate-900 leading-none">REI DOCENTE</div>
             <div className="text-[9px] font-bold text-slate-400 tracking-widest uppercase">Recursos Educativos Inteligentes</div>
@@ -134,13 +133,13 @@ export default function LoginPage() {
           <button
             onClick={() => openAuthModal('login')}
             className="px-5 py-2.5 text-sm font-bold rounded-xl transition-all border-2"
-            style={{ color: '#6A1BFA', borderColor: '#6A1BFA', backgroundColor: 'transparent' }}>
+            style={{ color: '#7C3AED', borderColor: '#7C3AED', backgroundColor: 'transparent' }}>
             Iniciar sesión
           </button>
           <button
             onClick={() => openAuthModal('signup')}
             className="px-5 py-2.5 text-sm font-bold rounded-xl text-white shadow-lg"
-            style={{ background: 'linear-gradient(135deg, #6A1BFA, #8B5CF6)' }}>
+            style={{ background: 'linear-gradient(135deg, #7C3AED, #EC4899)' }}>
             Regístrate gratis
           </button>
         </div>
@@ -148,125 +147,99 @@ export default function LoginPage() {
 
       {/* HERO */}
       <main className="flex-1 flex items-center">
-        <div className="max-w-7xl mx-auto w-full px-6 py-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="max-w-7xl mx-auto w-full px-6 py-10 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
 
-          {/* LEFT */}
-          <div className="space-y-7">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold" style={{ backgroundColor: '#EDE7F6', color: '#6A1BFA', border: '1px solid rgba(106,27,250,0.2)' }}>
-              <Sparkles className="w-4 h-4" />
-              IA alineada al currículum chileno de Lenguaje
-            </div>
-
-            <p className="text-slate-600 text-base font-medium flex items-center gap-2 flex-wrap">
-              <Heart className="w-4 h-4 shrink-0" style={{ fill: '#fb7185', color: '#fb7185' }} />
-              Tú enseñas con pasión, nosotros te damos el tiempo para{' '}
-              <span style={{ color: '#6A1BFA', fontWeight: 700 }}>inspirar.</span>
-            </p>
-
-            <div>
-              <h1 className="text-5xl sm:text-6xl font-black tracking-tight text-slate-900 leading-tight">
-                Clases listas en<br />segundos para
-              </h1>
-              <h1 className="text-5xl sm:text-6xl font-black tracking-tight leading-tight mt-1" style={{ background: 'linear-gradient(135deg, #6A1BFA 0%, #FF8A65 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                Lenguaje
-              </h1>
-            </div>
-
-            <div className="inline-flex items-center gap-4 px-5 py-3 rounded-2xl" style={{ backgroundColor: 'white', border: '1.5px solid #E7EAF3', boxShadow: '0 2px 8px rgba(106,27,250,0.08)' }}>
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: '#EDE7F6' }}>
-                <Calendar className="w-5 h-5" style={{ color: '#6A1BFA' }} />
-              </div>
-              <div>
-                <div className="text-sm font-black" style={{ color: '#6A1BFA' }}>Por 7 días será gratis</div>
-                <div className="text-xs text-slate-500 font-medium">y luego será pago</div>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <button
-                onClick={() => openAuthModal('signup')}
-                className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl text-white font-black text-base shadow-xl"
-                style={{ background: 'linear-gradient(135deg, #5A0EE8, #6A1BFA)', boxShadow: '0 8px 24px rgba(106,27,250,0.35)' }}>
-                Regístrate gratis por 7 días
-                <ArrowRight className="w-5 h-5" />
-              </button>
-              <div className="flex items-center gap-2 text-xs text-slate-400 font-medium">
-                <ShieldCheck className="w-3.5 h-3.5" />
-                Sin tarjeta de crédito · Cancela cuando quieras
-              </div>
+          {/* LEFT — Logo grande */}
+          <div className="flex flex-col items-center justify-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo-rei.png"
+              alt="REI DOCENTE"
+              className="w-80 h-80 sm:w-96 sm:h-96 object-contain drop-shadow-2xl"
+            />
+            <div className="mt-4 text-center space-y-1">
+              <p className="text-sm font-bold text-slate-500 tracking-wide">Planifica · Enseña · Evalúa</p>
+              <p className="text-sm font-bold text-slate-500 tracking-wide">Inspira · Transforma</p>
             </div>
           </div>
 
-          {/* RIGHT — App mockup */}
-          <div className="relative hidden lg:flex items-center justify-center">
-            <div className="absolute inset-0 rounded-3xl blur-3xl opacity-20" style={{ background: 'radial-gradient(circle, #6A1BFA, #8B5CF6)' }} />
-            <div className="relative w-full max-w-lg">
-              <div className="rounded-2xl shadow-2xl overflow-hidden border-4 border-white" style={{ background: '#1a1a2e' }}>
-                <div className="flex items-center gap-2 px-4 py-2.5" style={{ backgroundColor: '#16213e' }}>
-                  <div className="w-3 h-3 rounded-full bg-rose-400" />
-                  <div className="w-3 h-3 rounded-full bg-yellow-400" />
-                  <div className="w-3 h-3 rounded-full bg-green-400" />
-                  <div className="flex-1 mx-4 h-5 rounded-md flex items-center px-2" style={{ backgroundColor: '#0f3460' }}>
-                    <span className="text-[10px] text-slate-400">rei-docente.vercel.app</span>
-                  </div>
-                </div>
-                <div className="p-4" style={{ backgroundColor: '#FAF9FC' }}>
-                  <div className="flex items-center justify-between mb-3 pb-2" style={{ borderBottom: '1px solid #E7EAF3' }}>
-                    <div className="flex items-center gap-2">
-                      <div className="w-5 h-5 rounded-md" style={{ background: 'linear-gradient(135deg, #6A1BFA, #8B5CF6)' }} />
-                      <span className="text-[10px] font-black text-slate-700">REI DOCENTE</span>
-                      <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full text-white" style={{ background: '#6A1BFA' }}>PRO</span>
-                    </div>
-                    <div className="w-5 h-5 rounded-full" style={{ background: 'linear-gradient(135deg, #6A1BFA, #8B5CF6)' }} />
-                  </div>
-                  <div className="mb-3">
-                    <div className="text-[11px] font-black text-slate-800">¡Hola, Docente! 👋</div>
-                    <div className="text-[9px] text-slate-400 font-medium">¿Qué vamos a crear hoy? ✨</div>
-                  </div>
-                  <div className="grid grid-cols-3 gap-2">
-                    {modules.map((m, i) => (
-                      <div key={i} className="p-2 rounded-xl" style={{ backgroundColor: 'white', border: `1.5px solid ${m.bg}` }}>
-                        <div className="w-5 h-5 rounded-md mb-1.5 flex items-center justify-center" style={{ backgroundColor: m.bg }}>
-                          <div className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: m.color }} />
-                        </div>
-                        <div className="text-[9px] font-black text-slate-700">{m.name}</div>
-                        <div className="text-[7px] text-slate-400 font-medium leading-tight">{m.desc}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+          {/* RIGHT — Contenido */}
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 leading-tight">
+                Clases listas en segundos para
+              </h1>
+              <h1 className="text-4xl sm:text-5xl font-black tracking-tight leading-tight mt-1 flex items-center gap-3">
+                <span style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                  Lenguaje
+                </span>
+                <Heart className="w-7 h-7 shrink-0" style={{ fill: '#EC4899', color: '#EC4899' }} />
+              </h1>
+            </div>
 
-              {/* Floating card 1 */}
-              <div className="absolute -top-4 -right-8 bg-white rounded-2xl shadow-xl p-3 border border-slate-100 w-32">
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#EDE7F6' }}>
-                    <GraduationCap className="w-3 h-3" style={{ color: '#6A1BFA' }} />
-                  </div>
-                  <span className="text-[10px] font-black text-slate-700">Planificación</span>
-                </div>
+            <p className="text-slate-500 text-sm font-medium leading-relaxed">
+              Recursos alineados al currículo chileno para planificar, crear y enseñar experiencias que tus estudiantes recordarán.
+            </p>
+
+            {/* Card Evaluador REI — destacada */}
+            <div className="rounded-2xl p-5 space-y-3" style={{ backgroundColor: 'white', border: '1.5px solid #E2E8F0', boxShadow: '0 4px 16px rgba(124,58,237,0.08)' }}>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs font-black uppercase tracking-widest" style={{ color: '#7C3AED' }}>TU MEJOR ALIADO</span>
+              </div>
+              <div className="flex items-start justify-between gap-4">
                 <div className="space-y-1">
-                  <div className="h-1.5 rounded-full w-full" style={{ backgroundColor: '#EDE7F6' }} />
-                  <div className="h-1.5 rounded-full w-4/5" style={{ backgroundColor: '#EDE7F6' }} />
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl font-black text-slate-900">Evaluador REI</span>
+                    <span className="text-xs font-black px-2 py-0.5 rounded-full text-white" style={{ background: 'linear-gradient(135deg, #7C3AED, #EC4899)' }}>IA</span>
+                  </div>
+                  <p className="text-xs font-bold text-slate-500">Para todas las asignaturas ✨</p>
+                  <p className="text-xs text-slate-500 leading-relaxed">Analiza, revisa, corrige y genera planes de reforzamiento y seguimiento personalizados para cada estudiante.</p>
                 </div>
-                <div className="mt-2 flex items-center gap-1">
-                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#00A878' }} />
-                  <span className="text-[8px] font-bold" style={{ color: '#00A878' }}>Listo</span>
+                {/* Mini donut chart */}
+                <div className="shrink-0 text-right space-y-1">
+                  <div className="text-xs font-bold text-slate-500">Resultados</div>
+                  <div className="text-2xl font-black" style={{ color: '#7C3AED' }}>68%</div>
+                  <div className="text-[9px] font-bold text-slate-400">Promedio general</div>
                 </div>
               </div>
+              {/* Steps */}
+              <div className="flex items-center gap-1 flex-wrap">
+                {['Analiza', 'Revisa', 'Corrige', 'Refuerza', 'Acompaña'].map((step, i) => (
+                  <React.Fragment key={step}>
+                    <span className="text-[10px] font-bold text-slate-600 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100">{step}</span>
+                    {i < 4 && <ArrowRight className="w-3 h-3 text-slate-300 shrink-0" />}
+                  </React.Fragment>
+                ))}
+              </div>
+              <div className="rounded-xl px-4 py-2.5 flex items-center gap-2" style={{ background: 'linear-gradient(135deg, #7C3AED, #A855F7)' }}>
+                <Sparkles className="w-4 h-4 text-white shrink-0" />
+                <span className="text-[11px] font-bold text-white leading-tight">Ahorra horas de corrección y obtén información real para tomar decisiones que mejoran los aprendizajes.</span>
+              </div>
+            </div>
 
-              {/* Floating card 2 */}
-              <div className="absolute -bottom-4 -right-4 bg-white rounded-2xl shadow-xl p-3 border border-slate-100 w-36">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#FFF0EB' }}>
-                    <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: '#FF8A65' }} />
-                  </div>
-                  <span className="text-[10px] font-black" style={{ color: '#FF8A65' }}>Evaluación</span>
+            {/* Módulos fila */}
+            <div className="flex flex-wrap gap-2">
+              {modules.map((m, i) => (
+                <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-bold" style={{ backgroundColor: m.bg, color: m.color }}>
+                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: m.color }} />
+                  {m.name}
                 </div>
-                <div className="text-[9px] text-slate-500 font-medium mb-2">20 preguntas</div>
-                <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: '#E7EAF3' }}>
-                  <div className="h-full rounded-full w-3/4" style={{ backgroundColor: '#FF8A65' }} />
-                </div>
+              ))}
+            </div>
+
+            {/* CTA */}
+            <div className="space-y-2">
+              <button
+                onClick={() => openAuthModal('signup')}
+                className="w-full inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl text-white font-black text-base shadow-xl"
+                style={{ background: 'linear-gradient(135deg, #7C3AED, #EC4899)', boxShadow: '0 8px 24px rgba(124,58,237,0.35)' }}>
+                Regístrate gratis por 7 días
+                <ArrowRight className="w-5 h-5" />
+              </button>
+              <div className="flex items-center justify-center gap-4 text-xs text-slate-400 font-medium">
+                <span className="flex items-center gap-1"><Heart className="w-3 h-3" style={{ fill: '#EC4899', color: '#EC4899' }} /> Sin tarjeta de crédito</span>
+                <span>·</span>
+                <span>Cancela cuando quieras</span>
               </div>
             </div>
           </div>
@@ -296,7 +269,7 @@ export default function LoginPage() {
               <X className="w-5 h-5" />
             </button>
             <div className="text-center mb-6">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl mb-3" style={{ background: 'linear-gradient(135deg, #6A1BFA, #8B5CF6)' }}>
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl mb-3" style={{ background: 'linear-gradient(135deg, #7C3AED, #A855F7)' }}>
                 <Sparkles className="w-6 h-6 text-white" />
               </div>
               <h2 className="text-2xl font-black text-slate-800">REI DOCENTE</h2>
@@ -309,7 +282,7 @@ export default function LoginPage() {
                   className="flex-1 py-2 text-xs font-bold rounded-lg transition-all"
                   style={{
                     backgroundColor: mode === tab ? 'white' : 'transparent',
-                    color: mode === tab ? '#6A1BFA' : '#94a3b8',
+                    color: mode === tab ? '#7C3AED' : '#94a3b8',
                     boxShadow: mode === tab ? '0 1px 4px rgba(0,0,0,0.1)' : 'none'
                   }}>
                   {tab === 'login' ? 'Ingresar' : 'Registrarse'}
@@ -356,7 +329,7 @@ export default function LoginPage() {
                     <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Contraseña</label>
                     {mode === 'login' && (
                       <button type="button" onClick={() => { setMode('forgot'); setError(null); }}
-                        className="text-[10px] font-bold" style={{ color: '#6A1BFA' }}>
+                        className="text-[10px] font-bold" style={{ color: '#7C3AED' }}>
                         ¿La olvidaste?
                       </button>
                     )}
@@ -372,7 +345,7 @@ export default function LoginPage() {
               {/* Aviso de privacidad — solo en registro */}
               {mode === 'signup' && (
                 <div className="rounded-xl p-3 flex gap-2.5" style={{ backgroundColor: '#F0EBFF', border: '1px solid #DDD6FE' }}>
-                  <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5" style={{ color: '#6A1BFA' }} />
+                  <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5" style={{ color: '#7C3AED' }} />
                   <p className="text-[10px] leading-relaxed font-medium" style={{ color: '#4C1D95' }}>
                     <span className="font-bold block mb-0.5">Tus datos están protegidos 🔒</span>
                     Tu nombre y correo se usan únicamente para que puedas acceder a REI Docente y generar tus materiales. No compartimos tu información con terceros. Usamos Supabase como plataforma de autenticación, con bases de datos cifradas, control de acceso y conexiones seguras.
@@ -382,7 +355,7 @@ export default function LoginPage() {
 
               <button type="submit" disabled={loading}
                 className="w-full py-3 rounded-xl text-white font-bold text-sm shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
-                style={{ background: 'linear-gradient(135deg, #6A1BFA, #8B5CF6)' }}>
+                style={{ background: 'linear-gradient(135deg, #7C3AED, #A855F7)' }}>
                 {loading ? (
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : mode === 'login' ? (
