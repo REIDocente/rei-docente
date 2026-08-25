@@ -1316,12 +1316,14 @@ export default function EvaluadorPage() {
         {/* Header toolbar */}
         <header className="bg-white border-b border-slate-200/70 px-6 py-4 flex items-center justify-between sticky top-0 z-30">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-rose-50 rounded-xl">
-              <ClipboardCheck className="w-5 h-5 text-rose-600" />
+            <div className="p-2 rounded-xl" style={{ background: 'linear-gradient(135deg,#7C3AED20,#EC489920)' }}>
+              <ClipboardCheck className="w-5 h-5" style={{ color: '#7C3AED' }} />
             </div>
             <div>
-              <h1 className="text-sm font-black text-slate-800 leading-none">REI Evaluador IA</h1>
-              <p className="text-[10px] text-slate-400 leading-none mt-0.5">Gestión de Cursos, OMR de Burbujas & Análisis Pedagógico con IA</p>
+              <h1 className="text-sm font-black leading-none" style={{ color: '#0F172A' }}>Evaluador REI</h1>
+              <p className="text-[10px] leading-snug mt-1 font-medium italic max-w-sm" style={{ color: '#7C3AED' }}>
+                ✨ Te acompañaré a revisar, analizar y comprender los resultados de tus estudiantes — con IA a tu lado.
+              </p>
             </div>
           </div>
 
