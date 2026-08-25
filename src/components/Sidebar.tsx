@@ -85,6 +85,8 @@ export default function Sidebar({ sidebarOpen = false, setSidebarOpen }: Sidebar
   // Helper to determine if link is active
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/';
+    // Exact match para rutas que son prefijo de otras (e.g. /evaluaciones vs /evaluaciones/evaluador)
+    if (href === '/evaluaciones') return pathname === '/evaluaciones' || (pathname.startsWith('/evaluaciones') && !pathname.startsWith('/evaluaciones/evaluador'));
     return pathname.startsWith(href);
   };
 
