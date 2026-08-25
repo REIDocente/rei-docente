@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import {
@@ -15,7 +16,6 @@ import {
   Settings,
   LogOut,
   X,
-  Sparkle,
   BookMarked,
   Layers,
   ClipboardCheck
@@ -102,10 +102,15 @@ export default function Sidebar({ sidebarOpen = false, setSidebarOpen }: Sidebar
         <div className="space-y-6">
           {/* Logo */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8.5 h-8.5 rounded-xl bg-gradient-to-tr from-violet-650 via-purple-500 to-pink-500 flex items-center justify-center shadow-md shadow-violet-500/10">
-                <Sparkle className="w-4.5 h-4.5 text-white" />
-              </div>
+            <div className="flex items-center gap-2">
+              <Image
+                src="/logo-rei.png"
+                alt="REI Docente"
+                width={48}
+                height={48}
+                className="rounded-xl"
+                priority
+              />
               <div className="min-w-0">
                 <span className="block text-sm font-black tracking-tight text-slate-800 leading-none">
                   REI DOCENTE
