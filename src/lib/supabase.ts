@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
@@ -9,7 +10,11 @@ if (!supabaseUrl || !supabaseAnonKey) {
   );
 }
 
-const realSupabase = createClient(supabaseUrl, supabaseAnonKey);
+// Use createClientComponentClient so the session is stored in cookies
+// matching what the middleware (createMiddlewareClient) expects.
+const realSupabase = typeof window !== 'undefined'
+  ? createClientComponentClient()
+  : createClient(supabaseUrl, supabaseAnonKey);
 
 // Helper to create chainable mock query builder
 function makeMockQueryBuilder(data: any, tableName?: string): any {
