@@ -57,7 +57,7 @@ export default function CursosPage() {
 
       try {
         // Pull distinct cursos from estudiantes table for this teacher
-        const { data: { user } } = await supabase.auth.getUser(token);
+        const { data: { user } } = await supabase.auth.getUser();
         if (!user) { router.push('/login'); return; }
 
         const { data: rows } = await supabase
