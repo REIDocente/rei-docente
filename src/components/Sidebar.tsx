@@ -76,7 +76,7 @@ export default function Sidebar({ sidebarOpen = false, setSidebarOpen }: Sidebar
     { href: '/planner/new', label: 'Kit de Clase', icon: PlusCircle, id: 'kit' },
     { href: '/play', label: 'REI Play', icon: Gamepad2, id: 'play' },
     { href: '/evaluaciones', label: 'Evaluaciones y Rúbricas', icon: FileText, id: 'evaluaciones' },
-    { href: '/evaluaciones/evaluador', label: 'REI Evaluador IA', icon: ClipboardCheck, id: 'evaluador' },
+    { href: '/evaluador', label: 'REI Evaluador IA', icon: ClipboardCheck, id: 'evaluador' },
     { href: '/guias', label: 'Guías de Aprendizaje', icon: BookOpen, id: 'guias' },
     { href: '/lecturas', label: 'REI Lecturas', icon: BookMarked, id: 'lecturas' },
     { href: '/lecturas', label: 'Experiencias REI', icon: Layers, id: 'experiencias' },
@@ -85,8 +85,7 @@ export default function Sidebar({ sidebarOpen = false, setSidebarOpen }: Sidebar
   // Helper to determine if link is active
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/';
-    // Exact match para rutas que son prefijo de otras (e.g. /evaluaciones vs /evaluaciones/evaluador)
-    if (href === '/evaluaciones') return pathname === '/evaluaciones' || (pathname.startsWith('/evaluaciones') && !pathname.startsWith('/evaluaciones/evaluador'));
+    if (href === '/evaluaciones') return pathname === '/evaluaciones' || (pathname.startsWith('/evaluaciones/') && !pathname.startsWith('/evaluaciones/evaluador'));
     return pathname.startsWith(href);
   };
 
