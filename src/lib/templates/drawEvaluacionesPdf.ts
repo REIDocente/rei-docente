@@ -23,11 +23,13 @@ function getCleanAlternatives(raw: any, qObj?: any): Array<{letra: string; texto
   let strings: string[] = [];
   if (Array.isArray(raw)) {
     strings = raw.map((item: any) => {
-      if (typeof item === 'string') return item.trim();
-      if (typeof item === 'object' && item !== null) {
-        return String(item.texto || item.text || item.contenido || item.alternativa || item.value || '').trim();
+      let s = '';
+      if (typeof item === 'string') s = item.trim();
+      else if (typeof item === 'object' && item !== null) {
+        s = String(item.texto || item.text || item.contenido || item.alternativa || item.value || '').trim();
       }
-      return '';
+      // Strip leading "A. " / "A) " prefix that Claude sometimes includes in the text itself
+      return s.replace(/^[A-Da-d][.)]\s+/, '');
     }).filter(s => s.length > 0);
   } else if (typeof raw === 'object' && raw !== null) {
     strings = Object.values(raw).map((v: any) => {
@@ -99,8 +101,8 @@ function writeWrappedText(doc: jsPDF, text: string, x: number, state: { y: numbe
   }
 }
 
-function drawTable(doc: jsPDF, headers: string[], rows: string[][], startX: number, state: { y: number, pageNum: number }, colWidths: number[], estName: string): void {
-  const rowHeight = 8;
+function drawTable(doc: jsPDF, headers: string[], rows: string[][], startX: number, state: { y: number, pageNum: number }, colWidths: number[], estName: string, baseRowHeight: number = 8): void {
+  const rowHeight = baseRowHeight;
   
   // Header Row
   checkPageBreak(doc, state, rowHeight, estName);
@@ -376,8 +378,8 @@ export default async function drawEvaluacionesPdf(ev: EvaluacionData, options?: 
       doc.setFontSize(8);
       doc.setTextColor(71, 85, 105);
       const instruction = getTechniqueInstruction(ev.tipos?.join(',') || '');
-      doc.text(instruction, marginX, state.y);
-      state.y += 6;
+      writeWrappedText(doc, instruction, marginX, state, contentWidth, 4, establecimiento);
+      state.y += 2;
       
       // Draw blank response lines
       doc.setDrawColor(203, 213, 225);
@@ -394,7 +396,7 @@ export default async function drawEvaluacionesPdf(ev: EvaluacionData, options?: 
 
   // 9. Rúbrica de Evaluación (if exists)
   const rubrica = cj.rubrica || cj.rubrica_evaluacion;
-  if (rubrica && rubrica.criterios && Array.isArray(rubrica.criterios)) {
+  if (rubrica && rubrica.criterios && Array.isArray(rubrica.criterios) && rubrica.criterios.length > 0) {
     checkPageBreak(doc, state, 20, establecimiento);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(11);
@@ -402,17 +404,39 @@ export default async function drawEvaluacionesPdf(ev: EvaluacionData, options?: 
     doc.text("Rúbrica de Evaluación", marginX, state.y);
     state.y += 6;
 
-    const headers = ["Criterio", "Logrado (3)", "En proceso (2)", "Por lograr (1)"];
-    const colWidths = [45, 45, 45, 45];
-    
-    const rows = rubrica.criterios.map((c: any) => [
-      c.nombre || c.criterio || 'Criterio',
-      c.logrado || c.si || c.excelente || 'Logrado',
-      c.en_proceso || c.bueno || c.logrado_parcial || 'En proceso',
-      c.por_lograr || c.no_logrado || c.insuficiente || 'Por lograr'
-    ]);
-    
-    drawTable(doc, headers, rows, marginX, state, colWidths, establecimiento);
+    const tipo = rubrica.tipo || '';
+
+    if (tipo === 'rubrica_holistica') {
+      // Holística: 2 columnas — Nivel | Descripción
+      const headers = ["Nivel de Desempeño", "Descriptor"];
+      const colWidths = [55, 125];
+      const rows = rubrica.criterios.map((c: any) => [
+        c.nombre || c.nivel || 'Nivel',
+        c.descripcion || c.descriptor || '',
+      ]);
+      drawTable(doc, headers, rows, marginX, state, colWidths, establecimiento);
+    } else if (tipo === 'lista_cotejo') {
+      // Lista de cotejo: Indicador | Logrado | No logrado
+      const headers = ["Indicador", "Logrado", "No logrado"];
+      const colWidths = [120, 30, 30];
+      const rows = rubrica.criterios.map((c: any) => [
+        c.nombre || c.indicador || 'Indicador',
+        c.logrado || 'Sí',
+        c.no_logrado || 'No',
+      ]);
+      drawTable(doc, headers, rows, marginX, state, colWidths, establecimiento);
+    } else {
+      // Analítica (descriptiva o cuantitativa) / Pauta: 4 columnas
+      const headers = ["Criterio", "Excelente / Logrado", "Bueno / En proceso", "Insuficiente / Por lograr"];
+      const colWidths = [45, 45, 45, 45];
+      const rows = rubrica.criterios.map((c: any) => [
+        c.nombre || c.criterio || 'Criterio',
+        c.excelente || c.logrado || c.si || c.respuesta_modelo || '',
+        c.bueno || c.en_proceso || c.logrado_parcial || '',
+        c.insuficiente || c.por_lograr || c.no_logrado || '',
+      ]);
+      drawTable(doc, headers, rows, marginX, state, colWidths, establecimiento);
+    }
     state.y += 6;
   }
 
@@ -469,13 +493,18 @@ export default async function drawEvaluacionesPdf(ev: EvaluacionData, options?: 
     const headers = ["N°", "Clave", "Objetivo (OA)", "Justificación Pedagógica"];
     const colWidths = [12, 15, 33, 120];
     
+    const oaCodes = ev.oa_codes || ['General'];
     const rows = smPreguntas.map((p, idx) => {
       const correctOpt = getCleanAlternatives(p.alternativas, p).find(a => a.correcta);
+      const oaLabel = p.oa || oaCodes[idx % oaCodes.length] || 'General';
+      const justif = p.justificacion && p.justificacion !== 'Respuesta correcta según el texto/foco.'
+        ? p.justificacion
+        : `Evalúa comprensión del ${oaLabel} mediante selección de la opción correcta.`;
       return [
         String(idx + 1),
         correctOpt?.letra || p.clave || p.respuesta_correcta || 'A',
-        p.oa || ev.oa_codes?.[0] || 'General',
-        p.justificacion || 'Respuesta correcta según el texto/foco.'
+        oaLabel,
+        justif,
       ];
     });
 
@@ -575,7 +604,7 @@ export default async function drawEvaluacionesPdf(ev: EvaluacionData, options?: 
     notesRows.push(row);
   }
 
-  drawTable(doc, notesHeaders, notesRows, marginX, state, notesColWidths, establecimiento);
+  drawTable(doc, notesHeaders, notesRows, marginX, state, notesColWidths, establecimiento, 5.5);
 
   // Final footer of teacher page
   addFooter(doc, state.pageNum, establecimiento);

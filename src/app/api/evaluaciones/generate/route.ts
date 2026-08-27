@@ -87,10 +87,11 @@ Genera:
 
 Array JSON, empezando en número 1:
 [
-  {"numero":1,"tipo":"seleccion_multiple","enunciado":"...","alternativas":["A. ...","B. ...","C. ...","D. ..."],"respuesta_correcta":"A"},
+  {"numero":1,"tipo":"seleccion_multiple","enunciado":"...","alternativas":["Texto opción A","Texto opción B","Texto opción C","Texto opción D"],"respuesta_correcta":"A","justificacion":"Breve razón pedagógica de por qué A es correcta (máx 12 palabras)."},
   ...
-  {"numero":${params.nMC+1},"tipo":"consigna_abierta","enunciado":"...","criterios_evaluacion":"...","puntaje_maximo":6}
+  {"numero":${params.nMC+1},"tipo":"consigna_abierta","enunciado":"...","criterios_evaluacion":["Criterio 1 de evaluación","Criterio 2 de evaluación","Criterio 3 de evaluación"],"puntaje_maximo":6}
 ]
+IMPORTANTE: En "alternativas", NO incluir la letra (A, B, C, D) dentro del texto. Solo el texto de la opción.
 Solo el array, sin texto adicional.`;
 
   const raw = await callHaiku(anthropic, prompt, 4500);
@@ -152,7 +153,7 @@ export async function POST(req: NextRequest) {
       titulo = 'Evaluación de Aprendizaje',
       texto_1_tipo = 'argumentativo', texto_2_tipo = 'expositivo',
       establecimiento, docente, fuente = 'tema_libre',
-      libro_id, kit_textos, eje = 'Evaluación de Aula',
+      libro_id, kit_textos, eje = 'Lenguaje y Literatura',
     } = body;
 
     if (!nivel) {
