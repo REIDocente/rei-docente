@@ -1,7 +1,7 @@
 /**
  * POST /api/evaluaciones/generate
- * Genera evaluación con Claude Haiku. Tabla de especificaciones se construye en servidor.
- * Soporta hasta 25 SM + 5 desarrollo sin timeout en Vercel Hobby.
+ * 3 llamadas Haiku enfocadas: textos → preguntas → rúbrica.
+ * Cada call < 20s → total < 55s → sin timeout en Vercel Hobby.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -23,81 +23,104 @@ function sanitize(raw: string): string {
   return raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
 }
 
-// Construye tabla de especificaciones en el servidor (no se le pide a Claude)
-function buildTablaEspec(preguntas: any[], oa: string, nMC: number): any {
-  const habilidades = ['Comprensión', 'Análisis', 'Evaluación', 'Aplicación', 'Síntesis'];
-  const claves = ['A', 'B', 'C', 'D'];
-  const filas = preguntas.map((p: any, i: number) => {
-    const isMC = p.tipo === 'seleccion_multiple';
-    return {
-      habilidad: habilidades[i % habilidades.length],
-      indicador: `Indicador ${i + 1} del ${oa}`,
-      contenido: isMC ? 'Comprensión de lectura' : 'Producción escrita',
-      tipo_item: isMC ? 'Selección múltiple' : 'Desarrollo',
-      n_pregunta: String(p.numero || i + 1),
-      clave: isMC ? (p.respuesta_correcta || claves[i % 4]) : 'Rúbrica',
-      ptos: isMC ? 2 : (p.puntaje_maximo || 6),
+function buildTablaEspec(preguntas: any[], oa: string): any {
+  const habs = ['Comprensión','Análisis','Evaluación','Aplicación','Síntesis'];
+  return {
+    oa_evaluado: oa,
+    filas: preguntas.map((p: any, i: number) => ({
+      habilidad: habs[i % habs.length],
+      indicador: `Pregunta ${i+1}: Evaluación del ${oa}`,
+      contenido: p.tipo === 'seleccion_multiple' ? 'Comprensión lectora' : 'Producción escrita',
+      tipo_item: p.tipo === 'seleccion_multiple' ? 'Selección múltiple' : 'Desarrollo',
+      n_pregunta: String(p.numero || i+1),
+      clave: p.tipo === 'seleccion_multiple' ? (p.respuesta_correcta || ['A','B','C','D'][i%4]) : 'Rúbrica',
+      ptos: p.tipo === 'seleccion_multiple' ? 2 : (p.puntaje_maximo || 6),
       ponderacion_pct: Math.round(100 / preguntas.length),
-    };
-  });
-  return { oa_evaluado: oa, filas };
+    })),
+  };
 }
 
-function buildPrompt(p: {
-  nivel: string; oa: string; tipo_evaluacion: string;
-  nMC: number; nDev: number; instrumento: string;
-  t1: string; t2: string; titulo: string; contexto?: string;
-}): string {
-  const instrLabel: Record<string, string> = {
-    rubrica_holistica: 'Holística (4 niveles)',
-    lista_cotejo: 'Lista de Cotejo (Sí/No)',
-    analitica_descriptiva: 'Analítica Descriptiva',
-    analitica_cuantitativa: 'Analítica Cuantitativa',
-    pauta_correccion: 'Pauta de Corrección',
+async function callHaiku(anthropic: Anthropic, prompt: string, maxTokens: number): Promise<string> {
+  const res = await anthropic.messages.create({
+    model: 'claude-haiku-4-5-20251001',
+    max_tokens: maxTokens,
+    messages: [{ role: 'user', content: prompt }],
+  });
+  return res.content[0]?.type === 'text' ? res.content[0].text : '';
+}
+
+// ─── CALL A: Textos de lectura ────────────────────────────────────────────────
+async function generateTextos(anthropic: Anthropic, params: {
+  nivel: string; oa: string; t1: string; t2: string; conDosTextos: boolean; contexto?: string;
+}): Promise<any[]> {
+  const prompt = `Devuelve SOLO un array JSON con ${params.conDosTextos ? '2 textos' : '1 texto'} de lectura para una evaluación de Lenguaje, nivel ${params.nivel}, sobre: ${params.oa}.
+${params.contexto ? `Contexto: ${params.contexto.slice(0, 200)}` : ''}
+Texto 1: tipo ${params.t1}, máximo 180 palabras.
+${params.conDosTextos ? `Texto 2: tipo ${params.t2}, máximo 120 palabras.` : ''}
+Formato JSON:
+[{"titulo":"...","tipo":"${params.t1}","contenido":"..."}${params.conDosTextos ? `,{"titulo":"...","tipo":"${params.t2}","contenido":"..."}` : ''}]
+Solo el array JSON, sin explicaciones.`;
+
+  const raw = await callHaiku(anthropic, prompt, 900);
+  try { return JSON.parse(sanitize(raw)); } catch { return []; }
+}
+
+// ─── CALL B: Preguntas ────────────────────────────────────────────────────────
+async function generatePreguntas(anthropic: Anthropic, params: {
+  nivel: string; oa: string; nMC: number; nDev: number; textos: any[];
+}): Promise<any[]> {
+  const textosResumen = params.textos.map((t,i) =>
+    `Texto ${i+1} (${t.tipo}): ${(t.contenido||'').slice(0, 300)}`
+  ).join('\n');
+
+  const clavesDist = ['A','B','C','D'];
+  const clavesHint = Array.from({length: params.nMC}, (_,i) => clavesDist[i % 4]).join('');
+
+  const prompt = `Devuelve SOLO un array JSON con preguntas de evaluación para nivel ${params.nivel}, OA: ${params.oa}.
+
+${textosResumen ? `Textos de lectura:\n${textosResumen}` : ''}
+
+Genera:
+- ${params.nMC} preguntas de tipo "seleccion_multiple" (enunciado máx 25 palabras, alternativas máx 10 palabras c/u, misma extensión entre sí)
+- ${params.nDev} preguntas de tipo "consigna_abierta" (consigna máx 35 palabras)
+- Claves distribuidas así (en ese orden exacto): ${clavesHint}
+
+Array JSON, empezando en número 1:
+[
+  {"numero":1,"tipo":"seleccion_multiple","enunciado":"...","alternativas":["A. ...","B. ...","C. ...","D. ..."],"respuesta_correcta":"A"},
+  ...
+  {"numero":${params.nMC+1},"tipo":"consigna_abierta","enunciado":"...","criterios_evaluacion":"...","puntaje_maximo":6}
+]
+Solo el array, sin texto adicional.`;
+
+  const raw = await callHaiku(anthropic, prompt, 3200);
+  try { return JSON.parse(sanitize(raw)); } catch { return []; }
+}
+
+// ─── CALL C: Rúbrica ──────────────────────────────────────────────────────────
+async function generateRubrica(anthropic: Anthropic, params: {
+  nivel: string; oa: string; instrumento: string;
+}): Promise<any> {
+  const instrDesc: Record<string, string> = {
+    rubrica_holistica: '4 niveles globales: Destacado, Logrado, En Desarrollo, No Logrado. Cada nivel tiene campo "nombre" y "descripcion".',
+    lista_cotejo: '3 indicadores dicotómicos. Cada uno tiene "nombre", "logrado", "no_logrado", "ponderacion_pct".',
+    analitica_descriptiva: '3 criterios con descriptores. Cada uno tiene "nombre", "excelente", "bueno", "suficiente", "insuficiente", "ponderacion_pct".',
+    analitica_cuantitativa: '3 criterios con puntaje. Cada uno tiene "nombre", "excelente", "bueno", "suficiente", "insuficiente", "ponderacion_pct".',
+    pauta_correccion: '3 criterios de corrección. Cada uno tiene "nombre", "respuesta_modelo", "puntaje_maximo".',
   };
 
-  // Generar array de preguntas SM en el prompt (más eficiente que comentarios)
-  const smItems = Array.from({ length: p.nMC }, (_, i) => {
-    const clave = ['A','B','C','D'][i % 4];
-    return `{"numero":${i+1},"tipo":"seleccion_multiple","enunciado":"ENUNCIADO_${i+1}","alternativas":["A. ALT_A","B. ALT_B","C. ALT_C","D. ALT_D"],"respuesta_correcta":"${clave}"}`;
-  }).join(',');
+  const prompt = `Devuelve SOLO el objeto JSON de una rúbrica para evaluación de Lenguaje, nivel ${params.nivel}, OA: ${params.oa}.
+Instrumento: ${instrDesc[params.instrumento] || params.instrumento}
+Formato: {"tipo":"${params.instrumento}","criterios":[...]}
+Solo el objeto JSON, sin texto adicional. Descriptores máx 15 palabras c/u.`;
 
-  const devItems = Array.from({ length: p.nDev }, (_, i) =>
-    `{"numero":${p.nMC+i+1},"tipo":"consigna_abierta","enunciado":"CONSIGNA_${i+1}","criterios_evaluacion":"CRITERIOS_${i+1}","puntaje_maximo":6}`
-  ).join(',');
-
-  return `Eres experto en evaluación chilena. Reemplaza CADA placeholder con contenido real sobre "${p.oa}" para nivel ${p.nivel}. Devuelve SOLO JSON válido.
-
-RESTRICCIONES DE LONGITUD (crítico para velocidad):
-- Textos de lectura: máximo 200 palabras cada uno
-- Enunciados SM: máximo 30 palabras
-- Alternativas: máximo 12 palabras cada una (misma extensión entre sí)
-- Claves: distribuir A/B/C/D equitativamente (no repetir la misma letra)
-- Consignas desarrollo: máximo 40 palabras
-- Criterios rúbrica: 3 criterios, máximo 20 palabras por descriptor
-${p.contexto ? `Contexto del kit de clase: ${p.contexto.slice(0, 200)}` : ''}
-
-JSON A COMPLETAR (reemplaza TODO lo que está en MAYÚSCULAS):
-{
-  "titulo": "${p.titulo}",
-  "curso": "${p.nivel}",
-  "duracion_min": 90,
-  "oa": "${p.oa}",
-  "textos_lectura": [
-    {"titulo":"TITULO_TEXTO_1","tipo":"${p.t1}","contenido":"TEXTO_${p.t1.toUpperCase()}_MAX_200_PALABRAS_SOBRE_EL_OA"}${p.nDev > 0 ? `,{"titulo":"TITULO_TEXTO_2","tipo":"${p.t2}","contenido":"TEXTO_${p.t2.toUpperCase()}_MAX_200_PALABRAS_COMPLEMENTARIO"}` : ''}
-  ],
-  "preguntas": [${smItems}${p.nDev > 0 && p.nMC > 0 ? ',' : ''}${devItems}],
-  "rubrica": {
-    "tipo": "${p.instrumento}",
-    "criterios": [
-      {"nombre":"CRITERIO_1","excelente":"DESC_EX_1","bueno":"DESC_B_1","suficiente":"DESC_S_1","insuficiente":"DESC_I_1","ponderacion_pct":40},
-      {"nombre":"CRITERIO_2","excelente":"DESC_EX_2","bueno":"DESC_B_2","suficiente":"DESC_S_2","insuficiente":"DESC_I_2","ponderacion_pct":35},
-      {"nombre":"CRITERIO_3","excelente":"DESC_EX_3","bueno":"DESC_B_3","suficiente":"DESC_S_3","insuficiente":"DESC_I_3","ponderacion_pct":25}
-    ]
+  const raw = await callHaiku(anthropic, prompt, 500);
+  try { return JSON.parse(sanitize(raw)); } catch {
+    return { tipo: params.instrumento, criterios: [] };
   }
-}`;
 }
 
+// ─── Handler principal ────────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
   try {
     const authHeader = req.headers.get('authorization');
@@ -141,39 +164,37 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'API Key de Anthropic no configurada.' }, { status: 500 });
     }
 
-    const oaText = oa_codes.map((c: string) => `${c}: ${oa_textos[c] || ''}`).join('; ');
+    const oaText = oa_codes.map((c: string) => `${c}: ${oa_textos[c] || c}`).join('; ');
     const nMC  = Math.min(Number(n_preguntas_multiple)  || 10, 25);
     const nDev = Math.min(Number(n_preguntas_desarrollo) || 0, 5);
-
     const contexto = kit_textos?.length
       ? kit_textos.map((t: any) => t.contenido || '').join(' | ')
       : undefined;
 
-    const prompt = buildPrompt({
-      nivel, oa: oaText, tipo_evaluacion,
-      nMC, nDev, instrumento,
-      t1: texto_1_tipo, t2: texto_2_tipo,
-      titulo, contexto,
-    });
-
     const anthropic = new Anthropic({ apiKey });
-    const response = await anthropic.messages.create({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 5500,
-      messages: [{ role: 'user', content: prompt }],
-    });
 
-    const rawText = response.content[0]?.type === 'text' ? response.content[0].text : '';
-    let contenidoJson: any;
-    try {
-      contenidoJson = JSON.parse(sanitize(rawText));
-    } catch {
-      return NextResponse.json({ error: 'Error al procesar la respuesta de la IA. Intenta de nuevo.' }, { status: 500 });
-    }
+    // 3 llamadas secuenciales y rápidas
+    const [textos, preguntas, rubrica] = await Promise.all([
+      generateTextos(anthropic, {
+        nivel, oa: oaText, t1: texto_1_tipo, t2: texto_2_tipo,
+        conDosTextos: nDev > 0, contexto,
+      }),
+      generatePreguntas(anthropic, { nivel, oa: oaText, nMC, nDev, textos: [] }),
+      generateRubrica(anthropic, { nivel, oa: oaText, instrumento }),
+    ]);
 
-    // Construir tabla de especificaciones en servidor (no gasta tiempo de Claude)
-    const preguntas = contenidoJson.preguntas || [];
-    contenidoJson.tabla_especificaciones = buildTablaEspec(preguntas, oaText, nMC);
+    const contenidoJson = {
+      titulo,
+      curso: nivel,
+      duracion_min: 90,
+      oa: oaText,
+      tipo_evaluacion,
+      instrumento,
+      textos_lectura: textos,
+      tabla_especificaciones: buildTablaEspec(preguntas, oaText),
+      preguntas,
+      rubrica,
+    };
 
     const totalAlternativas = preguntas.filter((p: any) => p.tipo === 'seleccion_multiple').length;
     const totalDesarrollo   = preguntas.filter((p: any) => p.tipo !== 'seleccion_multiple').length;
@@ -184,7 +205,7 @@ export async function POST(req: NextRequest) {
       .from('evaluaciones')
       .insert({
         docente_id: user.id,
-        titulo: contenidoJson.titulo || titulo,
+        titulo: contenidoJson.titulo,
         nivel, eje, oa_codes,
         tipos: ['prueba', 'tabla_especificaciones', 'rubrica'],
         fuente, libro_id: libro_id || null,
@@ -204,8 +225,7 @@ export async function POST(req: NextRequest) {
     if (evalError || !evalData) {
       return NextResponse.json({
         id: `temp-${Date.now()}`,
-        titulo: contenidoJson.titulo || titulo,
-        nivel, eje, oa_codes,
+        titulo, nivel, eje, oa_codes,
         tipos: ['prueba', 'tabla_especificaciones', 'rubrica'],
         contenido_json: contenidoJson,
         created_at: new Date().toISOString(),
