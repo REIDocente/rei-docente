@@ -93,7 +93,7 @@ Array JSON, empezando en número 1:
 ]
 Solo el array, sin texto adicional.`;
 
-  const raw = await callHaiku(anthropic, prompt, 3200);
+  const raw = await callHaiku(anthropic, prompt, 4500);
   try { return JSON.parse(sanitize(raw)); } catch { return []; }
 }
 
@@ -114,7 +114,7 @@ Instrumento: ${instrDesc[params.instrumento] || params.instrumento}
 Formato: {"tipo":"${params.instrumento}","criterios":[...]}
 Solo el objeto JSON, sin texto adicional. Descriptores máx 15 palabras c/u.`;
 
-  const raw = await callHaiku(anthropic, prompt, 500);
+  const raw = await callHaiku(anthropic, prompt, 800);
   try { return JSON.parse(sanitize(raw)); } catch {
     return { tipo: params.instrumento, criterios: [] };
   }
