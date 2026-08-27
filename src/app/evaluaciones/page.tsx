@@ -679,7 +679,7 @@ export default function EvaluacionesPage() {
         kit_textos: origen === 'kit' ? (currentPlanning?.content?.textos_lectura ?? null) : undefined
       };
 
-      const res = await fetch('/api/evaluaciones', {
+      const res = await fetch('/api/evaluaciones/generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
