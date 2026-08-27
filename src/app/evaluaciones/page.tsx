@@ -1864,15 +1864,6 @@ Genera la Página ${pagina} de ${total} como imagen A4 ilustrada y lista para im
                       <label className="flex items-center gap-2 cursor-pointer select-none">
                         <input
                           type="checkbox"
-                          checked={incluirDua}
-                          onChange={(e) => setIncluirDua(e.target.checked)}
-                          className="w-4 h-4 rounded text-rose-600 border-slate-300 accent-rose-600 focus:ring-rose-500"
-                        />
-                        <span className="text-xs font-bold text-slate-700">Incluir DUA (Diseño Universal)</span>
-                      </label>
-                      <label className="flex items-center gap-2 cursor-pointer select-none">
-                        <input
-                          type="checkbox"
                           checked={incluirTabla}
                           onChange={(e) => setIncluirTabla(e.target.checked)}
                           className="w-4 h-4 rounded text-rose-600 border-slate-300 accent-rose-600 focus:ring-rose-500"
