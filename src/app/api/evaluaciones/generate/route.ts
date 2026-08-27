@@ -49,39 +49,51 @@ function buildPrompt(p: {
   t1: string; t2: string; titulo: string; contexto?: string;
 }): string {
   const instrLabel: Record<string, string> = {
-    rubrica_holistica: 'Holística (4 niveles: Destacado/Logrado/En Desarrollo/No Logrado)',
-    lista_cotejo: 'Lista de Cotejo (indicadores Sí/No, ponderacion_pct)',
-    analitica_descriptiva: 'Analítica Descriptiva (excelente/bueno/suficiente/insuficiente, ponderacion_pct)',
-    analitica_cuantitativa: 'Analítica Cuantitativa con puntaje (excelente/bueno/suficiente/insuficiente, ponderacion_pct)',
-    pauta_correccion: 'Pauta de Corrección (respuesta modelo por criterio)',
+    rubrica_holistica: 'Holística (4 niveles)',
+    lista_cotejo: 'Lista de Cotejo (Sí/No)',
+    analitica_descriptiva: 'Analítica Descriptiva',
+    analitica_cuantitativa: 'Analítica Cuantitativa',
+    pauta_correccion: 'Pauta de Corrección',
   };
 
-  return `Evaluación Lenguaje y Literatura chilena. Devuelve SOLO JSON válido, sin explicaciones.
+  // Generar array de preguntas SM en el prompt (más eficiente que comentarios)
+  const smItems = Array.from({ length: p.nMC }, (_, i) => {
+    const clave = ['A','B','C','D'][i % 4];
+    return `{"numero":${i+1},"tipo":"seleccion_multiple","enunciado":"ENUNCIADO_${i+1}","alternativas":["A. ALT_A","B. ALT_B","C. ALT_C","D. ALT_D"],"respuesta_correcta":"${clave}"}`;
+  }).join(',');
 
-Nivel: ${p.nivel} | Evaluación: ${p.tipo_evaluacion} | OA: ${p.oa}
-SM: ${p.nMC} preguntas | Desarrollo: ${p.nDev} preguntas
-Rúbrica: ${instrLabel[p.instrumento] || p.instrumento}
-Texto1: ${p.t1} | Texto2: ${p.t2}
-${p.contexto ? `Contexto: ${p.contexto.slice(0, 300)}` : ''}
+  const devItems = Array.from({ length: p.nDev }, (_, i) =>
+    `{"numero":${p.nMC+i+1},"tipo":"consigna_abierta","enunciado":"CONSIGNA_${i+1}","criterios_evaluacion":"CRITERIOS_${i+1}","puntaje_maximo":6}`
+  ).join(',');
 
-Reglas: alternativas misma extensión (~15 palabras c/u), claves balanceadas (A B C D equitativos), textos 2-3 párrafos.
+  return `Eres experto en evaluación chilena. Reemplaza CADA placeholder con contenido real sobre "${p.oa}" para nivel ${p.nivel}. Devuelve SOLO JSON válido.
 
+RESTRICCIONES DE LONGITUD (crítico para velocidad):
+- Textos de lectura: máximo 200 palabras cada uno
+- Enunciados SM: máximo 30 palabras
+- Alternativas: máximo 12 palabras cada una (misma extensión entre sí)
+- Claves: distribuir A/B/C/D equitativamente (no repetir la misma letra)
+- Consignas desarrollo: máximo 40 palabras
+- Criterios rúbrica: 3 criterios, máximo 20 palabras por descriptor
+${p.contexto ? `Contexto del kit de clase: ${p.contexto.slice(0, 200)}` : ''}
+
+JSON A COMPLETAR (reemplaza TODO lo que está en MAYÚSCULAS):
 {
   "titulo": "${p.titulo}",
   "curso": "${p.nivel}",
   "duracion_min": 90,
   "oa": "${p.oa}",
   "textos_lectura": [
-    {"titulo":"[título]","tipo":"${p.t1}","contenido":"[texto ${p.t1} 2-3 párrafos]"}${p.nDev > 0 ? `,{"titulo":"[título]","tipo":"${p.t2}","contenido":"[texto ${p.t2} 2 párrafos]"}` : ''}
+    {"titulo":"TITULO_TEXTO_1","tipo":"${p.t1}","contenido":"TEXTO_${p.t1.toUpperCase()}_MAX_200_PALABRAS_SOBRE_EL_OA"}${p.nDev > 0 ? `,{"titulo":"TITULO_TEXTO_2","tipo":"${p.t2}","contenido":"TEXTO_${p.t2.toUpperCase()}_MAX_200_PALABRAS_COMPLEMENTARIO"}` : ''}
   ],
-  "preguntas": [
-    ${p.nMC > 0 ? `{"numero":1,"tipo":"seleccion_multiple","enunciado":"[enunciado]","alternativas":["A. [~15 palabras]","B. [~15 palabras]","C. [~15 palabras]","D. [~15 palabras]"],"respuesta_correcta":"A"}` : ''}
-    ${p.nDev > 0 ? `{"numero":${p.nMC + 1},"tipo":"consigna_abierta","enunciado":"[consigna]","criterios_evaluacion":"[criterios]","puntaje_maximo":6}` : ''}
-    /* continuar hasta completar ${p.nMC} SM y ${p.nDev} desarrollo */
-  ],
+  "preguntas": [${smItems}${p.nDev > 0 && p.nMC > 0 ? ',' : ''}${devItems}],
   "rubrica": {
     "tipo": "${p.instrumento}",
-    "criterios": [/* 3-4 criterios según ${instrLabel[p.instrumento] || p.instrumento} */]
+    "criterios": [
+      {"nombre":"CRITERIO_1","excelente":"DESC_EX_1","bueno":"DESC_B_1","suficiente":"DESC_S_1","insuficiente":"DESC_I_1","ponderacion_pct":40},
+      {"nombre":"CRITERIO_2","excelente":"DESC_EX_2","bueno":"DESC_B_2","suficiente":"DESC_S_2","insuficiente":"DESC_I_2","ponderacion_pct":35},
+      {"nombre":"CRITERIO_3","excelente":"DESC_EX_3","bueno":"DESC_B_3","suficiente":"DESC_S_3","insuficiente":"DESC_I_3","ponderacion_pct":25}
+    ]
   }
 }`;
 }
