@@ -25,17 +25,19 @@ function sanitize(raw: string): string {
 
 function buildTablaEspec(preguntas: any[], oa: string): any {
   const habs = ['Comprensión','Análisis','Evaluación','Aplicación','Síntesis'];
+  // Solo preguntas SM — las de desarrollo van en sección aparte numerada 1-N
+  const smPreguntas = preguntas.filter((p: any) => p.tipo === 'seleccion_multiple');
   return {
     oa_evaluado: oa,
-    filas: preguntas.map((p: any, i: number) => ({
+    filas: smPreguntas.map((p: any, i: number) => ({
       habilidad: habs[i % habs.length],
       indicador: `Pregunta ${i+1}: Evaluación del ${oa}`,
-      contenido: p.tipo === 'seleccion_multiple' ? 'Comprensión lectora' : 'Producción escrita',
-      tipo_item: p.tipo === 'seleccion_multiple' ? 'Selección múltiple' : 'Desarrollo',
+      contenido: 'Comprensión lectora',
+      tipo_item: 'Selección múltiple',
       n_pregunta: String(p.numero || i+1),
-      clave: p.tipo === 'seleccion_multiple' ? (p.respuesta_correcta || ['A','B','C','D'][i%4]) : 'Rúbrica',
-      ptos: p.tipo === 'seleccion_multiple' ? 2 : (p.puntaje_maximo || 6),
-      ponderacion_pct: Math.round(100 / preguntas.length),
+      clave: p.respuesta_correcta || ['A','B','C','D'][i%4],
+      ptos: 2,
+      ponderacion_pct: Math.round(100 / smPreguntas.length),
     })),
   };
 }
@@ -89,7 +91,7 @@ Array JSON, empezando en número 1:
 [
   {"numero":1,"tipo":"seleccion_multiple","enunciado":"...","alternativas":["Texto opción A","Texto opción B","Texto opción C","Texto opción D"],"respuesta_correcta":"A","justificacion":"Breve razón pedagógica de por qué A es correcta (máx 12 palabras)."},
   ...
-  {"numero":${params.nMC+1},"tipo":"consigna_abierta","enunciado":"...","criterios_evaluacion":["Criterio 1 de evaluación","Criterio 2 de evaluación","Criterio 3 de evaluación"],"puntaje_maximo":6}
+  {"numero":${params.nMC+1},"tipo":"consigna_abierta","enunciado":"...","respuesta_esperada":"Descripción de la respuesta esperada del estudiante en 2-3 oraciones específicas.","criterios_evaluacion":["Criterio pedagógico 1 específico y observable","Criterio pedagógico 2 específico y observable","Criterio pedagógico 3 específico y observable"],"puntaje_maximo":6}
 ]
 IMPORTANTE: En "alternativas", NO incluir la letra (A, B, C, D) dentro del texto. Solo el texto de la opción.
 Solo el array, sin texto adicional.`;
@@ -103,17 +105,30 @@ async function generateRubrica(anthropic: Anthropic, params: {
   nivel: string; oa: string; instrumento: string;
 }): Promise<any> {
   const instrDesc: Record<string, string> = {
-    rubrica_holistica: '4 niveles globales: Destacado, Logrado, En Desarrollo, No Logrado. Cada nivel tiene campo "nombre" y "descripcion".',
-    lista_cotejo: '3 indicadores dicotómicos. Cada uno tiene "nombre", "logrado", "no_logrado", "ponderacion_pct".',
-    analitica_descriptiva: '3 criterios con descriptores. Cada uno tiene "nombre", "excelente", "bueno", "suficiente", "insuficiente", "ponderacion_pct".',
-    analitica_cuantitativa: '3 criterios con puntaje. Cada uno tiene "nombre", "excelente", "bueno", "suficiente", "insuficiente", "ponderacion_pct".',
-    pauta_correccion: '3 criterios de corrección. Cada uno tiene "nombre", "respuesta_modelo", "puntaje_maximo".',
+    rubrica_holistica: `4 niveles: Destacado, Logrado, En Desarrollo, No Logrado.
+Cada nivel: {"nombre":"Destacado","descripcion":"[descriptor pedagógico real de 10-15 palabras que describa qué hace el estudiante en este nivel]"}
+IMPORTANTE: "descripcion" debe ser texto pedagógico específico, NO simplemente el nombre del nivel.`,
+    lista_cotejo: `3 indicadores observables.
+Cada uno: {"nombre":"[indicador concreto]","logrado":"Sí","no_logrado":"No","ponderacion_pct":33}`,
+    analitica_descriptiva: `3 criterios con 4 niveles descriptivos.
+Cada uno: {"nombre":"[criterio]","excelente":"[descriptor 10-15 palabras]","bueno":"[descriptor 10-15 palabras]","suficiente":"[descriptor 10-15 palabras]","insuficiente":"[descriptor 10-15 palabras]","ponderacion_pct":33}
+IMPORTANTE: cada descriptor debe describir concretamente el desempeño, no solo decir "Logrado/No logrado".`,
+    analitica_cuantitativa: `3 criterios con 4 niveles descriptivos.
+Cada uno: {"nombre":"[criterio]","excelente":"[descriptor 10-15 palabras]","bueno":"[descriptor 10-15 palabras]","suficiente":"[descriptor 10-15 palabras]","insuficiente":"[descriptor 10-15 palabras]","ponderacion_pct":33}
+IMPORTANTE: cada descriptor debe ser texto pedagógico específico que describa el desempeño del estudiante.`,
+    pauta_correccion: `3 criterios de corrección.
+Cada uno: {"nombre":"[criterio]","respuesta_modelo":"[respuesta esperada en 15-20 palabras]","puntaje_maximo":2}`,
   };
 
   const prompt = `Devuelve SOLO el objeto JSON de una rúbrica para evaluación de Lenguaje, nivel ${params.nivel}, OA: ${params.oa}.
-Instrumento: ${instrDesc[params.instrumento] || params.instrumento}
-Formato: {"tipo":"${params.instrumento}","criterios":[...]}
-Solo el objeto JSON, sin texto adicional. Descriptores máx 15 palabras c/u.`;
+
+${instrDesc[params.instrumento] || params.instrumento}
+
+Formato de respuesta:
+{"tipo":"${params.instrumento}","criterios":[...]}
+
+REGLA CRÍTICA: Los descriptores deben ser texto pedagógico REAL y ESPECÍFICO. Nunca uses como descriptor las palabras "Logrado", "En proceso" o "Por lograr" — esas son etiquetas de columna, no descriptores.
+Solo el objeto JSON, sin texto adicional.`;
 
   const raw = await callHaiku(anthropic, prompt, 800);
   try { return JSON.parse(sanitize(raw)); } catch {
