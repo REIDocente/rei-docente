@@ -169,13 +169,13 @@ export async function POST(req: NextRequest) {
 
     // Trial limit
     const limitCheck = await checkTrialLimit(supabase, user.id, 'evaluations_generated');
-    if (!limitCheck.allowed) {
+    if (limitCheck.blocked) {
       return NextResponse.json({
         error: 'limite_alcanzado',
         reason: limitCheck.reason,
-        plan_status: limitCheck.plan_status,
-        renewal_date: limitCheck.renewal_date,
-        limit: limitCheck.limit,
+        plan_status: limitCheck.profile?.plan_status,
+        renewal_date: limitCheck.renewalDate,
+        limit: limitCheck.reason === 'trial_expired' ? 7 : 12,
       }, { status: 403 });
     }
 
